@@ -1,0 +1,411 @@
+<deployment-project plugin="plugin.toolbox" plugin-version="1.0">
+  <configuration build-checksum="3566855457" file="F:\VW\VW Odborne\VWPublications&amp;Works\VW-2016-u (ERCIM 2016 Sevilla)\Matlab\CF TOOLBOX.prj" location="F:\VW\VW Odborne\VWPublications&amp;Works\VW-2016-u (ERCIM 2016 Sevilla)\Matlab" name="CF TOOLBOX" target="target.toolbox" target-name="Package Toolbox">
+    <param.appname>CF TOOLBOX</param.appname>
+    <param.authnamewatermark>Viktor Witkovsky</param.authnamewatermark>
+    <param.email>witkovsky@gmail.com</param.email>
+    <param.company>Bratislava</param.company>
+    <param.summary>Numerical inversion of the characteristic function computed by simple trapezoidal quadrature</param.summary>
+    <param.description>CF TOOLBOX (The Characteristic Functions Toolbox) consists of a set of algorithms for evaluating selected characteristic functions and algorithms for numerical inversion of the (combined and/or compound) characteristic functions, used to evaluate the probability density function (PDF) and the cumulative distribution function (CDF). The inversion algorithms are based on using simple trapezoidal rule for computing the integrals defined by the Gil-Pelaez formulae, and/or by using the FFT algorithm for computing the Fourier transform integrals.</param.description>
+    <param.screenshot>${PROJECT_ROOT}\Figures\CFToolboxFigSmall.png</param.screenshot>
+    <param.version>1.0</param.version>
+    <param.output>${PROJECT_ROOT}\CF TOOLBOX.mltbx</param.output>
+    <param.products.name>
+      <item>MATLAB</item>
+      <item>Statistics and Machine Learning Toolbox</item>
+    </param.products.name>
+    <param.products.id>
+      <item>1</item>
+      <item>19</item>
+    </param.products.id>
+    <param.products.version>
+      <item>9.1</item>
+      <item>11.0</item>
+    </param.products.version>
+    <param.platforms />
+    <param.guid>3c859aa3-038c-4884-9588-850a9be5dd3a</param.guid>
+    <param.exclude.filters>% List files contained in your toolbox folder that you would like to exclude
+% from packaging.  Excludes should be listed relative to the toolbox folder.
+% Some examples of how to specify excludes are provided below:
+%
+% A single file in the toolbox folder:
+% .svn
+%
+% A single file in a subfolder of the toolbox folder:
+% example/.svn
+%
+% All files in a subfolder of the toolbox folder:
+% example/*
+%
+% All files of a certain name in all subfolders of the toolbox folder:
+% **/.svn
+%
+% All files matching a pattern in all subfolders of the toolbox folder:
+% **/*.bak
+%
+OTHER
+ALD TOOL
+CRM TOOL Docs
+CF TOOLBOX
+CRMTool1024
+Figures
+LaTeX
+Mfiles
+Pfiles</param.exclude.filters>
+    <param.examples>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;examples&gt;
+   &lt;exampleCategory name="Matlab"&gt;
+      &lt;example name="EXAMPLE_00_INVERSION" type="html"&gt;
+         &lt;file type="source"&gt;/html/EXAMPLE_00_INVERSION.html&lt;/file&gt;
+         &lt;file type="main"&gt;/EXAMPLE_00_INVERSION.m&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/html/EXAMPLE_00_INVERSION.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_00_INVERSION_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_00_INVERSION_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_00_INVERSION_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_00_INVERSION_04.png&lt;/file&gt;
+      &lt;/example&gt;
+      &lt;example name="EXAMPLE_01_SYMMETRIC" type="html"&gt;
+         &lt;file type="source"&gt;/html/EXAMPLE_01_SYMMETRIC.html&lt;/file&gt;
+         &lt;file type="main"&gt;/EXAMPLE_01_SYMMETRIC.m&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/html/EXAMPLE_01_SYMMETRIC.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_01_SYMMETRIC_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_01_SYMMETRIC_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_01_SYMMETRIC_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_01_SYMMETRIC_04.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_01_SYMMETRIC_05.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_01_SYMMETRIC_06.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_01_SYMMETRIC_07.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_01_SYMMETRIC_08.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_01_SYMMETRIC_09.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_01_SYMMETRIC_10.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_01_SYMMETRIC_11.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_01_SYMMETRIC_12.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_01_SYMMETRIC_13.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_01_SYMMETRIC_14.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_01_SYMMETRIC_15.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_01_SYMMETRIC_16.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_01_SYMMETRIC_17.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_01_SYMMETRIC_18.png&lt;/file&gt;
+      &lt;/example&gt;
+      &lt;example name="EXAMPLE_02_DISCRETE" type="html"&gt;
+         &lt;file type="source"&gt;/html/EXAMPLE_02_DISCRETE.html&lt;/file&gt;
+         &lt;file type="main"&gt;/EXAMPLE_02_DISCRETE.m&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/html/EXAMPLE_02_DISCRETE.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_04.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_05.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_06.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_07.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_08.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_09.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_10.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_11.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_12.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_13.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_14.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_15.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_16.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_17.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_18.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_19.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_20.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_21.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_22.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_23.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_24.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_25.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_26.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_27.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_28.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_29.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_30.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_02_DISCRETE_31.png&lt;/file&gt;
+      &lt;/example&gt;
+      &lt;example name="EXAMPLE_03_NONNEGATIVE" type="html"&gt;
+         &lt;file type="source"&gt;/html/EXAMPLE_03_NONNEGATIVE.html&lt;/file&gt;
+         &lt;file type="main"&gt;/EXAMPLE_03_NONNEGATIVE.m&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/html/EXAMPLE_03_NONNEGATIVE.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_04.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_05.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_06.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_07.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_08.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_09.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_10.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_11.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_12.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_13.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_14.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_15.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_16.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_17.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_18.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_19.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_20.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_21.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_22.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_23.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_24.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_25.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_26.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_27.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_28.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_29.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_30.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_31.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_32.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_33.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_34.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_35.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_36.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_37.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_38.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_39.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_40.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_41.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_42.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_43.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_44.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_45.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_46.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_47.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_48.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_49.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_50.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_51.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_52.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_53.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_54.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_03_NONNEGATIVE_55.png&lt;/file&gt;
+      &lt;/example&gt;
+      &lt;example name="EXAMPLE_04_EMPIRICAL" type="html"&gt;
+         &lt;file type="source"&gt;/html/EXAMPLE_04_EMPIRICAL.html&lt;/file&gt;
+         &lt;file type="main"&gt;/EXAMPLE_04_EMPIRICAL.m&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/html/EXAMPLE_04_EMPIRICAL.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_04_EMPIRICAL_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_04_EMPIRICAL_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_04_EMPIRICAL_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_04_EMPIRICAL_04.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_04_EMPIRICAL_05.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_04_EMPIRICAL_06.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_04_EMPIRICAL_07.png&lt;/file&gt;
+      &lt;/example&gt;
+      &lt;example name="EXAMPLE_05_CIRCULAR" type="html"&gt;
+         &lt;file type="source"&gt;/html/EXAMPLE_05_CIRCULAR.html&lt;/file&gt;
+         &lt;file type="main"&gt;/EXAMPLE_05_CIRCULAR.m&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/html/EXAMPLE_05_CIRCULAR.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_05_CIRCULAR_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_05_CIRCULAR_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_05_CIRCULAR_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_05_CIRCULAR_04.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_05_CIRCULAR_05.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_05_CIRCULAR_06.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_05_CIRCULAR_07.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_05_CIRCULAR_08.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_05_CIRCULAR_09.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_05_CIRCULAR_10.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_05_CIRCULAR_11.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_05_CIRCULAR_12.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_05_CIRCULAR_13.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_05_CIRCULAR_14.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_05_CIRCULAR_15.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_05_CIRCULAR_16.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_05_CIRCULAR_17.png&lt;/file&gt;
+      &lt;/example&gt;
+      &lt;example name="EXAMPLE_06_CRM" type="html"&gt;
+         &lt;file type="source"&gt;/html/EXAMPLE_06_CRM.html&lt;/file&gt;
+         &lt;file type="main"&gt;/EXAMPLE_06_CRM.m&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/html/EXAMPLE_06_CRM.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_04.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_05.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_06.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_07.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_08.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_09.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_10.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_11.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_12.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_13.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_14.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_15.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_16.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_17.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_18.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_19.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_20.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_21.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_22.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_23.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_24.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_25.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_26.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_27.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_28.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_29.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_30.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_31.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_32.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_33.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_34.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_35.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_36.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_37.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_38.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_39.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_40.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_41.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_42.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_43.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_44.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_45.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_46.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_47.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_48.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_49.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_50.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_51.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_52.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_53.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_54.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_55.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_56.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_57.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_58.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_59.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_60.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_61.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_62.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_63.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_06_CRM_64.png&lt;/file&gt;
+      &lt;/example&gt;
+      &lt;example name="EXAMPLE_07_CRM_DanishFireData" type="html"&gt;
+         &lt;file type="source"&gt;/html/EXAMPLE_07_CRM_DanishFireData.html&lt;/file&gt;
+         &lt;file type="main"&gt;/EXAMPLE_07_CRM_DanishFireData.m&lt;/file&gt;
+         &lt;file type="thumbnail"&gt;/html/EXAMPLE_07_CRM_DanishFireData.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_07_CRM_DanishFireData_01.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_07_CRM_DanishFireData_02.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_07_CRM_DanishFireData_03.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_07_CRM_DanishFireData_04.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_07_CRM_DanishFireData_05.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_07_CRM_DanishFireData_06.png&lt;/file&gt;
+         &lt;file type="image"&gt;/html/EXAMPLE_07_CRM_DanishFireData_07.png&lt;/file&gt;
+      &lt;/example&gt;
+   &lt;/exampleCategory&gt;
+&lt;/examples&gt;</param.examples>
+    <param.demosxml />
+    <param.apps>
+      <file>${PROJECT_ROOT}\CRM TOOL\CRMTool.mlappinstall</file>
+    </param.apps>
+    <param.docs>${PROJECT_ROOT}\info.xml</param.docs>
+    <param.matlabpath.excludes>
+      <item>/ALD TOOL</item>
+      <item>/CF TOOLBOX</item>
+      <item>/CRM TOOL Docs</item>
+      <item>/CRMTool1024</item>
+      <item>/Figures</item>
+      <item>/LaTeX</item>
+      <item>/Mfiles</item>
+      <item>/OTHER</item>
+      <item>/Pfiles</item>
+    </param.matlabpath.excludes>
+    <param.javaclasspath.excludes />
+    <unset>
+      <param.authnamewatermark />
+      <param.email />
+      <param.company />
+      <param.version />
+      <param.output />
+      <param.platforms />
+      <param.demosxml />
+      <param.javaclasspath.excludes />
+    </unset>
+    <fileset.rootdir>
+      <file>F:\VW\VW Odborne\VWPublications&amp;Works\VW-2016-u (ERCIM 2016 Sevilla)\Matlab</file>
+    </fileset.rootdir>
+    <fileset.rootfiles>
+      <file>${PROJECT_ROOT}\CF TOOLBOX Docs</file>
+      <file>${PROJECT_ROOT}\cf2DistFFT.p</file>
+      <file>${PROJECT_ROOT}\cf2DistGP.p</file>
+      <file>${PROJECT_ROOT}\cfC_vonMises.p</file>
+      <file>${PROJECT_ROOT}\cfE_DiracMixture.p</file>
+      <file>${PROJECT_ROOT}\cfE_Empirical.p</file>
+      <file>${PROJECT_ROOT}\cfE_EmpiricalOgive.p</file>
+      <file>${PROJECT_ROOT}\cfN_Binomial.p</file>
+      <file>${PROJECT_ROOT}\cfN_Delaporte.p</file>
+      <file>${PROJECT_ROOT}\cfN_GeneralizedPoisson.p</file>
+      <file>${PROJECT_ROOT}\cfN_Geometric.p</file>
+      <file>${PROJECT_ROOT}\cfN_Logarithmic.p</file>
+      <file>${PROJECT_ROOT}\cfN_NegativeBinomial.p</file>
+      <file>${PROJECT_ROOT}\cfN_Poisson.p</file>
+      <file>${PROJECT_ROOT}\cfN_PolyaEggenberger.p</file>
+      <file>${PROJECT_ROOT}\cfN_Quinkert.p</file>
+      <file>${PROJECT_ROOT}\cfN_Waring.p</file>
+      <file>${PROJECT_ROOT}\cfS_Arcsine.p</file>
+      <file>${PROJECT_ROOT}\cfS_Gaussian.p</file>
+      <file>${PROJECT_ROOT}\cfS_Rectangular.p</file>
+      <file>${PROJECT_ROOT}\cfS_StudentT.p</file>
+      <file>${PROJECT_ROOT}\cfS_Trapezoidal.p</file>
+      <file>${PROJECT_ROOT}\cfS_Triangular.p</file>
+      <file>${PROJECT_ROOT}\cfX_ChiSquared.p</file>
+      <file>${PROJECT_ROOT}\cfX_Exponential.p</file>
+      <file>${PROJECT_ROOT}\cfX_FisherSnedecorF.p</file>
+      <file>${PROJECT_ROOT}\cfX_Gamma.p</file>
+      <file>${PROJECT_ROOT}\cfX_GeneralizedPareto.p</file>
+      <file>${PROJECT_ROOT}\cfX_InverseGamma.p</file>
+      <file>${PROJECT_ROOT}\cfX_LogLogistic.p</file>
+      <file>${PROJECT_ROOT}\cfX_LogNormal.p</file>
+      <file>${PROJECT_ROOT}\cfX_Pareto.p</file>
+      <file>${PROJECT_ROOT}\cfX_PDF.p</file>
+      <file>${PROJECT_ROOT}\cfX_PearsonV.p</file>
+      <file>${PROJECT_ROOT}\cfX_PearsonVI.p</file>
+      <file>${PROJECT_ROOT}\cfX_Weibull.p</file>
+      <file>${PROJECT_ROOT}\copyright.txt</file>
+      <file>${PROJECT_ROOT}\CRM TOOL</file>
+      <file>${PROJECT_ROOT}\Data</file>
+      <file>${PROJECT_ROOT}\demos.xml</file>
+      <file>${PROJECT_ROOT}\EXAMPLE_00_INVERSION.m</file>
+      <file>${PROJECT_ROOT}\EXAMPLE_01_SYMMETRIC.m</file>
+      <file>${PROJECT_ROOT}\EXAMPLE_02_DISCRETE.m</file>
+      <file>${PROJECT_ROOT}\EXAMPLE_03_NONNEGATIVE.m</file>
+      <file>${PROJECT_ROOT}\EXAMPLE_04_EMPIRICAL.m</file>
+      <file>${PROJECT_ROOT}\EXAMPLE_05_CIRCULAR.m</file>
+      <file>${PROJECT_ROOT}\EXAMPLE_06_CRM.m</file>
+      <file>${PROJECT_ROOT}\EXAMPLE_07_CRM_DanishFireData.m</file>
+      <file>${PROJECT_ROOT}\html</file>
+      <file>${PROJECT_ROOT}\info.xml</file>
+    </fileset.rootfiles>
+    <fileset.depfun.included />
+    <fileset.depfun.excluded />
+    <fileset.package />
+    <build-deliverables>
+      <file location="F:\VW\VW Odborne\VWPublications&amp;Works\VW-2016-u (ERCIM 2016 Sevilla)\Matlab" name="CF TOOLBOX.mltbx" optional="false">F:\VW\VW Odborne\VWPublications&amp;Works\VW-2016-u (ERCIM 2016 Sevilla)\Matlab\CF TOOLBOX.mltbx</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>C:\Program Files\MATLAB\R2016b</root>
+      <toolboxes />
+    </matlab>
+    <platform>
+      <unix>false</unix>
+      <mac>false</mac>
+      <windows>true</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>6.2</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>win64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>

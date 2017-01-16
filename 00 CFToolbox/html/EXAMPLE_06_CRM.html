@@ -1,0 +1,1963 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>EXAMPLE_06_CRM</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-01-10"><meta name="DC.source" content="EXAMPLE_06_CRM.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">Collective Risk Model (CRM) Distributions</a></li><li><a href="#2"><b>COMPOUND BINOMIAL DISTIBUTIONS</b></a></li><li><a href="#3">CDF/PDF Compound Binomial-Pareto1 distribution</a></li><li><a href="#4">CDF/PDF Compound Binomial-ParetoA distribution</a></li><li><a href="#5">CDF/PDF Compound Binomial-ParetoE distribution</a></li><li><a href="#6">CDF/PDF Compound Binomial-PearsonVI distribution</a></li><li><a href="#7"><b>COMPOUND DELAPORTE DISTIBUTIONS</b></a></li><li><a href="#8">CDF/PDF Compound Delaporte-Pareto1 distribution</a></li><li><a href="#9">CDF/PDF Compound Delaporte-ParetoA distribution</a></li><li><a href="#10">CDF/PDF Compound Delaporte-ParetoE distribution</a></li><li><a href="#11">CDF/PDF Compound Delaporte-PearsonVI distribution</a></li><li><a href="#12"><b>COMPOUND GENERALIZED POISSON DISTIBUTIONS</b></a></li><li><a href="#13">CDF/PDF Compound GeneralizedPoisson-Pareto1 distribution</a></li><li><a href="#14">CDF/PDF Compound GeneralizedPoisson-ParetoA distribution</a></li><li><a href="#15">CDF/PDF Compound GeneralizedPoisson-ParetoE distribution</a></li><li><a href="#16">CDF/PDF Compound GeneralizedPoisson-PearsonVI distribution</a></li><li><a href="#17"><b>COMPOUND NEGATIVE BINOMIAL DISTIBUTIONS</b></a></li><li><a href="#18">CDF/PDF Compound NegativeBinomial-Pareto1 distribution</a></li><li><a href="#19">CDF/PDF Compound NegativeBinomial-ParetoA distribution</a></li><li><a href="#20">CDF/PDF Compound NegativeBinomial-ParetoE distribution</a></li><li><a href="#21">CDF/PDF Compound NegativeBinomial-PearsonVI distribution</a></li><li><a href="#22"><b>COMPOUND POLYA EGGENBERGER DISTIBUTIONS</b></a></li><li><a href="#23">CDF/PDF Compound PolyaEggenberger-Pareto1 distribution</a></li><li><a href="#24">CDF/PDF Compound PolyaEggenberger-ParetoA distribution</a></li><li><a href="#25">CDF/PDF Compound PolyaEggenberger-ParetoE distribution</a></li><li><a href="#26">CDF/PDF Compound PolyaEggenberger-PearsonVI distribution</a></li><li><a href="#27"><b>COMPOUND POISSON DISTIBUTIONS</b></a></li><li><a href="#28">CDF/PDF Compound Poisson-Pareto1 distribution</a></li><li><a href="#29">CDF/PDF Compound Poisson-ParetoA distribution</a></li><li><a href="#30">CDF/PDF Compound Poisson-ParetoE distribution</a></li><li><a href="#31">CDF/PDF Compound Poisson-PearsonVI distribution</a></li><li><a href="#32"><b>COMPOUND QUINKERT DISTIBUTIONS</b></a></li><li><a href="#33">CDF/PDF Compound Quinkert-Pareto1 distribution</a></li><li><a href="#34">CDF/PDF Compound Quinkert-ParetoA distribution</a></li><li><a href="#35">CDF/PDF Compound Quinkert-ParetoE distribution</a></li><li><a href="#36">CDF/PDF Compound Quinkert-PearsonVI distribution</a></li><li><a href="#37"><b>COMPOUND WARING DISTIBUTIONS</b></a></li><li><a href="#38">CDF/PDF Compound Waring-Pareto1 distribution</a></li><li><a href="#39">CDF/PDF Compound Waring-ParetoA distribution</a></li><li><a href="#40">CDF/PDF Compound Waring-ParetoE distribution</a></li><li><a href="#41">CDF/PDF Compound Waring-PearsonVI distribution</a></li></ul></div><h2 id="1">Collective Risk Model (CRM) Distributions</h2><pre>Examples of CRM Distributions
+Version: 15-Nov-2016</pre><pre class="codeinput"><span class="comment">% A typical model for insurance risk is the Collective Risk Model (CRM).</span>
+<span class="comment">% The CRM mathematically describes the aggregate loss of an insurance</span>
+<span class="comment">% portfolio in a certain period of time (e.g. 1 year). Insurance portfolio</span>
+<span class="comment">% is regarded as a process that produces claims over time. The size of</span>
+<span class="comment">% these claims (severity) are iid (independent identically distributed)</span>
+<span class="comment">% random variables, independent also of the number of claims generated</span>
+<span class="comment">% (frequency) in this time period. Here we illustrate method of calculation</span>
+<span class="comment">% based on the numerical inversion of the associated CRM&#8217;s compound</span>
+<span class="comment">% characteristic function of the frequency distribution and the severity</span>
+<span class="comment">% distribution. The used numerical algorithm (cf2DistGP) is based on the</span>
+<span class="comment">% Gil-Pelaez inversion formulae for computing the probability distribution</span>
+<span class="comment">% functions (PDF and/or CDF) of the univariate continuous random variables.</span>
+
+<span class="comment">% Here, the sizes of the claims are taken to be iid  random variables</span>
+<span class="comment">% X1,...,XN, independent also of the number of claims N generated in this</span>
+<span class="comment">% time period. The (unknown) amount Xi, i = 1,...,N, is called single-loss</span>
+<span class="comment">% random variable or severity and N is called claim count random variable</span>
+<span class="comment">% or frequency. This makes the total claim the sum of a random number N of</span>
+<span class="comment">% iid individual random claims X1,...,XN: S = X1 + ... + XN.</span>
+<span class="comment">%</span>
+<span class="comment">% NOTE</span>
+<span class="comment">% The examples can be calculated easily by using the CRMTool application.</span>
+<span class="comment">% CRMTool is an calculator suggested for calculation of probability density</span>
+<span class="comment">% functions (PDF) and cumulative distribution functions (CDF) of the</span>
+<span class="comment">% aggregate loss distributions specified by the CRMs compound</span>
+<span class="comment">% characteristic functions of frequency distribution and the severity</span>
+<span class="comment">% distribution.</span>
+<span class="comment">%</span>
+<span class="comment">% REFERENCE</span>
+<span class="comment">% Witkovsky, V., WIMMER, G., DUBY, T. (2017). Computing the aggregate loss</span>
+<span class="comment">% distribution based on numerical inversion of the compound empirical</span>
+<span class="comment">% characteristic function of frequency and severity. Working Paper.</span>
+
+clear
+close <span class="string">all</span>
+
+<span class="comment">% Set the auxiliary values</span>
+x    = (0:0.1:5)';
+x    = [x;(5.5:0.5:15)'];
+x    = [x;(15.5:0.5:50)'];
+prob = [0.9 0.95 0.99];
+
+format <span class="string">shorte</span>
+</pre><h2 id="2"><b>COMPOUND BINOMIAL DISTIBUTIONS</b></h2><h2 id="3">CDF/PDF Compound Binomial-Pareto1 distribution</h2><pre class="codeinput">alpha = 2;
+cfX   = @(t) cfX_Pareto(t,alpha);
+
+n     = 4;
+p     = 0.75;
+cf    = @(t) cfN_Binomial(t,n,p,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoBinoPar1 = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoBinoPar1.x CoBinoPar1.pdf CoBinoPar1.cdf])</span>
+disp(CoBinoPar1)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [9.5399e+00 1.2158e+01 2.2602e+01]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 8.1788e-02
+                  T: 1.3400e+03
+      PrecisionCrit: 2.6033e-08
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 6.0232e+00
+               xStd: 7.0800e+00
+               xMin: 0
+               xMax: 7.6823e+01
+                 cf: @(t)cfN_Binomial(t,n,p,cfX)
+              const: 3.9063e-03
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 5.5786e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_01.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_02.png" alt=""> <h2 id="4">CDF/PDF Compound Binomial-ParetoA distribution</h2><pre class="codeinput">alpha = 1.5;
+xmin  = 2.2;
+type  = <span class="string">'amer'</span>;
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+n     = 3;
+p     = 0.75;
+cf    = @(t) cfN_Binomial(t,n,p,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoBinoParA = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoBinoParA.x CoBinoParA.pdf CoBinoParA.cdf])</span>
+disp(CoBinoParA)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [1.8671e+01 3.0175e+01 9.0780e+01]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 1.1190e-02
+                  T: 1.8333e+02
+      PrecisionCrit: 1.4491e-06
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 9.8960e+00
+               xStd: 5.5163e+01
+               xMin: 0
+               xMax: 5.6152e+02
+                 cf: @(t)cfN_Binomial(t,n,p,cfX)
+              const: 1.5625e-02
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 4.9042e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_03.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_04.png" alt=""> <h2 id="5">CDF/PDF Compound Binomial-ParetoE distribution</h2><pre class="codeinput">alpha = 1.5;
+xmin  = 2.2;
+type  = <span class="string">'eur'</span>;
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+n     = 3;
+p     = 0.75;
+cf    = @(t) cfN_Binomial(t,n,p,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoBinoParE = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoBinoParE.x CoBinoParE.pdf CoBinoParE.cdf])</span>
+disp(CoBinoParE)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [2.4402e+01 3.5869e+01 9.6274e+01]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 1.1070e-02
+                  T: 1.8138e+02
+      PrecisionCrit: 1.4811e-06
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 1.4924e+01
+               xStd: 5.5264e+01
+               xMin: 0
+               xMax: 5.6756e+02
+                 cf: @(t)cfN_Binomial(t,n,p,cfX)
+              const: 1.5625e-02
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 4.7575e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_05.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_06.png" alt=""> <h2 id="6">CDF/PDF Compound Binomial-PearsonVI distribution</h2><pre class="codeinput">alpha = 1.5;
+beta  = 2.2;
+cfX   = @(t) cfX_PearsonVI(t,alpha,beta);
+
+n     = 3;
+p     = 0.75;
+cf    = @(t) cfN_Binomial(t,n,p,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoBinoPeaVI = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoBinoPeaVI.x CoBinoPeaVI.pdf CoBinoPeaVI.cdf])</span>
+disp(CoBinoPeaVI)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [5.7789e+00 8.1585e+00 1.7195e+01]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 1.1654e-01
+                  T: 1.9094e+03
+      PrecisionCrit: 1.6970e-09
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 2.8571e+00
+               xStd: 5.1056e+00
+               xMin: 0
+               xMax: 5.3913e+01
+                 cf: @(t)cfN_Binomial(t,n,p,cfX)
+              const: 1.5625e-02
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 4.9054e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_07.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_08.png" alt=""> <h2 id="7"><b>COMPOUND DELAPORTE DISTIBUTIONS</b></h2><h2 id="8">CDF/PDF Compound Delaporte-Pareto1 distribution</h2><pre class="codeinput">alpha = 2;
+cfX   = @(t) cfX_Pareto(t,alpha);
+
+b     = 2.2;
+a     = 3.3;
+c     = 4;
+cf    = @(t) cfN_Delaporte(t,a,b,c,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoDelaPar1 = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoDelaPar1.x CoDelaPar1.pdf CoDelaPar1.cdf])</span>
+disp(CoDelaPar1)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [1.9001e+01 2.3244e+01 3.7306e+01]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 5.3981e-02
+                  T: 8.8442e+02
+      PrecisionCrit: 3.4593e-08
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 1.1058e+01
+               xStd: 1.0534e+01
+               xMin: 0
+               xMax: 1.1640e+02
+                 cf: @(t)cfN_Delaporte(t,a,b,c,cfX)
+              const: 5.3189e-03
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 4.7644e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_09.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_10.png" alt=""> <h2 id="9">CDF/PDF Compound Delaporte-ParetoA distribution</h2><pre class="codeinput">alpha = 1.5;
+xmin  = 2.2;
+type  = <span class="string">'amer'</span>;
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+b     = 2.2;
+a     = 3.3;
+c     = 4;
+cf    = @(t) cfN_Delaporte(t,a,b,c,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoDelaParA = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoDelaParA.x CoDelaParA.pdf CoDelaParA.cdf])</span>
+disp(CoDelaParA)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [4.5738e+01 6.8174e+01 1.8078e+02]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 7.0839e-03
+                  T: 1.1606e+02
+      PrecisionCrit: 6.8089e-07
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 2.3939e+01
+               xStd: 8.6303e+01
+               xMin: 0
+               xMax: 8.8697e+02
+                 cf: @(t)cfN_Delaporte(t,a,b,c,cfX)
+              const: 5.3189e-03
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 5.7392e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_11.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_12.png" alt=""> <h2 id="10">CDF/PDF Compound Delaporte-ParetoE distribution</h2><pre class="codeinput">alpha = 1.5;
+xmin  = 2.2;
+type  = <span class="string">'eur'</span>;
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+b     = 2.2;
+a     = 3.3;
+c     = 4;
+cf    = @(t) cfN_Delaporte(t,a,b,c,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoDelaParE = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoDelaParE.x CoDelaParE.pdf CoDelaParE.cdf])</span>
+disp(CoDelaParE)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [6.2497e+01 8.4980e+01 1.9600e+02]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 6.9253e-03
+                  T: 1.1346e+02
+      PrecisionCrit: 7.2325e-07
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 3.6104e+01
+               xStd: 8.7117e+01
+               xMin: 0
+               xMax: 9.0728e+02
+                 cf: @(t)cfN_Delaporte(t,a,b,c,cfX)
+              const: 5.3189e-03
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 4.8463e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_13.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_14.png" alt=""> <h2 id="11">CDF/PDF Compound Delaporte-PearsonVI distribution</h2><pre class="codeinput">alpha = 1.5;
+beta  = 2.2;
+cfX   = @(t) cfX_PearsonVI(t,alpha,beta);
+
+b     = 2.2;
+a     = 3.3;
+c     = 4;
+cf    = @(t) cfN_Delaporte(t,a,b,c,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoDelaPeaVI = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoDelaPeaVI.x CoDelaPeaVI.pdf CoDelaPeaVI.cdf])</span>
+disp(CoDelaPeaVI)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [1.3466e+01 1.7592e+01 3.1458e+01]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 6.9066e-02
+                  T: 1.1316e+03
+      PrecisionCrit: 1.1819e-09
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 6.9116e+00
+               xStd: 8.4062e+00
+               xMin: 0
+               xMax: 9.0974e+01
+                 cf: @(t)cfN_Delaporte(t,a,b,c,cfX)
+              const: 5.3189e-03
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 6.3248e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_15.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_16.png" alt=""> <h2 id="12"><b>COMPOUND GENERALIZED POISSON DISTIBUTIONS</b></h2><h2 id="13">CDF/PDF Compound GeneralizedPoisson-Pareto1 distribution</h2><pre class="codeinput">alpha = 2;
+cfX   = @(t) cfX_Pareto(t,alpha);
+
+a     = 2.2;
+p     = 0.75;
+cf    = @(t) cfN_GeneralizedPoisson(t,a,p,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoGePoPar1 = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoGePoPar1.x CoGePoPar1.pdf CoGePoPar1.cdf])</span>
+disp(CoGePoPar1)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [4.4394e+01 6.4691e+01 1.2132e+02]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 2.1462e-02
+                  T: 3.5163e+02
+      PrecisionCrit: 1.0485e-06
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 1.9792e+01
+               xStd: 2.7297e+01
+               xMin: 0
+               xMax: 2.9276e+02
+                 cf: @(t)cfN_GeneralizedPoisson(t,a,p,cfX)
+              const: 1.1080e-01
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 6.3378e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_17.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_18.png" alt=""> <h2 id="14">CDF/PDF Compound GeneralizedPoisson-ParetoA distribution</h2><pre class="codeinput">alpha = 1.5;
+xmin  = 2.2;
+type  = <span class="string">'amer'</span>;
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+a     = 2.2;
+p     = 0.75;
+cf    = @(t) cfN_GeneralizedPoisson(t,a,p,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoGePoParA = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoGePoParA.x CoGePoParA.pdf CoGePoParA.cdf])</span>
+disp(CoGePoParA)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [9.4423e+01 1.4942e+02 3.4885e+02]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 4.8254e-03
+                  T: 7.9059e+01
+      PrecisionCrit: 7.0623e-06
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 4.2844e+01
+               xStd: 1.2593e+02
+               xMin: 0
+               xMax: 1.3021e+03
+                 cf: @(t)cfN_GeneralizedPoisson(t,a,p,cfX)
+              const: 1.1080e-01
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 5.8608e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_19.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_20.png" alt=""> <h2 id="15">CDF/PDF Compound GeneralizedPoisson-ParetoE distribution</h2><pre class="codeinput">alpha = 1.5;
+xmin  = 2.2;
+type  = <span class="string">'eur'</span>;
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+a     = 2.2;
+p     = 0.75;
+cf    = @(t) cfN_GeneralizedPoisson(t,a,p,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoGePoParE = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoGePoParE.x CoGePoParE.pdf CoGePoParE.cdf])</span>
+disp(CoGePoParE)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [1.4247e+02 2.1618e+02 4.5621e+02]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 4.3156e-03
+                  T: 7.0707e+01
+      PrecisionCrit: 8.9031e-06
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 6.4615e+01
+               xStd: 1.3913e+02
+               xMin: 0
+               xMax: 1.4559e+03
+                 cf: @(t)cfN_GeneralizedPoisson(t,a,p,cfX)
+              const: 1.1080e-01
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 4.9516e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_21.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_22.png" alt=""> <h2 id="16">CDF/PDF Compound GeneralizedPoisson-PearsonVI distribution</h2><pre class="codeinput">alpha = 1.5;
+beta  = 2.2;
+cfX   = @(t) cfX_PearsonVI(t,alpha,beta);
+
+a     = 2.2;
+p     = 0.75;
+cf    = @(t) cfN_GeneralizedPoisson(t,a,p,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoGePoPeaVI = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoGePoPeaVI.x CoGePoPeaVI.pdf CoGePoPeaVI.cdf])</span>
+disp(CoGePoPeaVI)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [2.8601e+01 4.2208e+01 8.0646e+01]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 3.1934e-02
+                  T: 5.2320e+02
+      PrecisionCrit: 3.9133e-08
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 1.2370e+01
+               xStd: 1.8439e+01
+               xMin: 0
+               xMax: 1.9676e+02
+                 cf: @(t)cfN_GeneralizedPoisson(t,a,p,cfX)
+              const: 1.1080e-01
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 4.9395e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_23.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_24.png" alt=""> <h2 id="17"><b>COMPOUND NEGATIVE BINOMIAL DISTIBUTIONS</b></h2><h2 id="18">CDF/PDF Compound NegativeBinomial-Pareto1 distribution</h2><pre class="codeinput">alpha = 2;
+cfX   = @(t) cfX_Pareto(t,alpha);
+
+n     = 4;
+p     = 0.75;
+cf    = @(t) cfN_NegativeBinomial(t,n,p,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoNeBiPar1 = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoNeBiPar1.x CoNeBiPar1.pdf CoNeBiPar1.cdf])</span>
+disp(CoNeBiPar1)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [6.4256e+00 8.7449e+00 1.6144e+01]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 9.8082e-02
+                  T: 1.6070e+03
+      PrecisionCrit: 1.7937e-07
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 3.9007e+00
+               xStd: 6.0160e+00
+               xMin: 0
+               xMax: 6.4060e+01
+                 cf: @(t)cfN_NegativeBinomial(t,n,p,cfX)
+              const: 3.1641e-01
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 5.1581e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_25.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_26.png" alt=""> <h2 id="19">CDF/PDF Compound NegativeBinomial-ParetoA distribution</h2><pre class="codeinput">alpha = 1.5;
+xmin  = 2.2;
+type  = <span class="string">'amer'</span>;
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+n     = 4;
+p     = 0.75;
+cf    = @(t) cfN_NegativeBinomial(t,n,p,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoNeBiParA = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoNeBiParA.x CoNeBiParA.pdf CoNeBiParA.cdf])</span>
+disp(CoNeBiParA)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [1.2683e+01 2.1509e+01 6.4194e+01]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 1.2088e-02
+                  T: 1.9804e+02
+      PrecisionCrit: 4.0231e-06
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 8.4446e+00
+               xStd: 5.1136e+01
+               xMin: 0
+               xMax: 5.1981e+02
+                 cf: @(t)cfN_NegativeBinomial(t,n,p,cfX)
+              const: 3.1641e-01
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 4.8215e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_27.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_28.png" alt=""> <h2 id="20">CDF/PDF Compound NegativeBinomial-ParetoE distribution</h2><pre class="codeinput">alpha = 1.5;
+xmin  = 2.2;
+type  = <span class="string">'eur'</span>;
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+n     = 4;
+p     = 0.75;
+cf    = @(t) cfN_NegativeBinomial(t,n,p,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoNeBiParE = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoNeBiParE.x CoNeBiParE.pdf CoNeBiParE.cdf])</span>
+disp(CoNeBiParE)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [1.9186e+01 2.8563e+01 7.0936e+01]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 1.1916e-02
+                  T: 1.9523e+02
+      PrecisionCrit: 4.1329e-06
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 1.2736e+01
+               xStd: 5.1457e+01
+               xMin: 0
+               xMax: 5.2731e+02
+                 cf: @(t)cfN_NegativeBinomial(t,n,p,cfX)
+              const: 3.1641e-01
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 4.9308e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_29.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_30.png" alt=""> <h2 id="21">CDF/PDF Compound NegativeBinomial-PearsonVI distribution</h2><pre class="codeinput">alpha = 1.5;
+beta  = 2.2;
+cfX   = @(t) cfX_PearsonVI(t,alpha,beta);
+
+n     = 4;
+p     = 0.75;
+cf    = @(t) cfN_NegativeBinomial(t,n,p,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoNeBiPeaVI = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoNeBiPeaVI.x CoNeBiPeaVI.pdf CoNeBiPeaVI.cdf])</span>
+disp(CoNeBiPeaVI)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [4.3562e+00 6.5321e+00 1.4020e+01]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 1.2273e-01
+                  T: 2.0108e+03
+      PrecisionCrit: 4.8318e-09
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 2.4380e+00
+               xStd: 4.8758e+00
+               xMin: 0
+               xMax: 5.1196e+01
+                 cf: @(t)cfN_NegativeBinomial(t,n,p,cfX)
+              const: 3.1641e-01
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 5.0059e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_31.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_32.png" alt=""> <h2 id="22"><b>COMPOUND POLYA EGGENBERGER DISTIBUTIONS</b></h2><h2 id="23">CDF/PDF Compound PolyaEggenberger-Pareto1 distribution</h2><pre class="codeinput">alpha = 2;
+cfX   = @(t) cfX_Pareto(t,alpha);
+
+a     = 2.2;
+b     = 3.3;
+m     = 4;
+cf    = @(t) cfN_PolyaEggenberger(t,a,b,m,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoPoEgPar1 = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoPoEgPar1.x CoPoEgPar1.pdf CoPoEgPar1.cdf])</span>
+disp(CoPoEgPar1)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [6.6895e+00 8.6805e+00 1.6261e+01]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 9.8907e-02
+                  T: 1.6205e+03
+      PrecisionCrit: 1.3969e-07
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 4.0397e+00
+               xStd: 5.9487e+00
+               xMin: 0
+               xMax: 6.3526e+01
+                 cf: @(t)cfN_PolyaEggenberger(t,a,b,m,cfX)
+              const: 2.0789e-01
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 5.0389e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_33.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_34.png" alt=""> <h2 id="24">CDF/PDF Compound PolyaEggenberger-ParetoA distribution</h2><pre class="codeinput">alpha = 1.5;
+xmin  = 2.2;
+type  = <span class="string">'amer'</span>;
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+a     = 2.2;
+b     = 3.3;
+m     = 4;
+cf    = @(t) cfN_PolyaEggenberger(t,a,b,m,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoPoEgParA = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoPoEgParA.x CoPoEgParA.pdf CoPoEgParA.cdf])</span>
+disp(CoPoEgParA)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [1.4493e+01 2.3935e+01 7.1787e+01]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 1.1896e-02
+                  T: 1.9490e+02
+      PrecisionCrit: 3.2902e-06
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 8.7453e+00
+               xStd: 5.1945e+01
+               xMin: 0
+               xMax: 5.2820e+02
+                 cf: @(t)cfN_PolyaEggenberger(t,a,b,m,cfX)
+              const: 2.0789e-01
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 4.5556e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_35.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_36.png" alt=""> <h2 id="25">CDF/PDF Compound PolyaEggenberger-ParetoE distribution</h2><pre class="codeinput">alpha = 1.5;
+xmin  = 2.2;
+type  = <span class="string">'eur'</span>;
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+a     = 2.2;
+b     = 3.3;
+m     = 4;
+cf    = @(t) cfN_PolyaEggenberger(t,a,b,m,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoPoEgParE = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoPoEgParE.x CoPoEgParE.pdf CoPoEgParE.cdf])</span>
+disp(CoPoEgParE)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [2.0526e+01 2.9955e+01 7.7478e+01]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 1.1751e-02
+                  T: 1.9252e+02
+      PrecisionCrit: 3.3660e-06
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 1.3189e+01
+               xStd: 5.2153e+01
+               xMin: 0
+               xMax: 5.3471e+02
+                 cf: @(t)cfN_PolyaEggenberger(t,a,b,m,cfX)
+              const: 2.0789e-01
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 5.5729e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_37.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_38.png" alt=""> <h2 id="26">CDF/PDF Compound PolyaEggenberger-PearsonVI distribution</h2><pre class="codeinput">alpha = 1.5;
+beta  = 2.2;
+cfX   = @(t) cfX_PearsonVI(t,alpha,beta);
+
+a     = 2.2;
+b     = 3.3;
+m     = 4;
+cf    = @(t) cfN_PolyaEggenberger(t,a,b,m,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoPoEgPeaVI = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoPoEgPeaVI.x CoPoEgPeaVI.pdf CoPoEgPeaVI.cdf])</span>
+disp(CoPoEgPeaVI)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [4.7956e+00 6.9455e+00 1.4777e+01]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 1.2245e-01
+                  T: 2.0062e+03
+      PrecisionCrit: 3.8487e-09
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 2.5249e+00
+               xStd: 4.8788e+00
+               xMin: 0
+               xMax: 5.1313e+01
+                 cf: @(t)cfN_PolyaEggenberger(t,a,b,m,cfX)
+              const: 2.0789e-01
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 5.2227e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_39.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_40.png" alt=""> <h2 id="27"><b>COMPOUND POISSON DISTIBUTIONS</b></h2><h2 id="28">CDF/PDF Compound Poisson-Pareto1 distribution</h2><pre class="codeinput">alpha = 2;
+cfX   = @(t) cfX_Pareto(t,alpha);
+
+a     = 2;
+cf    = @(t) cfN_Poisson(t,a,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoPoisPar1 = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoPoisPar1.x CoPoisPar1.pdf CoPoisPar1.cdf])</span>
+disp(CoPoisPar1)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [8.2471e+00 1.0733e+01 1.9316e+01]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 8.9848e-02
+                  T: 1.4721e+03
+      PrecisionCrit: 1.4427e-07
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 4.6258e+00
+               xStd: 6.5306e+00
+               xMin: 0
+               xMax: 6.9932e+01
+                 cf: @(t)cfN_Poisson(t,a,cfX)
+              const: 1.3534e-01
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 4.9151e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_41.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_42.png" alt=""> <h2 id="29">CDF/PDF Compound Poisson-ParetoA distribution</h2><pre class="codeinput">alpha = 1.5;
+xmin  = 2.2;
+type  = <span class="string">'amer'</span>;
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+a     = 2;
+cf    = @(t) cfN_Poisson(t,a,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoPoisParA = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoPoisParA.x CoPoisParA.pdf CoPoisParA.cdf])</span>
+disp(CoPoisParA)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [1.8060e+01 2.9280e+01 8.5485e+01]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 1.1086e-02
+                  T: 1.8164e+02
+      PrecisionCrit: 3.2345e-06
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 1.0014e+01
+               xStd: 5.5674e+01
+               xMin: 0
+               xMax: 5.6675e+02
+                 cf: @(t)cfN_Poisson(t,a,cfX)
+              const: 1.3534e-01
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 7.6733e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_43.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_44.png" alt=""> <h2 id="30">CDF/PDF Compound Poisson-ParetoE distribution</h2><pre class="codeinput">alpha = 1.5;
+xmin  = 2.2;
+type  = <span class="string">'eur'</span>;
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+a     = 2;
+cf    = @(t) cfN_Poisson(t,a,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoPoisParE = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoPoisParE.x CoPoisParE.pdf CoPoisParE.cdf])</span>
+disp(CoPoisParE)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [2.5607e+01 3.6987e+01 9.2604e+01]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 1.0924e-02
+                  T: 1.7898e+02
+      PrecisionCrit: 3.3424e-06
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 1.5103e+01
+               xStd: 5.6008e+01
+               xMin: 0
+               xMax: 5.7518e+02
+                 cf: @(t)cfN_Poisson(t,a,cfX)
+              const: 1.3534e-01
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 4.9480e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_45.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_46.png" alt=""> <h2 id="31">CDF/PDF Compound Poisson-PearsonVI distribution</h2><pre class="codeinput">alpha = 1.5;
+beta  = 2.2;
+cfX   = @(t) cfX_PearsonVI(t,alpha,beta);
+
+a     = 2;
+cf    = @(t) cfN_Poisson(t,a,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoPoisPeaVI = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoPoisPeaVI.x CoPoisPeaVI.pdf CoPoisPeaVI.cdf])</span>
+disp(CoPoisPeaVI)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [5.8446e+00 8.3356e+00 1.7124e+01]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 1.1242e-01
+                  T: 1.8419e+03
+      PrecisionCrit: 4.0687e-09
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 2.8912e+00
+               xStd: 5.2997e+00
+               xMin: 0
+               xMax: 5.5889e+01
+                 cf: @(t)cfN_Poisson(t,a,cfX)
+              const: 1.3534e-01
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 6.1884e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_47.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_48.png" alt=""> <h2 id="32"><b>COMPOUND QUINKERT DISTIBUTIONS</b></h2><h2 id="33">CDF/PDF Compound Quinkert-Pareto1 distribution</h2><pre class="codeinput">alpha = 2;
+cfX   = @(t) cfX_Pareto(t,alpha);
+
+a     = 2.2;
+b     = 3.4;
+cf    = @(t) cfN_Quinkert(t,a,b,cfX);
+
+clear <span class="string">options</span>
+options.xMax = 80;
+options.isCompound = 1;
+CoQuinPar1 = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoQuinPar1.x CoQuinPar1.pdf CoQuinPar1.cdf])</span>
+disp(CoQuinPar1)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [80 80 80]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 7.8540e-02
+                  T: 1.2868e+03
+      PrecisionCrit: 4.7491e-07
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 2.5116e+00
+               xStd: 4.5669e+00
+               xMin: 0
+               xMax: 80
+                 cf: @(t)cfN_Quinkert(t,a,b,cfX)
+              const: 6.8718e-01
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 6.0559e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_49.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_50.png" alt=""> <h2 id="34">CDF/PDF Compound Quinkert-ParetoA distribution</h2><pre class="codeinput">alpha = 1.5;
+xmin  = 2.2;
+type  = <span class="string">'amer'</span>;
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+a     = 2.2;
+b     = 3.4;
+cf    = @(t) cfN_Quinkert(t,a,b,cfX);
+
+clear <span class="string">options</span>
+options.xMax = 80;
+options.isCompound = 1;
+CoQuinParA = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoQuinParA.x CoQuinParA.pdf CoQuinParA.cdf])</span>
+disp(CoQuinParA)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [3.5227e+00 7.5163e+00 3.2508e+01]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 7.8540e-02
+                  T: 1.2868e+03
+      PrecisionCrit: 1.6185e-07
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 5.4373e+00
+               xStd: 4.0896e+01
+               xMin: 0
+               xMax: 80
+                 cf: @(t)cfN_Quinkert(t,a,b,cfX)
+              const: 6.8718e-01
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 6.2469e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_51.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_52.png" alt=""> <h2 id="35">CDF/PDF Compound Quinkert-ParetoE distribution</h2><pre class="codeinput">alpha = 1.5;
+xmin  = 2.2;
+type  = <span class="string">'eur'</span>;
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+a     = 2.2;
+b     = 3.4;
+cf    = @(t) cfN_Quinkert(t,a,b,cfX);
+
+clear <span class="string">options</span>
+options.xMax = 80;
+options.isCompound = 1;
+CoQuinParE = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoQuinParE.x CoQuinParE.pdf CoQuinParE.cdf])</span>
+disp(CoQuinParE)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [6.6357e+00 1.1058e+01 3.6100e+01]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 7.8540e-02
+                  T: 1.2868e+03
+      PrecisionCrit: 1.6185e-07
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 8.2001e+00
+               xStd: 4.0978e+01
+               xMin: 0
+               xMax: 80
+                 cf: @(t)cfN_Quinkert(t,a,b,cfX)
+              const: 6.8718e-01
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 4.7430e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_53.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_54.png" alt=""> <h2 id="36">CDF/PDF Compound Quinkert-PearsonVI distribution</h2><pre class="codeinput">alpha = 1.5;
+beta  = 2.2;
+cfX   = @(t) cfX_PearsonVI(t,alpha,beta);
+
+a     = 2.2;
+b     = 3.4;
+cf    = @(t) cfN_Quinkert(t,a,b,cfX);
+
+clear <span class="string">options</span>
+options.xMax = 80;
+options.isCompound = 1;
+CoQuinPeaVI = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoQuinPeaVI.x CoQuinPeaVI.pdf CoQuinPeaVI.cdf])</span>
+disp(CoQuinPeaVI)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [1.3916e+00 2.5138e+00 6.6028e+00]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 7.8540e-02
+                  T: 1.2868e+03
+      PrecisionCrit: 2.5048e-08
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 1.5698e+00
+               xStd: 3.7883e+00
+               xMin: 0
+               xMax: 80
+                 cf: @(t)cfN_Quinkert(t,a,b,cfX)
+              const: 6.8718e-01
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 4.9214e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_55.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_56.png" alt=""> <h2 id="37"><b>COMPOUND WARING DISTIBUTIONS</b></h2><h2 id="38">CDF/PDF Compound Waring-Pareto1 distribution</h2><pre class="codeinput">alpha = 2;
+cfX   = @(t) cfX_Pareto(t,alpha);
+
+a = 2.2;
+b = 3.3;
+r = 4;
+cf    = @(t) cfN_Waring(t,a,b,r,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoWariPar1 = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoWariPar1.x CoWariPar1.pdf CoWariPar1.cdf])</span>
+disp(CoWariPar1)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [4.8955e+01 7.5810e+01 1.8583e+02]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 1.0958e-02
+                  T: 1.7954e+02
+      PrecisionCrit: 3.1332e-06
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 2.3575e+01
+               xStd: 5.4981e+01
+               xMin: 0
+               xMax: 5.7338e+02
+                 cf: @(t)cfN_Waring(t,a,b,r,cfX)
+              const: 6.7464e-02
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 5.5043e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_57.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_58.png" alt=""> <h2 id="39">CDF/PDF Compound Waring-ParetoA distribution</h2><pre class="codeinput">alpha = 1.5;
+xmin  = 2.2;
+type  = <span class="string">'amer'</span>;
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+a = 2.2;
+b = 3.3;
+r = 4;
+cf    = @(t) cfN_Waring(t,a,b,r,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoWariParA = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoWariParA.x CoWariParA.pdf CoWariParA.cdf])</span>
+disp(CoWariParA)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [1.0690e+02 1.7854e+02 5.0553e+02]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 3.6857e-03
+                  T: 6.0386e+01
+      PrecisionCrit: 9.3963e-06
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 5.0974e+01
+               xStd: 1.6538e+02
+               xMin: 0
+               xMax: 1.7048e+03
+                 cf: @(t)cfN_Waring(t,a,b,r,cfX)
+              const: 6.7464e-02
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 4.6986e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_59.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_60.png" alt=""> <h2 id="40">CDF/PDF Compound Waring-ParetoE distribution</h2><pre class="codeinput">alpha = 1.5;
+xmin  = 2.2;
+type  = <span class="string">'eur'</span>;
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+a = 2.2;
+b = 3.3;
+r = 4;
+cf    = @(t) cfN_Waring(t,a,b,r,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoWariParE = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoWariParE.x CoWariParE.pdf CoWariParE.cdf])</span>
+disp(CoWariParE)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [1.5908e+02 2.5648e+02 6.8527e+02]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 3.0020e-03
+                  T: 4.9184e+01
+      PrecisionCrit: 1.3965e-05
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 7.6797e+01
+               xStd: 2.0162e+02
+               xMin: 0
+               xMax: 2.0930e+03
+                 cf: @(t)cfN_Waring(t,a,b,r,cfX)
+              const: 6.7464e-02
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 4.9815e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_61.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_62.png" alt=""> <h2 id="41">CDF/PDF Compound Waring-PearsonVI distribution</h2><pre class="codeinput">alpha = 1.5;
+beta  = 2.2;
+cfX   = @(t) cfX_PearsonVI(t,alpha,beta);
+
+a = 2.2;
+b = 3.3;
+r = 4;
+cf    = @(t) cfN_Waring(t,a,b,r,cfX);
+
+clear <span class="string">options</span>
+options.isCompound = 1;
+CoWariPeaVI = cf2DistGP(cf,x,prob,options);
+
+<span class="comment">%disp([CoWariPeaVI.x CoWariPeaVI.pdf CoWariPeaVI.cdf])</span>
+disp(CoWariPeaVI)
+</pre><pre class="codeoutput">                  x: [141&times;1 double]
+                cdf: [141&times;1 double]
+                pdf: [141&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [3.1752e+01 4.9466e+01 1.2034e+02]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 1.6746e-02
+                  T: 2.7436e+02
+      PrecisionCrit: 1.5246e-07
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 1.4739e+01
+               xStd: 3.6047e+01
+               xMin: 0
+               xMax: 3.7521e+02
+                 cf: @(t)cfN_Waring(t,a,b,r,cfX)
+              const: 6.7464e-02
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 4.9196e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_06_CRM_63.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_06_CRM_64.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% Collective Risk Model (CRM) Distributions
+%  Examples of CRM Distributions
+%  Version: 15-Nov-2016
+
+% A typical model for insurance risk is the Collective Risk Model (CRM).
+% The CRM mathematically describes the aggregate loss of an insurance
+% portfolio in a certain period of time (e.g. 1 year). Insurance portfolio
+% is regarded as a process that produces claims over time. The size of
+% these claims (severity) are iid (independent identically distributed)
+% random variables, independent also of the number of claims generated
+% (frequency) in this time period. Here we illustrate method of calculation
+% based on the numerical inversion of the associated CRM’s compound
+% characteristic function of the frequency distribution and the severity
+% distribution. The used numerical algorithm (cf2DistGP) is based on the
+% Gil-Pelaez inversion formulae for computing the probability distribution
+% functions (PDF and/or CDF) of the univariate continuous random variables.
+
+% Here, the sizes of the claims are taken to be iid  random variables
+% X1,...,XN, independent also of the number of claims N generated in this
+% time period. The (unknown) amount Xi, i = 1,...,N, is called single-loss
+% random variable or severity and N is called claim count random variable
+% or frequency. This makes the total claim the sum of a random number N of
+% iid individual random claims X1,...,XN: S = X1 + ... + XN.
+%
+% NOTE
+% The examples can be calculated easily by using the CRMTool application.
+% CRMTool is an calculator suggested for calculation of probability density
+% functions (PDF) and cumulative distribution functions (CDF) of the
+% aggregate loss distributions specified by the CRMs compound
+% characteristic functions of frequency distribution and the severity
+% distribution. 
+%
+% REFERENCE
+% Witkovsky, V., WIMMER, G., DUBY, T. (2017). Computing the aggregate loss
+% distribution based on numerical inversion of the compound empirical
+% characteristic function of frequency and severity. Working Paper. 
+
+clear 
+close all
+
+% Set the auxiliary values
+x    = (0:0.1:5)';
+x    = [x;(5.5:0.5:15)'];
+x    = [x;(15.5:0.5:50)'];
+prob = [0.9 0.95 0.99];
+
+format shorte
+
+%% *COMPOUND BINOMIAL DISTIBUTIONS*
+
+%% CDF/PDF Compound Binomial-Pareto1 distribution
+
+alpha = 2;  
+cfX   = @(t) cfX_Pareto(t,alpha);
+
+n     = 4;
+p     = 0.75;
+cf    = @(t) cfN_Binomial(t,n,p,cfX);
+
+clear options
+options.isCompound = 1;
+CoBinoPar1 = cf2DistGP(cf,x,prob,options);
+
+%disp([CoBinoPar1.x CoBinoPar1.pdf CoBinoPar1.cdf])
+disp(CoBinoPar1)
+
+%% CDF/PDF Compound Binomial-ParetoA distribution
+
+alpha = 1.5;
+xmin  = 2.2;
+type  = 'amer';
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+n     = 3;
+p     = 0.75;
+cf    = @(t) cfN_Binomial(t,n,p,cfX);
+
+clear options
+options.isCompound = 1;
+CoBinoParA = cf2DistGP(cf,x,prob,options);
+
+%disp([CoBinoParA.x CoBinoParA.pdf CoBinoParA.cdf])
+disp(CoBinoParA)
+
+%% CDF/PDF Compound Binomial-ParetoE distribution
+alpha = 1.5;
+xmin  = 2.2;
+type  = 'eur';
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+n     = 3;
+p     = 0.75;
+cf    = @(t) cfN_Binomial(t,n,p,cfX);
+
+clear options
+options.isCompound = 1;
+CoBinoParE = cf2DistGP(cf,x,prob,options);
+
+%disp([CoBinoParE.x CoBinoParE.pdf CoBinoParE.cdf])
+disp(CoBinoParE)
+
+%% CDF/PDF Compound Binomial-PearsonVI distribution
+alpha = 1.5;
+beta  = 2.2;
+cfX   = @(t) cfX_PearsonVI(t,alpha,beta);
+
+n     = 3;
+p     = 0.75;
+cf    = @(t) cfN_Binomial(t,n,p,cfX);
+
+clear options
+options.isCompound = 1;
+CoBinoPeaVI = cf2DistGP(cf,x,prob,options);
+
+%disp([CoBinoPeaVI.x CoBinoPeaVI.pdf CoBinoPeaVI.cdf])
+disp(CoBinoPeaVI)
+
+%% *COMPOUND DELAPORTE DISTIBUTIONS*
+
+%% CDF/PDF Compound Delaporte-Pareto1 distribution
+alpha = 2;
+cfX   = @(t) cfX_Pareto(t,alpha);
+
+b     = 2.2;
+a     = 3.3;
+c     = 4;
+cf    = @(t) cfN_Delaporte(t,a,b,c,cfX);
+
+clear options
+options.isCompound = 1;
+CoDelaPar1 = cf2DistGP(cf,x,prob,options);
+
+%disp([CoDelaPar1.x CoDelaPar1.pdf CoDelaPar1.cdf])
+disp(CoDelaPar1)
+
+%% CDF/PDF Compound Delaporte-ParetoA distribution
+alpha = 1.5;
+xmin  = 2.2;
+type  = 'amer';
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+b     = 2.2;
+a     = 3.3;
+c     = 4;
+cf    = @(t) cfN_Delaporte(t,a,b,c,cfX);
+
+clear options
+options.isCompound = 1;
+CoDelaParA = cf2DistGP(cf,x,prob,options);
+
+%disp([CoDelaParA.x CoDelaParA.pdf CoDelaParA.cdf])
+disp(CoDelaParA)
+
+%% CDF/PDF Compound Delaporte-ParetoE distribution
+
+alpha = 1.5;
+xmin  = 2.2;
+type  = 'eur';
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+b     = 2.2;
+a     = 3.3;
+c     = 4;
+cf    = @(t) cfN_Delaporte(t,a,b,c,cfX);
+
+clear options
+options.isCompound = 1;
+CoDelaParE = cf2DistGP(cf,x,prob,options);
+
+%disp([CoDelaParE.x CoDelaParE.pdf CoDelaParE.cdf])
+disp(CoDelaParE)
+
+%% CDF/PDF Compound Delaporte-PearsonVI distribution
+
+alpha = 1.5;
+beta  = 2.2;
+cfX   = @(t) cfX_PearsonVI(t,alpha,beta);
+
+b     = 2.2;
+a     = 3.3;
+c     = 4;
+cf    = @(t) cfN_Delaporte(t,a,b,c,cfX);
+
+clear options
+options.isCompound = 1;
+CoDelaPeaVI = cf2DistGP(cf,x,prob,options);
+
+%disp([CoDelaPeaVI.x CoDelaPeaVI.pdf CoDelaPeaVI.cdf])
+disp(CoDelaPeaVI)
+
+%% *COMPOUND GENERALIZED POISSON DISTIBUTIONS*
+
+%% CDF/PDF Compound GeneralizedPoisson-Pareto1 distribution
+
+alpha = 2;
+cfX   = @(t) cfX_Pareto(t,alpha);
+
+a     = 2.2;
+p     = 0.75;
+cf    = @(t) cfN_GeneralizedPoisson(t,a,p,cfX);
+
+clear options
+options.isCompound = 1;
+CoGePoPar1 = cf2DistGP(cf,x,prob,options);
+
+%disp([CoGePoPar1.x CoGePoPar1.pdf CoGePoPar1.cdf])
+disp(CoGePoPar1)
+
+%% CDF/PDF Compound GeneralizedPoisson-ParetoA distribution
+alpha = 1.5;
+xmin  = 2.2;
+type  = 'amer';
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+a     = 2.2;
+p     = 0.75;
+cf    = @(t) cfN_GeneralizedPoisson(t,a,p,cfX);
+
+clear options
+options.isCompound = 1;
+CoGePoParA = cf2DistGP(cf,x,prob,options);
+
+%disp([CoGePoParA.x CoGePoParA.pdf CoGePoParA.cdf])
+disp(CoGePoParA)
+
+%% CDF/PDF Compound GeneralizedPoisson-ParetoE distribution
+alpha = 1.5;
+xmin  = 2.2;
+type  = 'eur';
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+a     = 2.2;
+p     = 0.75;
+cf    = @(t) cfN_GeneralizedPoisson(t,a,p,cfX);
+
+clear options
+options.isCompound = 1;
+CoGePoParE = cf2DistGP(cf,x,prob,options);
+
+%disp([CoGePoParE.x CoGePoParE.pdf CoGePoParE.cdf])
+disp(CoGePoParE)
+
+%% CDF/PDF Compound GeneralizedPoisson-PearsonVI distribution
+
+alpha = 1.5;
+beta  = 2.2;
+cfX   = @(t) cfX_PearsonVI(t,alpha,beta);
+
+a     = 2.2;
+p     = 0.75;
+cf    = @(t) cfN_GeneralizedPoisson(t,a,p,cfX);
+
+clear options
+options.isCompound = 1;
+CoGePoPeaVI = cf2DistGP(cf,x,prob,options);
+
+%disp([CoGePoPeaVI.x CoGePoPeaVI.pdf CoGePoPeaVI.cdf])
+disp(CoGePoPeaVI)
+
+%% *COMPOUND NEGATIVE BINOMIAL DISTIBUTIONS*
+
+%% CDF/PDF Compound NegativeBinomial-Pareto1 distribution
+
+alpha = 2;
+cfX   = @(t) cfX_Pareto(t,alpha);
+
+n     = 4;
+p     = 0.75;
+cf    = @(t) cfN_NegativeBinomial(t,n,p,cfX);
+
+clear options
+options.isCompound = 1;
+CoNeBiPar1 = cf2DistGP(cf,x,prob,options);
+
+%disp([CoNeBiPar1.x CoNeBiPar1.pdf CoNeBiPar1.cdf])
+disp(CoNeBiPar1)
+
+%% CDF/PDF Compound NegativeBinomial-ParetoA distribution
+
+alpha = 1.5;
+xmin  = 2.2;
+type  = 'amer';
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+n     = 4;
+p     = 0.75;
+cf    = @(t) cfN_NegativeBinomial(t,n,p,cfX);
+
+clear options
+options.isCompound = 1;
+CoNeBiParA = cf2DistGP(cf,x,prob,options);
+
+%disp([CoNeBiParA.x CoNeBiParA.pdf CoNeBiParA.cdf])
+disp(CoNeBiParA)
+
+%% CDF/PDF Compound NegativeBinomial-ParetoE distribution
+
+alpha = 1.5;
+xmin  = 2.2;
+type  = 'eur';
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+n     = 4;
+p     = 0.75;
+cf    = @(t) cfN_NegativeBinomial(t,n,p,cfX);
+
+clear options
+options.isCompound = 1;
+CoNeBiParE = cf2DistGP(cf,x,prob,options);
+
+%disp([CoNeBiParE.x CoNeBiParE.pdf CoNeBiParE.cdf])
+disp(CoNeBiParE)
+
+%% CDF/PDF Compound NegativeBinomial-PearsonVI distribution
+
+alpha = 1.5;
+beta  = 2.2;
+cfX   = @(t) cfX_PearsonVI(t,alpha,beta);
+
+n     = 4;
+p     = 0.75;
+cf    = @(t) cfN_NegativeBinomial(t,n,p,cfX);
+
+clear options
+options.isCompound = 1;
+CoNeBiPeaVI = cf2DistGP(cf,x,prob,options);
+
+%disp([CoNeBiPeaVI.x CoNeBiPeaVI.pdf CoNeBiPeaVI.cdf])
+disp(CoNeBiPeaVI)
+
+%% *COMPOUND POLYA EGGENBERGER DISTIBUTIONS*
+
+%% CDF/PDF Compound PolyaEggenberger-Pareto1 distribution
+
+alpha = 2;
+cfX   = @(t) cfX_Pareto(t,alpha);
+
+a     = 2.2;
+b     = 3.3;
+m     = 4;
+cf    = @(t) cfN_PolyaEggenberger(t,a,b,m,cfX);
+
+clear options
+options.isCompound = 1;
+CoPoEgPar1 = cf2DistGP(cf,x,prob,options);
+
+%disp([CoPoEgPar1.x CoPoEgPar1.pdf CoPoEgPar1.cdf])
+disp(CoPoEgPar1)
+
+%% CDF/PDF Compound PolyaEggenberger-ParetoA distribution
+
+alpha = 1.5;
+xmin  = 2.2;
+type  = 'amer';
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+a     = 2.2;
+b     = 3.3;
+m     = 4;
+cf    = @(t) cfN_PolyaEggenberger(t,a,b,m,cfX);
+
+clear options
+options.isCompound = 1;
+CoPoEgParA = cf2DistGP(cf,x,prob,options);
+
+%disp([CoPoEgParA.x CoPoEgParA.pdf CoPoEgParA.cdf])
+disp(CoPoEgParA)
+
+%% CDF/PDF Compound PolyaEggenberger-ParetoE distribution
+
+alpha = 1.5;
+xmin  = 2.2;
+type  = 'eur';
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+a     = 2.2;
+b     = 3.3;
+m     = 4;
+cf    = @(t) cfN_PolyaEggenberger(t,a,b,m,cfX);
+
+clear options
+options.isCompound = 1;
+CoPoEgParE = cf2DistGP(cf,x,prob,options);
+
+%disp([CoPoEgParE.x CoPoEgParE.pdf CoPoEgParE.cdf])
+disp(CoPoEgParE)
+
+%% CDF/PDF Compound PolyaEggenberger-PearsonVI distribution
+
+alpha = 1.5;
+beta  = 2.2;
+cfX   = @(t) cfX_PearsonVI(t,alpha,beta);
+
+a     = 2.2;
+b     = 3.3;
+m     = 4;
+cf    = @(t) cfN_PolyaEggenberger(t,a,b,m,cfX);
+
+clear options
+options.isCompound = 1;
+CoPoEgPeaVI = cf2DistGP(cf,x,prob,options);
+
+%disp([CoPoEgPeaVI.x CoPoEgPeaVI.pdf CoPoEgPeaVI.cdf])
+disp(CoPoEgPeaVI)
+
+%% *COMPOUND POISSON DISTIBUTIONS*
+
+%% CDF/PDF Compound Poisson-Pareto1 distribution
+alpha = 2;
+cfX   = @(t) cfX_Pareto(t,alpha);
+
+a     = 2;
+cf    = @(t) cfN_Poisson(t,a,cfX);
+
+clear options
+options.isCompound = 1;
+CoPoisPar1 = cf2DistGP(cf,x,prob,options);
+
+%disp([CoPoisPar1.x CoPoisPar1.pdf CoPoisPar1.cdf])
+disp(CoPoisPar1)
+
+%% CDF/PDF Compound Poisson-ParetoA distribution
+alpha = 1.5;
+xmin  = 2.2;
+type  = 'amer';
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+a     = 2;
+cf    = @(t) cfN_Poisson(t,a,cfX);
+
+clear options
+options.isCompound = 1;
+CoPoisParA = cf2DistGP(cf,x,prob,options);
+
+%disp([CoPoisParA.x CoPoisParA.pdf CoPoisParA.cdf])
+disp(CoPoisParA)
+
+%% CDF/PDF Compound Poisson-ParetoE distribution
+alpha = 1.5;
+xmin  = 2.2;
+type  = 'eur';
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+a     = 2;
+cf    = @(t) cfN_Poisson(t,a,cfX);
+
+clear options
+options.isCompound = 1;
+CoPoisParE = cf2DistGP(cf,x,prob,options);
+
+%disp([CoPoisParE.x CoPoisParE.pdf CoPoisParE.cdf])
+disp(CoPoisParE)
+
+%% CDF/PDF Compound Poisson-PearsonVI distribution 
+alpha = 1.5;
+beta  = 2.2;
+cfX   = @(t) cfX_PearsonVI(t,alpha,beta);
+
+a     = 2;
+cf    = @(t) cfN_Poisson(t,a,cfX);
+
+clear options
+options.isCompound = 1;
+CoPoisPeaVI = cf2DistGP(cf,x,prob,options);
+
+%disp([CoPoisPeaVI.x CoPoisPeaVI.pdf CoPoisPeaVI.cdf])
+disp(CoPoisPeaVI)
+
+%% *COMPOUND QUINKERT DISTIBUTIONS*
+
+%% CDF/PDF Compound Quinkert-Pareto1 distribution
+alpha = 2;
+cfX   = @(t) cfX_Pareto(t,alpha);
+
+a     = 2.2;
+b     = 3.4;
+cf    = @(t) cfN_Quinkert(t,a,b,cfX);
+
+clear options
+options.xMax = 80;
+options.isCompound = 1;
+CoQuinPar1 = cf2DistGP(cf,x,prob,options);
+
+%disp([CoQuinPar1.x CoQuinPar1.pdf CoQuinPar1.cdf])
+disp(CoQuinPar1)
+
+%% CDF/PDF Compound Quinkert-ParetoA distribution
+alpha = 1.5;
+xmin  = 2.2;
+type  = 'amer';
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+a     = 2.2;
+b     = 3.4;
+cf    = @(t) cfN_Quinkert(t,a,b,cfX);
+
+clear options
+options.xMax = 80;
+options.isCompound = 1;
+CoQuinParA = cf2DistGP(cf,x,prob,options);
+
+%disp([CoQuinParA.x CoQuinParA.pdf CoQuinParA.cdf])
+disp(CoQuinParA)
+
+%% CDF/PDF Compound Quinkert-ParetoE distribution
+alpha = 1.5;
+xmin  = 2.2;
+type  = 'eur';
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+a     = 2.2;
+b     = 3.4;
+cf    = @(t) cfN_Quinkert(t,a,b,cfX);
+
+clear options
+options.xMax = 80;
+options.isCompound = 1;
+CoQuinParE = cf2DistGP(cf,x,prob,options);
+
+%disp([CoQuinParE.x CoQuinParE.pdf CoQuinParE.cdf])
+disp(CoQuinParE)
+
+%% CDF/PDF Compound Quinkert-PearsonVI distribution
+alpha = 1.5;
+beta  = 2.2;
+cfX   = @(t) cfX_PearsonVI(t,alpha,beta);
+
+a     = 2.2;
+b     = 3.4;
+cf    = @(t) cfN_Quinkert(t,a,b,cfX);
+
+clear options
+options.xMax = 80;
+options.isCompound = 1;
+CoQuinPeaVI = cf2DistGP(cf,x,prob,options);
+
+%disp([CoQuinPeaVI.x CoQuinPeaVI.pdf CoQuinPeaVI.cdf])
+disp(CoQuinPeaVI)
+
+%% *COMPOUND WARING DISTIBUTIONS*
+
+%% CDF/PDF Compound Waring-Pareto1 distribution
+alpha = 2;
+cfX   = @(t) cfX_Pareto(t,alpha);
+
+a = 2.2;
+b = 3.3;
+r = 4;
+cf    = @(t) cfN_Waring(t,a,b,r,cfX);
+
+clear options
+options.isCompound = 1;
+CoWariPar1 = cf2DistGP(cf,x,prob,options);
+
+%disp([CoWariPar1.x CoWariPar1.pdf CoWariPar1.cdf])
+disp(CoWariPar1)
+
+%% CDF/PDF Compound Waring-ParetoA distribution
+alpha = 1.5;
+xmin  = 2.2;
+type  = 'amer';
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+a = 2.2;
+b = 3.3;
+r = 4;
+cf    = @(t) cfN_Waring(t,a,b,r,cfX);
+
+clear options
+options.isCompound = 1;
+CoWariParA = cf2DistGP(cf,x,prob,options);
+
+%disp([CoWariParA.x CoWariParA.pdf CoWariParA.cdf])
+disp(CoWariParA)
+
+%% CDF/PDF Compound Waring-ParetoE distribution
+alpha = 1.5;
+xmin  = 2.2;
+type  = 'eur';
+cfX   = @(t) cfX_Pareto(t,alpha,xmin,type);
+
+a = 2.2;
+b = 3.3;
+r = 4;
+cf    = @(t) cfN_Waring(t,a,b,r,cfX);
+
+clear options
+options.isCompound = 1;
+CoWariParE = cf2DistGP(cf,x,prob,options);
+
+%disp([CoWariParE.x CoWariParE.pdf CoWariParE.cdf])
+disp(CoWariParE)
+
+%% CDF/PDF Compound Waring-PearsonVI distribution
+alpha = 1.5;
+beta  = 2.2;
+cfX   = @(t) cfX_PearsonVI(t,alpha,beta);
+
+a = 2.2;
+b = 3.3;
+r = 4;
+cf    = @(t) cfN_Waring(t,a,b,r,cfX);
+
+clear options
+options.isCompound = 1;
+CoWariPeaVI = cf2DistGP(cf,x,prob,options);
+
+%disp([CoWariPeaVI.x CoWariPeaVI.pdf CoWariPeaVI.cdf])
+disp(CoWariPeaVI)
+
+
+##### SOURCE END #####
+--></body></html>

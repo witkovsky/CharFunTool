@@ -1,0 +1,1516 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>CHARACTERISTIC FUNCTIONS OF SELECTED NONNEGATIVE CONTINUOUS (SEVERITY) DISTRIBUTIONS</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-01-10"><meta name="DC.source" content="EXAMPLE_03_NONNEGATIVE.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>CHARACTERISTIC FUNCTIONS OF SELECTED NONNEGATIVE CONTINUOUS (SEVERITY) DISTRIBUTIONS</h1><!--introduction--><pre>(c) 2016 Viktor Witkovsky, witkovsky@gmail.com
+Version: 15-Nov-2016</pre><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1"><b>EXPONENTIAL DISTIBUTION</b></a></li><li><a href="#2">III.1.a EXAMPLE: CF of the Exponential distribution, lambda = 5</a></li><li><a href="#3">III.1.b EXAMPLE: PDF/CDF of the Exponential distribution, lambda = 5</a></li><li><a href="#4">III.1.c EXAMPLE: PDF/CDF of the compound Binomial-Exponential distribution</a></li><li><a href="#5"><b>FISHER-SNEDECOR F DISTIBUTION</b></a></li><li><a href="#6">III.2.a EXAMPLE: CF of the F-distribution with df1 = 3, df2 = 5</a></li><li><a href="#7">III.2.b EXAMPLE: PDF/CDF of the F-distribution with df1 = 3, df2 = 5</a></li><li><a href="#8">III.2.c EXAMPLE: PDF/CDF of the compound Binomial-Fisher-Snedecor distribution</a></li><li><a href="#9"><b>GAMMA DISTRIBUTION</b></a></li><li><a href="#10">III.3.a EXAMPLE: CF of the Gamma distribution, alpha = 2, beta = 2</a></li><li><a href="#11">III.3.b EXAMPLE: PDF/CDF of the Gamma distribution, alpha = 2, beta = 2</a></li><li><a href="#12">III.3.c EXAMPLE: PDF/CDF of the compound Binomial-Gamma distribution</a></li><li><a href="#13"><b>GENERALIZED PARETO DISTRIBUTION</b></a></li><li><a href="#14">III.4.a EXAMPLE: CF of the GeneralizedPareto distribution</a></li><li><a href="#15">III.4.b EXAMPLE: CDF/PDF of the  GeneralizedPareto distribution</a></li><li><a href="#16">III.4.c EXAMPLE: PDF/CDF of the compound Poisson-GeneralizedPareto distribution</a></li><li><a href="#17"><b>CHISQUARED DISTRIBUTION</b></a></li><li><a href="#18">III.5.a EXAMPLE: CF of the ChiSquared distribution, df = 1</a></li><li><a href="#19">III.5.b EXAMPLE: PDF/CDF of the ChiSquared distribution, df = 3</a></li><li><a href="#20">III.5.c EXAMPLE: PDF/CDF of the compound Binomial-ChiSquared distribution</a></li><li><a href="#21"><b>LOG-LOGISTIC DISTRIBUTION</b></a></li><li><a href="#22">III.6.a EXAMPLE: CF of the Loglogistic distribution, alpha=1, beta=1</a></li><li><a href="#23">III.6.b EXAMPLE: CDF/PDF of the  Loglogistic distribution, alpha=1, beta=1</a></li><li><a href="#24">III.6.c EXAMPLE: PDF/CDF of the compound Poisson-Loglogistic distribution</a></li><li><a href="#25"><b>LOG-NORMAL DISTRIBUTION</b></a></li><li><a href="#26">III.7.a EXAMPLE: CF of the LogNormal distribution, mu = 0, sigma = 1</a></li><li><a href="#27">III.7.b EXAMPLE: CDF/PDF of the LogNormal distribution, mu = 0,sigma = 1</a></li><li><a href="#28">III.7.c EXAMPLE: PDF/CDF of the compound Poisson-LogNormal distribution</a></li><li><a href="#29"><b>PARETO DISTRIBUTION</b></a></li><li><a href="#30">III.8.a EXAMPLE: CF of the Pareto 1 distribution, alpha = 3/2</a></li><li><a href="#31">III.8.b EXAMPLE: CF of the Pareto Type I/EUR distribution</a></li><li><a href="#32">III.8.c EXAMPLE: CF of the Pareto Type II/AMER distribution</a></li><li><a href="#33">III.8.d EXAMPLE: PDF/CDF of the compound Poisson-Pareto distribution</a></li><li><a href="#34"><b>PEARSON TYPE VI DISTRIBUTION</b></a></li><li><a href="#35">III.9.a EXAMPLE: CF of the Pearson Type VI distribution</a></li><li><a href="#36">III.9.b EXAMPLE: PDF/CDF of the Pearson Type VI distribution</a></li><li><a href="#37">III.9.c EXAMPLE: PDF/CDF of the compound Binomial-Pearson Type VI distribution</a></li><li><a href="#38"><b>WEIBULL DISTRIBUTION</b></a></li><li><a href="#39">III.10.a EXAMPLE CF of the Weibull distribution, alpha=1, beta=1</a></li><li><a href="#40">III.10.b EXAMPLE: CDF/PDF of the  Weibull distribution, alpha=1, beta=1</a></li><li><a href="#41">III.10.c EXAMPLE: PDF/CDF of the compound Poisson-Weibull distribution</a></li><li><a href="#42"><b>CHARACTERISTIC FUNCTION FROM PDF</b></a></li><li><a href="#43">III.11.a EXAMPLE CF from PDF of the Exponential distribution, mu = 1</a></li><li><a href="#44">III.11.b EXAMPLE: CF from PDF of the LogNormal distribution, mu = 0, sigma = 1</a></li><li><a href="#45">III.11.c EXAMPLE: CDF/PDF of the LogNormal distribution, mu = 0, sigma = 1</a></li><li><a href="#46">III.11.d EXAMPLE: CF from PDF of the Weibull distribution, a = 1.5, b = 1</a></li></ul></div><h2 id="1"><b>EXPONENTIAL DISTIBUTION</b></h2><p><tt>cfX_Exponential(t,lambda)</tt> evaluates the characteristic function cf(t) of the Exponential distribution with the parameter lambda (rate, lambda &gt; 0), i.e.</p><p><tt>cf(t) = cfX_Exponential(t,lambda) = lambda / (lambda - 1i*t)</tt></p><p>For more details see WIKIPEDIA: <a href="https://en.wikipedia.org/wiki/Exponential_distribution">https://en.wikipedia.org/wiki/Exponential_distribution</a></p><p>SYNTAX:</p><div><ul><li><tt>cf = cfX_Exponential(t,lambda)</tt></li></ul></div><pre class="codeinput">clear
+close <span class="string">all</span>
+</pre><h2 id="2">III.1.a EXAMPLE: CF of the Exponential distribution, lambda = 5</h2><pre class="codeinput"> lambda = 5;
+ t = linspace(-50,50,501);
+ cf = cfX_Exponential(t,lambda);
+ figure; plot(t,real(cf),t,imag(cf)),grid
+ title(<span class="string">'CF of the Exponential distribution with lambda = 5'</span>)
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_01.png" alt=""> <h2 id="3">III.1.b EXAMPLE: PDF/CDF of the Exponential distribution, lambda = 5</h2><pre class="codeinput"> lambda = 5;
+ cf = @(t) cfX_Exponential(t,lambda);
+ x  = linspace(0,1.5,101);
+ clear <span class="string">options</span>
+ options.xMin = 0;
+ options.SixSigmaRule = 8;
+ result = cf2DistGP(cf,x,[],options);
+ disp(result)
+</pre><pre class="codeoutput">                  x: [1&times;101 double]
+                cdf: [1&times;101 double]
+                pdf: [1&times;101 double]
+               prob: []
+                 qf: []
+       SixSigmaRule: 8
+                  N: 1024
+                 dt: 3.4907
+                  T: 3.5744e+03
+      PrecisionCrit: 1.9567e-07
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 0.2000
+               xStd: 0.2000
+               xMin: 0
+               xMax: 1.8000
+                 cf: @(t)cfX_Exponential(t,lambda)
+              const: 2.5000e-59
+         isCompound: 0
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 0.0094
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_02.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_03.png" alt=""> <h2 id="4">III.1.c EXAMPLE: PDF/CDF of the compound Binomial-Exponential distribution</h2><pre class="codeinput"> n = 25;
+ p = 0.3;
+ lambda = 5;
+ cfX  = @(t) cfX_Exponential(t,lambda);
+ cf   = @(t) cfN_Binomial(t,n,p,cfX);
+ x    = linspace(0,5,101);
+ prob = [0.9 0.95 0.99];
+ clear <span class="string">options</span>
+ options.isCompound = true;
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+</pre><pre class="codeoutput">                  x: [1&times;101 double]
+                cdf: [1&times;101 double]
+                pdf: [1&times;101 double]
+               prob: [0.9000 0.9500 0.9900]
+                 qf: [2.4571 2.8049 3.5196]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 0.7272
+                  T: 1.1915e+04
+      PrecisionCrit: 2.5307e-11
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 1.5002
+               xStd: 0.7140
+               xMin: 0
+               xMax: 8.6400
+                 cf: @(t)cfN_Binomial(t,n,p,cfX)
+              const: 1.3411e-04
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 0.0019
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_04.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_05.png" alt=""> <h2 id="5"><b>FISHER-SNEDECOR F DISTIBUTION</b></h2><p><tt>cfX_FisherSnedecorF(t,df1,df2,tol)</tt> evaluates the characteristic function cf(t) of the Fisher-Snedecor F-distribution with the parameters df1 and df2 (degrees of freedom, df1&gt;=1, df2&gt;=1) computed for real vector argument t, i.e.</p><p><tt>cf(t) = cfX_FisherSnedecorF(t,df1,df2)        = (gamma(df1/2+df2/2)/gamma(df2/2)) * U(df1/2, 1-df2/2, -1i*(df2/df1)*t)</tt>,</p><pre>where U(a,b,z) denotes the confluent hypergeometric function of the
+second kind.  For more details see WIKIPEDIA:
+&lt;https://en.wikipedia.org/wiki/F-distribution&gt;</pre><p>SYNTAX:</p><div><ul><li><tt>cf = cfX_FisherSnedecorF(df1,df2,t,tol)</tt></li></ul></div><h2 id="6">III.2.a EXAMPLE: CF of the F-distribution with df1 = 3, df2 = 5</h2><pre class="codeinput"> df1 = 3;
+ df2 = 5;
+ t   = linspace(-30,30,2^10+1)';
+ cf  = cfX_FisherSnedecorF(t,df1,df2);
+ plot(t,real(cf),t,imag(cf));grid
+ title(<span class="string">'Characteristic function of the F-distribution'</span>)
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_06.png" alt=""> <h2 id="7">III.2.b EXAMPLE: PDF/CDF of the F-distribution with df1 = 3, df2 = 5</h2><pre class="codeinput"> df1 = 3;
+ df2 = 5;
+ x = linspace(0,25,101);
+ prob = [0.9 0.95 0.99];
+ cf = @(t) cfX_FisherSnedecorF(t,df1,df2);
+ clear <span class="string">options</span>
+ options.xMin = 0;
+ options.xMax = 500;
+ options.N  = 2^15;
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+</pre><pre class="codeoutput">                  x: [1&times;101 double]
+                cdf: [1&times;101 double]
+                pdf: [1&times;101 double]
+               prob: [0.9000 0.9500 0.9900]
+                 qf: [3.6195 5.4096 12.0609]
+       SixSigmaRule: 6
+                  N: 32768
+                 dt: 0.0126
+                  T: 411.7748
+      PrecisionCrit: 3.0482e-07
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 1.6667
+               xStd: 3.2922
+               xMin: 0
+               xMax: 500
+                 cf: @(t)cfX_FisherSnedecorF(t,df1,df2)
+              const: -1.4833e-45
+         isCompound: 0
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 0.0106
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_07.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_08.png" alt=""> <h2 id="8">III.2.c EXAMPLE: PDF/CDF of the compound Binomial-Fisher-Snedecor distribution</h2><pre class="codeinput"> n = 25;
+ p = 0.3;
+ df1 = 3;
+ df2 = 5;
+ cfX = @(t) cfX_FisherSnedecorF(t,df1,df2);
+ cf = @(t) cfN_Binomial(t,n,p,cfX);
+ x = linspace(0,80,101);
+ prob = [0.9 0.95 0.99];
+ clear <span class="string">options</span>
+ options.isCompound = true;
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+</pre><pre class="codeoutput">                  x: [1&times;101 double]
+                cdf: [1&times;101 double]
+                pdf: [1&times;101 double]
+               prob: [0.9000 0.9500 0.9900]
+                 qf: [22.0321 27.3715 43.9475]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 0.0569
+                  T: 932.3558
+      PrecisionCrit: 5.6769e-11
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 12.5016
+               xStd: 9.7911
+               xMin: 0
+               xMax: 110.4125
+                 cf: @(t)cfN_Binomial(t,n,p,cfX)
+              const: 1.3411e-04
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 0.0055
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_09.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_10.png" alt=""> <h2 id="9"><b>GAMMA DISTRIBUTION</b></h2><p><tt>cfX_Gamma(t,alpha,beta)</tt> evaluates the characteristic function cf(t) of the GAMMA distribution with the parameters alpha (shape, alpha &gt; 0) and beta (rate, beta &gt; 0), i.e.</p><p><tt>cf(t) = cfX_Gamma(t,alpha,beta) = (1 - 1i*t / beta)^(-alpha)</tt>;</p><p>For more details see WIKIPEDIA: <a href="https://en.wikipedia.org/wiki/Gamma_distribution">https://en.wikipedia.org/wiki/Gamma_distribution</a></p><p>SYNTAX:</p><div><ul><li><tt>cf = cfX_Gamma(t,alpha,beta)</tt></li></ul></div><h2 id="10">III.3.a EXAMPLE: CF of the Gamma distribution, alpha = 2, beta = 2</h2><pre class="codeinput"> alpha = 2;
+ beta = 2;
+ t = linspace(-20,20,501);
+ cf = cfX_Gamma(t,alpha,beta);
+ figure; plot(t,real(cf),t,imag(cf)),grid
+ title(<span class="string">'CF of the Gamma distribution with alpha = 2, beta = 2'</span>)
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_11.png" alt=""> <h2 id="11">III.3.b EXAMPLE: PDF/CDF of the Gamma distribution, alpha = 2, beta = 2</h2><pre class="codeinput"> alpha = 2;
+ beta = 2;
+ x = linspace(0,5,101);
+ prob = [0.9 0.95 0.99];
+ clear <span class="string">options</span>
+ options.xMin = 0;
+ options.N = 2^14;
+ cf = @(t) cfX_Gamma(t,alpha,beta);
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+</pre><pre class="codeoutput">                  x: [1&times;101 double]
+                cdf: [1&times;101 double]
+                pdf: [1&times;101 double]
+               prob: [0.9000 0.9500 0.9900]
+                 qf: [1.9449 2.3720 3.3192]
+       SixSigmaRule: 6
+                  N: 16384
+                 dt: 1.1985
+                  T: 1.9636e+04
+      PrecisionCrit: 2.6417e-13
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 1
+              xMean: 1.0000
+               xStd: 0.7071
+               xMin: 0
+               xMax: 5.2426
+                 cf: @(t)cfX_Gamma(t,alpha,beta)
+              const: -4.0000e-60
+         isCompound: 0
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 0.0019
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_12.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_13.png" alt=""> <h2 id="12">III.3.c EXAMPLE: PDF/CDF of the compound Binomial-Gamma distribution</h2><pre class="codeinput"> n = 25;
+ p = 0.3;
+ alpha = 2;
+ beta = 2;
+ cfX = @(t)  cfX_Gamma(t,alpha,beta);
+ cf = @(t) cfN_Binomial(t,n,p,cfX);
+ x = linspace(0,25,101);
+ prob = [0.9 0.95 0.99];
+ clear <span class="string">options</span>
+ options.isCompound = true;
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+</pre><pre class="codeoutput">                  x: [1&times;101 double]
+                cdf: [1&times;101 double]
+                pdf: [1&times;101 double]
+               prob: [0.9000 0.9500 0.9900]
+                 qf: [11.4889 12.8381 15.5372]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 0.1676
+                  T: 2.7459e+03
+      PrecisionCrit: 1.3882e-13
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 1
+              xMean: 7.5010
+               xStd: 2.9989
+               xMin: 0
+               xMax: 37.4904
+                 cf: @(t)cfN_Binomial(t,n,p,cfX)
+              const: 1.3411e-04
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 0.0019
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_14.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_15.png" alt=""> <h2 id="13"><b>GENERALIZED PARETO DISTRIBUTION</b></h2><p><tt>cfX_GeneralizedPareto(t,xi,sigma,theta)</tt> Computes the characteristic function cf(t) of the Generalized Pareto distribution with parameters xi (shape, here xi &gt;= 0), sigma (scale, sigma &gt; 0), and theta (threshold, theta &gt;= 0), for real (vector) argument t, i.e.</p><p><tt>cf(t) = cfX_GeneralizedPareto(t,xi,sigma,theta)</tt>;</p><p>The closed-form analytic expression of the characteristic function of the Generalized Pareto distribution is unknown. Thus, the characteristic function is numerically evalueted from its definition. For more details see also WIKIPEDIA: <a href="https://en.wikipedia.org/wiki/Generalized_Pareto_distribution">https://en.wikipedia.org/wiki/Generalized_Pareto_distribution</a></p><p>SYNTAX:</p><div><ul><li><tt>cf = cfX_GeneralizedPareto(t,xi,sigma,theta)</tt></li><li><tt>cf = cfX_GeneralizedPareto(t,xi,sigma,theta,tol)</tt></li></ul></div><h2 id="14">III.4.a EXAMPLE: CF of the GeneralizedPareto distribution</h2><pre class="codeinput"> xi = 1;
+ sigma = 1;
+ theta = 1;
+ t = linspace(-20,20,2^10+1)';
+ cf = cfX_GeneralizedPareto(t,xi,sigma,theta);
+ plot(t,real(cf),t,imag(cf));grid
+ title(<span class="string">'Characteristic function of the GeneralizedPareto distribution'</span>)
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_16.png" alt=""> <h2 id="15">III.4.b EXAMPLE: CDF/PDF of the  GeneralizedPareto distribution</h2><pre class="codeinput"> xi = 1;
+ sigma = 1;
+ theta = 0;
+ x = linspace(0,300,101);
+ prob = [0.9 0.95 0.99];
+ clear <span class="string">options</span>
+ options.N = 2^15;
+ options.SixSigmaRule = 15;
+ cf = @(t) cfX_GeneralizedPareto(t,xi,sigma,theta);
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+</pre><pre class="codeoutput">                  x: [1&times;101 double]
+                cdf: [1&times;101 double]
+                pdf: [1&times;101 double]
+               prob: [0.9000 0.9500 0.9900]
+                 qf: [9.0225 19.0941 101.3505]
+       SixSigmaRule: 15
+                  N: 32768
+                 dt: 0.0014
+                  T: 46.5677
+      PrecisionCrit: 2.3015e-04
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 8.8643
+               xStd: 147.3749
+               xMin: -2.2018e+03
+               xMax: 2.2195e+03
+                 cf: @(t)cfX_GeneralizedPareto(t,xi,sigma,theta)
+              const: 2.0000e-60
+         isCompound: 0
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 0.0121
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_17.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_18.png" alt=""> <h2 id="16">III.4.c EXAMPLE: PDF/CDF of the compound Poisson-GeneralizedPareto distribution</h2><pre class="codeinput"> xi = 1;
+ sigma = 1;
+ theta = 0;
+ lambda = 10;
+ cfX = @(t) cfX_GeneralizedPareto(t,xi,sigma,theta);
+ cf = @(t) cfN_Poisson(t,lambda,cfX);
+ x = linspace(0,5000,101);
+ prob = [0.9 0.95 0.99];
+ clear <span class="string">options</span>
+ clear <span class="string">options</span>
+ options.isCompound = true;
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+</pre><pre class="codeoutput">Warning: x out-of-range (the used support): [xMin, xMax] = [0, 4745.0667] ! 
+                  x: [1&times;101 double]
+                cdf: [1&times;101 double]
+                pdf: [1&times;101 double]
+               prob: [0.9000 0.9500 0.9900]
+                 qf: [134.4592 248.7700 1.2126e+03]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 0.0013
+                  T: 21.6949
+      PrecisionCrit: 4.8423e-07
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 88.5488
+               xStd: 465.6518
+               xMin: 0
+               xMax: 4.7451e+03
+                 cf: @(t)cfN_Poisson(t,lambda,cfX)
+              const: 4.5400e-05
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 0.0102
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_19.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_20.png" alt=""> <h2 id="17"><b>CHISQUARED DISTRIBUTION</b></h2><p><tt>cfX_ChiSquared(t,df)</tt> evaluates the characteristic function cf(t) of the CHI-SUQARED distribution with the parameter df (degrees of freedom, df &gt;= 1), i.e.</p><p><tt>cf(t) = cfX_ChiSquared(t,df) = (1 - 2i*t)^(-df/2) =         = cfX_Gamma(t,alpha,beta) = cfX_Gamma(t,df/2,1/2)</tt>; For more details see WIKIPEDIA: <a href="https://en.wikipedia.org/wiki/Chi-squared_distribution">https://en.wikipedia.org/wiki/Chi-squared_distribution</a></p><p>SYNTAX:</p><div><ul><li><tt>cf = cfX_ChiSquared(t,df)</tt></li></ul></div><h2 id="18">III.5.a EXAMPLE: CF of the ChiSquared distribution, df = 1</h2><pre class="codeinput"> df = 1;
+ t = linspace(-50,50,501);
+ cf = cfX_ChiSquared(t,df);
+ figure; plot(t,real(cf),t,imag(cf)),grid
+ title(<span class="string">'CF of the ChiSquared distribution with df = 1'</span>)
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_21.png" alt=""> <h2 id="19">III.5.b EXAMPLE: PDF/CDF of the ChiSquared distribution, df = 3</h2><pre class="codeinput"> df = 3;
+ x = linspace(0,15,101);
+ prob = [0.9 0.95 0.99];
+ cf = @(t) cfX_ChiSquared(t,df);
+ clear <span class="string">options</span>
+ options.xMin = 0;
+ options.xMax = 22;
+ options.N = 2^14;
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+</pre><pre class="codeoutput">                  x: [1&times;101 double]
+                cdf: [1&times;101 double]
+                pdf: [1&times;101 double]
+               prob: [0.9000 0.9500 0.9900]
+                 qf: [6.2515 7.8148 11.3449]
+       SixSigmaRule: 6
+                  N: 16384
+                 dt: 0.2856
+                  T: 4.6793e+03
+      PrecisionCrit: 1.1803e-10
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 3.0000
+               xStd: 2.4495
+               xMin: 0
+               xMax: 22
+                 cf: @(t)cfX_ChiSquared(t,df)
+              const: -2.5000e-46
+         isCompound: 0
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 0.0020
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_22.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_23.png" alt=""> <h2 id="20">III.5.c EXAMPLE: PDF/CDF of the compound Binomial-ChiSquared distribution</h2><pre class="codeinput"> n = 25;
+ p = 0.3;
+ df = 3;
+ cfX = @(t) cfX_ChiSquared(t,df);
+ cf = @(t) cfN_Binomial(t,n,p,cfX);
+ x = linspace(0,80,101);
+ prob = [0.9 0.95 0.99];
+ clear <span class="string">options</span>
+ options.isCompound = true;
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+</pre><pre class="codeoutput">                  x: [1&times;101 double]
+                cdf: [1&times;101 double]
+                pdf: [1&times;101 double]
+               prob: [0.9000 0.9500 0.9900]
+                 qf: [35.3128 39.7656 48.7656]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 0.0530
+                  T: 868.5696
+      PrecisionCrit: 1.1425e-11
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 22.5030
+               xStd: 9.6018
+               xMin: 0
+               xMax: 118.5210
+                 cf: @(t)cfN_Binomial(t,n,p,cfX)
+              const: 1.3411e-04
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 0.0018
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_24.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_25.png" alt=""> <h2 id="21"><b>LOG-LOGISTIC DISTRIBUTION</b></h2><p><tt>cfX_LogLogistic(t,alpha,beta)</tt> computes the characteristic function cf(t) of the LogLogistic distribution with parameters alpha (scale, alpha &gt; 0) and beta (shape, beta &gt; 0), for real (vector) argument t, i.e.</p><p><tt>cf(t) = cfX_LogLogistic(t,alpha,beta)</tt>;</p><p>The closed-form analytic expression of the characteristic function of the LogLogistic distribution is unknown. Thus, the characteristic function is numerically evalueted from its definition. For more details see WIKIPEDIA: <a href="https://en.wikipedia.org/wiki/Log-logistic_distribution">https://en.wikipedia.org/wiki/Log-logistic_distribution</a></p><p>SYNTAX:</p><div><ul><li><tt>cf = cfX_LogLogistic(t,alpha,beta)</tt></li><li><tt>cf = cfX_LogLogistic(t,alpha,beta,tol)</tt></li></ul></div><h2 id="22">III.6.a EXAMPLE: CF of the Loglogistic distribution, alpha=1, beta=1</h2><pre class="codeinput"> alpha = 1;
+ beta = 1;
+ t = linspace(-20,20,2^10+1)';
+ cf = cfX_LogLogistic(t,alpha,beta);
+ plot(t,real(cf),t,imag(cf));grid
+ title(<span class="string">'Characteristic function of the LogLogistic distribution'</span>)
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_26.png" alt=""> <h2 id="23">III.6.b EXAMPLE: CDF/PDF of the  Loglogistic distribution, alpha=1, beta=1</h2><pre class="codeinput"> alpha = 1;
+ beta = 1;
+ x = linspace(0,700,101);
+ prob = [0.9 0.95 0.99];
+ clear <span class="string">options</span>
+ options.xMin = 0;
+ options.xMax = 1000;
+ options.N = 2^14;
+ cf = @(t) cfX_LogLogistic(t,alpha,beta);
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+</pre><pre class="codeoutput">                  x: [1&times;101 double]
+                cdf: [1&times;101 double]
+                pdf: [1&times;101 double]
+               prob: [0.9000 0.9500 0.9900]
+                 qf: [9.2579 20.0523 129.5004]
+       SixSigmaRule: 6
+                  N: 16384
+                 dt: 0.0063
+                  T: 102.9437
+      PrecisionCrit: 4.7164e-05
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 8.8643
+               xStd: 147.3749
+               xMin: 0
+               xMax: 1000
+                 cf: @(t)cfX_LogLogistic(t,alpha,beta)
+              const: 2.0000e-60
+         isCompound: 0
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 0.0091
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_27.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_28.png" alt=""> <h2 id="24">III.6.c EXAMPLE: PDF/CDF of the compound Poisson-Loglogistic distribution</h2><pre class="codeinput"> alpha = 1;
+ beta = 1;
+ lambda = 10;
+ cfX = @(t)cfX_LogLogistic(t,alpha,beta);
+ cf = @(t) cfN_Poisson(t,lambda,cfX);
+ x = linspace(0,3500,101);
+ prob = [0.9 0.95 0.99];
+ clear <span class="string">options</span>
+ options.isCompound = true;
+ result = cf2DistGP(cf,x,prob,options);
+  disp(result)
+</pre><pre class="codeoutput">                  x: [1&times;101 double]
+                cdf: [1&times;101 double]
+                pdf: [1&times;101 double]
+               prob: [0.9000 0.9500 0.9900]
+                 qf: [134.4592 248.7700 1.2126e+03]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 0.0013
+                  T: 21.6949
+      PrecisionCrit: 4.8423e-07
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 88.5488
+               xStd: 465.6518
+               xMin: 0
+               xMax: 4.7451e+03
+                 cf: @(t)cfN_Poisson(t,lambda,cfX)
+              const: 4.5400e-05
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 0.0096
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_29.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_30.png" alt=""> <h2 id="25"><b>LOG-NORMAL DISTRIBUTION</b></h2><p><tt>cfX_LogNormal(t,mu,sigma)</tt> computes the characteristic function cf(t) of the LogNormal distribution with parameters mu (real) and sigma &gt; 0, computed for real (vector) argument t, i.e.</p><p><tt>cf(t) = cfX_LogNormal(t,mu,sigma)</tt>; For more details see WIKIPEDIA: <a href="https://en.wikipedia.org/wiki/Log-normal_distribution">https://en.wikipedia.org/wiki/Log-normal_distribution</a></p><p>SYNTAX:</p><div><ul><li><tt>cf = cfX_LogNormal(t,mu,sigma)</tt></li><li><tt>cf = cfX_LogNormal(t,mu,sigma,tol)</tt></li></ul></div><h2 id="26">III.7.a EXAMPLE: CF of the LogNormal distribution, mu = 0, sigma = 1</h2><pre class="codeinput"> mu = 0;
+ sigma = 1;
+ t = linspace(-20,20,2^10+1)';
+ cf = cfX_LogNormal(t,mu,sigma);
+ plot(t,real(cf),t,imag(cf));grid
+ title(<span class="string">'Characteristic function of the LogNormal distribution'</span>)
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_31.png" alt=""> <h2 id="27">III.7.b EXAMPLE: CDF/PDF of the LogNormal distribution, mu = 0,sigma = 1</h2><pre class="codeinput"> mu = 0;
+ sigma = 1;
+ x = linspace(0,15,101);
+ prob = [0.9 0.95 0.99];
+ clear <span class="string">options</span>
+ options.xMin = 0;
+ options.N = 2^13;
+ options.SixSigmaRule = 8;
+ cf = @(t) cfX_LogNormal(t,mu,sigma);
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+</pre><pre class="codeoutput">                  x: [1&times;101 double]
+                cdf: [1&times;101 double]
+                pdf: [1&times;101 double]
+               prob: [0.9000 0.9500 0.9900]
+                 qf: [3.6238 5.2227 10.4128]
+       SixSigmaRule: 8
+                  N: 8192
+                 dt: 0.3318
+                  T: 2.7179e+03
+      PrecisionCrit: 3.7323e-15
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 1
+              xMean: 1.6487
+               xStd: 2.1612
+               xMin: 0
+               xMax: 18.9383
+                 cf: @(t)cfX_LogNormal(t,mu,sigma)
+              const: 0
+         isCompound: 0
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 0.0089
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_32.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_33.png" alt=""> <h2 id="28">III.7.c EXAMPLE: PDF/CDF of the compound Poisson-LogNormal distribution</h2><pre class="codeinput"> mu = 0;
+ sigma = 1;
+ lambda = 10;
+ cfX = @(t)cfX_LogNormal(t,mu,sigma);
+ cf = @(t) cfN_Poisson(t,lambda,cfX);
+ x = linspace(0,70,101);
+ prob = [0.9 0.95 0.99];
+ clear <span class="string">options</span>
+ options.isCompound = true;
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+</pre><pre class="codeoutput">                  x: [1&times;101 double]
+                cdf: [1&times;101 double]
+                pdf: [1&times;101 double]
+               prob: [0.9000 0.9500 0.9900]
+                 qf: [27.4942 32.2833 43.6893]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 0.0613
+                  T: 1.0049e+03
+      PrecisionCrit: 1.3500e-15
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 1
+              xMean: 16.4880
+               xStd: 8.5954
+               xMin: 0
+               xMax: 102.4424
+                 cf: @(t)cfN_Poisson(t,lambda,cfX)
+              const: 4.5400e-05
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 0.0083
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_34.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_35.png" alt=""> <h2 id="29"><b>PARETO DISTRIBUTION</b></h2><p><tt>cfX_Pareto(t,alpha,sigma,type,tol)</tt> computes the characteristic function of the Pareto distribution with parameters alpha &gt; 0 (shape), sigma &gt; 0 (scale, sometimes denoted by x_m - which is the minimum value of the distribution support, i.e. x &gt;= x_m), and the parameter type ('typeI' or 'typeII'), computed for real vector argument t, i.e.</p><p><tt>cf(t) = cfX_Pareto(t,alpha,sigma,type)</tt>;</p><p>For more details see WIKIPEDIA: <a href="https://en.wikipedia.org/wiki/Pareto_distribution">https://en.wikipedia.org/wiki/Pareto_distribution</a></p><p>SYNTAX:</p><div><ul><li><tt>cf = cfX_Pareto(t,alpha)</tt></li><li><tt>cf = cfX_Pareto(t,alpha,sigma,type)</tt></li></ul></div><p>FURTHER DETAILS:</p><p>The Pareto Type I distribution (also known as European Pareto) is characterized by a scale parameter sigma and a shape parameter alpha, which is known as the tail index. The pdf of X is defined by pdf_X(x) = alpha * sigma^alpha / x^(alpha+1), for x &gt;= sigma, otherwise it is zero. When this distribution is used to model the distribution of wealth, then the parameter alpha is called the Pareto index.</p><p>The Type II Pareto distribution (also known as Lomax or American Pareto distribution, type = 'typeII' or type = 'Amer') is shifted to zero. The default type is 'TypeI' (type = 'typeI' or type = 'Eur'). The CFs of the Pareto type distributions are defined by cf_{typeI}(t)  = alpha * exp(1i*sigma*t) * U(1,1-alpha,-1i*sigma*t) cf_{typeII}(t) = alpha * U(1,1-alpha,-1i*sigma*t)</p><p>A special case of Pareto TypeI distribution is the Pareto 1 distribution with sigma = 1, cf_{1}(t) = alpha * exp(1i*t) * U(1,1-alpha,-1i*t), where U(a,b,z) denotes the confluent hypergeometric function of the second kind.</p><h2 id="30">III.8.a EXAMPLE: CF of the Pareto 1 distribution, alpha = 3/2</h2><pre class="codeinput"> alpha = 3/2;
+ t = linspace(-10,10,1001);
+ cf = cfX_Pareto(t,alpha);
+ figure; plot(t,real(cf),t,imag(cf)),grid
+ title(<span class="string">'CF of the Pareto 1 distribution with alpha = 3/2'</span>)
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_36.png" alt=""> <h2 id="31">III.8.b EXAMPLE: CF of the Pareto Type I/EUR distribution</h2><pre class="codeinput"> alpha = 3/2;
+ sigma  = 2;
+ type = <span class="string">'eur'</span>;
+ t = linspace(-10,10,1001);
+ cf = cfX_Pareto(t,alpha,sigma,type);
+ figure; plot(t,real(cf),t,imag(cf)),grid
+ title(<span class="string">'CF of the Pareto EUR distribution with alpha = 3/2, sigma = 2'</span>)
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_37.png" alt=""> <h2 id="32">III.8.c EXAMPLE: CF of the Pareto Type II/AMER distribution</h2><pre class="codeinput"> alpha = 3/2;
+ sigma  = 2;
+ type = <span class="string">'amer'</span>;
+ t = linspace(-10,10,1001);
+ cf = cfX_Pareto(t,alpha,sigma,type);
+ figure; plot(t,real(cf),t,imag(cf)),grid
+ title(<span class="string">'CF of the Pareto AMER distribution with alpha = 3/2, sigma = 2'</span>)
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_38.png" alt=""> <h2 id="33">III.8.d EXAMPLE: PDF/CDF of the compound Poisson-Pareto distribution</h2><pre class="codeinput"> alpha = 3/2;
+ sigma  = 2;
+ type = <span class="string">'eur'</span>;
+ lambda = 10;
+ cfX = @(t) cfX_Pareto(t,alpha,sigma,type);
+ cf = @(t) cfN_Poisson(t,lambda,cfX);
+ x = linspace(0,500,101);
+ prob = [0.9 0.95 0.99];
+ clear <span class="string">options</span>
+ options.isCompound = true;
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+</pre><pre class="codeoutput">                  x: [1&times;101 double]
+                cdf: [1&times;101 double]
+                pdf: [1&times;101 double]
+               prob: [0.9000 0.9500 0.9900]
+                 qf: [94.8635 124.9331 275.7292]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 0.0055
+                  T: 89.6390
+      PrecisionCrit: 2.1350e-08
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 59.3899
+               xStd: 108.9036
+               xMin: 0
+               xMax: 1.1484e+03
+                 cf: @(t)cfN_Poisson(t,lambda,cfX)
+              const: 4.5400e-05
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 0.0055
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_39.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_40.png" alt=""> <h2 id="34"><b>PEARSON TYPE VI DISTRIBUTION</b></h2><p><tt>cfX_PearsonVI(t,alpha,beta)</tt> omputes the characteristic function of the Pearson type VI distribution with parameters alpha &gt; 0 (shape) and beta &gt; 0 (scale), computed for real vector argument t, i.e.</p><p><tt>cf(t) = cfX_PearsonVI(t,alpha,beta)         = (gamma(alpha+beta)./gamma(beta)) .* U(alpha,1-beta,-1i*t)</tt></p><p>where U(a,b,z) denotes the confluent hypergeometric function of the second kind. For more detail see WIKIPEDIA: <a href="https://en.wikipedia.org/wiki/Pearson_distribution">https://en.wikipedia.org/wiki/Pearson_distribution</a></p><p>SYNTAX:</p><div><ul><li><tt>cf = cfX_PearsonVI(t,alpha,beta)</tt></li></ul></div><h2 id="35">III.9.a EXAMPLE: CF of the Pearson Type VI distribution</h2><pre class="codeinput"> alpha = 3/2;
+ beta = 2/3;
+ t = linspace(-10,10,1001);
+ cf = cfX_PearsonVI(t,alpha,beta);
+ figure; plot(t,real(cf),t,imag(cf)),grid
+ title(<span class="string">'CF of the Pearson Type VI distribution with alpha = 3/2, beta = 2/3'</span>)
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_41.png" alt=""> <h2 id="36">III.9.b EXAMPLE: PDF/CDF of the Pearson Type VI distribution</h2><pre class="codeinput"> alpha = 3/2;
+ beta = 2/3;
+ x = linspace(0,200,101);
+ prob = [0.9 0.95 0.99];
+ clear <span class="string">options</span>
+ options.xMin = 0;
+ options.N = 2^14;
+ cf = @(t) cfX_PearsonVI(t,alpha,beta);
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+</pre><pre class="codeoutput">                  x: [1&times;101 double]
+                cdf: [1&times;101 double]
+                pdf: [1&times;101 double]
+               prob: [0.9000 0.9500 0.9900]
+                 qf: [51.9907 159.6788 2.0404e+03]
+       SixSigmaRule: 6
+                  N: 16384
+                 dt: 0.0015
+                  T: 24.7222
+      PrecisionCrit: 1.2995e-04
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 67.7749
+               xStd: 682.7083
+               xMin: 0
+               xMax: 4.1640e+03
+                 cf: @(t)cfX_PearsonVI(t,alpha,beta)
+              const: -5.6519e-46
+         isCompound: 0
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 0.0066
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_42.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_43.png" alt=""> <h2 id="37">III.9.c EXAMPLE: PDF/CDF of the compound Binomial-Pearson Type VI distribution</h2><pre class="codeinput"> n = 25;
+ p = 0.3;
+ alpha = 3/2;
+ beta = 2/3;
+ cfX = @(t) cfX_PearsonVI(t,alpha,beta);
+ cf = @(t) cfN_Binomial(t,n,p,cfX);
+ x = linspace(0,10000,101);
+ prob = [0.9 0.95 0.99];
+ clear <span class="string">options</span>
+ options.isCompound = true;
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+</pre><pre class="codeoutput">                  x: [1&times;101 double]
+                cdf: [1&times;101 double]
+                pdf: [1&times;101 double]
+               prob: [0.9000 0.9500 0.9900]
+                 qf: [1.0012e+03 2.3947e+03 8.7850e+03]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 3.3269e-04
+                  T: 5.4508
+      PrecisionCrit: 6.4216e-06
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 496.1340
+               xStd: 1.8390e+03
+               xMin: 0
+               xMax: 1.8886e+04
+                 cf: @(t)cfN_Binomial(t,n,p,cfX)
+              const: 1.3411e-04
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 0.0050
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_44.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_45.png" alt=""> <h2 id="38"><b>WEIBULL DISTRIBUTION</b></h2><p><tt>cfX_Weibull(t,alpha,beta)</tt> computes the characteristic function cf(t) of the Weibull distribution with the parameters alpha(scale parameter, elsewhere denoted also as lambda, alpha &gt; 0) and beta (shape parameter, elsewhere denoted as k, beta &gt; 0), for real (vector) argument t, i.e.</p><p><tt>cf(t) = cfX_Weibull(t,alpha,beta);</tt></p><p>The closed-form analytic expression of the characteristic function of the Weibull distribution is unknown. The series expansion of the CF, valid for abs(t)&lt;1, is known and given, e.g. in WIKIPEDIA.</p><p>Thus, for abs(t)&lt;1 the CF is evalueted from its series expansion, and for abs(t)&gt;=1 from its definition. For more details see WIKIPEDIA: <a href="https://en.wikipedia.org/wiki/Weibull_distribution">https://en.wikipedia.org/wiki/Weibull_distribution</a></p><p>SYNTAX:</p><div><ul><li><tt>cf = cfX_Weibull(t,alpha,beta)</tt></li><li><tt>cf = cfX_Weibull(t,alpha,beta,tol)</tt></li></ul></div><p>REMARK (Caution Notice)</p><p>This implementation of the algorithm is experimental. It DOES NOT WORK PROPERLY for all parameters!!!!</p><h2 id="39">III.10.a EXAMPLE CF of the Weibull distribution, alpha=1, beta=1</h2><pre class="codeinput"> alpha = 1;
+ beta = 1;
+ t = linspace(-20,20,2^10+1)';
+ cf = cfX_Weibull(t,alpha,beta);
+ plot(t,real(cf),t,imag(cf));grid
+ title(<span class="string">'Characteristic function of the Weibull distribution'</span>)
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_46.png" alt=""> <h2 id="40">III.10.b EXAMPLE: CDF/PDF of the  Weibull distribution, alpha=1, beta=1</h2><pre class="codeinput"> alpha = 1;
+ beta = 1;
+ x = linspace(0,7,101);
+ prob = [0.9 0.95 0.99];
+ clear <span class="string">options</span>
+ options.xMin = 0;
+ options.N = 2^10;
+ cf = @(t) cfX_Weibull(t,alpha,beta);
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+</pre><pre class="codeoutput">                  x: [1&times;101 double]
+                cdf: [1&times;101 double]
+                pdf: [1&times;101 double]
+               prob: [0.9000 0.9500 0.9900]
+                 qf: [2.3035 2.9966 4.6061]
+       SixSigmaRule: 6
+                  N: 1024
+                 dt: 0.8976
+                  T: 919.1402
+      PrecisionCrit: 5.9184e-07
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 1.0000
+               xStd: 1.0000
+               xMin: 0
+               xMax: 7.0000
+                 cf: @(t)cfX_Weibull(t,alpha,beta)
+              const: 1.0000e-60
+         isCompound: 0
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 0.0083
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_47.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_48.png" alt=""> <h2 id="41">III.10.c EXAMPLE: PDF/CDF of the compound Poisson-Weibull distribution</h2><pre class="codeinput"> alpha = 1;
+ beta = 1;
+ lambda = 10;
+ cfX = @(t)cfX_Weibull(t,alpha,beta);
+ cf = @(t) cfN_Poisson(t,lambda,cfX);
+ x = linspace(0,35,101);
+ prob = [0.9 0.95 0.99];
+ clear <span class="string">options</span>
+ options.isCompound = true;
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+</pre><pre class="codeoutput">                  x: [1&times;101 double]
+                cdf: [1&times;101 double]
+                pdf: [1&times;101 double]
+               prob: [0.9000 0.9500 0.9900]
+                 qf: [15.9827 18.1223 22.4938]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 0.1148
+                  T: 1.8814e+03
+      PrecisionCrit: 6.4136e-11
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 10.0005
+               xStd: 4.4717
+               xMin: 0
+               xMax: 54.7178
+                 cf: @(t)cfN_Poisson(t,lambda,cfX)
+              const: 4.5400e-05
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 0.0099
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_49.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_50.png" alt=""> <h2 id="42"><b>CHARACTERISTIC FUNCTION FROM PDF</b></h2><p><tt>cfX_PDF(t,pdfFun,tol)</tt> calculates the characteristic function of the continuos distribution defined by its PDF function, pdfFun = @(x) pdf(x), here we assume x&gt;=0, computed for real  vector argument t.</p><p>DEFINITION:</p><pre>cfX_PDF is based on the standard integral representation of the
+characteristic function of the continuous distribution defined by its
+PDF (here PDF is represented by the function handle pdfFun(x) defined
+for x &gt;= 0). Then,</pre><pre>|CF(t) = Integral_0^inf exp(i*t*x) * pdfFun(x) dx|.</pre><pre>By using the half-space Fourier integral transformation we get</pre><pre>|CF(t) = Integral_0^inf (i/t) * exp(-x) * pdfFun(i*x/t) dx|.</pre><pre>If we define the integrand as</pre><pre>|funCF(t,x) = (i/t) * exp(-x) * pdfFun(i*x/t)|,</pre><pre>then by using a stabilizing transformation from [0,inf] to [0,1], we can
+evaluate the CF by the following (well behaved) integral:</pre><pre>|CF(t) = Integral_0^1 2x/(1-x)^3 * funCF(t,(x/(1-x))^2) dx|.</pre><pre>cfX_PDF evaluates this integral by using the MATLAB built in function
+'integral', with precission specified by tolerance tol (default value is
+tol = 1e-6).</pre><p>SYNTAX:</p><p><tt>cf = cfX_PDF(t,pdfFun,tol)</tt></p><h2 id="43">III.11.a EXAMPLE CF from PDF of the Exponential distribution, mu = 1</h2><pre class="codeinput"> pdfFun = @(x) exp(-x);
+ t = linspace(-20,20,2^10+1)';
+ cf = cfX_PDF(t,pdfFun);
+ plot(t,real(cf),t,imag(cf));grid
+ title(<span class="string">'Characteristic function of the Exponential distribution'</span>)
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_51.png" alt=""> <h2 id="44">III.11.b EXAMPLE: CF from PDF of the LogNormal distribution, mu = 0, sigma = 1</h2><pre class="codeinput"> mu = 0;
+ sigma = 1;
+ pdfFun = @(x) exp(-0.5*((log(x)-mu)./sigma).^2)./(x.*sqrt(2*pi).*sigma);
+ t = linspace(-20,20,2^10+1)';
+ cf = cfX_PDF(t,pdfFun);
+ plot(t,real(cf),t,imag(cf));grid
+ title(<span class="string">'Characteristic function of the LogNormal distribution'</span>)
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_52.png" alt=""> <h2 id="45">III.11.c EXAMPLE: CDF/PDF of the LogNormal distribution, mu = 0, sigma = 1</h2><pre class="codeinput"> mu = 0;
+ sigma = 1;
+ pdfFun = @(x) exp(-0.5*((log(x)-mu)./sigma).^2)./(x.*sqrt(2*pi).*sigma);
+ cf = @(t) cfX_PDF(t,pdfFun);
+ clear <span class="string">options</span>
+ options.xMin = 0;
+ result = cf2DistGP(cf,[],[],options);
+ disp(result)
+</pre><pre class="codeoutput">                  x: [101&times;1 double]
+                cdf: [101&times;1 double]
+                pdf: [101&times;1 double]
+               prob: []
+                 qf: []
+       SixSigmaRule: 6
+                  N: 1024
+                 dt: 0.4299
+                  T: 440.2041
+      PrecisionCrit: 4.0356e-10
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 0
+              xMean: 1.6487
+               xStd: 2.1612
+               xMin: 0
+               xMax: 14.6159
+                 cf: @(t)cfX_PDF(t,pdfFun)
+              const: 0
+         isCompound: 0
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 0.0954
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_53.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_54.png" alt=""> <h2 id="46">III.11.d EXAMPLE: CF from PDF of the Weibull distribution, a = 1.5, b = 1</h2><pre class="codeinput"> a = 1.5;
+ b = 1;
+ pdfFun = @(x) (x./a).^(b-1) .* exp(-((x./a).^b)) .* b ./ a;
+ t = linspace(-20,20,2^10+1)';
+ tol = 1e-10;
+ cf = cfX_PDF(t,pdfFun,tol);
+ plot(t,real(cf),t,imag(cf));grid
+ title(<span class="string">'Characteristic function of the Weibull distribution'</span>)
+</pre><img vspace="5" hspace="5" src="EXAMPLE_03_NONNEGATIVE_55.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% CHARACTERISTIC FUNCTIONS OF SELECTED NONNEGATIVE CONTINUOUS (SEVERITY) DISTRIBUTIONS
+%  (c) 2016 Viktor Witkovsky, witkovsky@gmail.com
+%  Version: 15-Nov-2016
+
+%% *EXPONENTIAL DISTIBUTION*
+% |cfX_Exponential(t,lambda)| evaluates the characteristic function cf(t)
+% of the Exponential distribution with the parameter lambda (rate, lambda >
+% 0), i.e.   
+%
+% |cf(t) = cfX_Exponential(t,lambda) = lambda / (lambda - 1i*t)|
+%
+% For more details see WIKIPEDIA: 
+% <https://en.wikipedia.org/wiki/Exponential_distribution>
+%
+% SYNTAX:
+%
+% * |cf = cfX_Exponential(t,lambda)|
+
+clear 
+close all
+
+%% III.1.a EXAMPLE: CF of the Exponential distribution, lambda = 5
+%
+ lambda = 5;  
+ t = linspace(-50,50,501);
+ cf = cfX_Exponential(t,lambda);
+ figure; plot(t,real(cf),t,imag(cf)),grid
+ title('CF of the Exponential distribution with lambda = 5')
+
+%% III.1.b EXAMPLE: PDF/CDF of the Exponential distribution, lambda = 5
+%
+ lambda = 5;  
+ cf = @(t) cfX_Exponential(t,lambda);
+ x  = linspace(0,1.5,101);
+ clear options
+ options.xMin = 0;
+ options.SixSigmaRule = 8;
+ result = cf2DistGP(cf,x,[],options);
+ disp(result)
+ 
+%% III.1.c EXAMPLE: PDF/CDF of the compound Binomial-Exponential distribution
+%
+ n = 25;  
+ p = 0.3;
+ lambda = 5;
+ cfX  = @(t) cfX_Exponential(t,lambda);
+ cf   = @(t) cfN_Binomial(t,n,p,cfX);
+ x    = linspace(0,5,101);
+ prob = [0.9 0.95 0.99];
+ clear options
+ options.isCompound = true;
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+
+%% *FISHER-SNEDECOR F DISTIBUTION*
+% |cfX_FisherSnedecorF(t,df1,df2,tol)| evaluates the characteristic
+% function cf(t) of the Fisher-Snedecor F-distribution with the parameters
+% df1 and df2 (degrees of freedom, df1>=1, df2>=1) computed for real vector
+% argument t, i.e. 
+%
+% |cf(t) = cfX_FisherSnedecorF(t,df1,df2)  
+%        = (gamma(df1/2+df2/2)/gamma(df2/2)) * U(df1/2, 1-df2/2, -1i*(df2/df1)*t)|,
+%
+%  where U(a,b,z) denotes the confluent hypergeometric function of the
+%  second kind.  For more details see WIKIPEDIA: 
+%  <https://en.wikipedia.org/wiki/F-distribution> 
+%
+% SYNTAX:
+%
+% * |cf = cfX_FisherSnedecorF(df1,df2,t,tol)|
+
+%% III.2.a EXAMPLE: CF of the F-distribution with df1 = 3, df2 = 5
+%
+ df1 = 3;
+ df2 = 5;
+ t   = linspace(-30,30,2^10+1)';
+ cf  = cfX_FisherSnedecorF(t,df1,df2);
+ plot(t,real(cf),t,imag(cf));grid
+ title('Characteristic function of the F-distribution')
+
+%% III.2.b EXAMPLE: PDF/CDF of the F-distribution with df1 = 3, df2 = 5
+%
+ df1 = 3;
+ df2 = 5;
+ x = linspace(0,25,101);
+ prob = [0.9 0.95 0.99];
+ cf = @(t) cfX_FisherSnedecorF(t,df1,df2);
+ clear options
+ options.xMin = 0;
+ options.xMax = 500;
+ options.N  = 2^15;
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+
+%% III.2.c EXAMPLE: PDF/CDF of the compound Binomial-Fisher-Snedecor distribution
+%
+ n = 25;  
+ p = 0.3;
+ df1 = 3;
+ df2 = 5;
+ cfX = @(t) cfX_FisherSnedecorF(t,df1,df2);
+ cf = @(t) cfN_Binomial(t,n,p,cfX);
+ x = linspace(0,80,101);
+ prob = [0.9 0.95 0.99];
+ clear options
+ options.isCompound = true;
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+ 
+%% *GAMMA DISTRIBUTION*
+% |cfX_Gamma(t,alpha,beta)| evaluates the characteristic function cf(t) of 
+% the GAMMA distribution with the parameters alpha (shape, alpha > 0) and
+% beta (rate, beta > 0), i.e.
+%
+% |cf(t) = cfX_Gamma(t,alpha,beta) = (1 - 1i*t / beta)^(-alpha)|;
+%
+% For more details see WIKIPEDIA: 
+% <https://en.wikipedia.org/wiki/Gamma_distribution>
+%
+% SYNTAX:
+%
+% * |cf = cfX_Gamma(t,alpha,beta)|
+
+%% III.3.a EXAMPLE: CF of the Gamma distribution, alpha = 2, beta = 2
+%
+ alpha = 2;
+ beta = 2;
+ t = linspace(-20,20,501);
+ cf = cfX_Gamma(t,alpha,beta);
+ figure; plot(t,real(cf),t,imag(cf)),grid
+ title('CF of the Gamma distribution with alpha = 2, beta = 2')
+
+%% III.3.b EXAMPLE: PDF/CDF of the Gamma distribution, alpha = 2, beta = 2
+%
+ alpha = 2;
+ beta = 2;
+ x = linspace(0,5,101);
+ prob = [0.9 0.95 0.99];
+ clear options
+ options.xMin = 0;
+ options.N = 2^14;
+ cf = @(t) cfX_Gamma(t,alpha,beta);
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+ 
+%% III.3.c EXAMPLE: PDF/CDF of the compound Binomial-Gamma distribution
+%
+ n = 25;  
+ p = 0.3;
+ alpha = 2;
+ beta = 2;
+ cfX = @(t)  cfX_Gamma(t,alpha,beta);
+ cf = @(t) cfN_Binomial(t,n,p,cfX);
+ x = linspace(0,25,101);
+ prob = [0.9 0.95 0.99];
+ clear options
+ options.isCompound = true;
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+ 
+%% *GENERALIZED PARETO DISTRIBUTION*
+% |cfX_GeneralizedPareto(t,xi,sigma,theta)| Computes the characteristic
+% function cf(t) of the Generalized Pareto distribution with parameters xi
+% (shape, here xi >= 0), sigma (scale, sigma > 0), and theta (threshold,
+% theta >= 0), for real (vector) argument t, i.e.  
+%
+% |cf(t) = cfX_GeneralizedPareto(t,xi,sigma,theta)|;
+%
+% The closed-form analytic expression of the characteristic function of the
+% Generalized Pareto distribution is unknown. Thus, the characteristic
+% function is numerically evalueted from its definition. 
+% For more details see also WIKIPEDIA:    
+% <https://en.wikipedia.org/wiki/Generalized_Pareto_distribution>
+%  
+% SYNTAX:
+%
+% * |cf = cfX_GeneralizedPareto(t,xi,sigma,theta)|
+% * |cf = cfX_GeneralizedPareto(t,xi,sigma,theta,tol)|
+
+%% III.4.a EXAMPLE: CF of the GeneralizedPareto distribution
+%
+ xi = 1;
+ sigma = 1;
+ theta = 1;
+ t = linspace(-20,20,2^10+1)';
+ cf = cfX_GeneralizedPareto(t,xi,sigma,theta);
+ plot(t,real(cf),t,imag(cf));grid
+ title('Characteristic function of the GeneralizedPareto distribution')
+
+%% III.4.b EXAMPLE: CDF/PDF of the  GeneralizedPareto distribution
+%
+ xi = 1;
+ sigma = 1;
+ theta = 0;
+ x = linspace(0,300,101);
+ prob = [0.9 0.95 0.99];
+ clear options
+ options.N = 2^15;
+ options.SixSigmaRule = 15;
+ cf = @(t) cfX_GeneralizedPareto(t,xi,sigma,theta);
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+
+%% III.4.c EXAMPLE: PDF/CDF of the compound Poisson-GeneralizedPareto distribution
+%
+ xi = 1;
+ sigma = 1;
+ theta = 0;
+ lambda = 10;
+ cfX = @(t) cfX_GeneralizedPareto(t,xi,sigma,theta);
+ cf = @(t) cfN_Poisson(t,lambda,cfX);
+ x = linspace(0,5000,101);
+ prob = [0.9 0.95 0.99];
+ clear options
+ clear options
+ options.isCompound = true;
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+  
+%% *CHISQUARED DISTRIBUTION*
+% |cfX_ChiSquared(t,df)| evaluates the characteristic function cf(t) of 
+% the CHI-SUQARED distribution with the parameter df (degrees of freedom,
+% df >= 1), i.e. 
+%
+% |cf(t) = cfX_ChiSquared(t,df) = (1 - 2i*t)^(-df/2) =
+%         = cfX_Gamma(t,alpha,beta) = cfX_Gamma(t,df/2,1/2)|;
+% For more details see WIKIPEDIA: 
+% <https://en.wikipedia.org/wiki/Chi-squared_distribution>
+%
+% SYNTAX:
+%
+% * |cf = cfX_ChiSquared(t,df)|
+
+%% III.5.a EXAMPLE: CF of the ChiSquared distribution, df = 1
+%
+ df = 1;
+ t = linspace(-50,50,501);
+ cf = cfX_ChiSquared(t,df);
+ figure; plot(t,real(cf),t,imag(cf)),grid
+ title('CF of the ChiSquared distribution with df = 1')
+
+%% III.5.b EXAMPLE: PDF/CDF of the ChiSquared distribution, df = 3
+%
+ df = 3;
+ x = linspace(0,15,101);
+ prob = [0.9 0.95 0.99];
+ cf = @(t) cfX_ChiSquared(t,df);
+ clear options
+ options.xMin = 0;
+ options.xMax = 22;
+ options.N = 2^14;
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+
+%% III.5.c EXAMPLE: PDF/CDF of the compound Binomial-ChiSquared distribution
+%
+ n = 25;  
+ p = 0.3;
+ df = 3;
+ cfX = @(t) cfX_ChiSquared(t,df);
+ cf = @(t) cfN_Binomial(t,n,p,cfX);
+ x = linspace(0,80,101);
+ prob = [0.9 0.95 0.99];
+ clear options
+ options.isCompound = true;
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+ 
+%% *LOG-LOGISTIC DISTRIBUTION*
+% |cfX_LogLogistic(t,alpha,beta)| computes the characteristic function
+% cf(t) of the LogLogistic distribution with parameters alpha (scale,
+% alpha > 0) and beta (shape, beta > 0), for real (vector) argument t, i.e.
+% 
+% |cf(t) = cfX_LogLogistic(t,alpha,beta)|;
+%
+% The closed-form analytic expression of the characteristic function of the
+% LogLogistic distribution is unknown. Thus, the characteristic function is
+% numerically evalueted from its definition. 
+% For more details see WIKIPEDIA:     
+% <https://en.wikipedia.org/wiki/Log-logistic_distribution>
+%  
+% SYNTAX:
+%
+% * |cf = cfX_LogLogistic(t,alpha,beta)|
+% * |cf = cfX_LogLogistic(t,alpha,beta,tol)|
+
+%% III.6.a EXAMPLE: CF of the Loglogistic distribution, alpha=1, beta=1
+%
+ alpha = 1;
+ beta = 1;
+ t = linspace(-20,20,2^10+1)';
+ cf = cfX_LogLogistic(t,alpha,beta);
+ plot(t,real(cf),t,imag(cf));grid
+ title('Characteristic function of the LogLogistic distribution')
+
+%% III.6.b EXAMPLE: CDF/PDF of the  Loglogistic distribution, alpha=1, beta=1
+%
+ alpha = 1;
+ beta = 1;
+ x = linspace(0,700,101);
+ prob = [0.9 0.95 0.99];
+ clear options
+ options.xMin = 0;
+ options.xMax = 1000;
+ options.N = 2^14;
+ cf = @(t) cfX_LogLogistic(t,alpha,beta);
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+ 
+%% III.6.c EXAMPLE: PDF/CDF of the compound Poisson-Loglogistic distribution
+%
+ alpha = 1;
+ beta = 1;
+ lambda = 10;
+ cfX = @(t)cfX_LogLogistic(t,alpha,beta);
+ cf = @(t) cfN_Poisson(t,lambda,cfX);
+ x = linspace(0,3500,101);
+ prob = [0.9 0.95 0.99];
+ clear options
+ options.isCompound = true;
+ result = cf2DistGP(cf,x,prob,options);
+  disp(result)
+  
+%% *LOG-NORMAL DISTRIBUTION*
+% |cfX_LogNormal(t,mu,sigma)| computes the characteristic function cf(t) of
+% the LogNormal distribution with parameters mu (real) and sigma > 0,
+% computed for real (vector) argument t, i.e.
+%
+% |cf(t) = cfX_LogNormal(t,mu,sigma)|;
+% For more details see WIKIPEDIA:
+% <https://en.wikipedia.org/wiki/Log-normal_distribution>
+%  
+% SYNTAX:
+%
+% * |cf = cfX_LogNormal(t,mu,sigma)|
+% * |cf = cfX_LogNormal(t,mu,sigma,tol)|
+
+%% III.7.a EXAMPLE: CF of the LogNormal distribution, mu = 0, sigma = 1
+%
+ mu = 0;
+ sigma = 1;
+ t = linspace(-20,20,2^10+1)';
+ cf = cfX_LogNormal(t,mu,sigma);
+ plot(t,real(cf),t,imag(cf));grid
+ title('Characteristic function of the LogNormal distribution')
+
+%% III.7.b EXAMPLE: CDF/PDF of the LogNormal distribution, mu = 0,sigma = 1
+%
+ mu = 0;
+ sigma = 1;
+ x = linspace(0,15,101);
+ prob = [0.9 0.95 0.99];
+ clear options
+ options.xMin = 0;
+ options.N = 2^13;
+ options.SixSigmaRule = 8;
+ cf = @(t) cfX_LogNormal(t,mu,sigma);
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+
+%% III.7.c EXAMPLE: PDF/CDF of the compound Poisson-LogNormal distribution
+%
+ mu = 0;
+ sigma = 1;
+ lambda = 10;
+ cfX = @(t)cfX_LogNormal(t,mu,sigma);
+ cf = @(t) cfN_Poisson(t,lambda,cfX);
+ x = linspace(0,70,101);
+ prob = [0.9 0.95 0.99];
+ clear options
+ options.isCompound = true;
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+
+%% *PARETO DISTRIBUTION*
+% |cfX_Pareto(t,alpha,sigma,type,tol)| computes the characteristic function
+% of the Pareto distribution with parameters alpha > 0 (shape), sigma > 0
+% (scale, sometimes denoted by x_m - which is the minimum value of the
+% distribution support, i.e. x >= x_m), and the parameter type ('typeI' or
+% 'typeII'), computed for real vector argument t, i.e.
+%
+% |cf(t) = cfX_Pareto(t,alpha,sigma,type)|;
+%
+% For more details see WIKIPEDIA:
+% <https://en.wikipedia.org/wiki/Pareto_distribution>
+%
+% SYNTAX:
+%
+% * |cf = cfX_Pareto(t,alpha)|
+% * |cf = cfX_Pareto(t,alpha,sigma,type)|
+%
+% FURTHER DETAILS: 
+%
+% The Pareto Type I distribution (also known as European Pareto) is
+% characterized by a scale parameter sigma and a shape parameter alpha,
+% which is known as the tail index. The pdf of X is defined by pdf_X(x) =
+% alpha * sigma^alpha / x^(alpha+1), for x >= sigma, otherwise it is zero.
+% When this distribution is used to model the distribution of wealth, then
+% the parameter alpha is called the Pareto index.
+%
+% The Type II Pareto distribution (also known as Lomax or American Pareto
+% distribution, type = 'typeII' or type = 'Amer') is shifted to zero.
+% The default type is 'TypeI' (type = 'typeI' or type = 'Eur').
+% The CFs of the Pareto type distributions are defined by
+% cf_{typeI}(t)  = alpha * exp(1i*sigma*t) * U(1,1-alpha,-1i*sigma*t)
+% cf_{typeII}(t) = alpha * U(1,1-alpha,-1i*sigma*t)
+%
+% A special case of Pareto TypeI distribution is the Pareto 1 distribution
+% with sigma = 1, cf_{1}(t) = alpha * exp(1i*t) * U(1,1-alpha,-1i*t), where
+% U(a,b,z) denotes the confluent hypergeometric function of the second
+% kind. 
+
+%% III.8.a EXAMPLE: CF of the Pareto 1 distribution, alpha = 3/2
+%
+ alpha = 3/2;  
+ t = linspace(-10,10,1001);
+ cf = cfX_Pareto(t,alpha);
+ figure; plot(t,real(cf),t,imag(cf)),grid
+ title('CF of the Pareto 1 distribution with alpha = 3/2')
+
+%% III.8.b EXAMPLE: CF of the Pareto Type I/EUR distribution
+%
+ alpha = 3/2;  
+ sigma  = 2;
+ type = 'eur';
+ t = linspace(-10,10,1001);
+ cf = cfX_Pareto(t,alpha,sigma,type);
+ figure; plot(t,real(cf),t,imag(cf)),grid
+ title('CF of the Pareto EUR distribution with alpha = 3/2, sigma = 2')
+
+%% III.8.c EXAMPLE: CF of the Pareto Type II/AMER distribution
+%
+ alpha = 3/2;  
+ sigma  = 2;
+ type = 'amer';
+ t = linspace(-10,10,1001);
+ cf = cfX_Pareto(t,alpha,sigma,type);
+ figure; plot(t,real(cf),t,imag(cf)),grid
+ title('CF of the Pareto AMER distribution with alpha = 3/2, sigma = 2')
+
+%% III.8.d EXAMPLE: PDF/CDF of the compound Poisson-Pareto distribution
+%
+ alpha = 3/2;  
+ sigma  = 2;
+ type = 'eur';
+ lambda = 10;
+ cfX = @(t) cfX_Pareto(t,alpha,sigma,type);
+ cf = @(t) cfN_Poisson(t,lambda,cfX);
+ x = linspace(0,500,101);
+ prob = [0.9 0.95 0.99];
+ clear options
+ options.isCompound = true;
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+
+%% *PEARSON TYPE VI DISTRIBUTION*
+% |cfX_PearsonVI(t,alpha,beta)| omputes the characteristic function of the
+% Pearson type VI distribution with parameters alpha > 0 (shape) and beta >
+% 0 (scale), computed for real vector argument t, i.e. 
+%
+% |cf(t) = cfX_PearsonVI(t,alpha,beta)
+%         = (gamma(alpha+beta)./gamma(beta)) .* U(alpha,1-beta,-1i*t)|
+%
+% where U(a,b,z) denotes the confluent hypergeometric function of the
+% second kind. For more detail see WIKIPEDIA:
+% <https://en.wikipedia.org/wiki/Pearson_distribution>
+%
+% SYNTAX:
+%
+% * |cf = cfX_PearsonVI(t,alpha,beta)|
+
+%% III.9.a EXAMPLE: CF of the Pearson Type VI distribution
+%
+ alpha = 3/2;
+ beta = 2/3;
+ t = linspace(-10,10,1001);
+ cf = cfX_PearsonVI(t,alpha,beta);
+ figure; plot(t,real(cf),t,imag(cf)),grid
+ title('CF of the Pearson Type VI distribution with alpha = 3/2, beta = 2/3')
+
+%% III.9.b EXAMPLE: PDF/CDF of the Pearson Type VI distribution
+%
+ alpha = 3/2;
+ beta = 2/3;
+ x = linspace(0,200,101);
+ prob = [0.9 0.95 0.99];
+ clear options
+ options.xMin = 0;
+ options.N = 2^14;
+ cf = @(t) cfX_PearsonVI(t,alpha,beta);
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+ 
+%% III.9.c EXAMPLE: PDF/CDF of the compound Binomial-Pearson Type VI distribution
+%
+ n = 25;  
+ p = 0.3;
+ alpha = 3/2;
+ beta = 2/3;
+ cfX = @(t) cfX_PearsonVI(t,alpha,beta);
+ cf = @(t) cfN_Binomial(t,n,p,cfX);
+ x = linspace(0,10000,101);
+ prob = [0.9 0.95 0.99];
+ clear options
+ options.isCompound = true;
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+ 
+%% *WEIBULL DISTRIBUTION*
+% |cfX_Weibull(t,alpha,beta)| computes the characteristic function cf(t)
+% of the Weibull distribution with the parameters alpha(scale parameter,
+% elsewhere denoted also as lambda, alpha > 0) and beta (shape parameter,
+% elsewhere denoted as k, beta > 0), for real (vector) argument t, i.e.
+%
+% |cf(t) = cfX_Weibull(t,alpha,beta);|
+%
+% The closed-form analytic expression of the characteristic function of the
+% Weibull distribution is unknown. The series expansion of the CF, valid
+% for abs(t)<1, is known and given, e.g. in WIKIPEDIA. 
+% 
+% Thus, for abs(t)<1 the CF is evalueted from its series expansion, and for
+% abs(t)>=1 from its definition. For more details see WIKIPEDIA:  
+% <https://en.wikipedia.org/wiki/Weibull_distribution>
+%  
+% SYNTAX:
+%
+% * |cf = cfX_Weibull(t,alpha,beta)|
+% * |cf = cfX_Weibull(t,alpha,beta,tol)|
+%
+% REMARK (Caution Notice)
+%
+% This implementation of the algorithm is experimental. It DOES NOT WORK
+% PROPERLY for all parameters!!!!   
+
+%% III.10.a EXAMPLE CF of the Weibull distribution, alpha=1, beta=1
+%
+ alpha = 1;
+ beta = 1;
+ t = linspace(-20,20,2^10+1)';
+ cf = cfX_Weibull(t,alpha,beta);
+ plot(t,real(cf),t,imag(cf));grid
+ title('Characteristic function of the Weibull distribution')
+
+%% III.10.b EXAMPLE: CDF/PDF of the  Weibull distribution, alpha=1, beta=1
+%
+ alpha = 1;
+ beta = 1;
+ x = linspace(0,7,101);
+ prob = [0.9 0.95 0.99];
+ clear options
+ options.xMin = 0;
+ options.N = 2^10;
+ cf = @(t) cfX_Weibull(t,alpha,beta);
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+ 
+%% III.10.c EXAMPLE: PDF/CDF of the compound Poisson-Weibull distribution
+%
+ alpha = 1;
+ beta = 1;
+ lambda = 10;
+ cfX = @(t)cfX_Weibull(t,alpha,beta);
+ cf = @(t) cfN_Poisson(t,lambda,cfX);
+ x = linspace(0,35,101);
+ prob = [0.9 0.95 0.99];
+ clear options
+ options.isCompound = true;
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+ 
+%% *CHARACTERISTIC FUNCTION FROM PDF*
+% |cfX_PDF(t,pdfFun,tol)| calculates the characteristic function of the
+% continuos distribution defined by its PDF function, pdfFun = @(x) pdf(x),
+% here we assume x>=0, computed for real  vector argument t.
+%
+% DEFINITION:
+%
+%  cfX_PDF is based on the standard integral representation of the
+%  characteristic function of the continuous distribution defined by its 
+%  PDF (here PDF is represented by the function handle pdfFun(x) defined 
+%  for x >= 0). Then, 
+%
+%  |CF(t) = Integral_0^inf exp(i*t*x) * pdfFun(x) dx|.
+%
+%  By using the half-space Fourier integral transformation we get
+%
+%  |CF(t) = Integral_0^inf (i/t) * exp(-x) * pdfFun(i*x/t) dx|.
+%
+%  If we define the integrand as 
+%
+%  |funCF(t,x) = (i/t) * exp(-x) * pdfFun(i*x/t)|,
+%
+%  then by using a stabilizing transformation from [0,inf] to [0,1], we can
+%  evaluate the CF by the following (well behaved) integral:
+%
+%  |CF(t) = Integral_0^1 2x/(1-x)^3 * funCF(t,(x/(1-x))^2) dx|.
+%
+%  cfX_PDF evaluates this integral by using the MATLAB built in function
+%  'integral', with precission specified by tolerance tol (default value is 
+%  tol = 1e-6).
+%
+% SYNTAX:
+%
+% |cf = cfX_PDF(t,pdfFun,tol)|
+
+%% III.11.a EXAMPLE CF from PDF of the Exponential distribution, mu = 1
+%
+ pdfFun = @(x) exp(-x);
+ t = linspace(-20,20,2^10+1)';
+ cf = cfX_PDF(t,pdfFun);
+ plot(t,real(cf),t,imag(cf));grid
+ title('Characteristic function of the Exponential distribution')
+
+%% III.11.b EXAMPLE: CF from PDF of the LogNormal distribution, mu = 0, sigma = 1
+%
+ mu = 0;
+ sigma = 1;
+ pdfFun = @(x) exp(-0.5*((log(x)-mu)./sigma).^2)./(x.*sqrt(2*pi).*sigma);
+ t = linspace(-20,20,2^10+1)';
+ cf = cfX_PDF(t,pdfFun);
+ plot(t,real(cf),t,imag(cf));grid
+ title('Characteristic function of the LogNormal distribution')
+
+%% III.11.c EXAMPLE: CDF/PDF of the LogNormal distribution, mu = 0, sigma = 1
+%
+ mu = 0;
+ sigma = 1; 
+ pdfFun = @(x) exp(-0.5*((log(x)-mu)./sigma).^2)./(x.*sqrt(2*pi).*sigma);
+ cf = @(t) cfX_PDF(t,pdfFun);
+ clear options
+ options.xMin = 0;
+ result = cf2DistGP(cf,[],[],options);
+ disp(result)
+ 
+%% III.11.d EXAMPLE: CF from PDF of the Weibull distribution, a = 1.5, b = 1
+%
+ a = 1.5;
+ b = 1;
+ pdfFun = @(x) (x./a).^(b-1) .* exp(-((x./a).^b)) .* b ./ a;
+ t = linspace(-20,20,2^10+1)';
+ tol = 1e-10;
+ cf = cfX_PDF(t,pdfFun,tol);
+ plot(t,real(cf),t,imag(cf));grid
+ title('Characteristic function of the Weibull distribution')
+##### SOURCE END #####
+--></body></html>

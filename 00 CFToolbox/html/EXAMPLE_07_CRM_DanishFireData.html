@@ -1,0 +1,364 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>EXAMPLE_07_CRM_DanishFireData</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-01-10"><meta name="DC.source" content="EXAMPLE_07_CRM_DanishFireData.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h2>Contents</h2><div><ul><li><a href="#1">EMPIRICAL CRM DISTRIBUTION (The Danish Insurance Data)</a></li><li><a href="#2">The Danish Insurance Data</a></li><li><a href="#3"><b>Empirical Compound Distribution</b></a></li><li><a href="#4">Empirical Characteristic Function (ECF) of the severity distribution</a></li><li><a href="#5">Empirical Characteristic Function (ECF) of the frequency distribution</a></li><li><a href="#6">Empirical Characteristic Function (ECF)of the compound distribution</a></li><li><a href="#7">PDF/CDF by numerical inversion of the compound ECF</a></li><li><a href="#8">PLOT CRM Data Matrix</a></li></ul></div><h2 id="1">EMPIRICAL CRM DISTRIBUTION (The Danish Insurance Data)</h2><pre>(c) 2016 Viktor Witkovsky, witkovsky@gmail.com
+Version: 15-Nov-2016</pre><pre class="codeinput"><span class="comment">% Data by Alexander McNeil: http://www.macs.hw.ac.uk/~mcneil/data.html</span>
+<span class="comment">%</span>
+<span class="comment">% The dataset is comprised of Danish fire losses analyzed in McNeil (1997).</span>
+<span class="comment">% These data represent Danish fire losses in million Danish Krones and were</span>
+<span class="comment">% collected by a Danish reinsurance company. The dataset contains</span>
+<span class="comment">% individual losses above 1 million Danish Krones, a total of 2167</span>
+<span class="comment">% individual losses, covering the period from January 3, 1980 to December</span>
+<span class="comment">% 31, 1990. The data is adjusted for inflation to reflect 1985 values. The</span>
+<span class="comment">% dataset can be found in the R packages fEcofin and fExtremes. These data</span>
+<span class="comment">% are considered in Resnick (1997), Cooray and Ananda (2005), and</span>
+<span class="comment">% DellAquila and Embrechts (2006), among others.</span>
+<span class="comment">%</span>
+
+clear
+close <span class="string">all</span>
+</pre><h2 id="2">The Danish Insurance Data</h2><pre class="codeinput">load(<span class="string">'DanishFireData.mat'</span>)
+
+<span class="comment">% Histogram</span>
+figure1 = figure;
+axes1 = axes(<span class="string">'Parent'</span>,figure1);
+hist(log10(Severity),50);
+xlim(axes1,[0 3]);
+set(axes1,<span class="string">'CLim'</span>,[1 3],<span class="string">'XGrid'</span>,<span class="string">'on'</span>,<span class="keyword">...</span>
+    <span class="string">'XTick'</span>,[0  1 2  3],<span class="keyword">...</span>
+    <span class="string">'XTickLabel'</span>,{<span class="string">'1'</span>,<span class="string">'10'</span>,<span class="string">'100'</span>,<span class="string">'1000'</span>});
+title(<span class="string">'Histogram of Danish insurance data: Fire losses from 1980 to 1990'</span>)
+xlabel(<span class="string">'Claim size (in millions DKK)'</span>)
+ylabel(<span class="string">'Count'</span>)
+</pre><img vspace="5" hspace="5" src="EXAMPLE_07_CRM_DanishFireData_01.png" alt=""> <h2 id="3"><b>Empirical Compound Distribution</b></h2><h2 id="4">Empirical Characteristic Function (ECF) of the severity distribution</h2><pre class="codeinput">cfX = @(t) cfE_DiracMixture(t,Severity);
+
+t = linspace(-25,25,501);
+figure
+plot(t, real(cfX(t)),t,imag(cfX(t)))
+axis([-25,25,-1,1]);
+title(<span class="string">'ECF of the severity distribution'</span>)
+xlabel(<span class="string">'t'</span>)
+ylabel(<span class="string">'CF'</span>)
+grid <span class="string">on</span>
+</pre><img vspace="5" hspace="5" src="EXAMPLE_07_CRM_DanishFireData_02.png" alt=""> <h2 id="5">Empirical Characteristic Function (ECF) of the frequency distribution</h2><pre class="codeinput">cfN = @(t) cfE_DiracMixture(t,Frequency);
+
+t = linspace(-0.5,0.5,501);
+figure
+plot(t, real(cfN(t)),t,imag(cfN(t)))
+axis([-0.5,0.5,-1,1]);
+title(<span class="string">'ECF of the frequency distribution'</span>)
+xlabel(<span class="string">'t'</span>)
+ylabel(<span class="string">'CF'</span>)
+grid <span class="string">on</span>
+</pre><img vspace="5" hspace="5" src="EXAMPLE_07_CRM_DanishFireData_03.png" alt=""> <h2 id="6">Empirical Characteristic Function (ECF)of the compound distribution</h2><pre class="codeinput">cf   = @(t) cfN(-1i*log(cfX(t)));
+
+t = linspace(-.05,.05,501);
+figure
+plot(t, real(cf(t)),t,imag(cf(t)))
+axis([-.05,.05,-1,1]);
+title(<span class="string">'ECF of the compound distribution'</span>)
+xlabel(<span class="string">'t'</span>)
+ylabel(<span class="string">'CF'</span>)
+grid <span class="string">on</span>
+</pre><img vspace="5" hspace="5" src="EXAMPLE_07_CRM_DanishFireData_04.png" alt=""> <h2 id="7">PDF/CDF by numerical inversion of the compound ECF</h2><pre>Empirical Aggregate Loss Distribution / Collective Risk Distribution of
+the Danish Insurance Data</pre><pre class="codeinput">prob = [0.9 0.95 0.99];
+x    = linspace(0,2000,201)';
+clear <span class="string">options</span>
+options.isCompound = true;
+result = cf2DistGP(cf,x,prob,options);
+disp(result)
+</pre><pre class="codeoutput">                  x: [201&times;1 double]
+                cdf: [201&times;1 double]
+                pdf: [201&times;1 double]
+               prob: [9.0000e-01 9.5000e-01 9.9000e-01]
+                 qf: [8.7294e+02 9.5359e+02 1.1128e+03]
+       SixSigmaRule: 10
+                  N: 16384
+                 dt: 2.8201e-03
+                  T: 4.6205e+01
+      PrecisionCrit: 2.3491e-256
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 1
+              xMean: 6.6686e+02
+               xStd: 1.5611e+02
+               xMin: 0
+               xMax: 2.2280e+03
+                 cf: @(t)cfN(-1i*log(cfX(t)))
+              const: 2.0932e-247
+         isCompound: 1
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 2.1982e-03
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_07_CRM_DanishFireData_05.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_07_CRM_DanishFireData_06.png" alt=""> <h2 id="8">PLOT CRM Data Matrix</h2><pre class="codeinput"><span class="comment">% Histogram of insurance data: Danish fire losses 1980 -- 1990</span>
+axes1 = subplot(2,3,1);
+hist(log10(Severity),50);
+xlim(axes1,[0 3]);
+set(axes1,<span class="string">'CLim'</span>,[1 3],<span class="string">'XGrid'</span>,<span class="string">'on'</span>,<span class="keyword">...</span>
+    <span class="string">'XTick'</span>,[0 1  2 3],<span class="keyword">...</span>
+    <span class="string">'XTickLabel'</span>,{<span class="string">'1'</span>,<span class="string">'10'</span>,<span class="string">'100'</span>,<span class="string">'1000'</span>});
+title(<span class="string">'Insurance data: Danish fire losses 1980 -- 1990'</span>)
+xlabel(<span class="string">'Claim loss (millions DKK)'</span>)
+ylabel(<span class="string">'count'</span>)
+
+<span class="comment">% Aggregate loss ditribution (PDF)</span>
+axes2 = subplot(2,3,2);
+plot(x,result.pdf,<span class="string">'Linewidth'</span>,2)
+grid <span class="string">on</span>
+title(<span class="string">'Aggregate loss distribution'</span>)
+xlabel(<span class="string">'Aggregate loss (in millions DKK)'</span>)
+ylabel(<span class="string">'PDF'</span>)
+
+<span class="comment">% Aggregate loss distribution (CDF)</span>
+axes3 = subplot(2,3,3);
+plot(x,result.cdf,<span class="string">'Linewidth'</span>,2);
+grid <span class="string">on</span>
+title(<span class="string">'Aggregate loss distribution'</span>)
+xlabel(<span class="string">'Aggregate loss (in millions DKK)'</span>)
+ylabel(<span class="string">'CDF'</span>)
+
+<span class="comment">% ECF of the severity distribution</span>
+axes4 = subplot(2,3,4);
+t = linspace(-25,25,501);
+plot(t, real(cfX(t)),t,imag(cfX(t)))
+axis([-25,25,-1,1]);
+title(<span class="string">'ECF of the severity distribution'</span>)
+xlabel(<span class="string">'t'</span>)
+ylabel(<span class="string">'CF'</span>)
+set(axes4,<span class="string">'YGrid'</span>,<span class="string">'on'</span>);
+
+<span class="comment">% ECF of the frequency distribution</span>
+axes5 = subplot(2,3,5);
+t = linspace(-0.5,0.5,501);
+plot(t, real(cfN(t)),t,imag(cfN(t)))
+axis([-0.5,0.5,-1,1]);
+title(<span class="string">'ECF of the frequency distribution'</span>)
+xlabel(<span class="string">'t'</span>)
+ylabel(<span class="string">'CF'</span>)
+set(axes5,<span class="string">'YGrid'</span>,<span class="string">'on'</span>);
+
+<span class="comment">% ECF of the compound distribution</span>
+axes6 = subplot(2,3,6);
+t = linspace(-.05,.05,501);
+plot(t, real(cf(t)),t,imag(cf(t)))
+axis([-.05,.05,-1,1]);
+title(<span class="string">'ECF of the compound distribution'</span>)
+xlabel(<span class="string">'t'</span>)
+ylabel(<span class="string">'CF'</span>)
+set(axes6,<span class="string">'YGrid'</span>,<span class="string">'on'</span>);
+</pre><img vspace="5" hspace="5" src="EXAMPLE_07_CRM_DanishFireData_07.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% EMPIRICAL CRM DISTRIBUTION (The Danish Insurance Data)
+%  (c) 2016 Viktor Witkovsky, witkovsky@gmail.com
+%  Version: 15-Nov-2016
+
+% Data by Alexander McNeil: http://www.macs.hw.ac.uk/~mcneil/data.html
+%
+% The dataset is comprised of Danish fire losses analyzed in McNeil (1997).
+% These data represent Danish fire losses in million Danish Krones and were
+% collected by a Danish reinsurance company. The dataset contains
+% individual losses above 1 million Danish Krones, a total of 2167
+% individual losses, covering the period from January 3, 1980 to December
+% 31, 1990. The data is adjusted for inflation to reflect 1985 values. The
+% dataset can be found in the R packages fEcofin and fExtremes. These data
+% are considered in Resnick (1997), Cooray and Ananda (2005), and
+% DellAquila and Embrechts (2006), among others.
+%
+
+clear
+close all
+
+%% The Danish Insurance Data
+load('DanishFireData.mat')
+
+% Histogram
+figure1 = figure;
+axes1 = axes('Parent',figure1);
+hist(log10(Severity),50);
+xlim(axes1,[0 3]);
+set(axes1,'CLim',[1 3],'XGrid','on',...
+    'XTick',[0  1 2  3],...
+    'XTickLabel',{'1','10','100','1000'});
+title('Histogram of Danish insurance data: Fire losses from 1980 to 1990')
+xlabel('Claim size (in millions DKK)')
+ylabel('Count')
+
+%% *Empirical Compound Distribution*
+
+%% Empirical Characteristic Function (ECF) of the severity distribution
+
+cfX = @(t) cfE_DiracMixture(t,Severity); 
+
+t = linspace(-25,25,501);
+figure
+plot(t, real(cfX(t)),t,imag(cfX(t)))
+axis([-25,25,-1,1]);
+title('ECF of the severity distribution')
+xlabel('t')
+ylabel('CF')
+grid on
+
+%% Empirical Characteristic Function (ECF) of the frequency distribution
+
+cfN = @(t) cfE_DiracMixture(t,Frequency);
+
+t = linspace(-0.5,0.5,501);
+figure
+plot(t, real(cfN(t)),t,imag(cfN(t)))
+axis([-0.5,0.5,-1,1]);
+title('ECF of the frequency distribution')
+xlabel('t')
+ylabel('CF')
+grid on
+
+%% Empirical Characteristic Function (ECF)of the compound distribution
+
+cf   = @(t) cfN(-1i*log(cfX(t)));
+
+t = linspace(-.05,.05,501);
+figure
+plot(t, real(cf(t)),t,imag(cf(t)))
+axis([-.05,.05,-1,1]);
+title('ECF of the compound distribution')
+xlabel('t')
+ylabel('CF')
+grid on
+
+%% PDF/CDF by numerical inversion of the compound ECF
+%  Empirical Aggregate Loss Distribution / Collective Risk Distribution of
+%  the Danish Insurance Data
+
+prob = [0.9 0.95 0.99];
+x    = linspace(0,2000,201)';
+clear options
+options.isCompound = true;
+result = cf2DistGP(cf,x,prob,options);
+disp(result)
+
+%% PLOT CRM Data Matrix
+
+% Histogram of insurance data: Danish fire losses 1980 REPLACE_WITH_DASH_DASH 1990
+axes1 = subplot(2,3,1);
+hist(log10(Severity),50);
+xlim(axes1,[0 3]);
+set(axes1,'CLim',[1 3],'XGrid','on',...
+    'XTick',[0 1  2 3],...
+    'XTickLabel',{'1','10','100','1000'});
+title('Insurance data: Danish fire losses 1980 REPLACE_WITH_DASH_DASH 1990')
+xlabel('Claim loss (millions DKK)')
+ylabel('count')
+
+% Aggregate loss ditribution (PDF)
+axes2 = subplot(2,3,2);
+plot(x,result.pdf,'Linewidth',2)
+grid on
+title('Aggregate loss distribution')
+xlabel('Aggregate loss (in millions DKK)')
+ylabel('PDF')
+
+% Aggregate loss distribution (CDF)
+axes3 = subplot(2,3,3);
+plot(x,result.cdf,'Linewidth',2);
+grid on
+title('Aggregate loss distribution')
+xlabel('Aggregate loss (in millions DKK)')
+ylabel('CDF')
+
+% ECF of the severity distribution
+axes4 = subplot(2,3,4);
+t = linspace(-25,25,501);
+plot(t, real(cfX(t)),t,imag(cfX(t)))
+axis([-25,25,-1,1]);
+title('ECF of the severity distribution')
+xlabel('t')
+ylabel('CF')
+set(axes4,'YGrid','on');
+
+% ECF of the frequency distribution
+axes5 = subplot(2,3,5);
+t = linspace(-0.5,0.5,501);
+plot(t, real(cfN(t)),t,imag(cfN(t)))
+axis([-0.5,0.5,-1,1]);
+title('ECF of the frequency distribution')
+xlabel('t')
+ylabel('CF')
+set(axes5,'YGrid','on');
+
+% ECF of the compound distribution
+axes6 = subplot(2,3,6);
+t = linspace(-.05,.05,501);
+plot(t, real(cf(t)),t,imag(cf(t)))
+axis([-.05,.05,-1,1]);
+title('ECF of the compound distribution')
+xlabel('t')
+ylabel('CF')
+set(axes6,'YGrid','on');
+
+##### SOURCE END #####
+--></body></html>

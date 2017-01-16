@@ -1,0 +1,248 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>EMPIRICAL CHARACTERISTIC FUNCTION</title><meta name="generator" content="MATLAB 9.1"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2017-01-10"><meta name="DC.source" content="EXAMPLE_04_EMPIRICAL.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><h1>EMPIRICAL CHARACTERISTIC FUNCTION</h1><!--introduction--><pre>(c) 2016 Viktor Witkovsky, witkovsky@gmail.com
+Version: 15-Nov-2016</pre><!--/introduction--><h2>Contents</h2><div><ul><li><a href="#1"><b>EMPIRICAL DISTRIBUTION</b></a></li><li><a href="#2">IV.1.a EXAMPLE: Empirical CF - a weighted mixture of Dirac RVs</a></li><li><a href="#3">IV.1.b EXAMPLE: Convolution of the ECF and the Gaussian kernel</a></li><li><a href="#4">IV.1.c EXAMPLE: CF of the compound Empirical-Empirical distribution</a></li><li><a href="#5">IV.1.d EXAMPLE: PDF/CDF of the compound Empirical-Empirical distribution</a></li><li><a href="#6"><i>END of the TOOLBOX</i></a></li></ul></div><h2 id="1"><b>EMPIRICAL DISTRIBUTION</b></h2><p>cfE_DiracMixture(t,coefs,weights,cfX) evaluates the characteristic function cf(t) of the weighted mixture of independent DIRAC variables, say Y (i.e. nonstochastic constants). In particular, cf(Y) = sum_{j=1}^n weights(j) * cf(coef(j) * X_j), where each X_j represents the Dirac random variable concentrated at the constant 1.</p><p>Hence, the empirical characteristic function (ECF) of the random sample X_1,...,X_n is equally weighted mixture of the characteristic functions of the Dirac random variables X_j concentrated at the observed values x_j, i.e. mixture of CFs given by cf_X_j (t) = e^(1i*t*x_j), i.e.  cf(t) = cfE_DiracMixture(t,data,1/n) = (1/n) * sum_{j=1}^n e^(1i*t*x_j); where data = (x_1,...,x_n).</p><p>cfE_DiracMixture(t,coefs,weights,cf_X) evaluates the compound characteristic function</p><p><tt>cf(t) = cfE_DiracMixture(-1i*log(cfX(t)),coefs,weights)         = sum_{j=1}^n weights(j) * cfX(t)^coefs(j);</tt></p><p>where cfX is function handle of the characteristic function cfX(t) of the random variable X (as e.g. another empirical CF based on observed data of X).</p><p>SYNTAX:</p><div><ul><li><tt>cf = cfE_DiracMixture(t,coefs,weights)</tt></li><li><tt>cf = cfE_DiracMixture(t,coefs,weights,cfX)</tt></li></ul></div><pre class="codeinput">clear
+close <span class="string">all</span>
+</pre><h2 id="2">IV.1.a EXAMPLE: Empirical CF - a weighted mixture of Dirac RVs</h2><pre class="codeinput"> rng(101);
+ n = 1000;
+ data = [normrnd(5,0.2,3*n,1); trnd(3,n,1); chi2rnd(1,n,1)];
+ t = linspace(-50,50,2^10);
+ weights = 1/length(data);
+ cf = cfE_DiracMixture(t,data,weights);
+ figure; plot(t,real(cf),t,imag(cf)),grid
+ title(<span class="string">'Empirical CF - CF of the mixture of Dirac random variables'</span>)
+</pre><img vspace="5" hspace="5" src="EXAMPLE_04_EMPIRICAL_01.png" alt=""> <h2 id="3">IV.1.b EXAMPLE: Convolution of the ECF and the Gaussian kernel</h2><pre class="codeinput"> rng(101);
+ n = 1000;
+ data = [normrnd(5,0.2,3*n,1); trnd(3,n,1); chi2rnd(1,n,1)];
+ bandwidth = 0.25;
+ cf_DATA   = @(t) cfE_DiracMixture(t,data,weights);
+ cf_KERNEL = @(t) exp(-(bandwidth*t).^2/2);
+ cf = @(t) cf_DATA(t) .* cf_KERNEL(t);
+ t = linspace(-50,50,2^10);
+ figure; plot(t,real(cf(t)),t,imag(cf(t))),grid
+ title(<span class="string">'Smoothed Empirical CF'</span>)
+ result = cf2DistGP(cf);
+ disp(result)
+</pre><pre class="codeoutput">                  x: [101&times;1 double]
+                cdf: [101&times;1 double]
+                pdf: [101&times;1 double]
+               prob: []
+                 qf: []
+       SixSigmaRule: 6
+                  N: 1024
+                 dt: 0.2143
+                  T: 219.4512
+      PrecisionCrit: 0
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 1
+              xMean: 3.2069
+               xStd: 2.4432
+               xMin: -11.4524
+               xMax: 17.8661
+                 cf: @(t)cf_DATA(t).*cf_KERNEL(t)
+              const: 0
+         isCompound: 0
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 0.1486
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_04_EMPIRICAL_02.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_04_EMPIRICAL_03.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_04_EMPIRICAL_04.png" alt=""> <h2 id="4">IV.1.c EXAMPLE: CF of the compound Empirical-Empirical distribution</h2><pre class="codeinput"> rng(101);
+ lambda = 25; nN = 10;
+ Ndata = poissrnd(lambda,1,nN);
+ mu = 0.1; sigma = 2; nX = 1500;
+ Xdata = lognrnd(mu,sigma,1,nX);
+ cfX = @(t) cfE_DiracMixture(t,Xdata,1/nX);
+ cf  = @(t) cfE_DiracMixture(t,Ndata,1/nN,cfX);
+ t = linspace(-0.2,0.2,2^10);
+ figure; plot(t,real(cf(t)),t,imag(cf(t))),grid
+ title(<span class="string">'Compound Empirical CF'</span>)
+</pre><img vspace="5" hspace="5" src="EXAMPLE_04_EMPIRICAL_05.png" alt=""> <h2 id="5">IV.1.d EXAMPLE: PDF/CDF of the compound Empirical-Empirical distribution</h2><pre class="codeinput"> x = linspace(0,1000,501);
+ prob = [0.9 0.95];
+ clear <span class="string">options</span>
+ options.N = 2^12;
+ options.xMin = 0;
+ options.SixSigmaRule = 10;
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+</pre><pre class="codeoutput">                  x: [1&times;501 double]
+                cdf: [1&times;501 double]
+                pdf: [1&times;501 double]
+               prob: [0.9000 0.9500]
+                 qf: [302.2570 374.6064]
+       SixSigmaRule: 10
+                  N: 4096
+                 dt: 0.0052
+                  T: 21.1406
+      PrecisionCrit: 1.1393e-27
+    myPrecisionCrit: 1.0000e-12
+      isPrecisionOK: 1
+              xMean: 168.5132
+               xStd: 104.8858
+               xMin: 0
+               xMax: 1.2174e+03
+                 cf: @(t)cfE_DiracMixture(t,Ndata,1/nN,cfX)
+              const: -3.4398e-39
+         isCompound: 0
+         isCircular: 0
+            details: [1&times;1 struct]
+            options: [1&times;1 struct]
+             tictoc: 6.9702e-04
+
+</pre><img vspace="5" hspace="5" src="EXAMPLE_04_EMPIRICAL_06.png" alt=""> <img vspace="5" hspace="5" src="EXAMPLE_04_EMPIRICAL_07.png" alt=""> <h2 id="6"><i>END of the TOOLBOX</i></h2><p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2016b</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%% EMPIRICAL CHARACTERISTIC FUNCTION
+%  (c) 2016 Viktor Witkovsky, witkovsky@gmail.com
+%  Version: 15-Nov-2016
+
+%% *EMPIRICAL DISTRIBUTION*
+% cfE_DiracMixture(t,coefs,weights,cfX) evaluates the characteristic
+% function cf(t) of the weighted mixture of independent DIRAC variables,
+% say Y (i.e. nonstochastic constants). In particular, cf(Y) = sum_{j=1}^n
+% weights(j) * cf(coef(j) * X_j), where each X_j represents the Dirac
+% random variable concentrated at the constant 1. 
+% 
+% Hence, the empirical characteristic function (ECF) of the random sample
+% X_1,...,X_n is equally weighted mixture of the characteristic functions
+% of the Dirac random variables X_j concentrated at the observed values
+% x_j, i.e. mixture of CFs given by cf_X_j (t) = e^(1i*t*x_j), i.e.
+%  cf(t) = cfE_DiracMixture(t,data,1/n) = (1/n) * sum_{j=1}^n e^(1i*t*x_j);
+% where data = (x_1,...,x_n). 
+%
+% cfE_DiracMixture(t,coefs,weights,cf_X) evaluates the compound
+% characteristic function 
+%
+% |cf(t) = cfE_DiracMixture(-1i*log(cfX(t)),coefs,weights)
+%         = sum_{j=1}^n weights(j) * cfX(t)^coefs(j);|
+%
+% where cfX is function handle of the characteristic function cfX(t) of the
+% random variable X (as e.g. another empirical CF based on observed data of
+% X).   
+%
+% SYNTAX:
+%
+% * |cf = cfE_DiracMixture(t,coefs,weights)|
+% * |cf = cfE_DiracMixture(t,coefs,weights,cfX)|
+
+clear
+close all
+
+%% IV.1.a EXAMPLE: Empirical CF - a weighted mixture of Dirac RVs
+%
+ rng(101);
+ n = 1000;
+ data = [normrnd(5,0.2,3*n,1); trnd(3,n,1); chi2rnd(1,n,1)];
+ t = linspace(-50,50,2^10);
+ weights = 1/length(data);
+ cf = cfE_DiracMixture(t,data,weights);
+ figure; plot(t,real(cf),t,imag(cf)),grid
+ title('Empirical CF - CF of the mixture of Dirac random variables')
+
+%% IV.1.b EXAMPLE: Convolution of the ECF and the Gaussian kernel
+%
+ rng(101);
+ n = 1000;
+ data = [normrnd(5,0.2,3*n,1); trnd(3,n,1); chi2rnd(1,n,1)];
+ bandwidth = 0.25;
+ cf_DATA   = @(t) cfE_DiracMixture(t,data,weights);
+ cf_KERNEL = @(t) exp(-(bandwidth*t).^2/2);
+ cf = @(t) cf_DATA(t) .* cf_KERNEL(t);
+ t = linspace(-50,50,2^10);
+ figure; plot(t,real(cf(t)),t,imag(cf(t))),grid
+ title('Smoothed Empirical CF')
+ result = cf2DistGP(cf);
+ disp(result)
+
+%% IV.1.c EXAMPLE: CF of the compound Empirical-Empirical distribution
+%
+ rng(101);
+ lambda = 25; nN = 10; 
+ Ndata = poissrnd(lambda,1,nN);
+ mu = 0.1; sigma = 2; nX = 1500; 
+ Xdata = lognrnd(mu,sigma,1,nX);
+ cfX = @(t) cfE_DiracMixture(t,Xdata,1/nX);
+ cf  = @(t) cfE_DiracMixture(t,Ndata,1/nN,cfX);
+ t = linspace(-0.2,0.2,2^10);
+ figure; plot(t,real(cf(t)),t,imag(cf(t))),grid
+ title('Compound Empirical CF')
+ 
+%% IV.1.d EXAMPLE: PDF/CDF of the compound Empirical-Empirical distribution
+%
+ x = linspace(0,1000,501);
+ prob = [0.9 0.95];
+ clear options
+ options.N = 2^12;
+ options.xMin = 0;
+ options.SixSigmaRule = 10;
+ result = cf2DistGP(cf,x,prob,options);
+ disp(result)
+ 
+ %% _END of the TOOLBOX_
+##### SOURCE END #####
+--></body></html>
