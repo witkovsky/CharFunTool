@@ -9,7 +9,7 @@
 clear
 
 %% Standard Normal (Gaussian) distribution
-N = 2^15;
+N = 2^10;
 
 % Chebpoints - nodes and weights of the Clenshaw-Curtis quadrature rule
 [s,w] = chebpts(N);
