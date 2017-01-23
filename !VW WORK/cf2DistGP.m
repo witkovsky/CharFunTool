@@ -1,7 +1,7 @@
 function [result,cdf,pdf,qf] = cf2DistGP(cf,x,prob,options)
-%cf2DistGP Calculates the CDF/PDF/QF from the characteristic function CF 
-% by using the Gil-Pelaez inversion formulae: 
-%   cdf(x) = 1/2 + (1/pi) * Integral_0^inf imag(exp(-1i*t*x)*cf(t)/t)*dt. 
+%cf2DistGP Calculates the CDF/PDF/QF from the characteristic function CF
+% by using the Gil-Pelaez inversion formulae:
+%   cdf(x) = 1/2 + (1/pi) * Integral_0^inf imag(exp(-1i*t*x)*cf(t)/t)*dt.
 %   pdf(x) = (1/pi) * Integral_0^inf real(exp(-1i*t*x)*cf(t))*dt.
 %
 % SYNTAX:
@@ -9,11 +9,11 @@ function [result,cdf,pdf,qf] = cf2DistGP(cf,x,prob,options)
 %  [result,cdf,pdf,qf] = cf2DistGP(cf,x,prob,options)
 %
 % INPUT:
-%  cf      - function handle of the characteristic function (CF), x            
-%          - vector of x values where the CDF/PDF is computed, prob         
+%  cf      - function handle of the characteristic function (CF), x
+%          - vector of x values where the CDF/PDF is computed, prob
 %          - vector of values from [0,1] for which the quantiles
 %            function is evaluated,
-%  options - structure with the following default parameters:   
+%  options - structure with the following default parameters:
 %             options.isCompound = false  % treat the compound distributions
 %             options.isCircular = false  % treat the circular distributions
 %             options.isInterp   = false  % create and use the interpolant
@@ -24,18 +24,18 @@ function [result,cdf,pdf,qf] = cf2DistGP(cf,x,prob,options)
 %             options.xMean = []       % set the MEAN value of X
 %             options.xStd = []        % set the STD value of X
 %             options.dt = []          % set grid step dt = 2*pi/xRange
-%             options.T = []           % set upper limit of (0,T), T = N*dt 
+%             options.T = []           % set upper limit of (0,T), T = N*dt
 %             options.SixSigmaRule = 6 % set the rule for computing domain
 %             options.tolDiff = 1e-4   % tol for numerical differentiation
 %             options.isPlot = true    % plot the graphs of PDF/CDF
 %  options.DIST - structure with information for future evaluations.
-%             options.DIST is created automatically after first call: 
+%             options.DIST is created automatically after first call:
 %             options.DIST.xMin  = xMin   % the lower limit of X
 %             options.DIST.xMax  = xMax   % the upper limit of X
-%             options.DIST.xMean = xMean  % the MEAN value of X, 
-%             options.DIST.cft   = cft    % CF evaluated at t_j : cf(t_j). 
+%             options.DIST.xMean = xMean  % the MEAN value of X,
+%             options.DIST.cft   = cft    % CF evaluated at t_j : cf(t_j).
 %
-% REMARKS: 
+% REMARKS:
 % If options.DIST is provided, then cf2DistGP evaluates CDF/PDF based on
 % this information only (it is useful, e.g., for subsequent evaluation of
 % the quantiles). options.DIST is created automatically after first call.
@@ -45,45 +45,45 @@ function [result,cdf,pdf,qf] = cf2DistGP(cf,x,prob,options)
 %
 % OUTPUT:
 %  result   - structure with CDF/PDF/QF and further details,
-%  cdf      - vector of CDF values evaluated at x, 
-%  pdf      - vector of PDF values evaluated at x, 
+%  cdf      - vector of CDF values evaluated at x,
+%  pdf      - vector of PDF values evaluated at x,
 %  qf       - vector of QF values evaluated at prob.
 %
-% REMARKS: 
+% REMARKS:
 % The required integrals are evaluated approximately by using the simple
 % trapezoidal rule on the interval(0,T), where T = N * dt is a sufficienly
-% large integration upper limit in the frequency domain. 
-% 
+% large integration upper limit in the frequency domain.
+%
 % If the optimum values of N and T are unknown, we suggest, as a simple
 % rule of thumb, to start with the application of the six-sigma-rule for
 % determining the value of dt = (2*pi)/(xMax-xMin), where xMax = xMean +
-% 6*xStd, and xMin = xMean - 6*xStd, see [1].  
+% 6*xStd, and xMin = xMean - 6*xStd, see [1].
 %
 % Please note that THIS (TRAPEZOIDAL) METHOD IS AN APPROXIMATE METHOD:
 % Frequently, with relatively low numerical precision of the results of the
 % calculated PDF/CDF/QF, but frequently more efficient and more precise
-% than comparable Monte Carlo methods. 
+% than comparable Monte Carlo methods.
 %
 % However, the numerical error (truncation error and/or the integration
-% error) could be and should be properly controled! 
+% error) could be and should be properly controled!
 %
 % CONTROLING THE PRECISION:
 % Simple criterion for controling numerical precision is as follows: Set N
 % and T = N*dt such that the value of the integrand function
 % Imag(e^(-1i*t*x) * cf(t)/t) is sufficiently small for all t > T, i.e.
-%   PrecisionCrit = abs(cf(t)/t) <= tol, 
+%   PrecisionCrit = abs(cf(t)/t) <= tol,
 % for pre-selected small tolerance value, say tol = 10^-8. If this
 % criterion is not valid, the numerical precission of the result is
 % violated, and the method should be improved (e.g. by selecting larger N
 % or considering other more sofisticated algorithm - not considered here).
-% For more details consult the references below. 
+% For more details consult the references below.
 %
-% EXAMPLE1 (Calculate CDF/PDF of N(0,1) by inverting its CF) 
-%  cf = @(t) exp(-t.^2/2); 
+% EXAMPLE1 (Calculate CDF/PDF of N(0,1) by inverting its CF)
+%  cf = @(t) exp(-t.^2/2);
 %  result = cf2DistGP(cf)
 %
 % EXAMPLE2 (PDF/CDF of the compound Binomial-Exponential distribution)
-%  n = 25;  
+%  n = 25;
 %  p = 0.3;
 %  lambda = 5;
 %  cfX  = @(t) cfX_Exponential(t,lambda);
@@ -117,7 +117,7 @@ function [result,cdf,pdf,qf] = cf2DistGP(cf,x,prob,options)
 % [3] WITKOVSKY, V.: WIMMER,G., DUBY, T. Logarithmic Lambert W x F
 %     random variables for the family of chi-squared distributions
 %     and their applications. Statistics & Probability Letters 96
-%     (2015), 223–231.  
+%     (2015), 223–231.
 % [4] WITKOVSKY V. (2016). Numerical inversion of a characteristic
 %     function: An alternative tool to form the probability distribution of
 %     output quantity in linear measurement models. Acta IMEKO, 5(3), 32-44.
@@ -246,8 +246,8 @@ end
 % recalculation of the computed CDF and PDF, in order to get the originaly
 % required values: Set pdf_original(0) =  Inf & pdf_original(x) =
 % pdf_new(x) * (1-const), for x > 0. Set cdf_original(x) =  const +
-% cdf_new(x) * (1-const). 
-% 
+% cdf_new(x) * (1-const).
+%
 const = real(cf(1e30));
 if options.isCompound
     cfOld = cf;
@@ -278,6 +278,8 @@ else
     SixSigmaRule       = options.SixSigmaRule;
     tolDiff            = options.tolDiff;
     cft                = cf(tolDiff*(1:4));
+    cftRe              = real(cft);
+    cftIm              = imag(cft);
     if isempty(xMean)
         if options.isCircular
             % see https://en.wikipedia.org/wiki/Directional_statistics
@@ -287,14 +289,16 @@ else
             %                 + 8*cft(1)-8*conj(cft(1)) ...
             %                 + conj(cft(2)))/(1i*12*tolDiff));
             % Alternative
-            xMean = real(((1/280)*conj(cft(4)) ...
-                - (4/105)*conj(cft(3)) ...
-                + (1/5)*conj(cft(2)) ...
-                - (4/5)*conj(cft(1)) ...
-                + (4/5)*cft(1) ...
-                - (1/5)*cft(2) ...
-                + (4/105)*cft(3) ...
-                - (1/280)*cft(4))/(1i*tolDiff));
+            %             xMean = real(((1/280)*conj(cft(4)) ...
+            %                 - (4/105)*conj(cft(3)) ...
+            %                 + (1/5)*conj(cft(2)) ...
+            %                 - (4/5)*conj(cft(1)) ...
+            %                 + (4/5)*cft(1) ...
+            %                 - (1/5)*cft(2) ...
+            %                 + (4/105)*cft(3) ...
+            %                 - (1/280)*cft(4))/(1i*tolDiff));
+            xMean = (8*cftIm(1)/5 - 2*cftIm(2)/5 + 8*cftIm(3)/105 ...
+                - 2*cftIm(4)/280) / tolDiff;
         end
     end
     if isempty(xStd)
@@ -310,15 +314,17 @@ else
             %                 + 64*cft(2) ...
             %                 - 16*cft(3)+cft(4))/(144*tolDiff^2));
             % Alternative
-            xM2 = real(-(-(1/560)*conj(cft(4)) ...
-                + (8/315)*conj(cft(3)) ...
-                - (1/5)*conj(cft(2)) ...
-                + (8/5)*conj(cft(1)) ...
-                - (205/72) ...
-                + (8/5)*cft(1) ...
-                - (1/5)*cft(2) ...
-                + (8/315)*cft(3) ...
-                - (1/560)*cft(4))/tolDiff^2);
+            %             xM2 = real(-(-(1/560)*conj(cft(4)) ...
+            %                 + (8/315)*conj(cft(3)) ...
+            %                 - (1/5)*conj(cft(2)) ...
+            %                 + (8/5)*conj(cft(1)) ...
+            %                 - (205/72) ...
+            %                 + (8/5)*cft(1) ...
+            %                 - (1/5)*cft(2) ...
+            %                 + (8/315)*cft(3) ...
+            %                 - (1/560)*cft(4))/tolDiff^2);
+            xM2   = (205/72 - 16*cftRe(1)/5 + 2*cftRe(2)/5 ...
+                - 16*cftRe(3)/315 + 2*cftRe(4)/560) / tolDiff^2;
             xStd  = sqrt(xM2 - xMean^2);
         end
     end
@@ -409,7 +415,7 @@ pdf     = (pdf * dt) / pi;
 pdf     = reshape(max(0,pdf),n,m);
 x       = reshape(x,n,m);
 
-% REMARK: 
+% REMARK:
 % Note that, exp(-1i*x_i*0) = cos(x_i*0) + 1i*sin(x_i*0) = 1. Moreover,
 % cf(0) = 1 and lim_{t -> 0} cf(t)/t = E(X) - x. Hence, the leading term of
 % the trapezoidal rule for computing the CDF integral is CDFfun_1 = (xMean
@@ -426,7 +432,7 @@ end
 
 % Calculate the precision criterion PrecisionCrit = abs(cf(t)/t) <= tol,
 % PrecisionCrit should be small for t > T, smaller than tolerance
-% options.crit 
+% options.crit
 PrecisionCrit = abs(cft(end)/t(end));
 isPrecisionOK = (PrecisionCrit<=options.crit);
 
@@ -452,7 +458,7 @@ if ~isempty(prob)
             > crit * abs(qf)) ...
             && max(abs(correction)) ...
             > crit && count < maxiter;
-    end    
+    end
     qf   = reshape(qf,n,m);
     prob = reshape(prob,n,m);
     options.isPlot = isPlot;
@@ -538,7 +544,7 @@ if options.isPlot
     title('PDF Specified by the CF')
     xlabel('x')
     ylabel('pdf')
-
+    
     % CDF
     figure
     plot(x,cdf,'.-')
@@ -547,17 +553,17 @@ if options.isPlot
     xlabel('x')
     ylabel('cdf')
     
-%     % QF
-%     if ~isempty(QF)
-%         figure
-%         prob = (-cos(pi*(0:options.xN)/options.xN)+1)/2;
-%         plot(prob,QF(prob),'Linewidth',1.6)
-%         grid
-%         title('QF Specified by the CF')
-%         xlabel('prob')
-%         ylabel('qf')
-%     end
-
+    %     % QF
+    %     if ~isempty(QF)
+    %         figure
+    %         prob = (-cos(pi*(0:options.xN)/options.xN)+1)/2;
+    %         plot(prob,QF(prob),'Linewidth',1.6)
+    %         grid
+    %         title('QF Specified by the CF')
+    %         xlabel('prob')
+    %         ylabel('qf')
+    %     end
+    
 end
 
 end
@@ -565,10 +571,10 @@ end
 function [funNew,xNew] = interpolateBarycentric(x,fun,xNew,options)
 %   interpolateBarycentric Evaluates (interpolates) function values f_new at
 %   given points x_new by barycentric interpolation from function values f
-%   given at chebpoints x. 
-%   For more details see: 
+%   given at chebpoints x.
+%   For more details see:
 %   https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-%  
+%
 % SYNTAX:
 %   funNew = interpolateBarycentric(x,fun,xNew)
 %   [funNew,xNew] = interpolateBarycentric(x,fun,xNew,options)
