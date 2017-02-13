@@ -39,7 +39,7 @@ function cf = cfS_Triangular(t)
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 1);
 
-%% Characteristic function of the Exponential distribution
+%% Characteristic function of the symmetric Triangular distribution
 szt = size(t);
 t   = t(:);
 
