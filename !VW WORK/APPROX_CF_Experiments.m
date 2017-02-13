@@ -78,7 +78,7 @@ disp(result)
 clear
 
 %% LogNormal distribution  with parameters (0,2)
-nPts = 2^10;
+nPts = 2^7;
 
 % Chebpoints - nodes and weights of the Clenshaw-Curtis quadrature rule
 precission = eps(1);
