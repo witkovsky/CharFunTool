@@ -120,7 +120,7 @@ szt  = size(t);
 t    = t(:);
 switch lower(type)
     case lower({'eur','typei'})
-        cf  = alpha .* exp(1i*sigma.*t) .* auxFun(1,1-alpha,-1i*sigma.*t,tol);         
+        cf  = alpha .* exp(1i*sigma.*t) .* auxFun(1,doc 1-alpha,-1i*sigma.*t,tol);         
     case lower({'amer','lomax','typeii'})
         cf  = alpha .* auxFun(1,1-alpha,-1i*sigma.*t,tol);
     otherwise
