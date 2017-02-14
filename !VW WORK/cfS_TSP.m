@@ -65,10 +65,11 @@ if isempty(theta), theta = 1; end
 szt = size(t);
 t   = abs(t(:));
 
-cf = (theta/2) * ((t.^(-2*theta)).* ...
-     (exp(-1i*t).*(1i*t).^theta + exp(1i*t).*(-1i*t).^theta) *gamma(theta) ...
-      - (KummerU(1,1+theta,1i*t) + KummerU(1,1+theta,-1i*t)));
-cf = min(1,cf);
+% cf = (theta/2) * ((t.^(-2*theta)).* ...
+%      (exp(-1i*t).*(1i*t).^theta + exp(1i*t).*(-1i*t).^theta) *gamma(theta) ...
+%       - (KummerU(1,1+theta,1i*t) + KummerU(1,1+theta,-1i*t)));
+  cf = (1/2) * ((hypergeom1F1(1,1+theta,1i*t) + hypergeom1F1(1,1+theta,-1i*t)));
+%cf = min(1,cf);
 cf = reshape(cf,szt);
 cf(t==0) = 1;
 
