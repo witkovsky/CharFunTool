@@ -13,9 +13,9 @@ function cf = cfS_Rectangular(t)
 %  t = linspace(-50,50,501);
 %  cf = cfS_Rectangular(t);
 %  figure; plot(t,cf),grid
-%  title('CF of the the Rectangular distribution on (-1,1)')
+%  title('CF of the Rectangular distribution on (-1,1)')
 %
-% EXAMPLE2 (PDF/CDF of the the Rectangular distribution on (-1,1))
+% EXAMPLE2 (PDF/CDF of the Rectangular distribution on (-1,1))
 %  cf = @(t) cfS_Rectangular(t);
 %  x = linspace(-2,2,101);
 %  xRange = 2;
