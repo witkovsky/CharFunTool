@@ -55,7 +55,8 @@ function cf = cfE_Empirical(t,data,cfX)
 %  options.N = 2^12;
 %  options.xMin = 0;
 %  options.SixSigmaRule = 10;
-%  result = cf2DistGP(cf,x,prob,options)
+%  
+
 %
 % REFERENCES:
 % [1] WITKOVSKY V., WIMMER G., DUBY T. (2016). Computing the aggregate loss
