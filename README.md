@@ -1,5 +1,5 @@
 # CharFunTool: The Characteristic Functions Toolbox
-MATLAB repository of characteristic functions and inversion algorithms.
+MATLAB repository of characteristic functions and tools for their combinations and numerical inversion.
 
 About
 =====
