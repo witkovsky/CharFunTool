@@ -1,10 +1,10 @@
-# Characteristic-functions
+# CharFunTool: The Characteristic Functions Toolbox
 MATLAB repository of characteristic functions and inversion algorithms.
 
 About
 =====
 
-The Characteristic functions toolbox (CharFun Toolbox) consists of a set of algorithms for evaluating selected characteristic funcions
+The Characteristic Functions Toolbox (CharFunTool) consists of a set of algorithms for evaluating selected characteristic funcions
 and algorithms for numerical inversion of the (combined and/or compound) characteristic functions, used to evaluate the probability density function (PDF) and the cumulative distribution function (CDF).
                                                                               
 The toolbox includes several different inversion algorithms, including those based on simple trapezoidal rule for computing the integrals defined by the Gil-Pelaez formulae, and/or by using the FFT algorithm for computing the Fourier transform integrals.
@@ -12,7 +12,7 @@ The toolbox includes several different inversion algorithms, including those bas
 Installation and requirements
 =============================
 
-CharFun Toolbox was developed with MATLAB Version: 9.2 (R2017a).
+CharFunTool was developed with MATLAB Version: 9.2 (R2017a).
 
 To install, you can either clone the directory with Git or download a .zip file. 
 
@@ -20,7 +20,7 @@ To install, you can either clone the directory with Git or download a .zip file.
 
 Download a .zip of Characteristic-functions from
 
-- https://github.com/witkovsky/Characteristic-functions/archive/master.zip
+- https://github.com/witkovsky/CharFunTool/archive/master.zip
 
 After unzipping, you will need to add Chebfun to the MATLAB path. You can do
 this either (a) by typing
@@ -36,7 +36,7 @@ Path... dialog from the MATLAB menubar.
 To clone the Characteristic-functions repository, first navigate in a terminal to where you
 want the repository cloned, then type
 ```
-git clone https://github.com/witkovsky/Characteristic-functions.git
+git clone https://github.com/witkovsky/CharFunTool.git
 ```
 To use Chebfun in MATLAB, you will need to add the `Characteristic-functions` directory
 to the MATLAB path as above.
