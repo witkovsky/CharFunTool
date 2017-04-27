@@ -1,7 +1,11 @@
 # CharFunTool: The Characteristic Functions Toolbox
 MATLAB repository of characteristic functions and tools for their combinations and numerical inversion.
 
-For the R version (clone) of the toolbox see the CharFun package development at
+For current status of the MATLAB toolbox see the CharFunTool development available at
+
+- https://github.com/witkovsky/CharFunTool
+
+For the R version (not an identical clone) of the toolbox see the CharFun package development available at
 
 - https://github.com/Simkova/CharFun/
 
