@@ -18,28 +18,23 @@ To install, you can either clone the directory with Git or download a .zip file.
 
 ## Option 1: Download .zip file
 
-Download a .zip of Characteristic-functions from
+Download a .zip of CharFunTool from
 
 - https://github.com/witkovsky/CharFunTool/archive/master.zip
 
-After unzipping, you will need to add Chebfun to the MATLAB path. You can do
-this either (a) by typing
+After unzipping, you will need to add CharFunTool to the MATLAB path. You can do this either (a) by typing
 ```
-addpath(chebfunroot), savepath
+addpath(CharFunToolRoot), savepath
 ```
-where `Characteristic-functionsroot` is the path to the unzipped directory, (b) by selecting the
-`chebfun` directory with the `pathtool` command, or (c) though the File > Set
-Path... dialog from the MATLAB menubar.
+where `CharFunToolRoot` is the path to the unzipped directory, (b) by selecting the `CharFunTool` directory with the `pathtool` command, or (c) though the File > Set Path... dialog from the MATLAB menubar.
 
 ## Option 2: Clone with Git
 
-To clone the Characteristic-functions repository, first navigate in a terminal to where you
-want the repository cloned, then type
+To clone the CharFunTool repository, first navigate in a terminal to where you want the repository cloned, then type
 ```
 git clone https://github.com/witkovsky/CharFunTool.git
 ```
-To use Chebfun in MATLAB, you will need to add the `Characteristic-functions` directory
-to the MATLAB path as above.
+To use CharFunTool in MATLAB, you will need to add the `CharFunTool` directory to the MATLAB path as above.
 
 
 Getting started
@@ -50,12 +45,11 @@ We recommend taking a look at the Examples collection.
 To get a taste of what computing with Chebfun is like, type
 ```
    cf = @(t) exp(-t.^2/2);  % the standard normal characteristic function (CF)
-   result = cf2DistGP(cf)   % Invert the CF to get the CDF and PDF
-   
+   result = cf2DistGP(cf)   % Invert the CF to get the CDF and PDF   
 ```
 
 
 License
 =======
 
-See `LICENSE.txt` for Characteristic-functions licensing information.
+See `LICENSE.txt` for CharFunTool licensing information.
