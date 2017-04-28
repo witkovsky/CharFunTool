@@ -1,0 +1,29 @@
+http://www.macs.hw.ac.uk/~mcneil/data.html
+
+Alexander McNeil
+
+Data for Downloading
+
+Text Files
+The Danish Insurance Data (univariate)
+
+These data were collected at Copenhagen Reinsurance and comprise 2167 fire losses over the period 1980 to 1990. They have been adjusted for inflation to reflect 1985 values and are expressed in millions of Danish Krone. Have a look at my 1997 ASTIN paper.
+The Danish Insurance Data (multivariate)
+
+These are the same data as above but the total claim has been divided into a building loss, a loss of contents and a loss of profits.
+Text versions of datasets (S&P, DAX, BMW, USD.GBP, Gold) used in JEF (2000) paper by McNeil and Frey
+DAX data 1973-1996
+S-Plus Data Files
+
+These files have been "data.dumped". They should be saved as text files and read into S-Plus using "data.restore".
+DAX data 1973-1996
+DowJones30 Index daily 1991-2000
+Major Stock Market Indexes, daily July 1996 - July 2000
+Exchange Rates relative to GBP, daily Jan 1980 - May 1996
+
+
+ 
+
+
+
+
