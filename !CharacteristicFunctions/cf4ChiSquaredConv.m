@@ -1,6 +1,6 @@
-function cf = cf_ChiSquare(t,df,ncp,coef)
-%CF_CHISQUARE Computes the characteristic function of the distribution of a
-%  linear combination of independent chi-square random variables, i.e. of
+function cf = cf4ChiSquaredConv(t,df,ncp,coef)
+%cf4ChiSquaredConv Computes the characteristic function of the distribution
+%  of a linear combination of independent chi-square random variables, i.e. of
 %  the distribution of Y = sum( coef[i] * ChiSquareRV_{df[i],ncp[i]} ).
 %  In particular, the characteristic function of Y is defined by
 %   cf(t) = Prod ( (1-2*i*t*coef[i])^(-df[i]/2)
@@ -11,7 +11,7 @@ function cf = cf_ChiSquare(t,df,ncp,coef)
 %  https://en.wikipedia.org/wiki/Noncentral_chi-squared_distribution
 %
 % SYNTAX
-%  cf = cf_ChiSquare(t,df,ncp,coef)
+%  cf = cf4ChiSquaredConv(t,df,ncp,coef)
 % 
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -32,7 +32,7 @@ function cf = cf_ChiSquare(t,df,ncp,coef)
 %  ncp  = 1;
 %  coef = 1;
 %  t    = linspace(-100,100,501);
-%  cf   = cf_ChiSquare(t,df,ncp,coef);
+%  cf   = cf4ChiSquaredConv(t,df,ncp,coef);
 %  figure; plot(t,real(cf),t,imag(cf))
 %  title('Characteristic function of the \chi^2 RV with DF=1 and NCP=1')
 %
@@ -43,7 +43,7 @@ function cf = cf_ChiSquare(t,df,ncp,coef)
 %  figure; plot(idx,coef,'.-')
 %  title('Coefficients of the linear combination of \chi^2 RVs with DF=1')
 %  df   = 1;
-%  cf   = cf_ChiSquare(t,df,[],coef);
+%  cf   = cf4ChiSquaredConv(t,df,[],coef);
 %  t    = linspace(-100,100,501);
 %  figure; plot(t,real(cf),t,imag(cf))
 %  title('Characteristic function of the linear combination of \chi^2_1 RVs')
