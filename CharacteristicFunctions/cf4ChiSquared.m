@@ -1,23 +1,19 @@
 function cf = cf4ChiSquared(t,df,ncp,coef,n)
-%CF4CHISQUARED Characteristic function of the distribution of a convolution
-% (or a linear combination) of independent CHI-SQUARED random variables X_i
-% ~ CHI2(df,ncp), where X_i ~ CHI2(df(i),ncp(i)), and df(i) and  ncp(i) represent the 'degrees of freedom' and
-%  the 'non-centrality' parameters of the CHI-SQUARED distribution.   
+%CF4CHISQUARED Characteristic function of a linear combination (convolution) 
+%  of independent (possibly non-central) CHI-SQUARED random variables, X ~
+%  CHI2.     
 %
 %  In particular, cf4ChiSquared(t,df,ncp,coef) evaluates the characteristic
 %  function cf(t) of Y = coef(1) * X_1 + ... + coef(N) * X_N, where X_i ~
-%  CHI2(df(i),ncp(i)), and k(i) and  theta(i) represent the 'shape' and
-%  the 'scale' parameters of the GAMMA distribution.  
+%  CHI2(df(i),ncp(i)), and df(i) and  ncp(i) represent the 'degrees
+%  of freedom' and  the 'non-centrality' parameters of the CHI-SQUARED
+%  distribution.    
 %
 %  The characteristic function of Y is defined by
 %   cf(t) = Prod ( (1-2*i*t*coef(i))^(-df(i)/2)
 %                   * exp((i*t*ncp(i))/(1-2*i*t*coef(i))) )
 %
-%  For more details see, e.g., WIKIPEDIA:
-%  https://en.wikipedia.org/wiki/Chi-squared_distribution
-%  https://en.wikipedia.org/wiki/Noncentral_chi-squared_distribution
-%
-% SYNTAX
+% SYNTAX:
 %  cf = cf4ChiSquared(t,df,ncp,coef,n)
 % 
 % INPUTS:
@@ -29,7 +25,7 @@ function cf = cf4ChiSquared(t,df,ncp,coef,n)
 %          random variables. If ncp is scalar, it is assumed that all
 %          non-centrality parameters are equal. If empty, default value is
 %          ncp = 0. 
-%  coef  - vector of the coefficients of the lienar combination of the
+%  coef  - vector of the coefficients of the linear combination of the
 %          chi-squared random variables. If coef is scalar, it is assumed
 %          that all coefficients are equal. If empty, default value is
 %          coef = 1.
@@ -37,6 +33,10 @@ function cf = cf4ChiSquared(t,df,ncp,coef,n)
 %          sum of n iid random variables Y, where each Y = sum_{i=1}^N
 %          coef(i) * CHI2(df(i),ncp(i))) is independently and identically
 %          distributed random variable. If empty, default value is n = 1.   
+%
+% WIKIPEDIA:
+%  https://en.wikipedia.org/wiki/Chi-squared_distribution
+%  https://en.wikipedia.org/wiki/Noncentral_chi-squared_distribution
 %
 % EXAMPLE 1:
 % % CF of the distribution of chi-squared RV with DF = 1, NCP = 1
@@ -71,14 +71,17 @@ function cf = cf4ChiSquared(t,df,ncp,coef,n)
 %   options.xMin = 0;
 %   result = cf2DistGP(cf,[],[],options);
 %
-% REFERENCES
+% REFERENCES:
 %  IMHOF J. (1961): Computing the distribution of quadratic forms in normal
 %  variables. Biometrika 48, 419–426.
 
 % (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 10-May-2017 18:11:50
 
-%% Check and set the default input parameters
+%% ALGORITHM
+% cf = cf4Gamma(t,alpha,beta,coef,n)
+
+%% CHECK THE INPUT PARAMETERS
 narginchk(1, 5);
 if nargin < 5, n = []; end
 if nargin < 4, coef = []; end
@@ -110,6 +113,7 @@ end
 if isempty(n)
     n = 1;
 end
+
 %% Find the unique coefficients and their multiplicities
 if ~isempty(coef) && isscalar(df) && ~isNoncentral 
     coef = sort(coef);
@@ -124,9 +128,7 @@ if errorcode > 0
     error(message('InputSizeMismatch'));
 end
 
-%% ALGORITHM 
-% Characteristic function of a linear combination of noncentral chi-squares
-
+%% Characteristic function
 szt   = size(t);
 t     = t(:);
 cf    = 1;
