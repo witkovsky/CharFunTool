@@ -1,6 +1,11 @@
-%% CHARACTERISTIC FUNCTIONS OF SELECTED NONNEGATIVE CONTINUOUS (SEVERITY) DISTRIBUTIONS
-%  (c) 2016 Viktor Witkovsky, witkovsky@gmail.com
-%  Version: 15-Nov-2016
+%% CharFunTool / EXAMPLES
+%  CHARACTERISTIC FUNCTIONS OF SELECTED NONNEGATIVE CONTINUOUS DISTRIBUTIONS
+%
+%  (c) 2017 Viktor Witkovsky, witkovsky@gmail.com
+%  Version: 10-May-2017
+
+clear
+close all
 
 %% *EXPONENTIAL DISTIBUTION*
 % |cfX_Exponential(t,lambda)| evaluates the characteristic function cf(t)

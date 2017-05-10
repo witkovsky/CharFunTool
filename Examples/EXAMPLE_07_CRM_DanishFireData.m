@@ -1,6 +1,13 @@
+%% CharFunTool / EXAMPLES
+%  CHARACTERISTIC FUNCTIONS OF THE EMPIRICAL COLLECTIVE RISK DISTRIBUTIONS
+%
+%  (c) 2017 Viktor Witkovsky, witkovsky@gmail.com
+%  Version: 10-May-2017
+
+clear
+close all
+
 %% EMPIRICAL CRM DISTRIBUTION (The Danish Insurance Data)
-%  (c) 2016 Viktor Witkovsky, witkovsky@gmail.com
-%  Version: 15-Nov-2016
 
 % Data by Alexander McNeil: http://www.macs.hw.ac.uk/~mcneil/data.html
 %

@@ -1,6 +1,11 @@
-%% CHARACTERISTIC FUNCTIONS OF SELECTED DISCRETE (FREQUENCY) DISTRIBUTIONS
-%  (c) 2016 Viktor Witkovsky, witkovsky@gmail.com
-%  Version: 15-Nov-2016
+%% CharFunTool / EXAMPLES
+%  CHARACTERISTIC FUNCTIONS OF SELECTED DISCRETE (FREQUENCY) DISTRIBUTIONS
+%
+%  (c) 2017 Viktor Witkovsky, witkovsky@gmail.com
+%  Version: 10-May-2017
+
+clear
+close all
 
 %% *BINOMIAL DISTIBUTION*
 % |cfN_Binomial(t,n,p)| evaluates the characteristic function cf(t) of the
@@ -394,6 +399,7 @@ close all
 % * |cf = cfN_Waring(t,a,b,m,cfX)|
 
 %% II.8.a EXAMPLE: CF of the Waring distribution, a = 2.2, b = 3.3, r = 4
+%  The function cfN_Waring is still FRAGILE! This result is wrong!
 %
  a = 2.2;
  b = 3.3;

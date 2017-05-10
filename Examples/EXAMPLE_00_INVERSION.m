@@ -1,40 +1,36 @@
-%% CF TOOLBOX 
-%  (c) 2016 Viktor Witkovsky, witkovsky@gmail.com
-%  Version: 15-Nov-2016
+%% CharFunTool / EXAMPLES 
+%  (c) 2017 Viktor Witkovsky, witkovsky@gmail.com
+%  Version: 10-May-2017
 %
-% CF TOOLBOX (The Characteristic Functions Toolbox) consists of a set of
+% CharFunTool (The Characteristic Functions Toolbox) consists of a set of
 % algorithms for evaluating selected characteristic funcions and algorithms
-% for numerical inversion of the (combined and/or compound) characteristic
-% functions, used to evaluate the probability density function (PDF) and
-% the cumulative distribution function (CDF) . The inversion algorithms are
-% based on using simple trapezoidal rule for computing the integrals
-% defined by the Gil-Pelaez formulae, and/or by using the  FFT algorithm
-% for computing the Fourier transform integrals.
+% for numerical inversion of such (combined and/or compound) characteristic
+% functions, used to evaluate the cumulative distribution function (CDF),
+% the probability density function (PDF) and/or the quantile function (QF.
+% The inversion algorithms are based on using simple trapezoidal rule for
+% computing the integrals defined by the Gil-Pelaez formulae and/or by
+% using the FFT algorithm for computing the Fourier transform integrals.
 %
 % REFERENCES:
 %
-% # WITKOVSKY, V.: On the exact computation of the density and of
-%     the quantiles of linear combinations of t and F random
-%     variables. Journal of Statistical Planning and Inference 94
-%     (2001), 1–13.
-% # WITKOVSKY, V.: Matlab algorithm TDIST: The distribution of a
-%     linear combination of Student’s t random variables. In COMPSTAT
-%     2004 Symposium (2004), J. Antoch, Ed., Physica-Verlag/Springer
-%     2004, Heidelberg, Germany, pp. 1995–2002.
-% # WITKOVSKY, V.: WIMMER,G., DUBY, T. Logarithmic Lambert W x F
-%     random variables for the family of chi-squared distributions
-%     and their applications. Statistics & Probability Letters 96
-%     (2015), 223–231.  
+% # WITKOVSKY V.: On the exact computation of the density and of
+%     the quantiles of linear combinations of t and F random variables.
+%     Journal of Statistical Planning and Inference 94 (2001), 1–13.
+% # WITKOVSKY V.: Matlab algorithm TDIST: The distribution of a
+%     linear combination of Student’s t random variables. In COMPSTAT 2004
+%     Symposium (2004), J. Antoch, Ed., Physica-Verlag/Springer 2004,
+%     Heidelberg, Germany, pp. 1995–2002.
+% # WITKOVSKY V., WIMMER G., DUBY T. Logarithmic Lambert W x F
+%     random variables for the family of chi-squared distributions and
+%     their applications. Statistics & Probability Letters 96 (2015),
+%     223–231.
 % # WITKOVSKY V. (2016). Numerical inversion of a characteristic
 %     function: An alternative tool to form the probability distribution of
 %     output quantity in linear measurement models. Acta IMEKO, 5(3), 32-44.
-% # WITKOVSKY V., WIMMER G., DUBY T. (2016). Computing the aggregate loss
+% # WITKOVSKY V., WIMMER G., DUBY T. (2017). Computing the aggregate loss
 %     distribution based on numerical inversion of the compound empirical
-%     characteristic function of frequency and severity. Preprint submitted
-%     to Insurance: Mathematics and Economics.
-% # DUBY T., WIMMER G., WITKOVSKY V.(2016). MATLAB toolbox CRM for
-%     computing distributions of collective risk models. Preprint submitted
-%     to Journal of Statistical Software.
+%     characteristic function of frequency and severity. arXiv preprint
+%     arXiv:1701.08299, 2017.
 % # WIMMER G., ALTMANN G. (1999). Thesaurus of univariate discrete
 %     probability distributions. STAMM Verlag GmbH, Essen, Germany. ISBN
 %     3-87773-025-6. 

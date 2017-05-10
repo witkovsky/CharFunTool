@@ -1,6 +1,11 @@
-%% EMPIRICAL CHARACTERISTIC FUNCTION
-%  (c) 2016 Viktor Witkovsky, witkovsky@gmail.com
-%  Version: 15-Nov-2016
+%% CharFunTool / EXAMPLES
+%  EMPIRICAL CHARACTERISTIC FUNCTION
+%
+%  (c) 2017 Viktor Witkovsky, witkovsky@gmail.com
+%  Version: 10-May-2017
+
+clear
+close all
 
 %% *EMPIRICAL DISTRIBUTION*
 % cfE_DiracMixture(t,coefs,weights,cfX) evaluates the characteristic

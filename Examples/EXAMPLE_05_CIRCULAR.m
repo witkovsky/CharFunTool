@@ -1,6 +1,8 @@
-%% CHARACTERISTIC FUNCTIONS OF SELECTED CIRCULAR DISTRIBUTIONS
-%  (c) 2016 Viktor Witkovsky, witkovsky@gmail.com
-%  Version: 15-Nov-2016
+%% CharFunTool / EXAMPLES
+%  CHARACTERISTIC FUNCTIONS OF SELECTED CIRCULAR DISTRIBUTIONS
+%
+%  (c) 2017 Viktor Witkovsky, witkovsky@gmail.com
+%  Version: 10-May-2017
 
 clear
 close all
