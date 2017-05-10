@@ -1,6 +1,11 @@
-%% CHARACTERISTIC FUNCTIONS OF SELECTED SYMMETRIC DISTRIBUTIONS
-%  (c) 2016 Viktor Witkovsky, witkovsky@gmail.com
-%  Version: 15-Nov-2016
+%% CharFunTool / EXAMPLES
+%  CHARACTERISTIC FUNCTIONS OF SELECTED SYMMETRIC DISTRIBUTIONS
+%
+%  (c) 2017 Viktor Witkovsky, witkovsky@gmail.com
+%  Version: 10-May-2017
+
+clear
+close all
 
 %% *ARCSINE DISTIBUTION*
 % |cfS_Arcsine(t)| evaluates the characteristic function cf(t) of
@@ -15,8 +20,6 @@
 % SYNTAX:
 % |cf = cfS_Arcsine(t)|
 
-clear
-close all
 
 %% I.1.a EXAMPLE: CF of the symmetric Arcsine distribution on (-1,1)
 %
@@ -89,12 +92,13 @@ close all
  title('CF of the the Rectangular distribution on (-1,1)')
 
 %% I.3.b EXAMPLE: PDF/CDF of the the Rectangular distribution on (-1,1)
+%  Note that here, for best precission, we set N = 2
 %
  cf = @(t) cfS_Rectangular(t);
- x = linspace(-2,2,101);
+ x = linspace(-1,1,101);
  xRange = 2;
  clear options
- options.N = 2^5;
+ options.N = 2;         
  options.dt = 2*pi/xRange;
  result = cf2DistGP(cf,x,[],options);
  disp(result)

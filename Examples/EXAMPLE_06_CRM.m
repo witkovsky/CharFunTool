@@ -1,6 +1,13 @@
+%% CharFunTool / EXAMPLES
+%  CHARACTERISTIC FUNCTIONS OF THE COLLECTIVE RISK DISTRIBUTIONS
+%
+%  (c) 2017 Viktor Witkovsky, witkovsky@gmail.com
+%  Version: 10-May-2017
+
+clear
+close all
+
 %% Collective Risk Model (CRM) Distributions
-%  Examples of CRM Distributions
-%  Version: 15-Nov-2016
 
 % A typical model for insurance risk is the Collective Risk Model (CRM).
 % The CRM mathematically describes the aggregate loss of an insurance
