@@ -1,26 +1,17 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration build-checksum="3094216073" file="C:\Users\witkovsky\Documents\GitHub\CharFunTool\UtilityTools\CharFunTool.prj" location="C:\Users\witkovsky\Documents\GitHub\CharFunTool\UtilityTools" name="CharFunTool" target="target.toolbox" target-name="Package Toolbox">
-    <param.appname>CharFunTool-1.01</param.appname>
+  <configuration build-checksum="3094216073" file="C:\Users\Viktor\Documents\GitHub\CharFunTool\UtilityTools\CharFunTool.prj" location="C:\Users\Viktor\Documents\GitHub\CharFunTool\UtilityTools" name="CharFunTool" target="target.toolbox" target-name="Package Toolbox">
+    <param.appname>CharFunTool 1.0-beta</param.appname>
     <param.authnamewatermark>Viktor Witkovsky</param.authnamewatermark>
     <param.email>witkovsky@gmail.com</param.email>
     <param.company>Bratislava</param.company>
     <param.summary>The Characteristic Function Toolbox</param.summary>
     <param.description>The MATLAB Characteristic Functions Toolbox (CharFunTool) consists of a set of algorithms for evaluating selected characteristic functions and algorithms for numerical inversion of such (combined and/or compound) characteristic functions to evaluate the cumulative distribution function (CDF), the probability density function (PDF), and/or the quantile function (QF).</param.description>
     <param.screenshot>${PROJECT_ROOT}\CF2.png</param.screenshot>
-    <param.version>1.01</param.version>
-    <param.output>${PROJECT_ROOT}\CharFunTool-1.01.mltbx</param.output>
-    <param.products.name>
-      <item>MATLAB</item>
-      <item>Statistics and Machine Learning Toolbox</item>
-    </param.products.name>
-    <param.products.id>
-      <item>1</item>
-      <item>19</item>
-    </param.products.id>
-    <param.products.version>
-      <item>9.2</item>
-      <item>11.1</item>
-    </param.products.version>
+    <param.version>1.0</param.version>
+    <param.output>${PROJECT_ROOT}\CharFunTool 1.0-beta.mltbx</param.output>
+    <param.products.name />
+    <param.products.id />
+    <param.products.version />
     <param.platforms />
     <param.guid>e4b845f4-7f4f-42f4-b83e-c95fb959050a</param.guid>
     <param.exclude.filters>% List files contained in your toolbox folder that you would like to exclude
@@ -53,7 +44,11 @@
       <param.authnamewatermark />
       <param.email />
       <param.company />
+      <param.version />
       <param.output />
+      <param.products.name />
+      <param.products.id />
+      <param.products.version />
       <param.platforms />
       <param.examples />
       <param.demosxml />
@@ -63,25 +58,56 @@
       <param.javaclasspath.excludes />
     </unset>
     <fileset.rootdir>
-      <file>C:\Users\witkovsky\Documents\GitHub\CharFunTool</file>
+      <file>C:\Users\Viktor\Documents\GitHub\CharFunTool</file>
     </fileset.rootdir>
     <fileset.rootfiles>
-      <file>C:\Users\witkovsky\Documents\GitHub\CharFunTool\cf2DistFFT.m</file>
-      <file>C:\Users\witkovsky\Documents\GitHub\CharFunTool\cf2DistGP.m</file>
-      <file>C:\Users\witkovsky\Documents\GitHub\CharFunTool\cf4Conv.m</file>
-      <file>C:\Users\witkovsky\Documents\GitHub\CharFunTool\CharacteristicFunctions</file>
-      <file>C:\Users\witkovsky\Documents\GitHub\CharFunTool\CharFunTool_resources</file>
-      <file>C:\Users\witkovsky\Documents\GitHub\CharFunTool\Data</file>
-      <file>C:\Users\witkovsky\Documents\GitHub\CharFunTool\Examples</file>
-      <file>C:\Users\witkovsky\Documents\GitHub\CharFunTool\LICENSE</file>
-      <file>C:\Users\witkovsky\Documents\GitHub\CharFunTool\README.md</file>
-      <file>C:\Users\witkovsky\Documents\GitHub\CharFunTool\UtilityTools</file>
+      <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\cf2DistFFT.m</file>
+      <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\cf2DistGP.m</file>
+      <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\cf4Conv.m</file>
+      <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\CharacteristicFunctions</file>
+      <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\Data</file>
+      <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\Examples</file>
+      <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\LICENSE</file>
+      <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\README.md</file>
+      <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\UtilityTools</file>
     </fileset.rootfiles>
     <fileset.depfun.included />
-    <fileset.depfun.excluded />
+    <fileset.depfun.excluded>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cf2DistFFT.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cf2DistGP.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfC_vonMises.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfE_DiracMixture.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfE_Empirical.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfN_Binomial.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfN_Delaporte.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfN_GeneralizedPoisson.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfN_NegativeBinomial.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfN_Poisson.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfN_PolyaEggenberger.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfN_Quinkert.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfN_Waring.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfS_Arcsine.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfS_Gaussian.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfS_Rectangular.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfS_StudentT.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfS_Trapezoidal.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfS_Triangular.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfX_ChiSquared.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfX_Exponential.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfX_FisherSnedecorF.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfX_Gamma.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfX_GeneralizedPareto.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfX_LogLogistic.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfX_LogNormal.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfX_Pareto.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfX_PDF.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfX_PearsonVI.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfX_Weibull.p</file>
+      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\Data\DanishFireData.mat</file>
+    </fileset.depfun.excluded>
     <fileset.package />
     <build-deliverables>
-      <file location="C:\Users\witkovsky\Documents\GitHub\CharFunTool\UtilityTools" name="CharFunTool-1.01.mltbx" optional="false">C:\Users\witkovsky\Documents\GitHub\CharFunTool\UtilityTools\CharFunTool-1.01.mltbx</file>
+      <file location="C:\Users\Viktor\Documents\GitHub\CharFunTool\UtilityTools" name="CharFunTool 1.0-beta.mltbx" optional="false">C:\Users\Viktor\Documents\GitHub\CharFunTool\UtilityTools\CharFunTool 1.0-beta.mltbx</file>
     </build-deliverables>
     <workflow />
     <matlab>
