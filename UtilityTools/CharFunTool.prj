@@ -1,0 +1,107 @@
+<deployment-project plugin="plugin.toolbox" plugin-version="1.0">
+  <configuration build-checksum="3094216073" file="C:\Users\witkovsky\Documents\GitHub\CharFunTool\UtilityTools\CharFunTool.prj" location="C:\Users\witkovsky\Documents\GitHub\CharFunTool\UtilityTools" name="CharFunTool" target="target.toolbox" target-name="Package Toolbox">
+    <param.appname>CharFunTool-1.01</param.appname>
+    <param.authnamewatermark>Viktor Witkovsky</param.authnamewatermark>
+    <param.email>witkovsky@gmail.com</param.email>
+    <param.company>Bratislava</param.company>
+    <param.summary>The Characteristic Function Toolbox</param.summary>
+    <param.description>The MATLAB Characteristic Functions Toolbox (CharFunTool) consists of a set of algorithms for evaluating selected characteristic functions and algorithms for numerical inversion of such (combined and/or compound) characteristic functions to evaluate the cumulative distribution function (CDF), the probability density function (PDF), and/or the quantile function (QF).</param.description>
+    <param.screenshot>${PROJECT_ROOT}\CF2.png</param.screenshot>
+    <param.version>1.01</param.version>
+    <param.output>${PROJECT_ROOT}\CharFunTool-1.01.mltbx</param.output>
+    <param.products.name>
+      <item>MATLAB</item>
+      <item>Statistics and Machine Learning Toolbox</item>
+    </param.products.name>
+    <param.products.id>
+      <item>1</item>
+      <item>19</item>
+    </param.products.id>
+    <param.products.version>
+      <item>9.2</item>
+      <item>11.1</item>
+    </param.products.version>
+    <param.platforms />
+    <param.guid>e4b845f4-7f4f-42f4-b83e-c95fb959050a</param.guid>
+    <param.exclude.filters>% List files contained in your toolbox folder that you would like to exclude
+% from packaging.  Excludes should be listed relative to the toolbox folder.
+% Some examples of how to specify excludes are provided below:
+%
+% A single file in the toolbox folder:
+% .svn
+%
+% A single file in a subfolder of the toolbox folder:
+% example/.svn
+%
+% All files in a subfolder of the toolbox folder:
+% example/*
+%
+% All files of a certain name in all subfolders of the toolbox folder:
+% **/.svn
+%
+.git*
+% All files matching a pattern in all subfolders of the toolbox folder:
+% **/*.bak
+%</param.exclude.filters>
+    <param.examples />
+    <param.demosxml />
+    <param.apps />
+    <param.docs />
+    <param.matlabpath.excludes />
+    <param.javaclasspath.excludes />
+    <unset>
+      <param.authnamewatermark />
+      <param.email />
+      <param.company />
+      <param.output />
+      <param.platforms />
+      <param.examples />
+      <param.demosxml />
+      <param.apps />
+      <param.docs />
+      <param.matlabpath.excludes />
+      <param.javaclasspath.excludes />
+    </unset>
+    <fileset.rootdir>
+      <file>C:\Users\witkovsky\Documents\GitHub\CharFunTool</file>
+    </fileset.rootdir>
+    <fileset.rootfiles>
+      <file>C:\Users\witkovsky\Documents\GitHub\CharFunTool\cf2DistFFT.m</file>
+      <file>C:\Users\witkovsky\Documents\GitHub\CharFunTool\cf2DistGP.m</file>
+      <file>C:\Users\witkovsky\Documents\GitHub\CharFunTool\cf4Conv.m</file>
+      <file>C:\Users\witkovsky\Documents\GitHub\CharFunTool\CharacteristicFunctions</file>
+      <file>C:\Users\witkovsky\Documents\GitHub\CharFunTool\CharFunTool_resources</file>
+      <file>C:\Users\witkovsky\Documents\GitHub\CharFunTool\Data</file>
+      <file>C:\Users\witkovsky\Documents\GitHub\CharFunTool\Examples</file>
+      <file>C:\Users\witkovsky\Documents\GitHub\CharFunTool\LICENSE</file>
+      <file>C:\Users\witkovsky\Documents\GitHub\CharFunTool\README.md</file>
+      <file>C:\Users\witkovsky\Documents\GitHub\CharFunTool\UtilityTools</file>
+    </fileset.rootfiles>
+    <fileset.depfun.included />
+    <fileset.depfun.excluded />
+    <fileset.package />
+    <build-deliverables>
+      <file location="C:\Users\witkovsky\Documents\GitHub\CharFunTool\UtilityTools" name="CharFunTool-1.01.mltbx" optional="false">C:\Users\witkovsky\Documents\GitHub\CharFunTool\UtilityTools\CharFunTool-1.01.mltbx</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>C:\Program Files\MATLAB\R2017a</root>
+      <toolboxes />
+    </matlab>
+    <platform>
+      <unix>false</unix>
+      <mac>false</mac>
+      <windows>true</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>6.2</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>win64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>
