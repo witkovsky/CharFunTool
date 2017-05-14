@@ -1,10 +1,10 @@
-function cf = cf4LogBetaRV(t,alpha,beta,coef,n)
-%%cf4LogBetaRV Characteristic function of a linear combination (resp.
+function cf = cf_LogBetaRV(t,alpha,beta,coef,n)
+%%cf_LogBetaRV Characteristic function of a linear combination (resp.
 %  convolution) of independent log-transformed random variables (RVs)
 %  log(X), where X ~ Beta(alpha,beta). Notice that log(X)<=0 if X ~
 %  Beta(alpha,beta).  
 %  
-%  That is, cf4LogBetaRV evaluates the characteristic function cf(t) of
+%  That is, cf_LogBetaRV evaluates the characteristic function cf(t) of
 %  Y = coef(1)*log(X_1)+ ... + coef(N)*log(X_N), where X_i ~
 %  Beta(alpha_i,beta_i), with the parameters alpha_i > 0 and beta_i > 0.
 %
@@ -17,7 +17,7 @@ function cf = cf4LogBetaRV(t,alpha,beta,coef,n)
 %  is evaluated with the parameters alpha(i) and beta(i).
 %
 % SYNTAX
-%  cf = cf4LogBetaRV(t,alpha,beta,coef,n)
+%  cf = cf_LogBetaRV(t,alpha,beta,coef,n)
 %
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -37,12 +37,12 @@ function cf = cf4LogBetaRV(t,alpha,beta,coef,n)
 % EXAMPLE 1:
 % % CF of a linear combination of K=100 independent log-Beta RVs
 %   coef = 1./(((1:50) - 0.5)*pi).^2;
-%   figure; plot(idx,coef,'.-'); grid on;
+%   figure; plot(coef,'.-'); grid on;
 %   title('Coefficients of the linear combination of log-Beta RVs')
 %   alpha = 5/2;
 %   beta  = 3/2;
 %   t     = linspace(-100,100,201);
-%   cf    = cf4LogBetaRV(t,alpha,beta,coef);
+%   cf    = cf_LogBetaRV(t,alpha,beta,coef);
 %   figure; plot(t,real(cf),t,imag(cf)); grid on;
 %   title('Characteristic function of a linear combination of log-Beta RVs')
 %
@@ -51,7 +51,7 @@ function cf = cf4LogBetaRV(t,alpha,beta,coef,n)
 %   alpha = 5/2;
 %   beta  = 3/2;
 %   coef  = 1./(((1:50) - 0.5)*pi).^2;
-%   cf    = @(t) cf4LogBetaRV(t,alpha,beta,coef);
+%   cf    = @(t) cf_LogBetaRV(t,alpha,beta,coef);
 %   clear options
 %   options.xMax = 0;
 %   result = cf2DistGP(cf,[],[],options);
@@ -67,7 +67,7 @@ function cf = cf4LogBetaRV(t,alpha,beta,coef,n)
 %   alpha = 1; % i.e. Exponnetial distribution
 %   beta  = (1:n-1)'/n;
 %   coef  = -1/n;
-%   cf = @(t) cf4LogBetaRV(t,alpha,beta,coef);
+%   cf = @(t) cf_LogBetaRV(t,alpha,beta,coef);
 %   t = linspace(-25,25,201);
 %   figure; plot(t,real(cf(t)),t,imag(cf(t))); grid on;
 %   prob = [ 0.9 0.95 0.99];
@@ -88,7 +88,7 @@ function cf = cf4LogBetaRV(t,alpha,beta,coef,n)
 % Ver.: 14-May-2017 12:08:24
 
 %% ALGORITHM
-% cf = cf4LogBetaRV(t,alpha,beta,coef,n)
+% cf = cf_LogBetaRV(t,alpha,beta,coef,n)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 5);
@@ -117,22 +117,19 @@ elseif isempty(coef) && ~isempty(alpha)
 end
 
 %% Equal size of the parameters
-[errorcode,coef,alpha,beta] = distchck(3,coef,alpha,beta);
+[errorcode,coef,alpha,beta] = distchck(3,coef(:)',alpha(:)',beta(:)');
 if errorcode > 0
     error(message('InputSizeMismatch'));
 end
-alpha = alpha(:);
-beta  = beta(:);
-coef  = coef(:);
 
 %% Characteristic function of linear combination of noncentral chi-squares
 szt = size(t);
 t   = t(:);
-aux = 1i*bsxfun(@times,t,coef');
-aux = gammalog(bsxfun(@plus,aux,alpha')) - ...
-      gammalog(bsxfun(@plus,aux,(alpha+beta)'));
+aux = 1i*bsxfun(@times,t,coef);
+aux = gammalog(bsxfun(@plus,aux,alpha)) - ...
+      gammalog(bsxfun(@plus,aux,alpha+beta));
 aux = bsxfun(@plus,aux,ones(length(t),1) * ...
-      (gammalog(alpha+beta)-gammalog(alpha))');
+      (gammalog(alpha+beta)-gammalog(alpha)));
 cf  = prod(exp(aux),2);
 
 cf  = reshape(cf,szt);
