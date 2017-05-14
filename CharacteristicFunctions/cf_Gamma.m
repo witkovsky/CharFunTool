@@ -42,8 +42,16 @@ function cf = cf_Gamma(t,alpha,beta,coef,n)
 %   Here, cf_Gamma implements the shape-rate parametrization with
 %   parameters alpha and beta, respectively. 
 %
-%   If X ~ Gamma(df/2,1/2)(shape-rate parametrization), then X is identical
-%   to CHI2(df), the chi-squared distribution with df degrees of freedom.  
+% SPECIAL CASES:
+%   1) If X ~ Gamma(1,lambda) (shape-rate parametrization), then X has
+%       an exponential distribution with rate parameter lambda. 
+%   2) If X ~ Gamma(df/2,1/2)(shape-rate parametrization), then X ~
+%      ChiSquared(df), the chi-squared distribution with df degrees of
+%      freedom. Conversely, if Q ~ ChiSquared(df) and c is a positive
+%      constant, then cQ ~ Gamma(df/2,1/2c).
+%   3) If X ~ Gamma(alpha,theta) and Y ~ Gamma(beta,theta) are
+%      independently distributed, then X/(X + Y) has a beta distribution
+%      with parameters alpha and beta.  
 %
 % WIKIPEDIA: 
 %   https://en.wikipedia.org/wiki/Gamma_distribution.
