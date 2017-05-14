@@ -11,7 +11,7 @@ function cf = cf4Gamma(t,alpha,beta,coef,n)
 %   cf(t) = Prod( (1 - i*t*coef(i)/beta(i))^(-alpha(i)) )
 %
 % SYNTAX:
-%  cf = cf4Gamma(t,alpha,theta,coef,n)
+%  cf = cf4Gamma(t,alpha,beta,coef,n)
 %
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -25,7 +25,7 @@ function cf = cf4Gamma(t,alpha,beta,coef,n)
 %          coef = 1.
 %  n     - scalar convolution coeficient n, such that Z = Y + ... + Y is
 %          sum of n iid random variables Y, where each Y = sum_{i=1}^N
-%          coef(i) * GAMMA(k(i),theta(i))) is independently and identically
+%          coef(i) * GAMMA(alpha(i),beta(i))) is independently and identically
 %          distributed random variable. If empty, default value is n = 1.   
 % 
 % PARAMETRIZATION:
