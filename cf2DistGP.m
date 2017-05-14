@@ -15,7 +15,12 @@ function [result,cdf,pdf,qf] = cf2DistGP(cf,x,prob,options)
 %            function is evaluated,
 %  options - structure with the following default parameters:
 %             options.isCompound = false  % treat the compound distributions
-%             options.isCircular = false  % treat the circular distributions
+%                                         % of the RV Y = X_1 + ... + X_N,
+%                                         % where N is discrete RV and X>=0 
+%                                         % are iid RVs from nonnegative
+%                                         % continuous distribution.
+%             options.isCircular = false  % treat the circular
+%                                         % distributions on (-pi,pi)
 %             options.isInterp   = false  % create and use the interpolant
 %                                           functions for PDF/CDF/QF/RND
 %             options.N = 2^10         % N points used by FFT

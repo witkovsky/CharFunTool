@@ -20,7 +20,11 @@ function [result,cdf,pdf,qf] = cf2DistFFT(cf,x,prob,options)
 %            estimated, if prob = [], cf2DistFFT automatically selects
 %            vector prob = [0.9,0.95,0.975,0.99,0.995,0.999].
 %  options - structure with the following default parameters:   
-%             options.isCompound = false % treat the compound distributions
+%            options.isCompound = false  % treat the compound distributions
+%                                        % of the RV Y = X_1 + ... + X_N,
+%                                        % where N is discrete RV and X>=0 
+%                                        % are iid RVs from nonnegative
+%                                        % continuous distribution.
 %             options.N = 2^10         % N points used by FFT
 %             options.xMin = -Inf      % set the lower limit of X
 %             options.xMax = Inf       % set the lower limit of X
