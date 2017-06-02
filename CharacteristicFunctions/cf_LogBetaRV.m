@@ -76,6 +76,44 @@ function cf = cf_LogBetaRV(t,alpha,beta,coef,n)
 %   result = cf2DistGP(cf,[],prob,options);
 %   disp(result)
 %
+% EXAMPLE 4 (Distribution of Wilk's Lambda statistic) 
+% % If E ~ Wp(m,Sigma) and H ~ Wp (n,Sigma) with m >= p, then the
+% % distribution of Lambda = det(E)/det(E + H) is Wilks’ distribution
+% % and denoted by Lambda(p,m,n), with Lmbda in (0,1). 
+% % It holds that Lambda ~ Prod_{i=1}^p B_i, where B_i follow independent
+% % Beta distributions with Bi ~ B{(m + 1 - i)/2, n/2)}, for i = 1,...,p. 
+% % Hence, Prob( Lambda <= lambda) = Prob(-log(Lambda) > -log(lambda)) = 
+% % Prob (-sum(log(Bi)) >  -log(lambda)). 
+% % The Lambda statistic is used to test null (significance) hypothesis
+% % expressed by the matrix H. The null hypothesis is rejected for small
+% % values of the observed statistic Lambda, or large value -log(Lambda).
+%   p = 10;
+%   m = 20;
+%   n = 7;
+%   i  = 1:p;
+%   alpha = (m+1-i)/2;
+%   beta  = n/2;
+%   coef  = -1;
+%   cf = @(t) cf_LogBetaRV(t,alpha,beta,coef);
+%   t = linspace(-5,5,201);
+%   figure; plot(t,real(cf(t)),t,imag(cf(t))); grid on;
+%   prob = [ 0.99 0.95 0.9];
+%   x = linspace(2,10);
+%   clear options
+%   options.xMin = 0;  % Minimum value of -log(Lambda)
+%   options.isPlot = false;
+%   % Distribution of -log(Lambda)
+%   result = cf2DistGP(cf,x,prob,options);
+%   disp(result)
+%   % PDF of Lambda
+%   figure; plot(exp(-x),result.pdf)
+%   xlabel('\Lambda')
+%   ylabel('PDF')
+%   title('PDF of Wilks \Lambda distribution with p=10, m = 20, n=7')
+%   disp('Quantiles of Wilks Lambda distribution')
+%   disp(['alpha    = ',num2str(1-prob)])
+%   disp(['quantile = ',num2str(exp(-result.qf))])
+%
 % WIKIPEDIA: 
 %  https://en.wikipedia.org/wiki/Beta_distribution
 %
@@ -85,7 +123,7 @@ function cf = cf_LogBetaRV(t,alpha,beta,coef,n)
 %  American Statistical Association, 71(354), 480-487.
 
 % (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 14-May-2017 12:08:24
+% Ver.: 02-Jun-2017 12:08:24
 
 %% ALGORITHM
 % cf = cf_LogBetaRV(t,alpha,beta,coef,n)
