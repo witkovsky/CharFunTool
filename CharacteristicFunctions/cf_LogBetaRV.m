@@ -35,7 +35,7 @@ function cf = cf_LogBetaRV(t,alpha,beta,coef,n)
 %          distributed random variable. If empty, default value is n = 1.  
 %
 % EXAMPLE 1:
-% % CF of a linear combination of K=100 independent log-Beta RVs
+% % CF of a linear combination of K=50 independent log-Beta RVs
 %   coef = 1./(((1:50) - 0.5)*pi).^2;
 %   figure; plot(coef,'.-'); grid on;
 %   title('Coefficients of the linear combination of log-Beta RVs')
@@ -64,7 +64,7 @@ function cf = cf_LogBetaRV(t,alpha,beta,coef,n)
 % % = 1,...,n-1. That is, log(R) is distributed as linear combination of
 % % independent logBeta random variables log(Y_j).
 %   n = 10;
-%   alpha = 1; % i.e. Exponnetial distribution
+%   alpha = 1; % i.e. Exponential distribution
 %   beta  = (1:n-1)'/n;
 %   coef  = -1/n;
 %   cf = @(t) cf_LogBetaRV(t,alpha,beta,coef);
@@ -114,7 +114,7 @@ function cf = cf_LogBetaRV(t,alpha,beta,coef,n)
 %   disp(['alpha    = ',num2str(1-prob)])
 %   disp(['quantile = ',num2str(exp(-result.qf))])
 %
-% WIKIPEDIA: 
+%  WIKIPEDIA: 
 %  https://en.wikipedia.org/wiki/Beta_distribution
 %
 %  REFERENCES:
@@ -154,13 +154,13 @@ elseif isempty(coef) && ~isempty(alpha)
     coef = 1;
 end
 
-%% Equal size of the parameters
+%% Check size of the parameters
 [errorcode,coef,alpha,beta] = distchck(3,coef(:)',alpha(:)',beta(:)');
 if errorcode > 0
     error(message('InputSizeMismatch'));
 end
 
-%% Characteristic function of linear combination of noncentral chi-squares
+%% Characteristic function of a linear combination 
 szt = size(t);
 t   = t(:);
 aux = 1i*bsxfun(@times,t,coef);
