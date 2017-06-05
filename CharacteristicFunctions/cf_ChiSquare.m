@@ -1,11 +1,11 @@
-function cf = cf_ChiSquaredNC(t,df,ncp,coef,n)
-%cf_ChiSquaredNC Characteristic function of a linear combination (resp.
-%  convolution) of independent (possibly non-central) CHI-SQUARED random
-%  variables, X ~ CHI2.     
+function cf = cf_ChiSquare(t,df,ncp,coef,n)
+%cf_ChiSquare Characteristic function of a linear combination (resp.
+%  convolution) of independent (possibly non-central) ChiSquare random
+%  variables.     
 %
-%  In particular, cf_ChiSquaredNC evaluates the characteristic function
-%  cf(t) of Y = coef(1) * X_1 + ... + coef(N) * X_N, where X_i ~
-%  CHI2(df(i),ncp(i)), and df(i) and  ncp(i) represent the 'degrees of
+%  In particular, cf_ChiSquare evaluates the characteristic function
+%  cf(t) of Y = coef_1 * X_1 + ... + coef_N * X_N, where X_i ~
+%  Chi2(df_i,ncp_i), and df_i and  ncp_i represent the 'degrees of
 %  freedom' and  the 'non-centrality' parameters of the CHI-SQUARED
 %  distribution.
 %
@@ -14,7 +14,7 @@ function cf = cf_ChiSquaredNC(t,df,ncp,coef,n)
 %                   * exp((i*t*ncp(i))/(1-2*i*t*coef(i))) )
 %
 % SYNTAX:
-%  cf = cf_ChiSquaredNC(t,df,ncp,coef,n)
+%  cf = cf_ChiSquare(t,df,ncp,coef,n)
 % 
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -39,31 +39,31 @@ function cf = cf_ChiSquaredNC(t,df,ncp,coef,n)
 %  https://en.wikipedia.org/wiki/Noncentral_chi-squared_distribution
 %
 % EXAMPLE 1:
-% % CF of the distribution of chi-squared RV with DF = 1, NCP = 1
+% % CF of the distribution of ChiSquare RV with DF = 1, NCP = 1
 %   df   = 1;
 %   ncp  = 1;
 %   coef = 1;
 %   t    = linspace(-100,100,501);
-%   cf   = cf_ChiSquaredNC(t,df,ncp,coef);
+%   cf   = cf_ChiSquare(t,df,ncp,coef);
 %   figure; plot(t,real(cf),t,imag(cf));grid on
 %   title('Characteristic function of the \chi^2 RV with DF=1 and NCP=1')
 %
 % EXAMPLE 2: 
-% % CF of a linear combination of K=100 independent chi2_1 RVs
+% % CF of a linear combination of K=100 independent ChiSquare RVs
 %   coef = 1./(((1:50) - 0.5)*pi).^2;
 %   figure; plot(coef,'.-')
 %   title('Coefficients of the linear combination of \chi^2 RVs with DF=1')
 %   df   = 1;
-%   cf   = cf_ChiSquaredNC(t,df,[],coef);
+%   cf   = cf_ChiSquare(t,df,[],coef);
 %   t    = linspace(-100,100,501);
 %   figure; plot(t,real(cf),t,imag(cf));grid on
-%   title('Characteristic function of the linear combination of \chi^2_1 RVs')
+%   title('CF of the linear combination of \chi^2_1 RVs')
 %
 % EXAMPLE 3:
 % % PDF/CDF from the CF by cf2DistGP
 %   df   = 1;
 %   coef = 1./(((1:50) - 0.5)*pi).^2;
-%   cf = @(t) cf_ChiSquaredNC(t,df,[],coef);
+%   cf = @(t) cf_ChiSquare(t,df,[],coef);
 %   clear options
 %   options.N = 2^12;
 %   options.xMin = 0;

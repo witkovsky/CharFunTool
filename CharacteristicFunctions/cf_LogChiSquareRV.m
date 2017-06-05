@@ -1,118 +1,102 @@
-function cf = cf_LogFisherSnedecorFRV(t,df1,df2,coef,n)
-%%cf_LogFisherSnedecorFRV Characteristic function of a linear combination
-% (resp. convolution) of independent log-transformed random variables (RVs)
-%  log(X), where X ~ F(df1,df2) has the Fisher-Snedecor F distribution with
-%  df1 and df2 degrees of freedom. 
+function cf = cf_LogChiSquareRV(t,df,coef,n)
+%%cf_LogChiSquareRV Characteristic function of a linear combination (resp.
+%  convolution) of independent log-transformed random variables (RVs)
+%  log(X), where X ~ ChiSquare(df) is central ChiSquare distributed RV with
+%  df degrees of freedom.
 %  
-%  That is, cf_LogFisherSnedecorFRV evaluates the characteristic function
-%  cf(t) of  Y = coef(1)*log(X_1)+ ... + coef(N)*log(X_N), where X_i ~
-%  F(df1_i,df2_i), with degrees of freedom df1_i and df2_i, for i =
-%  1,...,N.
+%  That is, cf_LogChiSquareRV evaluates the characteristic function cf(t) of
+%  Y = coef_1*log(X_1) +...+ coef_N*log(X_N), where X_i ~ ChiSquare(df_i),
+%  with df_i > 0 degrees of freedom. 
 %
-%  The characteristic function of Y = log(X), with X ~ F(df1,df2) is
+%  The characteristic function of Y = log(X), with X ~ ChiSquare(df) is
 %  defined by cf_Y(t) = E(exp(1i*t*Y)) = E(exp(1i*t*log(X))) = E(X^(1i*t)). 
 %  That is, the characteristic function can be derived from expression for
 %  the r-th moment of X, E(X^r) by using (1i*t) instead of r. In
-%  particular, the characteristic function of Y = log(X) is defined by  
-%   cf_Y(t) = (df2/df1)^(1i*t) .* gamma(df1/2 + 1i*t) / gamma(df1) .* ...
-%             gamma(df2/2 - 1i*t) / gamma(df2).
-%  Hence,the characteristic function of Y  = coef(1)*Y1 + ... + coef(N)*YN
-%  is  cf_Y(t) =  cf_Y1(coef(1)*t) * ... * cf_YN(coef(N)*t), where cf_Yi(t)
-%  is evaluated with the parameters df1(i) and df2(i).
+%  particular, the characteristic function of Y = log(X) is
+%   cf_Y(t) = 2^(1i*t) * gamma(df/2 + 1i*t) / gamma(df/2).
+%
+%  Hence,the characteristic function of Y  = coef_1*X_1 +...+ coef_N*X_N
+%  is  cf_Y(t) =  cf_1(coef_1*t) *...* cf_N(coef_N*t), where cf_i(t)
+%  is the characteristic function of the ChiSquare distribution with df_i
+%  degrees of freedom. 
 %
 % SYNTAX
-%  cf = cf_LogFisherSnedecorFRV(t,df1,df2,coef,n)
+%  cf = cf_LogChiSquareRV(t,df,coef,n)
 %
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
-%  df1   - vector of the  degrees of freedom df1 > 0. If empty, default
-%          value is df1 = 1.  
-%  df2   - vector of the  degrees of freedom df2 > 0. If empty, default
-%          value is df2 = 1.
+%  df    - vector of the degrees of freedom of the the chi-squared random
+%          variables.  If df is scalar, it is assumed that all degrees of
+%          freedom are equal. If empty, default value is df = 1. 
 %  coef  - vector of the coefficients of the linear combination of the
-%          log-transformed random variables. If coef is scalar, it is
-%          assumed that all coefficients are equal. If empty, default value
-%          is coef = 1.
+%          logGamma random variables. If coef is scalar, it is assumed
+%          that all coefficients are equal. If empty, default value is
+%          coef = 1.
 %  n     - scalar convolution coeficient n, such that Z = Y + ... + Y is
 %          sum of n iid random variables Y, where each Y = sum_{i=1}^N
-%          coef(i) * log(X_i) is independently and identically
-%          distributed random variable. If empty, default value is n = 1.  
+%          coef(i) * X_i, with X_i ~ logGamma(alpha(i),beta(i)))
+%          independently and identically distributed random variables. If
+%          empty, default value is n = 1.    
 %
 % EXAMPLE 1:
-% % CF of a weighted linear combination of independent log-F RVs
+% % CF of a weighted linear combination of independent log-ChiSquare RVs
 %   coef   = [1 2 3 4 5];
 %   weight = coef/sum(coef);
-%   df1 = 5;
-%   df2 = 3;
-%   t   = linspace(-10,10,201);
-%   cf  = cf_LogFisherSnedecorFRV(t,df1,df2,weight);
+%   df     = [1 2 3 4 5];
+%   t      = linspace(-20,20,1001);
+%   cf     = cf_LogChiSquareRV(t,df,weight);
 %   figure; plot(t,real(cf),t,imag(cf)); grid on;
-%   title('Characteristic function of a linear combination of log-F RVs')
+%   title('CF of a linear combination of minus log-ChiSquare RVs')
 %
 % EXAMPLE 2:
-% % PDF/CDF from the CF by cf2DistGP
+% % PDF/CDF of a linear combination of independent log-ChiSquare RVs
 %   coef   = [1 2 3 4 5];
 %   weight = coef/sum(coef);
-%   df1 = 5;
-%   df2 = 3;
-%   cf    = @(t) cf_LogFisherSnedecorFRV(t,df1,df2,weight);
+%   df     = [1 2 3 4 5];
+%   cf     = @(t) cf_LogChiSquareRV(t,df,weight);
 %   clear options
 %   options.N = 2^12;
 %   prob = [0.9 0.95 0.99];
 %   result = cf2DistGP(cf,[],prob,options);
 %   disp(result)
 %
-%  WIKIPEDIA: 
-%  https://en.wikipedia.org/wiki/F-distribution 
+% WIKIPEDIA:
+%  https://en.wikipedia.org/wiki/Chi-squared_distribution
 
 % (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 02-Jun-2017 12:08:24
 
 %% ALGORITHM
-% cf = cf_LogFisherSnedecorFRV(t,df1,df2,coef,n)
+% cf = cf_LogChiSquareRV(t,df,coef,n)
 
 %% CHECK THE INPUT PARAMETERS
-narginchk(1, 5);
-if nargin < 5, n = []; end
-if nargin < 4, coef = []; end
-if nargin < 3, df2 = []; end
-if nargin < 2, df1 = []; end
+narginchk(1, 4);
+if nargin < 4, n = []; end
+if nargin < 3, coef = []; end
+if nargin < 2, df = []; end
 
-%%
-if isempty(df2) && ~isempty(df1)
-    df2 = 1;
-elseif isempty(df2) && ~isempty(coef)
-    df2 = 1;
+%% SET the default values 
+if isempty(df) && ~isempty(coef)
+    df = 1;
 end
 
-if isempty(df1) && ~isempty(coef)
-    df1 = 1;
-elseif isempty(df1) && ~isempty(df2)
-    df1 = 1;
-end
-
-if isempty(coef) && ~isempty(df2)
-    coef = 1;
-elseif isempty(coef) && ~isempty(df1)
+if isempty(coef) && ~isempty(df)
     coef = 1;
 end
 
 %% Check size of the parameters
-[errorcode,coef,df1,df2] = distchck(3,coef(:)',df1(:)',df2(:)');
+[errorcode,coef,df] = distchck(2,coef(:)',df(:)');
 if errorcode > 0
     error(message('InputSizeMismatch'));
 end
 
-%% Characteristic function of a linear combination 
+%% Characteristic function of linear combination 
 szt = size(t);
 t   = t(:);
 aux = 1i*t*coef;
-aux = gammalog(bsxfun(@plus,aux,df1/2))  + ...
-      gammalog(bsxfun(@plus,-aux,df2/2)) - ...
-      ones(length(t),1)*(gammalog(df1/2) + gammalog(df2/2)) + ...
-      bsxfun(@times,aux,log(df2./df1));
+aux = gammalog(bsxfun(@plus,aux,df/2))-ones(length(t),1)*gammalog(df/2);
+aux = aux + 1i*t*log(2);
 cf  = prod(exp(aux),2);
-
 cf  = reshape(cf,szt);
 cf(t==0) = 1;
 
