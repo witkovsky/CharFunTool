@@ -9,9 +9,13 @@ function cf = cf_LogBetaRV(t,alpha,beta,coef,n)
 %  Beta(alpha_i,beta_i), with the parameters alpha_i > 0 and beta_i > 0.
 %
 %  The characteristic function of Y = log(X), with X ~ Beta(alpha,beta) is
-%  defined by  
-%   cf_Y(t) = (gamma(beta)*gamma(alpha + 1i*t)) / ...
-%                          (beta(alpha,beta)*gamma(alpha + beta + 1i*t)).
+%  defined by cf_Y(t) = E(exp(1i*t*Y)) = E(exp(1i*t*log(X))) = E(X^(1i*t)). 
+%  That is, the characteristic function can be derived from expression for
+%  the r-th moment of X, E(X^r) by using (1i*t) instead of r. In
+%  particular, the characteristic function of Y = log(X), with X ~
+%  Beta(alpha,beta) is defined by  
+%   cf_Y(t) = gamma(alpha + 1i*t) / gamma(alpha) .* ...
+%             gamma(alpha + beta) / gamma(alpha + beta + 1i*t).
 %  Hence,the characteristic function of Y  = coef(1)*Y1 + ... + coef(N)*YN
 %  is  cf_Y(t) =  cf_Y1(coef(1)*t) * ... * cf_YN(coef(N)*t), where cf_Yi(t)
 %  is evaluated with the parameters alpha(i) and beta(i).

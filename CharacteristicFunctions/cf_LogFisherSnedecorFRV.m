@@ -1,133 +1,118 @@
-function cf = cf_LogGammaRV(t,alpha,beta,coef,n)
-%%cf_LogGammaRV Characteristic function of a linear combination (resp.
-%  convolution) of independent log-transformed random variables (RVs)
-%  log(X), where X ~ Gamma(alpha,beta), and alpha and  beta represent the
-%  'shape' and the 'rate' parameters of the GAMMA distribution.
+function cf = cf_LogFisherSnedecorFRV(t,df1,df2,coef,n)
+%%cf_LogFisherSnedecorFRV Characteristic function of a linear combination
+% (resp. convolution) of independent log-transformed random variables (RVs)
+%  log(X), where X ~ F(df1,df2) has the Fisher-Snedecor F distribution with
+%  df1 and df2 degrees of freedom. 
 %  
-%  That is, cf_LogGammaRV evaluates the characteristic function cf(t) of
-%  Y = coef(1)*log(X_1)+ ... + coef(N)*log(X_N), where X_i ~
-%  Gamma(alpha_i,beta_i), with the parameters alpha_i > 0 and beta_i > 0.
+%  That is, cf_LogFisherSnedecorFRV evaluates the characteristic function
+%  cf(t) of  Y = coef(1)*log(X_1)+ ... + coef(N)*log(X_N), where X_i ~
+%  F(df1_i,df2_i), with degrees of freedom df1_i and df2_i, for i =
+%  1,...,N.
 %
-%  The characteristic function of Y = log(X), with X ~ Gamma(alpha,beta) is
+%  The characteristic function of Y = log(X), with X ~ F(df1,df2) is
 %  defined by cf_Y(t) = E(exp(1i*t*Y)) = E(exp(1i*t*log(X))) = E(X^(1i*t)). 
 %  That is, the characteristic function can be derived from expression for
 %  the r-th moment of X, E(X^r) by using (1i*t) instead of r. In
-%  particular, the characteristic function of Y = log(X) is
-%   cf_Y(t) = (1/beta^(1i*t)) .* (gamma(alpha + 1i*t) / gamma(alpha)).
-%
+%  particular, the characteristic function of Y = log(X) is defined by  
+%   cf_Y(t) = (df2/df1)^(1i*t) .* gamma(df1/2 + 1i*t) / gamma(df1) .* ...
+%             gamma(df2/2 - 1i*t) / gamma(df2).
 %  Hence,the characteristic function of Y  = coef(1)*Y1 + ... + coef(N)*YN
 %  is  cf_Y(t) =  cf_Y1(coef(1)*t) * ... * cf_YN(coef(N)*t), where cf_Yi(t)
-%  is evaluated with the parameters alpha(i) and beta(i).
+%  is evaluated with the parameters df1(i) and df2(i).
 %
 % SYNTAX
-%  cf = cf_LogGammaRV(t,alpha,beta,coef,n)
+%  cf = cf_LogFisherSnedecorFRV(t,df1,df2,coef,n)
 %
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
-%  alpha - vector of the 'shape' parameters alpha > 0. If empty, default
-%          value is alpha = 1.  
-%  beta  - vector of the 'rate' parameters beta > 0. If empty, default
-%          value is beta = 1.  
+%  df1   - vector of the  degrees of freedom df1 > 0. If empty, default
+%          value is df1 = 1.  
+%  df2   - vector of the  degrees of freedom df2 > 0. If empty, default
+%          value is df2 = 1.
 %  coef  - vector of the coefficients of the linear combination of the
-%          logGamma random variables. If coef is scalar, it is assumed
-%          that all coefficients are equal. If empty, default value is
-%          coef = 1.
+%          log-transformed random variables. If coef is scalar, it is
+%          assumed that all coefficients are equal. If empty, default value
+%          is coef = 1.
 %  n     - scalar convolution coeficient n, such that Z = Y + ... + Y is
 %          sum of n iid random variables Y, where each Y = sum_{i=1}^N
-%          coef(i) * X_i, with X_i ~ logGamma(alpha(i),beta(i)))
-%          independently and identically distributed random variables. If
-%          empty, default value is n = 1.    
+%          coef(i) * log(X_i) is independently and identically
+%          distributed random variable. If empty, default value is n = 1.  
 %
 % EXAMPLE 1:
-% % CF of a weighted linear combination of independent log-Gamma RVs
+% % CF of a weighted linear combination of independent log-F RVs
 %   coef   = [1 2 3 4 5];
 %   weight = coef/sum(coef);
-%   alpha  = 5/2;
-%   beta   = 3/2;
-%   t      = linspace(-20,20,1001);
-%   cf     = cf_LogGammaRV(t,alpha,beta,-weight);
+%   df1 = 5;
+%   df2 = 3;
+%   t   = linspace(-10,10,201);
+%   cf  = cf_LogFisherSnedecorFRV(t,df1,df2,weight);
 %   figure; plot(t,real(cf),t,imag(cf)); grid on;
-%   title('CF of a linear combination of minus log-Gamma RVs')
+%   title('Characteristic function of a linear combination of log-F RVs')
 %
 % EXAMPLE 2:
-% % PDF/CDF of a linear combination of independent log-Gamma RVs
+% % PDF/CDF from the CF by cf2DistGP
 %   coef   = [1 2 3 4 5];
 %   weight = coef/sum(coef);
-%   alpha  = 5/2;
-%   beta   = 3/2;
-%   cf     = @(t) cf_LogGammaRV(t,alpha,beta,weight);
-%   clear options
-%   options.SixSigmaRule = 8;
-%   result = cf2DistGP(cf,[],[],options);
-%   disp(result)
-%
-% EXAMPLE 3:
-% % PDF/CDF of a log-Gamma (log-ChiSquared) RV with alpha = 5/2, beta = 1/2 
-%   alpha = 5/2;
-%   beta = 1/2;
-%   cf = @(t) cf_LogGammaRV(t,alpha,beta);
+%   df1 = 5;
+%   df2 = 3;
+%   cf    = @(t) cf_LogFisherSnedecorFRV(t,df1,df2,weight);
 %   clear options
 %   options.N = 2^12;
 %   prob = [0.9 0.95 0.99];
 %   result = cf2DistGP(cf,[],prob,options);
 %   disp(result)
-%   qfGamma = exp(result.qf)
 %
-% WIKIPEDIA: 
-%  https://en.wikipedia.org/wiki/Gamma_distribution
-% Wolfram MathWorld:
-%  http://mathworld.wolfram.com/GammaDistribution.html
-%
-% REFERENCES:
-% MATHAI, A.M. (1973). A review of the different techniques used for
-% deriving the exact distributions of multivariate test criteria. Sankhya:
-% The Indian Journal of Statistics, Series A, 39-60.  
+%  WIKIPEDIA: 
+%  https://en.wikipedia.org/wiki/F-distribution 
 
 % (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 02-Jun-2017 12:08:24
 
 %% ALGORITHM
-% cf = cf_LogGammaRV(t,alpha,beta,coef,n)
+% cf = cf_LogFisherSnedecorFRV(t,df1,df2,coef,n)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 5);
 if nargin < 5, n = []; end
 if nargin < 4, coef = []; end
-if nargin < 3, beta = []; end
-if nargin < 2, alpha = []; end
+if nargin < 3, df2 = []; end
+if nargin < 2, df1 = []; end
 
 %%
-if isempty(beta) && ~isempty(alpha)
-    beta = 1;
-elseif isempty(beta) && ~isempty(coef)
-    beta = 1;
+if isempty(df2) && ~isempty(df1)
+    df2 = 1;
+elseif isempty(df2) && ~isempty(coef)
+    df2 = 1;
 end
 
-if isempty(alpha) && ~isempty(coef)
-    alpha = 1;
-elseif isempty(alpha) && ~isempty(beta)
-    alpha = 1;
+if isempty(df1) && ~isempty(coef)
+    df1 = 1;
+elseif isempty(df1) && ~isempty(df2)
+    df1 = 1;
 end
 
-if isempty(coef) && ~isempty(beta)
+if isempty(coef) && ~isempty(df2)
     coef = 1;
-elseif isempty(coef) && ~isempty(alpha)
+elseif isempty(coef) && ~isempty(df1)
     coef = 1;
 end
 
 %% Check size of the parameters
-[errorcode,coef,alpha,beta] = distchck(3,coef(:)',alpha(:)',beta(:)');
+[errorcode,coef,df1,df2] = distchck(3,coef(:)',df1(:)',df2(:)');
 if errorcode > 0
     error(message('InputSizeMismatch'));
 end
 
-%% Characteristic function of linear combination 
+%% Characteristic function of a linear combination 
 szt = size(t);
 t   = t(:);
-aux = 1i*bsxfun(@times,t,coef);
-aux = gammalog(bsxfun(@plus,aux,alpha))-ones(length(t),1)*gammalog(alpha);
-aux = bsxfun(@plus,aux,-(1i*t)*log(beta));
+aux = 1i*t*coef;
+aux = gammalog(bsxfun(@plus,aux,df1/2))  + ...
+      gammalog(bsxfun(@plus,-aux,df2/2)) - ...
+      ones(length(t),1)*(gammalog(df1/2) + gammalog(df2/2)) + ...
+      bsxfun(@times,aux,log(df2./df1));
 cf  = prod(exp(aux),2);
+
 cf  = reshape(cf,szt);
 cf(t==0) = 1;
 
