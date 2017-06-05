@@ -9,9 +9,13 @@ function cf = cf_LogBetaRV(t,alpha,beta,coef,n)
 %  Beta(alpha_i,beta_i), with the parameters alpha_i > 0 and beta_i > 0.
 %
 %  The characteristic function of Y = log(X), with X ~ Beta(alpha,beta) is
-%  defined by  
-%   cf_Y(t) = (gamma(beta)*gamma(alpha + 1i*t)) / ...
-%                          (beta(alpha,beta)*gamma(alpha + beta + 1i*t)).
+%  defined by cf_Y(t) = E(exp(1i*t*Y)) = E(exp(1i*t*log(X))) = E(X^(1i*t)). 
+%  That is, the characteristic function can be derived from expression for
+%  the r-th moment of X, E(X^r) by using (1i*t) instead of r. In
+%  particular, the characteristic function of Y = log(X), with X ~
+%  Beta(alpha,beta) is defined by  
+%   cf_Y(t) = gamma(alpha + 1i*t) / gamma(alpha) .* ...
+%             gamma(alpha + beta) / gamma(alpha + beta + 1i*t).
 %  Hence,the characteristic function of Y  = coef(1)*Y1 + ... + coef(N)*YN
 %  is  cf_Y(t) =  cf_Y1(coef(1)*t) * ... * cf_YN(coef(N)*t), where cf_Yi(t)
 %  is evaluated with the parameters alpha(i) and beta(i).
@@ -35,7 +39,7 @@ function cf = cf_LogBetaRV(t,alpha,beta,coef,n)
 %          distributed random variable. If empty, default value is n = 1.  
 %
 % EXAMPLE 1:
-% % CF of a linear combination of K=100 independent log-Beta RVs
+% % CF of a linear combination of K=50 independent log-Beta RVs
 %   coef = 1./(((1:50) - 0.5)*pi).^2;
 %   figure; plot(coef,'.-'); grid on;
 %   title('Coefficients of the linear combination of log-Beta RVs')
@@ -64,7 +68,7 @@ function cf = cf_LogBetaRV(t,alpha,beta,coef,n)
 % % = 1,...,n-1. That is, log(R) is distributed as linear combination of
 % % independent logBeta random variables log(Y_j).
 %   n = 10;
-%   alpha = 1; % i.e. Exponnetial distribution
+%   alpha = 1; % i.e. Exponential distribution
 %   beta  = (1:n-1)'/n;
 %   coef  = -1/n;
 %   cf = @(t) cf_LogBetaRV(t,alpha,beta,coef);
@@ -114,7 +118,7 @@ function cf = cf_LogBetaRV(t,alpha,beta,coef,n)
 %   disp(['alpha    = ',num2str(1-prob)])
 %   disp(['quantile = ',num2str(exp(-result.qf))])
 %
-% WIKIPEDIA: 
+%  WIKIPEDIA: 
 %  https://en.wikipedia.org/wiki/Beta_distribution
 %
 %  REFERENCES:
@@ -154,13 +158,13 @@ elseif isempty(coef) && ~isempty(alpha)
     coef = 1;
 end
 
-%% Equal size of the parameters
+%% Check size of the parameters
 [errorcode,coef,alpha,beta] = distchck(3,coef(:)',alpha(:)',beta(:)');
 if errorcode > 0
     error(message('InputSizeMismatch'));
 end
 
-%% Characteristic function of linear combination of noncentral chi-squares
+%% Characteristic function of a linear combination 
 szt = size(t);
 t   = t(:);
 aux = 1i*bsxfun(@times,t,coef);
