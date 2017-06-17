@@ -62,13 +62,16 @@ function cf = cf_LogBetaRV(t,alpha,beta,coef,n)
 %
 % EXAMPLE 3: 
 % % Distribution of log(R), where R = geometric/arithmetic mean of Gamma RVs
-% % Let X_1,...,X_n are independent X_j ~ Gamma(alpha,beta), and let
-% % R = geometricmean(X)/mean(X). According to Glaser (JASA 1976) we get 
-% % log(R) ~ (1/n) * sum_{j=1}^{n-1} log(Y_j), Y_j ~ Beta(alpha,j/n), for j
-% % = 1,...,n-1. That is, log(R) is distributed as linear combination of
-% % independent logBeta random variables log(Y_j).
+% % Let X_1,...,X_n are iid RVs, X_j ~ Gamma(A,B), where A > 0 is the known
+% % shape parameter and B > 0 is the (unknown, common) rate parameter.  
+% % Let R = geometricmean(X)/mean(X). According to Glaser (JASA 1976) 
+% % log(R) ~ (1/n) * sum_{j=1}^{n-1} log(Y_j), Y_j ~ Beta(alpha,beta_j),
+% % where alpha = A and beta_j = j/n for j = 1,...,n-1. That is, log(R) is
+% % distributed as linear combination of independent logBeta random
+% % variables log(Y_j). 
+% % Here we evaluate the PDF/CDF of W = -log(R) (i.e. minus of log(R))
 %   n = 10;
-%   alpha = 1; % i.e. Exponential distribution
+%   alpha = 1; % A = 1, i.e. X_j are from exponential distribution
 %   beta  = (1:n-1)'/n;
 %   coef  = -1/n;
 %   cf = @(t) cf_LogBetaRV(t,alpha,beta,coef);
@@ -80,14 +83,16 @@ function cf = cf_LogBetaRV(t,alpha,beta,coef,n)
 %   result = cf2DistGP(cf,[],prob,options);
 %   disp(result)
 %
-% EXAMPLE 4 (Distribution of Wilk's Lambda statistic) 
+% EXAMPLE 4 (Distribution of Wilks Lambda statistic) 
 % % If E ~ Wp(m,Sigma) and H ~ Wp (n,Sigma) with m >= p, then the
-% % distribution of Lambda = det(E)/det(E + H) is Wilks’ distribution
-% % and denoted by Lambda(p,m,n), with Lmbda in (0,1). 
-% % It holds that Lambda ~ Prod_{i=1}^p B_i, where B_i follow independent
+% % distribution of Lambda = L = det(E)/det(E + H) is Wilks Lambda
+% % distribution, denoted by L ~ Lambda(p,m,n), with L in (0,1). 
+% % It holds that L ~ Prod_{i=1}^p B_i, where B_i follow independent
 % % Beta distributions with Bi ~ B{(m + 1 - i)/2, n/2)}, for i = 1,...,p. 
-% % Hence, Prob( Lambda <= lambda) = Prob(-log(Lambda) > -log(lambda)) = 
-% % Prob (-sum(log(Bi)) >  -log(lambda)). 
+% % Let W = -log(L) and cdf_W(x) = Prob(W <= x) = Prob(-sum(log(Bi)) <= x). 
+% % Then, cdf_L(u) = Prob(L <= u) = Prob(W > -log(u)) = 
+% % 1 - Prob(W <= -log(u)) = 1 - cdf_W(x), where x = -log(u) and u =
+% % exp(-x). Moreover, pdf_Lambda(u) = pdf_W(x)/exp(-x) = pdf_W(-log(u))/u. 
 % % The Lambda statistic is used to test null (significance) hypothesis
 % % expressed by the matrix H. The null hypothesis is rejected for small
 % % values of the observed statistic Lambda, or large value -log(Lambda).
@@ -102,18 +107,26 @@ function cf = cf_LogBetaRV(t,alpha,beta,coef,n)
 %   t = linspace(-5,5,201);
 %   figure; plot(t,real(cf(t)),t,imag(cf(t))); grid on;
 %   prob = [ 0.99 0.95 0.9];
-%   x = linspace(2,10);
+%   x = linspace(2,8);
 %   clear options
-%   options.xMin = 0;  % Minimum value of -log(Lambda)
-%   options.isPlot = false;
+%   options.xMin = 0; 
 %   % Distribution of -log(Lambda)
 %   result = cf2DistGP(cf,x,prob,options);
 %   disp(result)
 %   % PDF of Lambda
-%   figure; plot(exp(-x),result.pdf)
+%   % If W = -log(Lambda), then pdf_Lambda(u) = pdf_W(x)/exp(-x), 
+%   % where x = -log(u) and u = exp(-x)
+%   figure; plot(exp(-result.x),result.pdf./exp(-result.x))
 %   xlabel('\Lambda')
 %   ylabel('PDF')
 %   title('PDF of Wilks \Lambda distribution with p=10, m = 20, n=7')
+%   % CDF of Lambda
+%   % If W = -log(Lambda), then cdf_Lambda(u) = 1-cdf_W(x), 
+%   % where x = -log(u) and u = exp(-x)
+%   figure; plot(exp(-result.x),1-result.cdf)
+%   xlabel('\Lambda')
+%   ylabel('CDF')
+%   title('CDF of Wilks \Lambda distribution with p=10, m = 20, n=7')
 %   disp('Quantiles of Wilks Lambda distribution')
 %   disp(['alpha    = ',num2str(1-prob)])
 %   disp(['quantile = ',num2str(exp(-result.qf))])
