@@ -81,8 +81,9 @@ function cf = cf_LogMeansRatioRV(t,alpha,n,coef,niid)
 %   alpha = df/2;
 %   n     = 3;
 %   coef  = -1;
-%   prob  = [0.9 0.95 0.99];
+%   prob  = [0.9 0.95 0.99 0.999 0.9999];
 %   clear options
+%   options.N = 2^12;
 %   options.xMin = 0;
 %   options.isPlot = false;
 %   critW = zeros(length(df),length(prob));
