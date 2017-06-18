@@ -22,12 +22,12 @@ function cf = cf_LogMeansRatioRV(t,alpha,n,coef,niid)
 %  R_i in (0,1), is defined by R_i ~ (Prod_{j=1}^{n_i-1} B_ij)^(1/n_i),
 %  where B_ij ~ Beta{alpha_i, j/n_i)} for j = 1,...,n_i-1, i.e. B_ij follow
 %  independent Beta distributions for all i = 1,...,N and j = 1,...,n_i-1.
-%  Alternatively, log(R_i) ~ (log(B_i1) + ... + log(B_{i,n_i-1}))/n_i    
+%  Alternatively, log(R_i) ~ (log(B_i1) + ... + log(B_{i,n_i-1}))/n_i.
 %
 % SYNTAX
 %  cf = cf_LogMeansRatioRV(t,alpha,n,coef,niid)
 %
-% INPUTS:
+% INPUTS
 %  t     - vector or array of real values, where the CF is evaluated.
 %  alpha - vector of the 'shape' parameters alpha = (alpha_1,...,alpha_N).
 %          If empty, default value is alpha = (1,...,1). 
@@ -75,6 +75,29 @@ function cf = cf_LogMeansRatioRV(t,alpha,n,coef,niid)
 %   disp(result)
 %
 % EXAMPLE 4:
+% % Compare the the exact distribution with the Bartlett's approximation
+%   df    = 3;
+%   n     = 25;
+%   DF    = n*df; 
+%   alpha = df/2;
+%   const = (1 + 1/(3*(n-1))*(n/df - 1/DF))/DF;
+%   coef  = -1/const;
+%   cf    = @(t) cf_LogMeansRatioRV(t,alpha,n,coef);
+%   prob = [0.9 0.95 0.99];
+%   clear options
+%   options.xMin = 0;
+%   result = cf2DistGP(cf,[],prob,options);
+%   disp(result)
+%   x = result.x;
+%   figure;plot(x,result.cdf,x,chi2cdf(x,n-1));grid
+%   title('Exact CDF vs. the Bartlett approximation')
+%   xlabel('corrected test statistic')
+%   ylabel('CDF')
+%   disp(prob)
+%   disp(result.qf)
+%   disp(chi2inv(prob,n-1))
+%
+% EXAMPLE 5:
 % % Exact Critical Values for Bartlett's Test for Homogeneity of Variances
 % % See and compare the selected results in Glaser (1976b, Table 1)
 %   df    = [4 5 6 7 8 9 10 11 14 19 24 29 49 99];
@@ -84,6 +107,7 @@ function cf = cf_LogMeansRatioRV(t,alpha,n,coef,niid)
 %   prob  = [0.9 0.95 0.99 0.999 0.9999];
 %   clear options
 %   options.N = 2^12;
+%   options.SixSigmaRule = 15;
 %   options.xMin = 0;
 %   options.isPlot = false;
 %   critW = zeros(length(df),length(prob));
@@ -98,8 +122,25 @@ function cf = cf_LogMeansRatioRV(t,alpha,n,coef,niid)
 %   disp(1-prob)
 %   disp(critR)
 %
-%  WIKIPEDIA: 
-%  https://en.wikipedia.org/wiki/Wilks%27s_lambda_distribution
+%  REMARKS
+%  The MeansRatio distribution is the distribution of the Bartlett's test
+%  statistitic for testing homogeneity of variances of n populations, based
+%  on equal sample sizes of size m, i.e. with df = m-1 for all j =
+%  1,...,n. Let DF = n*df. The Bartlett (1937) test statistic is defined by
+%  R = Prod((df*S^2_j/sigma^2)^(df/DF)) / (df/DF)*Sum(df*S^2_j/sigma^2)
+%  = Prod((S^2_j)^(1/n)) / Sum(S^2_j)/n, where S^2_j = (1/(m-1))*Sum(X_jk -
+%  mean(X_jk))^2. Notice that df*S^2_j/sigma^2 ~ Chi^2_df = Gamma(df/2,1/2)
+%  for all j = 1,...,n. The exact critical values can be calculated from
+%  the distribution of W = -log(R) by inverting the characteristic function
+%  cf_LogMeansRatioRV.  
+%  
+%  The corrected version of the test statistic W with better convergence to
+%  the asymptotic chi-square distribution with n-1 degrees of freedom is
+%  Chi2 = (log(S^2_pool) - Sum(log(S^2_j))/n) / const, where the correction
+%  constant is const = (1 + 1/(3*(n-1))*(sum(1/df) - 1/DF))/DF.
+%
+%  WIKIPEDIA
+%  https://en.wikipedia.org/wiki/Bartlett%27s_test
 %
 %  REFERENCES
 %  Glaser, R. E. (1976a). The ratio of the geometric mean to the arithmetic
