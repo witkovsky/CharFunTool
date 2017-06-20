@@ -55,23 +55,23 @@ function cf = cf_LogWilksLambdaRV(t,p,m,n,coef,niid)
 %
 % EXAMPLE 2:
 % % CF of a weighted linear combination of minus log Wilks Lambda RVs 
-%   p  = [5 5 5];
-%   m  = [10 15 20];
-%   n  = [3 2 1];
+%   p    = [5 5 5];
+%   m    = [10 15 20];
+%   n    = [3 2 1];
 %   coef = -[10 15 20]/45;
-%   t  = linspace(-20,20,201);
-%   cf = cf_LogWilksLambdaRV(t,p,m,n,coef);
+%   t    = linspace(-20,20,201);
+%   cf   = cf_LogWilksLambdaRV(t,p,m,n,coef);
 %   figure; plot(t,real(cf),t,imag(cf)); grid on;
 %   title('CF of a weighted linear combination of minus log Wilks Lambda RVs')
 %
 % EXAMPLE 3:
 % % PDF/CDF of minus log Wilks Lambda RV (p=5, m=10, n=3) from its CF
-%   p  = 5;
-%   m  = 10;
-%   n  = 3;
+%   p    = 5;
+%   m    = 10;
+%   n    = 3;
 %   coef = -1;
-%   cf = @(t) cf_LogWilksLambdaRV(t,p,m,n,coef);
-%   x = linspace(0,5)';
+%   cf   = @(t) cf_LogWilksLambdaRV(t,p,m,n,coef);
+%   x    = linspace(0,5)';
 %   prob = [0.9 0.95 0.99];
 %   clear options
 %   options.xMin = 0;
@@ -82,11 +82,11 @@ function cf = cf_LogWilksLambdaRV(t,p,m,n,coef,niid)
 % % Compare the the exact distribution with the Bartlett's approximation
 % % The Bartlett's approximation is given by:
 % % ((p-n+1)/2 - m)*log(Lambda(p,m,n)) ~ chi^2_{n*p}
-%   p  = 15;
-%   m  = 30;
-%   n  = 3;
+%   p    = 15;
+%   m    = 30;
+%   n    = 3;
 %   coef = (p-n+1)/2 - m;
-%   cf = @(t) cf_LogWilksLambdaRV(t,p,m,n,coef);
+%   cf   = @(t) cf_LogWilksLambdaRV(t,p,m,n,coef);
 %   prob = [0.9 0.95 0.99];
 %   clear options
 %   options.xMin = 0;

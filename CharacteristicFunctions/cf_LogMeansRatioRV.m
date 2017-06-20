@@ -1,4 +1,4 @@
-function cf = cf_LogMeansRatioRV(t,alpha,n,coef,niid)
+function cf = cf_LogMeansRatioRV(t,n,alpha,coef,niid)
 %%cf_LogMeansRatioRV Characteristic function of a linear combination (resp.
 %  convolution) of independent log-transformed random variables (RVs)
 %  W_i = log(R_i), where each R_i = G_i/A_i is a ratio of G_i (the
@@ -6,9 +6,9 @@ function cf = cf_LogMeansRatioRV(t,alpha,n,coef,niid)
 %  X_i1,...,X_in from a gamma distribution. 
 %
 %  Here, we define G_i = (X_i1 * ... * X_in)^(1/n) and A_i = (X_i1 + ... +
-%  X_in), with X_ij ~ Gamma(alpha_i,beta_i) for all j = 1,...,n, where
-%  alpha_i is the shape parameter and beta_i is the rate parameter of the
-%  gamma distribution in the i-th population. Note that the R_i random
+%  X_in)/n_i, with X_ij ~ Gamma(alpha_i,beta_i) for all j = 1,...,n_i,
+%  where alpha_i is the shape parameter and beta_i is the rate parameter of
+%  the gamma distribution in the i-th population. Note that the R_i random
 %  variables are scale invariant, so the distribution does not depend on
 %  the rate (scale) parameters beta_i.
 %  
@@ -25,14 +25,14 @@ function cf = cf_LogMeansRatioRV(t,alpha,n,coef,niid)
 %  Alternatively, log(R_i) ~ (log(B_i1) + ... + log(B_{i,n_i-1}))/n_i.
 %
 % SYNTAX
-%  cf = cf_LogMeansRatioRV(t,alpha,n,coef,niid)
+%  cf = cf_LogMeansRatioRV(t,n,alpha,coef,niid)
 %
 % INPUTS
 %  t     - vector or array of real values, where the CF is evaluated.
-%  alpha - vector of the 'shape' parameters alpha = (alpha_1,...,alpha_N).
-%          If empty, default value is alpha = (1,...,1). 
 %  n     - vector of sample size parameters n = (n_1,...,n_N). If empty,
 %          default value is n = (1,...,1). 
+%  alpha - vector of the 'shape' parameters alpha = (alpha_1,...,alpha_N).
+%          If empty, default value is alpha = (1,...,1). 
 %  coef  - vector of the coefficients of the linear combination of the
 %          log-transformed random variables. If coef is scalar, it is
 %          assumed that all coefficients are equal. If empty, default value
@@ -44,29 +44,29 @@ function cf = cf_LogMeansRatioRV(t,alpha,n,coef,niid)
 %
 % EXAMPLE 1:
 % % CF of log MeansRatio RV with alpha = 7/2 and n = 5 
-%   alpha = 7/2;
 %   n     = 5;
+%   alpha = 7/2;
 %   t     = linspace(-100,100,201);
-%   cf    =  cf_LogMeansRatioRV(t,alpha,n);
+%   cf    =  cf_LogMeansRatioRV(t,n,alpha);
 %   figure; plot(t,real(cf),t,imag(cf)); grid on;
 %   title('CF of log MeansRatio RV with alpha = 7/2 and n = 5')
 %
 % EXAMPLE 2:
 % % CF of a weighted linear combination of minus log MeansRatio RVs 
-%   alpha = [7 10 15]/2;
 %   n     = [5 7 10];
+%   alpha = [7 10 15]/2;
 %   coef  = -[5 7 10]/22;
 %   t     = linspace(-100,100,201);
-%   cf    =  cf_LogMeansRatioRV(t,alpha,n,coef);
+%   cf    =  cf_LogMeansRatioRV(t,n,alpha,coef);
 %   figure; plot(t,real(cf),t,imag(cf)); grid on;
 %   title('CF of a weighted linear combination of minus log MeansRatio RVs')
 %
 % EXAMPLE 3:
 % % PDF/CDF of minus log MeansRatio RV, alpha = 7/2 and n = 5, from its CF
-%   alpha = 7/2;
 %   n     = 5;
+%   alpha = 7/2;
 %   coef  = -1;
-%   cf    = @(t) cf_LogMeansRatioRV(t,alpha,n,coef);
+%   cf    = @(t) cf_LogMeansRatioRV(t,n,alpha,coef);
 %   x = linspace(0,0.6)';
 %   prob = [0.9 0.95 0.99];
 %   clear options
@@ -82,7 +82,7 @@ function cf = cf_LogMeansRatioRV(t,alpha,n,coef,niid)
 %   alpha = df/2;
 %   const = (1 + 1/(3*(n-1))*(n/df - 1/DF))/DF;
 %   coef  = -1/const;
-%   cf    = @(t) cf_LogMeansRatioRV(t,alpha,n,coef);
+%   cf    = @(t) cf_LogMeansRatioRV(t,n,alpha,coef);
 %   prob = [0.9 0.95 0.99];
 %   clear options
 %   options.xMin = 0;
@@ -100,9 +100,9 @@ function cf = cf_LogMeansRatioRV(t,alpha,n,coef,niid)
 % EXAMPLE 5:
 % % Exact Critical Values for Bartlett's Test for Homogeneity of Variances
 % % See and compare the selected results in Glaser (1976b, Table 1)
+%   n     = 3;
 %   df    = [4 5 6 7 8 9 10 11 14 19 24 29 49 99];
 %   alpha = df/2;
-%   n     = 3;
 %   coef  = -1;
 %   prob  = [0.9 0.95 0.99 0.999 0.9999];
 %   clear options
@@ -112,7 +112,7 @@ function cf = cf_LogMeansRatioRV(t,alpha,n,coef,niid)
 %   options.isPlot = false;
 %   critW = zeros(length(df),length(prob));
 %   for i = 1:length(df)
-%      cf    = @(t) cf_LogMeansRatioRV(t,alpha(i),n,coef);
+%      cf    = @(t) cf_LogMeansRatioRV(t,n,alpha(i),coef);
 %      result = cf2DistGP(cf,[],prob,options);
 %      critW(i,:) = result.qf;
 %   end;
@@ -160,7 +160,7 @@ function cf = cf_LogMeansRatioRV(t,alpha,n,coef,niid)
 % Ver.: 17-Jun-2017 17:18:39
 
 %% ALGORITHM
-% cf = cf_LogMeansRatioRV(t,alpha,n,coef,niid)
+% cf = cf_LogMeansRatioRV(t,n,alpha,coef,niid)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 5);
