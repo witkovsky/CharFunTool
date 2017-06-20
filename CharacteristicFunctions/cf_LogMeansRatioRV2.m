@@ -30,7 +30,7 @@ function cf = cf_LogMeansRatioRV2(t,n,alpha,weight,coef,niid)
 %  The distribution of the logarithm of the means ratio log(R_i) is defined
 %  by its characteristic function, see e.g. Chao and Glaser (JASA 1978),
 %  which is
-%   cf_{log(R_i)}(t) =
+%   cf_{log(R_i)}(t) = n^(1i*t) * ...
 %   Gamma(sum(alpha_{i,j}))/Gamma(sum(alpha_{i,j})+1i*n_i*t)) * ...
 %   Prod_{j=1}^n_i Gamma(alpha_{i,j}+1i*n_i*w_{i,j}*t)/Gamma(alpha_{i,j}),
 %  for each i = 1,...,N.
@@ -94,29 +94,31 @@ function cf = cf_LogMeansRatioRV2(t,n,alpha,weight,coef,niid)
 %   disp(result)
 %
 % EXAMPLE 4:
-% % PDF/CDF of minus log weighted MeansRatio RV, from its CF
+% % PDF/CDF of minus log of the (weighted) means ratio RV, from its CF
+%   clear alpha, weight
 %   n         = 5;
 %   alpha{1}  = [3 5 7 10 3]/2;
 %   weight{1} = alpha{1}/sum(alpha{1});
 %   coef      = -1;
 %   cf        = @(t) cf_LogMeansRatioRV2(t,n,alpha,weight,coef);
+%   x = linspace(-0.15,1.15,200)';
 %   prob = [0.9 0.95 0.99];
-%   clear options
-%   options.SixSigmaRule = 10;
-%   result = cf2DistGP(cf,[],prob,options);
+%   result = cf2DistGP(cf,x,prob,options);
 %   disp(result)
 %
-% EXAMPLE 4:
+% EXAMPLE 5:
 % % Compare the the exact distribution with the Bartlett's approximation
+%   clear alpha, weight
 %   n         = 5;
-%   alpha{1}  = [3 5 7 10 3]/2;
-%   weight{1} = alpha{1}/sum(alpha{1};
-%   const = (1 + 1/(3*(n-1))*(n/df - 1/DF))/DF;
+%   df        = [3 5 7 10 3]
+%   alpha{1}  = df/2;
+%   weight{1} = alpha{1}/sum(alpha{1});
+%   const = (1 + 1/(3*(n-1))*(sum(1./df) - 1/sum(df)))/sum(df);
 %   coef  = -1/const;
-%   cf    = @(t) cf_LogMeansRatioRV2(t,n,alpha,coef);
+%   cf    = @(t) cf_LogMeansRatioRV2(t,n,alpha,weight,coef);
 %   prob = [0.9 0.95 0.99];
 %   clear options
-%   options.xMin = 0;
+%   options.N = 2^12;
 %   result = cf2DistGP(cf,[],prob,options);
 %   disp(result)
 %   x = result.x;
@@ -128,7 +130,7 @@ function cf = cf_LogMeansRatioRV2(t,n,alpha,weight,coef,niid)
 %   disp(result.qf)
 %   disp(chi2inv(prob,n-1))
 %
-% EXAMPLE 5:
+% EXAMPLE 6:
 % % Exact Critical Values for Bartlett's Test for Homogeneity of Variances
 % % See and compare the selected results in Glaser (1976b, Table 1)
 %   n     = 3;
