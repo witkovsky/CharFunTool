@@ -31,8 +31,8 @@ function cf = cf_LogMeansRatioRV2(t,n,alpha,weight,coef,niid)
 %  by its characteristic function, see e.g. Chao and Glaser (JASA 1978),
 %  which is
 %   cf_{log(R_i)}(t) = n^(1i*t) * ...
-%   Gamma(sum(alpha_{i,j}))/Gamma(sum(alpha_{i,j})+1i*n_i*t)) * ...
-%   Prod_{j=1}^n_i Gamma(alpha_{i,j}+1i*n_i*w_{i,j}*t)/Gamma(alpha_{i,j}),
+%   Gamma(sum(alpha_{i,j}))/Gamma(sum(alpha_{i,j})+1i*t)) * ...
+%   Prod_{j=1}^n_i Gamma(alpha_{i,j}+1i*w_{i,j}*t)/Gamma(alpha_{i,j}),
 %  for each i = 1,...,N.
 %
 % SYNTAX
@@ -95,7 +95,7 @@ function cf = cf_LogMeansRatioRV2(t,n,alpha,weight,coef,niid)
 %
 % EXAMPLE 4:
 % % PDF/CDF of minus log of the (weighted) means ratio RV, from its CF
-%   clear alpha, weight
+%   clear
 %   n         = 5;
 %   alpha{1}  = [3 5 7 10 3]/2;
 %   weight{1} = alpha{1}/sum(alpha{1});
@@ -108,14 +108,17 @@ function cf = cf_LogMeansRatioRV2(t,n,alpha,weight,coef,niid)
 %
 % EXAMPLE 5:
 % % Compare the the exact distribution with the Bartlett's approximation
-%   clear alpha, weight
-%   n         = 5;
-%   df        = [3 5 7 10 3]
+%   clear
+%   n         = 15;
+%   df        = [1 1 1 1 1 2 2 2 2 2 3 3 3 3 3];
+%   DF        = sum(df);
 %   alpha{1}  = df/2;
 %   weight{1} = alpha{1}/sum(alpha{1});
-%   const = (1 + 1/(3*(n-1))*(sum(1./df) - 1/sum(df)))/sum(df);
-%   coef  = -1/const;
-%   cf    = @(t) cf_LogMeansRatioRV2(t,n,alpha,weight,coef);
+%   correctC  = 1 + 1/(3*(n-1))*(sum(1./df) - 1/DF);
+%   shift     = -(-DF*log(n/DF)- sum(df.*log(df)))/correctC;
+%   coef      = -DF/correctC;
+%   cf_R      = @(t) cf_LogMeansRatioRV2(t,n,alpha,weight,coef);
+%   cf        = @(t) exp(1i*t*shift) .* cf_R(t)
 %   prob = [0.9 0.95 0.99];
 %   clear options
 %   options.N = 2^12;

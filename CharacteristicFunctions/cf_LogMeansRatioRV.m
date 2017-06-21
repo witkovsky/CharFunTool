@@ -5,7 +5,7 @@ function cf = cf_LogMeansRatioRV(t,n,alpha,coef,niid)
 %  geometric mean) and A_i (the arithmetic mean) of a random sample
 %  X_i1,...,X_in from a gamma distribution. 
 %
-%  Here, we define G_i = (X_i1 * ... * X_in)^(1/n) and A_i = (X_i1 + ... +
+%  Here, we define G_i = (X_i1 * ... * X_in)^(1/n_i) and A_i = (X_i1 +...+
 %  X_in)/n_i, with X_ij ~ Gamma(alpha_i,beta_i) for all j = 1,...,n_i,
 %  where alpha_i is the shape parameter and beta_i is the rate parameter of
 %  the gamma distribution in the i-th population. Note that the R_i random
