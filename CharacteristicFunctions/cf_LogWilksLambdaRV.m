@@ -1,13 +1,12 @@
 function cf = cf_LogWilksLambdaRV(t,p,m,n,coef,niid)
-%%cf_LogWilksLambdaRV Characteristic function of a linear combination (resp.
-%  convolution) of independent log-transformed random variables (RVs)
-%  W_i = log(Lambda_i), where each Lambda_i has Wilks's Lambda distribution
-%  Lambda(p_i,m_i,n_i). 
+%%cf_LogWilksLambdaRV Characteristic function of a linear combination
+%  of independent log-transformed random variables W_i = log(Lambda_i),
+%  where each Lambda_i has Wilks's Lambda distribution Lambda(p_i,m_i,n_i). 
 %  
 %  That is, cf_LogWilksLambdaRV evaluates the characteristic function of a
-%  random variable Y  = coef_1*W_1 + ... + coef_N*W_N, such that
-%  cf_Y(t) =  cf_W_1(coef_1*t) * ... * cf_W_N(coef_N*t), where cf_W_i(t)
-%  is CF of W_i = log(Lambda_i), and  Lambda_i ~ Lambda(p_i,m_i,n_i). 
+%  random variable Y  = coef_1*W_1 +...+ coef_N*W_N, such that cf_Y(t) =
+%  cf_W_1(coef_1*t) *...* cf_W_N(coef_N*t), where cf_W_i(t) is CF of W_i =
+%  log(Lambda_i), and  Lambda_i ~ Lambda(p_i,m_i,n_i).  
 %
 %  In particular Lambda_i = det(E_i)/det(E_i + H_i), with  E_i and H _i 
 %  being independent random matrices with Wishart distributions E_i ~
@@ -19,9 +18,9 @@ function cf = cf_LogWilksLambdaRV(t,p,m,n,coef,niid)
 %  values of the observed statistic Lambda_i, or large -log(Lambda_i).   
 %
 %  The Wilks’ Lambda distribution of Lambda_i ~ Lambda(p_i,m_i,n_i), with
-%  Lambda_i in (0,1), is defined by Lambda_i ~ Prod_{j=1}^p_i B_ij, where
-%  B_ij ~ Beta{(m_i + 1 - j)/2, n_i/2)}, i.e. B_ij follow independent Beta
-%  distributions for all i = 1,...,N and j = 1,...,p_i.   
+%  Lambda_i in (0,1), is defined by Lambda_i ~ Prod_{j=1}^p_i B_{i,j},
+%  where B_{i,j} ~ Beta{(m_i+1-j)/2, n_i/2)}, i.e. B_{i,j} follow
+%  independent Beta distributions for all i = 1,...,N and j = 1,...,p_i.   
 %
 % SYNTAX
 %  cf = cf_LogWilksLambdaRV(t,p,m,n,coef,niid)
@@ -62,7 +61,7 @@ function cf = cf_LogWilksLambdaRV(t,p,m,n,coef,niid)
 %   t    = linspace(-20,20,201);
 %   cf   = cf_LogWilksLambdaRV(t,p,m,n,coef);
 %   figure; plot(t,real(cf),t,imag(cf)); grid on;
-%   title('CF of a weighted linear combination of minus log Wilks Lambda RVs')
+%   title('CF of a weighted linear combination of -log Wilks Lambda RVs')
 %
 % EXAMPLE 3:
 % % PDF/CDF of minus log Wilks Lambda RV (p=5, m=10, n=3) from its CF
@@ -80,7 +79,7 @@ function cf = cf_LogWilksLambdaRV(t,p,m,n,coef,niid)
 %
 % EXAMPLE 4:
 % % Compare the the exact distribution with the Bartlett's approximation
-% % The Bartlett's approximation is given by:
+% % The Bartlett's approximation (see e.g. Wikipedia) is given by:
 % % ((p-n+1)/2 - m)*log(Lambda(p,m,n)) ~ chi^2_{n*p}
 %   p    = 15;
 %   m    = 30;
@@ -108,7 +107,7 @@ function cf = cf_LogWilksLambdaRV(t,p,m,n,coef,niid)
 % Ver.: 17-Jun-2017 17:18:39
 
 %% ALGORITHM
-% cf = cf = cf_LogWilksLambdaRV(t,p,m,n,coef,niid)
+% cf = cf_LogWilksLambdaRV(t,p,m,n,coef,niid)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 6);
