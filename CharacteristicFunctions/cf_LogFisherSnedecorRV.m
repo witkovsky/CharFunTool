@@ -1,11 +1,13 @@
-function cf = cf_LogFisherSnedecorRV(t,df1,df2,coef,n)
-%%cf_LogFisherSnedecorRV Characteristic function of a linear combination
-% (resp. convolution) of independent log-transformed random variables (RVs)
-%  log(X), where X ~ F(df1,df2) has the Fisher-Snedecor F distribution with
-%  df1 and df2 degrees of freedom. 
+function cf = cf_LogFisherSnedecorRV(t,df1,df2,coef,niid)
+%% cf_LogFisherSnedecorRV 
+%  Characteristic function of a linear combination
+%  (resp. convolution) of independent  LOG-TRANSFORMED FISHER-SNEDECOR F 
+%  random variables (RVs) log(X), where X ~ F(df1,df2) has the
+%  FISHER-SNEDECOR F distribution with df1 > 0 and df2 > 0 degrees of
+%  freedom.  
 %  
 %  That is, cf_LogFisherSnedecorRV evaluates the characteristic function
-%  cf(t) of  Y = coef(1)*log(X_1)+ ... + coef(N)*log(X_N), where X_i ~
+%  cf(t) of  Y = coef_1*log(X_1) +...+ coef_N*log(X_N), where X_i ~
 %  F(df1_i,df2_i), with degrees of freedom df1_i and df2_i, for i =
 %  1,...,N.
 %
@@ -21,7 +23,7 @@ function cf = cf_LogFisherSnedecorRV(t,df1,df2,coef,n)
 %  is evaluated with the parameters df1(i) and df2(i).
 %
 % SYNTAX
-%  cf = cf_LogFisherSnedecorRV(t,df1,df2,coef,n)
+%  cf = cf_LogFisherSnedecorRV(t,df1,df2,coef,niid)
 %
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -33,10 +35,10 @@ function cf = cf_LogFisherSnedecorRV(t,df1,df2,coef,n)
 %          log-transformed random variables. If coef is scalar, it is
 %          assumed that all coefficients are equal. If empty, default value
 %          is coef = 1.
-%  n     - scalar convolution coeficient n, such that Z = Y + ... + Y is
-%          sum of n iid random variables Y, where each Y = sum_{i=1}^N
-%          coef(i) * log(X_i) is independently and identically
-%          distributed random variable. If empty, default value is n = 1.  
+%  niid  - scalar convolution coeficient niid, such that Z = Y + ... + Y is
+%          sum of niid iid random variables Y, where each Y = sum_{i=1}^N
+%          coef(i) * log(X_i) is independently and identically distributed
+%          random variable. If empty, default value is niid = 1.  
 %
 % EXAMPLE 1:
 % % CF of a weighted linear combination of independent log-F RVs
@@ -69,11 +71,11 @@ function cf = cf_LogFisherSnedecorRV(t,df1,df2,coef,n)
 % Ver.: 02-Jun-2017 12:08:24
 
 %% ALGORITHM
-% cf = cf_LogFisherSnedecorRV(t,df1,df2,coef,n)
+% cf = cf_LogFisherSnedecorRV(t,df1,df2,coef,niid)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 5);
-if nargin < 5, n = []; end
+if nargin < 5, niid = []; end
 if nargin < 4, coef = []; end
 if nargin < 3, df2 = []; end
 if nargin < 2, df1 = []; end
@@ -116,11 +118,11 @@ cf  = prod(exp(aux),2);
 cf  = reshape(cf,szt);
 cf(t==0) = 1;
 
-if ~isempty(n)
-    if isscalar(n)
-        cf = cf .^ n;
+if ~isempty(niid)
+    if isscalar(niid)
+        cf = cf .^ niid;
     else
-        error('n should be a scalar (positive integer) value');
+        error('niid should be a scalar (positive integer) value');
     end
 end
 

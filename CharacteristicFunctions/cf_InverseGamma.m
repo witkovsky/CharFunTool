@@ -1,19 +1,19 @@
-function cf = cf_InverseGamma(t,alpha,beta,coef,n)
-%%cf_InverseGamma Characteristic function of a linear combination (resp. 
-%  convolution) of independent Inverse-Gamma random variables, X_i~IGamma. 
-%
-%  In particular, cf_InverseGamma(t,alpha,beta,coef,n) evaluates the
-%  characteristic function cf(t) of Y = coef(1) * X_1 + ... + coef(N) *
-%  X_N, where X_i ~ IGamma(alpha(i),beta(i)), and alpha(i) and  beta(i)
-%  represent the 'shape' and the 'rate' parameters of the Inverse-Gamma
-%  distribution. 
+function cf = cf_InverseGamma(t,alpha,beta,coef,niid)
+%%cf_InverseGamma 
+%  Characteristic function of a linear combination (resp. convolution) of
+%  independent INVERSE-GAMMA random variables.  
+% 
+%  That is, cf_InvGamma evaluates the characteristic function cf(t)  of  Y
+%  =  sum_{i=1}^N coef_i * X_i, where X_i ~ InvGamma(alpha_i,beta_i) are
+%  inedependent RVs, with the shape parameters alpha_i > 0 and the  rate
+%  parameters beta_i > 0, for i = 1,...,N.
 %
 %  The characteristic function of Y is defined by
 %   cf(t) = Prod( 2 / gamma(alpha(i)) * (-1i*beta(i)*t).^(alpha(i)/2) ...
 %                 * besselk(alpha(i),sqrt(-4i*beta(i)*t)) )
 %
 % SYNTAX:
-%  cf = cf_InverseGamma(t,alpha,beta,coef,n)
+%  cf = cf_InverseGamma(t,alpha,beta,coef,niid)
 %
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -25,10 +25,10 @@ function cf = cf_InverseGamma(t,alpha,beta,coef,n)
 %          IGamma random variables. If coef is scalar, it is assumed
 %          that all coefficients are equal. If empty, default value is
 %          coef = 1.
-%  n     - scalar convolution coeficient n, such that Z = Y + ... + Y is
-%          sum of n iid random variables Y, where each Y = sum_{i=1}^N
-%          coef(i) * GAMMA(k(i),theta(i))) is independently and identically
-%          distributed random variable. If empty, default value is n = 1.   
+%  niid  - scalar convolution coeficient niid, such that Z = Y +...+ Y is
+%          sum of niid iid random variables Y, where each Y = sum_{i=1}^N
+%          coef_i * X_i is independently and identically distributed
+%          random variable. If empty, default value is niid = 1.   
 %
 % PARAMETRIZATION:
 %   As for the GAMMA distribution, also for the Inverse-Gamma distribution
@@ -83,11 +83,11 @@ function cf = cf_InverseGamma(t,alpha,beta,coef,n)
 % Ver.: 10-May-2017 18:11:50
 
 %% ALGORITHM
-% cf = cf_InverseGamma(t,alpha,beta,coef,n)
+% cf = cf_InverseGamma(t,alpha,beta,coef,niid)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 5);
-if nargin < 5, n = []; end
+if nargin < 5, niid = []; end
 if nargin < 4, coef = []; end
 if nargin < 3, beta = []; end
 if nargin < 2, alpha = []; end
@@ -144,11 +144,11 @@ end
 cf = reshape(cf,szt);
 cf(t==0) = 1;
 
-if ~isempty(n)
-    if isscalar(n)
-        cf = cf .^ n;
+if ~isempty(niid)
+    if isscalar(niid)
+        cf = cf .^ niid;
     else
-        error('n should be a scalar (positive integer) value');
+        error('niid should be a scalar (positive integer) value');
     end
 end
 

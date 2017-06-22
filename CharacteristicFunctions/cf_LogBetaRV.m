@@ -1,12 +1,14 @@
-function cf = cf_LogBetaRV(t,alpha,beta,coef,n)
-%%cf_LogBetaRV Characteristic function of a linear combination (resp.
-%  convolution) of independent log-transformed random variables (RVs)
-%  log(X), where X ~ Beta(alpha,beta). Notice that log(X)<=0 if X ~
-%  Beta(alpha,beta).  
+function cf = cf_LogBetaRV(t,alpha,beta,coef,niid)
+%% cf_LogBetaRV 
+%  Characteristic function of a linear combination (resp.
+%  convolution) of independent LOG-TRANSFORMED BETA random variables (RVs)
+%  log(X), where X ~ BETA(alpha,beta), and alpha > 0 and beta > 0
+%  represent the shape parameters of the BETA distribution. 
 %  
-%  That is, cf_LogBetaRV evaluates the characteristic function cf(t) of
-%  Y = coef(1)*log(X_1)+ ... + coef(N)*log(X_N), where X_i ~
-%  Beta(alpha_i,beta_i), with the parameters alpha_i > 0 and beta_i > 0.
+%  That is, cf_Beta evaluates the characteristic function cf(t) of  Y =
+%  coef_i*log(X_1) +...+ coef_N*log(X_N), where X_i ~ Beta(alpha_i,beta_i)
+%  are inedependent RVs, with the shape parameters alpha_i > 0 and beta_i
+%  >0, for i = 1,...,N.
 %
 %  The characteristic function of Y = log(X), with X ~ Beta(alpha,beta) is
 %  defined by cf_Y(t) = E(exp(1i*t*Y)) = E(exp(1i*t*log(X))) = E(X^(1i*t)). 
@@ -21,7 +23,7 @@ function cf = cf_LogBetaRV(t,alpha,beta,coef,n)
 %  is evaluated with the parameters alpha(i) and beta(i).
 %
 % SYNTAX
-%  cf = cf_LogBetaRV(t,alpha,beta,coef,n)
+%  cf = cf_LogBetaRV(t,alpha,beta,coef,niid)
 %
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -33,10 +35,10 @@ function cf = cf_LogBetaRV(t,alpha,beta,coef,n)
 %          log-transformed random variables. If coef is scalar, it is
 %          assumed that all coefficients are equal. If empty, default value
 %          is coef = 1.
-%  n     - scalar convolution coeficient n, such that Z = Y + ... + Y is
-%          sum of n iid random variables Y, where each Y = sum_{i=1}^N
-%          coef(i) * log(X_i) is independently and identically
-%          distributed random variable. If empty, default value is n = 1.  
+%  niid  - scalar convolution coeficient niid, such that Z = Y + ... + Y is
+%          sum of niid iid random variables Y, where each Y = sum_{i=1}^N
+%          coef(i) * log(X_i) is independently and identically distributed
+%          random variable. If empty, default value is niid = 1.  
 %
 % EXAMPLE 1:
 % % CF of a linear combination of K=50 independent log-Beta RVs
@@ -143,11 +145,11 @@ function cf = cf_LogBetaRV(t,alpha,beta,coef,n)
 % Ver.: 02-Jun-2017 12:08:24
 
 %% ALGORITHM
-% cf = cf_LogBetaRV(t,alpha,beta,coef,n)
+% cf = cf_LogBetaRV(t,alpha,beta,coef,niid)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 5);
-if nargin < 5, n = []; end
+if nargin < 5, niid = []; end
 if nargin < 4, coef = []; end
 if nargin < 3, beta = []; end
 if nargin < 2, alpha = []; end
@@ -190,11 +192,11 @@ cf  = prod(exp(aux),2);
 cf  = reshape(cf,szt);
 cf(t==0) = 1;
 
-if ~isempty(n)
-    if isscalar(n)
-        cf = cf .^ n;
+if ~isempty(niid)
+    if isscalar(niid)
+        cf = cf .^ niid;
     else
-        error('n should be a scalar (positive integer) value');
+        error('niid should be a scalar (positive integer) value');
     end
 end
 

@@ -1,12 +1,12 @@
-function cf = cf_Normal(t,mu,sigma,coef,n)
-%%cf_Normal Characteristic function of a linear combination (resp.
-%  convolution) of independent Normal random variables, X ~
-%  Normal(mu,sigma).  
+function cf = cf_Normal(t,mu,sigma,coef,niid)
+%% cf_Normal 
+%  Characteristic function of a linear combination (resp. convolution) of
+%  independent NORMAL random variables.
 %
-%  In particular, cf_Normal(t,alpha,beta,coef) evaluates the characteristic
-%  function cf(t) of Y = coef(1) * X_1 + ... + coef(N) * X_N, where X_i ~
-%  Normal(mu(i),sigma(i)), and mu(i) is real location parameter and
-%  sigma(i)>0 represent the 'scale' parameter of the Normal distribution.
+%  That is, cf_Normal evaluates the characteristic function cf(t) of  Y =
+%  sum_{i=1}^N coef_i * X_i, where X_i ~ N(mu_i,sigma_i) are inedependent
+%  RVs, with means mu_i and standard deviations sigma_i > 0, for i =
+%  1,...,N. 
 %
 %  The characteristic function of Y is defined by
 %   cf(t) = exp(1i*(coef'*mu)*t - (1/2)*(coef^2'*sigma^2)*t^2 )
@@ -24,11 +24,10 @@ function cf = cf_Normal(t,mu,sigma,coef,n)
 %          Normal random variables. If coef is scalar, it is assumed
 %          that all coefficients are equal. If empty, default value is
 %          coef = 1.
-%  n     - scalar convolution coeficient n, such that Z = Y + ... + Y is
-%          sum of n iid random variables Y, where each Y = sum_{i=1}^N
-%          coef(i) * X_i, with X_i ~ Normal(mu(i),sigma(i))) independently
-%          and identically distributed random variables. If empty, default
-%          value is n = 1.    
+%  niid  - scalar convolution coeficient niid, such that Z = Y + ... + Y is
+%          sum of niid iid random variables Y, where each Y = sum_{i=1}^N
+%          coef(i) * log(X_i) is independently and identically distributed
+%          random variable. If empty, default value is niid = 1.     
 %
 % REMARK:
 %   The characteristic function of a lienar combination of independent
@@ -66,11 +65,11 @@ function cf = cf_Normal(t,mu,sigma,coef,n)
 % Ver.: 10-May-2017 18:11:50
 
 %% ALGORITHM
-% cf = cf_Normal(t,mu,sigma,coef,n)
+% cf = cf_Normal(t,mu,sigma,coef,niid)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 5);
-if nargin < 5, n = []; end
+if nargin < 5, niid = []; end
 if nargin < 4, coef = []; end
 if nargin < 3, sigma = []; end
 if nargin < 2, mu = []; end
@@ -96,8 +95,8 @@ elseif isempty(coef) && ~isempty(mu)
     coef = 1;
 end
 
-if isempty(n)
-    n = 1;
+if isempty(niid)
+    niid = 1;
 end
 
 %% Equal size of the parameters   
@@ -114,11 +113,11 @@ cf   = exp(1i*mean*t - (var/2)*t.^2);
 cf   = reshape(cf,szt);
 cf(t==0) = 1;
 
-if ~isempty(n)
-    if isscalar(n)
-        cf = cf .^ n;
+if ~isempty(niid)
+    if isscalar(niid)
+        cf = cf .^ niid;
     else
-        error('n should be a scalar (positive integer) value');
+        error('niid should be a scalar (positive integer) value');
     end
 end
 

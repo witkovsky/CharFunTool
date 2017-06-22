@@ -1,12 +1,13 @@
-function cf = cf_FisherSnedecor(t,df1,df2,coef,n,tol)
-%%cf_FisherSnedecor Characteristic function (CF) of the distribution of a
-%  linear combination of independent random variables with central
-%  Fisher-Snedecor F-distribution.
+function cf = cf_FisherSnedecor(t,df1,df2,coef,niid,tol)
+%% cf_FisherSnedecor 
+%  Characteristic function of the distribution of a linear combination of
+%  independent random variables with central Fisher-Snedecor
+%  F-distribution.  
 %
 %  That is, cf_FisherSnedecor evaluates the characteristic function cf(t)
 %  of  Y = sum_{i=1}^N coef_i * X_i, where X_i ~ F(df1_i,df2_i) are
 %  inedependent RVs, with df1_i and df2_i degrees of freedom, for i =
-%  1,...,N. 
+%  1,...,N.
 %
 %  The characteristic function of X ~ F(df1,df2) is 
 %   cf(t) = U(df1/2, 1-df2/2, -1i*(df2/df1)*t),
@@ -18,7 +19,7 @@ function cf = cf_FisherSnedecor(t,df1,df2,coef,n,tol)
 %  is the characteristic function of X_i ~ F(df1_i,df2_i).
 %
 % SYNTAX
-%  cf = cf_FisherSnedecor(t,df1,df2,coef,n,tol)
+%  cf = cf_FisherSnedecor(t,df1,df2,coef,niid,tol)
 %
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -30,13 +31,13 @@ function cf = cf_FisherSnedecor(t,df1,df2,coef,n,tol)
 %          log-transformed random variables. If coef is scalar, it is
 %          assumed that all coefficients are equal. If empty, default value
 %          is coef = 1.
-%  n     - scalar convolution coeficient n, such that Z = Y + ... + Y is
-%          sum of n iid random variables Y, where each Y = sum_{i=1}^N
-%          coef_i * X_i is independently and identically
-%          distributed random variable. If empty, default value is n = 1.
+%  niid  - scalar convolution coeficient niid, such that Z = Y + ... + Y is
+%          sum of niid iid random variables Y, where each Y = sum_{i=1}^N
+%          coef(i) * log(X_i) is independently and identically distributed
+%          random variable. If empty, default value is niid = 1.
 %
 % WIKIPEDIA: 
-%   https://en.wikipedia.org/wiki/Gamma_distribution.
+%   https://en.wikipedia.org/wiki/F-distribution.
 %
 % EXAMPLE 1: 
 %   % CF of a linear combination of independent F RVs
@@ -70,12 +71,12 @@ function cf = cf_FisherSnedecor(t,df1,df2,coef,n,tol)
 % Ver.: 10-May-2017 18:11:50
 
 %% ALGORITHM
-% cf = cf_FisherSnedecor(t,df1,df2,coef,n,tol)
+% cf = cf_FisherSnedecor(t,df1,df2,coef,niid,tol)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 6);
 if nargin < 6, tol = []; end
-if nargin < 5, n = []; end
+if nargin < 5, niid = []; end
 if nargin < 4, coef = []; end
 if nargin < 3, df2 = []; end
 if nargin < 2, df1 = []; end
@@ -121,11 +122,11 @@ end
 cf = reshape(cf,szt);
 cf(t==0) = 1;
 
-if ~isempty(n)
-    if isscalar(n)
-        cf = cf .^ n;
+if ~isempty(niid)
+    if isscalar(niid)
+        cf = cf .^ niid;
     else
-        error('n should be a scalar (positive integer) value');
+        error('niid should be a scalar (positive integer) value');
     end
 end
 

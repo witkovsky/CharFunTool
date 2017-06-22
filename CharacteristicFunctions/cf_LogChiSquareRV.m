@@ -1,12 +1,13 @@
-function cf = cf_LogChiSquareRV(t,df,coef,n)
-%%cf_LogChiSquareRV Characteristic function of a linear combination (resp.
-%  convolution) of independent log-transformed random variables (RVs)
-%  log(X), where X ~ ChiSquare(df) is central ChiSquare distributed RV with
-%  df degrees of freedom.
+function cf = cf_LogChiSquareRV(t,df,coef,niid)
+%% cf_LogChiSquareRV 
+%  Characteristic function of a linear combination (resp.
+%  convolution) of independent LOG-TRANSFORMED CHI-SQUARE random variables
+%  (RVs) log(X), where X ~ ChiSquare(df) is central CHI-SQUARE distributed
+%  RV with df degrees of freedom.
 %  
 %  That is, cf_LogChiSquareRV evaluates the characteristic function cf(t) of
 %  Y = coef_1*log(X_1) +...+ coef_N*log(X_N), where X_i ~ ChiSquare(df_i),
-%  with df_i > 0 degrees of freedom. 
+%  with df_i > 0 degrees of freedom, for i = 1,...,N.
 %
 %  The characteristic function of Y = log(X), with X ~ ChiSquare(df) is
 %  defined by cf_Y(t) = E(exp(1i*t*Y)) = E(exp(1i*t*log(X))) = E(X^(1i*t)). 
@@ -21,7 +22,7 @@ function cf = cf_LogChiSquareRV(t,df,coef,n)
 %  degrees of freedom. 
 %
 % SYNTAX
-%  cf = cf_LogChiSquareRV(t,df,coef,n)
+%  cf = cf_LogChiSquareRV(t,df,coef,niid)
 %
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -32,11 +33,10 @@ function cf = cf_LogChiSquareRV(t,df,coef,n)
 %          logGamma random variables. If coef is scalar, it is assumed
 %          that all coefficients are equal. If empty, default value is
 %          coef = 1.
-%  n     - scalar convolution coeficient n, such that Z = Y + ... + Y is
-%          sum of n iid random variables Y, where each Y = sum_{i=1}^N
-%          coef(i) * X_i, with X_i ~ logGamma(alpha(i),beta(i)))
-%          independently and identically distributed random variables. If
-%          empty, default value is n = 1.    
+%  niid  - scalar convolution coeficient niid, such that Z = Y + ... + Y is
+%          sum of niid iid random variables Y, where each Y = sum_{i=1}^N
+%          coef(i) * log(X_i) is independently and identically distributed
+%          random variable. If empty, default value is niid = 1.    
 %
 % EXAMPLE 1:
 % % CF of a weighted linear combination of independent log-ChiSquare RVs
@@ -67,11 +67,11 @@ function cf = cf_LogChiSquareRV(t,df,coef,n)
 % Ver.: 02-Jun-2017 12:08:24
 
 %% ALGORITHM
-% cf = cf_LogChiSquareRV(t,df,coef,n)
+% cf = cf_LogChiSquareRV(t,df,coef,niid)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 4);
-if nargin < 4, n = []; end
+if nargin < 4, niid = []; end
 if nargin < 3, coef = []; end
 if nargin < 2, df = []; end
 
@@ -100,11 +100,11 @@ cf  = prod(exp(aux),2);
 cf  = reshape(cf,szt);
 cf(t==0) = 1;
 
-if ~isempty(n)
-    if isscalar(n)
-        cf = cf .^ n;
+if ~isempty(niid)
+    if isscalar(niid)
+        cf = cf .^ niid;
     else
-        error('n should be a scalar (positive integer) value');
+        error('niid should be a scalar (positive integer) value');
     end
 end
 

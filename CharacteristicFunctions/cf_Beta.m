@@ -1,20 +1,24 @@
-function cf = cf_Beta(t,alpha,beta,coef,n)
-%%cf_Beta Characteristic function of a linear combination (resp.
-%  convolution) of independent BETA random variables, X ~ Beta(alpha,beta),
-%  with the shape parameters alpha > 0 and beta >0, defined on the interval
-%  (0,1) with the mean = alpha / (alpha + beta) and the variance =
-%  (alpha*beta) / ((alpha+beta)^2*(alpha+beta+1)).   
+function cf = cf_Beta(t,alpha,beta,coef,niid)
+%% cf_Beta 
+%  Characteristic function of a linear combination (resp. convolution) of
+%  independent BETA random variables defined on the interval (0,1).  
+%
+%  That is, cf_Beta evaluates the characteristic function cf(t)  of  Y =
+%  sum_{i=1}^N coef_i * X_i, where X_i ~ Beta(alpha_i,beta_i) are
+%  inedependent RVs, with the shape parameters alpha_i > 0 and beta_i >0,
+%  and with the mean = alpha_i / (alpha_i + beta)_i and the variance =
+%  (alpha_i*beta_i) / ((alpha_i+beta_i)^2*(alpha_i+beta_i+1)), for i =
+%  1,...,N.  
 %
 %  The characteristic function of X ~ Beta(alpha,beta) is 
-%    cf(t) = cf_Beta(t,alpha,beta) = 1F1(alpha; alpha +beta; i*t),
+%   cf(t) = cf_Beta(t,alpha,beta) = 1F1(alpha; alpha +beta; i*t),
 %  where 1F1(.;.;.) is the Confluent hypergeometric function. Hence,the
-%  characteristic function of Y  = coef(1)*X_1 + ... + coef(N)*X_N 
-%  is  
-%    cf(t) =  cf_X_1(coef(1)*t) * ... * cf_X_N(coef(N)*t), 
+%  characteristic function of Y  = coef(1)*X_1 + ... + coef(N)*X_N is  
+%   cf(t) =  cf_X_1(coef(1)*t) * ... * cf_X_N(coef(N)*t), 
 %  where X_i ~ Beta(alpha(i),beta(i)) with cf_X_i(t).
 %
 % SYNTAX
-%  cf = cf_Beta(t,alpha,beta,coef,n)
+%  cf = cf_Beta(t,alpha,beta,coef,niid)
 %
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -26,10 +30,10 @@ function cf = cf_Beta(t,alpha,beta,coef,n)
 %          Beta distributed random variables. If coef is scalar, it is
 %          assumed that all coefficients are equal. If empty, default value
 %          is coef = 1.
-%  n     - scalar convolution coeficient n, such that Z = Y + ... + Y is
-%          sum of n iid random variables Y, where each Y = sum_{i=1}^N
-%          coef(i) * log(X_i) is independently and identically
-%          distributed random variable. If empty, default value is n = 1.  
+%  niid  - scalar convolution coeficient niid, such that Z = Y + ... + Y is
+%          sum of niid iid random variables Y, where each Y = sum_{i=1}^N
+%          coef(i) * log(X_i) is independently and identically distributed
+%          random variable. If empty, default value is niid = 1.   
 %
 % EXAMPLE 1:
 % % CF of a Beta RV
@@ -85,11 +89,11 @@ function cf = cf_Beta(t,alpha,beta,coef,n)
 % Ver.: 14-May-2017 12:08:24
 
 %% ALGORITHM
-% cf = cf_Beta(t,alpha,beta,coef,n)
+% cf = cf_Beta(t,alpha,beta,coef,niid)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 5);
-if nargin < 5, n = []; end
+if nargin < 5, niid = []; end
 if nargin < 4, coef = []; end
 if nargin < 3, beta = []; end
 if nargin < 2, alpha = []; end
@@ -115,12 +119,12 @@ elseif isempty(coef) && ~isempty(alpha)
     coef = 1;
 end
 
-if isempty(n)
-    n = 1;
+if isempty(niid)
+    niid = 1;
 end
 
 %% Equal size of the parameters   
-if ~isempty(coef) && isscalar(alpha) && isscalar(beta) && isempty(n)
+if ~isempty(coef) && isscalar(alpha) && isscalar(beta) && isempty(niid)
     coef = sort(coef);
     m    = length(coef);
     [coef,idx] = unique(coef);
@@ -144,11 +148,11 @@ end
 cf  = reshape(cf,szt);
 cf(t==0) = 1;
 
-if ~isempty(n)
-    if isscalar(n)
-        cf = cf .^ n;
+if ~isempty(niid)
+    if isscalar(niid)
+        cf = cf .^ niid;
     else
-        error('n should be a scalar (positive integer) value');
+        error('niid should be a scalar (positive integer) value');
     end
 end
 

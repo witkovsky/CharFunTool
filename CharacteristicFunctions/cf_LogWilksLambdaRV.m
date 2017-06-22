@@ -1,12 +1,13 @@
 function cf = cf_LogWilksLambdaRV(t,p,m,n,coef,niid)
-%%cf_LogWilksLambdaRV Characteristic function of a linear combination
-%  of independent log-transformed random variables W_i = log(Lambda_i),
-%  where each Lambda_i has Wilks's Lambda distribution Lambda(p_i,m_i,n_i). 
+%% cf_LogWilksLambdaRV 
+%  Characteristic function of a linear combination (resp. convolution) of
+%  independent LOG-TRANSFORMED WILK's LAMBDA random variables.
 %  
 %  That is, cf_LogWilksLambdaRV evaluates the characteristic function of a
 %  random variable Y  = coef_1*W_1 +...+ coef_N*W_N, such that cf_Y(t) =
 %  cf_W_1(coef_1*t) *...* cf_W_N(coef_N*t), where cf_W_i(t) is CF of W_i =
-%  log(Lambda_i), and  Lambda_i ~ Lambda(p_i,m_i,n_i).  
+%  log(Lambda_i), and each Lambda_i has  WILK's LAMBDA distribution,
+%  Lambda_i ~ Lambda(p_i,m_i,n_i), for i = 1,...,N. 
 %
 %  In particular Lambda_i = det(E_i)/det(E_i + H_i), with  E_i and H _i 
 %  being independent random matrices with Wishart distributions E_i ~

@@ -135,13 +135,13 @@ function cf = cf_LogMeansRatioRV(t,n,alpha,coef,niid)
 %  (df/DF)*Sum(df*S^2_j/sigma^2) = Prod((S^2_j)^(1/k))/Sum(S^2_j)/k, where
 %  S^2_j = (1/(m-1))*Sum(X_jk - mean(X_jk))^2. Notice that df*S^2_j/sigma^2
 %  ~ Chi^2_df = Gamma(df/2,1/2) for all j = 1,...,k. The exact critical
-%  values can be calculated from the distribution of W = -log(L) by
+%  values can be calculated from the distribution of W = -log(R) by
 %  inverting the characteristic function cf_LogMeansRatioRV.  
 %  
 %  The corrected version of the test statistic W with better convergence to
 %  the asymptotic chi-square distribution with k-1 degrees of freedom is
 %  Chi2 =  DF*(log(S^2_pool) - Sum(log(S^2_j))/k)/C_B, where the
-%  Bartlett's correction constant is C_B = (1+1/(3*(k-1))*(k/df-1/DF)).
+%  Bartlett's correction constant is C_B=(1+1/(3*(k-1))*(k/df-1/DF)).
 %
 %  WIKIPEDIA
 %  https://en.wikipedia.org/wiki/Beta_distribution
@@ -165,7 +165,7 @@ function cf = cf_LogMeansRatioRV(t,n,alpha,coef,niid)
 % Ver.: 17-Jun-2017 17:18:39
 
 %% ALGORITHM
-% cf = cf_LogMeansRatioRV(t,n,alpha,coef,niid)
+% cf = cf_LogMeansRatioRV(t,k,alpha,coef,niid)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 5);
