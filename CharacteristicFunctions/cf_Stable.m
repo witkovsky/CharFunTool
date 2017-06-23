@@ -1,28 +1,28 @@
-function cf = cfS_AlphaStable(t,alpha,mu,sigma)
-%cfS_AlphaStable(t,alpha,mu,sigma) evaluates the characteristic function
+function cf = cf_Stable(t,alpha,mu,sigma)
+%cf_Stable(t,alpha,mu,sigma) evaluates the characteristic function
 % cf(t) of the symmetric alpha stable (location–scale symmetric stable
 % Paretian) distribution with the stability parameters 0 < alpha <= 2,
 % location parameter mu in (??, ?), and the scale parameter sigma > 0, 
 % i.e.
-%   cf(t) = cfS_AlphaStable(t,alpha,mu,sigma) = 
+%   cf(t) = cf_Stable(t,alpha,mu,sigma) = 
 %         = exp( 1i*mu*t - |sigma*t|^alpha).
 % For more details see also WIKIPEDIA: 
 % https://en.wikipedia.org/wiki/Stable_distribution
 %
 % SYNTAX
-%  cf = cfS_AlphaStable(t,alpha,mu,sigma)
+%  cf = cf_Stable(t,alpha,mu,sigma)
 %
 % EXAMPLE1 (CF of the symmetric Alpha Stable distribution with alpha=1)
 %  alpha = 1;
 %  t = linspace(-10,10,501);
-%  cf = cfS_AlphaStable(t,alpha);
+%  cf = cf_Stable(t,alpha);
 %  figure; plot(t,cf),grid
 %  title('CF of the symmetric Alpha Stable distribution with alpha=1')
 %
 % EXAMPLE2 (PDF/CDF the symmetric Alpha Stable distribution with alpha=1)
 %  alpha = 1;
 %  x = linspace(-5,5,501);
-%  cf = @(t) cfS_AlphaStable(t,alpha);
+%  cf = @(t) cf_Stable(t,alpha);
 %  clear options
 %  options.N = 2^12;
 %  options.SixSigmaRule = 3;
@@ -37,7 +37,7 @@ function cf = cfS_AlphaStable(t,alpha,mu,sigma)
 % Ver.: 17-Feb-2017 14:35:54
 
 %% ALGORITHM
-%cf = cfS_AlphaStable(t,alpha,mu,sigma);
+%cf = cf_Stable(t,alpha,mu,sigma);
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 4);
