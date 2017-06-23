@@ -1,13 +1,20 @@
-function cf = cfE_EmpiricalOgive(t,bins,frequencies,cfX)
-%cfE_EmpiricalOgive(t,bins,frequencies,cfX) evaluates the characteristic
-%   function cf(t) of the OGIVE empirical distribution function (i.e. the
-%   piecewise linear approximation of the empirical CDF based on the
-%   observed grouped data) as a weighted mixture of the Uniform iid RVs. In
-%   particular,
+function cf = cfE_EmpiricalOgive(t,bins,freq,cfX)
+%%  cfE_EmpiricalOgive
+%   Characteristic function of the OGIVE EMPIRICAL distribution based on
+%   the observed histogram (given by bins and frequencies).
+% 
+%   That is, cf(t) is given as a weighted mixture of the UNIFORM iid RVs.
 %     cf(t) = cfE_EmpiricalOgive(t,bins,freq) =
 %           = sum_{j=1}^n freq(j) * cf_Uniform(t,bins_{j-1},bins_{j}), 
 %   where cf_Uniform(t,bin_{j-1},bin_{j}) is CF of the Uniform distribution
 %   on the interval [bins_{j-1},bins_j].
+% 
+%   cfE_EmpiricalOgive(t,bins,freq,cfX) evaluates the compound
+%   characteristic function   
+%     cf(t) = cfE_EmpiricalOgive(-1i*log(cfX(t)),bins,freq),
+%   where cfX is function handle of the characteristic function cfX(t) of
+%   the random variable X (as e.g. another empirical CF based on observed
+%   data of X).
 % 
 %   The bins and frequencies = counts/sum(counts) are based on the
 %   discretized/grouped or histogram data, for more details see e.g. the
@@ -17,17 +24,23 @@ function cf = cfE_EmpiricalOgive(t,bins,frequencies,cfX)
 %   vector containing these counts, N(k) will count the value X(i) if
 %   EDGES(k) <= X(i) < EDGES(k+1).  The last bin will count any values of X
 %   that match EDGES(end).
-% 
-%   cfE_EmpiricalOgive(t,coefs,weights,cf_X) evaluates the compound
-%   characteristic function  
-%     cf(t) = cfE_EmpiricalOgive(-1i*log(cfX(t)),coefs,weights),
-%   where cfX is function handle of the characteristic function cfX(t) of
-%   the random variable X (as e.g. another empirical CF based on observed
-%   data of X).
 %
 % SYNTAX
-%   cf = cfE_EmpiricalOgive(t,bins,frequencies)
-%   cf = cfE_EmpiricalOgive(t,bins,frequencies,cfX)
+%   cf = cfE_EmpiricalOgive(t,bins,freq)
+%   cf = cfE_EmpiricalOgive(t,bins,freq,cfX)
+%
+% INPUTS:
+%  t      - vector or array of real values, where the CF is evaluated.
+%  bins   - vector of data, i.e. constants where the DIRAC RVs are
+%           concentrated. If empty, default value is data = 1. 
+%  freq   - vector of data, i.e. constants where the DIRAC RVs are
+%           concentrated. If empty, default value is data = 1. 
+%  cfX    - function handle of the characteristic function of a random
+%           variable X. If cfX is non-empty, a compound CF is evaluated as
+%           cf(t) = cf(-1i*log(cfX(t)),bins,frequencies).
+%
+% WIKIPEDIA: 
+%  https://en.wikipedia.org/wiki/Empirical_distribution_function.
 %
 % EXAMPLE1 (Ogive ECF - a weighted mixture of independent Uniform RVs)
 %   rng(101);
@@ -74,44 +87,23 @@ function cf = cfE_EmpiricalOgive(t,bins,frequencies,cfX)
 %   clear options
 %   options.isCompound = true;
 %   result = cf2DistGP(cf,x,prob,options)
-%
-% EXAMPLE4 (PDF/CDF of the compound DanishFireData distribution)
-%   Data = [normrnd(5,0.2,3*n,1); trnd(10,n,1)];
-%   Xbins = dlmread('GroupBins.txt');
-%   Xfreq = dlmread('GroupFrequencies.txt');
-%   cfX = @(t) cfE_EmpiricalOgive(t,Xbins,Xfreq);
-%   cf = @(t) cfN_Poisson(t,lambda,cfX);
-%   x = linspace(0,100,101);
-%   prob = [0.9 0.95 0.99];
-%   clear options
-%   options.isCompound = true;
-%   result = cf2DistGP(cf,x,prob,options)
 % 
 % REFERENCES:
-% [1] WITKOVSKY V., WIMMER G., DUBY T. (2016). Computing the aggregate loss
-%     distribution based on numerical inversion of the compound empirical
-%     characteristic function of frequency and severity. Preprint submitted
-%     to Insurance: Mathematics and Economics.
-% [2] DUBY T., WIMMER G., WITKOVSKY V.(2016). MATLAB toolbox CRM for
-%     computing distributions of collective risk models. Preprint submitted
-%     to Journal of Statistical Software.
-% [3] WITKOVSKY V. (2016). Numerical inversion of a characteristic
-%     function: An alternative tool to form the probability distribution of
-%     output quantity in linear measurement models. Acta IMEKO, 5(3), 32-44. 
-% [4] WIMMER G., ALTMANN G. (1999). Thesaurus of univariate discrete
-%     probability distributions. STAMM Verlag GmbH, Essen, Germany. ISBN
-%     3-87773-025-6. 
+%  WITKOVSKY V., WIMMER G., DUBY T. (2017). Computing the aggregate
+%  loss distribution based on numerical inversion of the compound empirical
+%  characteristic function of frequency and severity. arXiv preprint
+%  arXiv:1701.08299.  
 
 % (c) 2016 Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 15-Nov-2016 13:36:26
 
 %% ALGORITHM
-%cf = cfE_EmpiricalOgive(t,bins,frequencies,cfX);
+%cf = cfE_EmpiricalOgive(t,bins,freq,cfX);
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 4);
 if nargin < 2, bins = []; end
-if nargin < 3, frequencies = []; end
+if nargin < 3, freq = []; end
 if nargin < 4, cfX = []; end
 
 %%
@@ -119,25 +111,24 @@ if isempty(bins)
     bins = 1;
 end
 
-if isempty(frequencies)
-    frequencies = 1 / length(bins);
+if isempty(freq)
+    freq = 1 / length(bins);
 end
 
-if isscalar(frequencies)
+if isscalar(freq)
     bins = bins(:)';
 else
-    [errorcode,bins,frequencies] = distchck(2,bins(:)',frequencies(:)');
+    [errorcode,bins,freq] = distchck(2,bins(:)',freq(:)');
     if errorcode > 0
         error(message('InputSizeMismatch'));
     end
 end
 
-
-%% Characteristic function of a weighted mixture of Dirac variables
+%% Characteristic function 
 szt   = size(t);
 t     = t(:);
 cf    = 0;
-if length(frequencies) == length(bins)
+if length(freq) == length(bins)
     binsUpper  = 2*bins(end)-bins(end-1);
     bins  = [bins,binsUpper];
 end
@@ -151,10 +142,10 @@ else
 end
 
 aux  = (aux(:,2:n)-aux(:,1:n1)) ./ (1i*t.*(bins(:,2:n)-bins(:,1:n1)));
-if isscalar(frequencies)
-    cf   = cf + sum(frequencies*aux,2);
+if isscalar(freq)
+    cf   = cf + sum(freq*aux,2);
 else
-    cf   = cf + sum(bsxfun(@times,aux,frequencies),2);
+    cf   = cf + sum(bsxfun(@times,aux,freq),2);
 end
 
 cf(t==0) = 1;
