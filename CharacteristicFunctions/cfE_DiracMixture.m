@@ -1,28 +1,36 @@
-function cf = cfE_DiracMixture(t,coefs,weights,cfX)
-%cfE_DiracMixture(t,coefs,weights,cfX) evaluates the characteristic
-% function cf(t) of the weighted mixture of independent DIRAC variables,
-% say Y (i.e. nonstochastic constants). In particular, cf(Y) = sum_{j=1}^n
-% weights(j) * cf(coef(j) * X_j), where each X_j represents the Dirac
-% random variable concentrated at the constant 1.
-% 
-% Hence, the empirical characteristic function (ECF) of the random sample
-% X_1,...,X_n is equally weighted mixture of the characteristic functions
-% of the Dirac random variables X_j concentrated at the observed values
-% x_j, i.e. mixture of CFs given by cf_X_j (t) = e^(1i*t*x_j), i.e.
-%  cf(t) = cfE_DiracMixture(t,data,1/n) = (1/n) * sum_{j=1}^n e^(1i*t*x_j);
-% where data = (x_1,...,x_n). For more details see [1].
+function cf = cfE_DiracMixture(t,d,weight,cfX)
+%% cfE_DiracMixture
+%  Characteristic function of the weighted mixture distribution of
+%  independent DIRAC random variables D_1,...,D_N, concentrated at the
+%  fixed constants (data) given by the vector d = [d_1,...,d_N].
+%  
+%  That is, cf(t) = weight_1*cfD(d_1*t) +...+ weight_N*cfD(d_N*t), where
+%  cfD(t) represents the characteristic function of the DIRAC RV
+%  concentrated at the constant d=1, i.e. cfD(t) = exp(1i*t).
 %
-% cfE_DiracMixture(t,coefs,weights,cf_X) evaluates the compound
-% characteristic function 
-%   cf(t) = cfE_DiracMixture(-1i*log(cfX(t)),coefs,weights)
-%         = sum_{j=1}^n weights(j) * cfX(t)^coefs(j);
-% where cfX is function handle of the characteristic function cfX(t) of the
-% random variable X (as e.g. another empirical CF based on observed data of
-% X).   
+%  cfE_DiracMixture(t,d,weight,cfX) evaluates the compound characteristic
+%  function  
+%   cf(t) = cfE_DiracMixture(-1i*log(cfX(t)),d,weight)
+%         = weight_1*cfX(t)^d_1 +...+ weight_N*cfX(t)^d_N
+%  where cfX denotes teh function handle of the characteristic function
+%  cfX(t) of the random variable X.   
 %
 % SYNTAX
-%  cf = cfE_DiracMixture(t,coefs,weights)
-%  cf = cfE_DiracMixture(t,coefs,weights,cfX)
+%  cf = cfE_DiracMixture(t,d,weight)
+%  cf = cfE_DiracMixture(t,d,weight,cfX)
+%
+% INPUTS:
+%  t      - vector or array of real values, where the CF is evaluated.
+%  d      - vector of constants (data) where the DIRAC RVs are concentrated.
+%           If empty, default value is d = 1. 
+%  weight - vector of weights of the distribution mixture. If empty,
+%           default value is weight = 1/length(d). 
+%  cfX    - function handle of the characteristic function of a random
+%           variable X. If cfX is non-empty, a compound CF is evaluated as
+%           cf(t) = cf(-1i*log(cfX(t)),d,weight).
+%
+% WIKIPEDIA: 
+%  https://en.wikipedia.org/wiki/Empirical_distribution_function.
 %
 % EXAMPLE1 (Empirical CF - a weighted mixture of independent Dirac variables)
 %  rng(101);
@@ -65,59 +73,50 @@ function cf = cfE_DiracMixture(t,coefs,weights,cfX)
 %  result = cf2DistGP(cf,x,prob,options)
 %
 % REFERENCES:
-% [1] WITKOVSKY V., WIMMER G., DUBY T. (2016). Computing the aggregate loss
-%     distribution based on numerical inversion of the compound empirical
-%     characteristic function of frequency and severity. Preprint submitted
-%     to Insurance: Mathematics and Economics.
-% [2] DUBY T., WIMMER G., WITKOVSKY V.(2016). MATLAB toolbox CRM for
-%     computing distributions of collective risk models. Preprint submitted
-%     to Journal of Statistical Software.
-% [3] WITKOVSKY V. (2016). Numerical inversion of a characteristic
-%     function: An alternative tool to form the probability distribution of
-%     output quantity in linear measurement models. Acta IMEKO, 5(3), 32-44. 
-% [4] WIMMER G., ALTMANN G. (1999). Thesaurus of univariate discrete
-%     probability distributions. STAMM Verlag GmbH, Essen, Germany. ISBN
-%     3-87773-025-6. 
+%  WITKOVSKY V., WIMMER G., DUBY T. (2017). Computing the aggregate
+%  loss distribution based on numerical inversion of the compound empirical
+%  characteristic function of frequency and severity. arXiv preprint
+%  arXiv:1701.08299.   
 
-% (c) 2016 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 15-Nov-2016 13:36:26
+% (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 23-Jun-2017 10:00:49
 
 %% ALGORITHM
-%cf = cfE_DiracMixture(t,coefs,weights,cfX);
+%cf = cfE_DiracMixture(t,d,weight,cfX);
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 4);
-if nargin < 2, coefs = []; end
-if nargin < 3, weights = []; end
+if nargin < 2, d = []; end
+if nargin < 3, weight = []; end
 if nargin < 4, cfX = []; end
 
 %%
-if isempty(coefs)
-    coefs = 1;
+if isempty(d)
+    d = 1;
 end
 
-if isempty(weights)
-    weights = 1 / length(coefs);
+if isempty(weight)
+    weight = 1 / length(d);
 end
 
-if isscalar(weights)
-    coefs = coefs(:)';
+if isscalar(weight)
+    d = d(:)';
 else
-    [errorcode,coefs,weights] = distchck(2,coefs(:)',weights(:)');
+    [errorcode,d,weight] = distchck(2,d(:)',weight(:)');
     if errorcode > 0
         error(message('InputSizeMismatch'));
     end
 end
 
 % Special treatment for mixtures with large number of variables
-szcoefs  = size(coefs);
+szcoefs  = size(d);
 szcoefs  = szcoefs(1)*szcoefs(2);
 szt      = size(t);
 sz       = szt(1)*szt(2);
 szcLimit = ceil(1e3 / (sz/2^16));
 idc = 1:fix(szcoefs/szcLimit)+1;
 
-%% Characteristic function of a weighted mixture of Dirac variables
+%% Characteristic function
 t     = t(:);
 idx0  = 1;
 cf    = 0;
@@ -126,14 +125,14 @@ for j = 1:idc(end)
     idx  = idx0:idx1;
     idx0 = idx1+1;
     if isempty(cfX)
-        aux  = exp(1i * t * coefs(idx));
+        aux  = exp(1i * t * d(idx));
     else
-        aux  = bsxfun(@power,cfX(t),coefs(idx));
+        aux  = bsxfun(@power,cfX(t),d(idx));
     end      
-    if isscalar(weights)
-        cf   = cf + sum(weights*aux,2);
+    if isscalar(weight)
+        cf   = cf + sum(weight*aux,2);
     else
-        cf   = cf + sum(bsxfun(@times,aux,weights(idx)),2);
+        cf   = cf + sum(bsxfun(@times,aux,weight(idx)),2);
     end
 end
 cf = reshape(cf,szt);

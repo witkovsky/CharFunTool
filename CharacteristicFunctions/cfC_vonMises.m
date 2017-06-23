@@ -1,16 +1,29 @@
 function cf = cfC_vonMises(t,mu,kappa)
-%cfC_vonMises(t) evaluates the characteristic function cf(t) of
-% the von Mises distribution (circular normal distribution) with the
-% parameters mu in (-pi,pi) and kappa > 0 (mu and 1/kappa are analogous to
-% mu and sigma^2, the mean and variance in the normal distribution), on a
-% circle e.g. the interval (-pi,pi), i.e.     
+%% cfC_vonMises(t) 
+%  Characteristic function of the VON MISES distribution. 
+%
+%  The von Mises distribution is circular distribution on the interval
+%  (-pi,pi), equivalent of the normal distribution with the parameters mu
+%  in (-pi,pi) and kappa > 0 (mu and 1/kappa are analogous to mu and
+%  sigma^2, the mean and variance in the normal distribution), on a circle
+%  e.g. the interval (-pi,pi).
+%
+%  The characteristic function of the vonMises(mu,kappa) distribution is 
 %   cf(t) = cfC_vonMises(t,mu,kappa) 
 %         = besseli(t,kappa)/besseli(0,kappa) .* exp(1i*t*mu).
-% For more details see also WIKIPEDIA: 
-% https://en.wikipedia.org/wiki/Von_Mises_distribution
 %
 % SYNTAX
 %  cf = cfC_vonMises(t,mu,kappa) 
+% 
+% INPUTS:
+%  t     - vector or array of real values, where the CF is evaluated.
+%  mu    - location parameter, mu in (-pi,pi). If empty, default value is
+%          mu = 0. 
+%  kappa - rate (1/scale) parameter, kappa > 0. If empty, default value is
+%          kappa = 0, i.e. uniform distribution on (-pi,pi). 
+%
+% WIKIPEDIA: 
+%  https://en.wikipedia.org/wiki/Von_Mises_distribution.
 %
 % EXAMPLE1 (CF of the uniform von Mises distribution on (-pi,pi))
 %  t = linspace(-10,10,501);
@@ -75,14 +88,12 @@ function cf = cfC_vonMises(t,mu,kappa)
 %  figure; polarplot(angle,radius);
 %  ax = gca; ax.ThetaAxisUnits = 'radians';
 %
-% REFERENCES:
-
 
 % (c) 2016 Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 15-Nov-2016 13:36:26
 
 %% ALGORITHM
-%cf = cfC_vonMises(t);
+%cf = cfC_vonMises(t,mu,kappa)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1,3);
