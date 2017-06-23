@@ -1,20 +1,20 @@
-function cf = cf_ChiSquare(t,df,ncp,coef,n)
-%cf_ChiSquare Characteristic function of a linear combination (resp.
-%  convolution) of independent (possibly non-central) ChiSquare random
+function cf = cf_ChiSquare(t,df,ncp,coef,niid)
+%cf_ChiSquare 
+%  Characteristic function of a linear combination (resp.
+%  convolution) of independent (possibly non-central) CHI-SQUARE random
 %  variables.     
 %
-%  In particular, cf_ChiSquare evaluates the characteristic function
-%  cf(t) of Y = coef_1 * X_1 + ... + coef_N * X_N, where X_i ~
-%  Chi2(df_i,ncp_i), and df_i and  ncp_i represent the 'degrees of
-%  freedom' and  the 'non-centrality' parameters of the CHI-SQUARED
-%  distribution.
+%  That is, cf_ChiSquare evaluates the characteristic function cf(t)  of  Y =
+%  sum_{i=1}^N coef_i * X_i, where X_i ~ ChiSquare(df_i,ncp_i) are
+%  inedependent RVs, with df_i > 0 degrees of freedom the 'non-centrality'
+%  parameters ncp_i > 0, for i = 1,...,N. 
 %
 %  The characteristic function of Y is defined by
 %   cf(t) = Prod ( (1-2*i*t*coef(i))^(-df(i)/2)
 %                   * exp((i*t*ncp(i))/(1-2*i*t*coef(i))) )
 %
 % SYNTAX:
-%  cf = cf_ChiSquare(t,df,ncp,coef,n)
+%  cf = cf_ChiSquare(t,df,ncp,coef,niid)
 % 
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -29,10 +29,10 @@ function cf = cf_ChiSquare(t,df,ncp,coef,n)
 %          chi-squared random variables. If coef is scalar, it is assumed
 %          that all coefficients are equal. If empty, default value is
 %          coef = 1.
-%  n     - scalar convolution coeficient n, such that Z = Y + ... + Y is
-%          sum of n iid random variables Y, where each Y = sum_{i=1}^N
-%          coef(i) * CHI2(df(i),ncp(i))) is independently and identically
-%          distributed random variable. If empty, default value is n = 1.   
+%  niid  - scalar convolution coeficient niid, such that Z = Y + ... + Y is
+%          sum of niid iid random variables Y, where each Y = sum_{i=1}^N
+%          coef(i) * log(X_i) is independently and identically distributed
+%          random variable. If empty, default value is niid = 1.   
 %
 % WIKIPEDIA:
 %  https://en.wikipedia.org/wiki/Chi-squared_distribution
@@ -80,11 +80,11 @@ function cf = cf_ChiSquare(t,df,ncp,coef,n)
 % Ver.: 10-May-2017 18:11:50
 
 %% ALGORITHM
-% cf = cf4Gamma(t,alpha,beta,coef,n)
+% cf = cf4Gamma(t,alpha,beta,coef,niid)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 5);
-if nargin < 5, n = []; end
+if nargin < 5, niid = []; end
 if nargin < 4, coef = []; end
 if nargin < 3, ncp  = []; end
 if nargin < 2, df   = []; end
@@ -111,8 +111,8 @@ elseif isempty(coef) && ~isempty(df)
     coef = 1;
 end
 
-if isempty(n)
-    n = 1;
+if isempty(niid)
+    niid = 1;
 end
 
 %% Find the unique coefficients and their multiplicities
@@ -143,11 +143,11 @@ end
 cf   = cf .* prod(aux,2);
 cf   = reshape(cf,szt);
 
-if ~isempty(n)
-    if isscalar(n)
-        cf = cf .^ n;
+if ~isempty(niid)
+    if isscalar(niid)
+        cf = cf .^ niid;
     else
-        error('n should be a scalar (positive integer) value');
+        error('niid should be a scalar (positive integer) value');
     end
 end
 

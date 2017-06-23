@@ -1,11 +1,11 @@
 function cf = cf_Student(t,df,coef,n)
-%%cf_Student Characteristic function of the distribution of a linear
-%  combination of independent random variables with Student's
-%  t-distribution with df > 0 degrees of freedom.
+%% cf_Student 
+%  Characteristic function of a linear combination (resp. convolution) of
+%  independent STUDENT's t random variables. 
 %
-%  In particular, cf_Student(t,df,coef) evaluates the characteristic
-%  function cf(t) of of Y = coef_1 * X_1 + ... + coef_N * X_N, where X_i ~
-%  t(df_i), for i = 1,...,N. 
+%  That is, cf_Student evaluates the characteristic function cf(t) of  Y =
+%  sum_{i=1}^N coef_i * X_i, where X_i ~ t(df_i) are inedependent RVs, with
+%  df_i > 0 degrees of freedom, for i = 1,...,N.
 %
 %  The characteristic function of X ~ t(df) is 
 %   cf(t) = besselk(df/2,abs(t)*sqrt(df),1) * exp(-abs(t)*sqrt(df)) * ...
@@ -31,6 +31,9 @@ function cf = cf_Student(t,df,coef,n)
 %          sum of n iid random variables Y, where each Y = sum_{i=1}^N
 %          coef_i * X_i is independently and identically distributed random
 %          variable. If empty, default value is n = 1. 
+%
+% WIKIPEDIA: 
+%   https://en.wikipedia.org/wiki/Student%27s_t-distribution.
 %
 % EXAMPLE 1:
 %  % CF of a linear combination of independent Student's t RVs

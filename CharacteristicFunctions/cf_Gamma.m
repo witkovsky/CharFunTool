@@ -1,18 +1,18 @@
-function cf = cf_Gamma(t,alpha,beta,coef,n)
-%%cf_Gamma Characteristic function of a linear combination (resp.
-%  convolution) of independent GAMMA random variables, X ~
-%  Gamma(alpha,beta).  
+function cf = cf_Gamma(t,alpha,beta,coef,niid)
+%%cf_Gamma 
+%  Characteristic function of a linear combination (resp. convolution) of
+%  independent GAMMA random variables.
 %
-%  In particular, cf_Gamma(t,alpha,beta,coef) evaluates the characteristic
-%  function cf(t) of Y = coef(1) * X_1 + ... + coef(N) * X_N, where X_i ~
-%  GAMMA(alpha(i),beta(i)), and alpha(i) and  beta(i) represent the 'shape'
-%  and the 'rate' parameters of the GAMMA distribution.
+%  That is, cf_Gamma evaluates the characteristic function cf(t)  of  Y =
+%  sum_{i=1}^N coef_i * X_i, where X_i ~ Gamma(alpha_i,beta_i) are
+%  inedependent RVs, with with the shape parameters alpha_i > 0 and the
+%  rate parameters beta_i > 0, for i = 1,...,N. 
 %
 %  The characteristic function of Y is defined by
 %   cf(t) = Prod( (1 - i*t*coef(i)/beta(i))^(-alpha(i)) )
 %
 % SYNTAX:
-%  cf = cf_Gamma(t,alpha,beta,coef,n)
+%  cf = cf_Gamma(t,alpha,beta,coef,niid)
 %
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -24,11 +24,10 @@ function cf = cf_Gamma(t,alpha,beta,coef,n)
 %          GAMMA random variables. If coef is scalar, it is assumed
 %          that all coefficients are equal. If empty, default value is
 %          coef = 1.
-%  n     - scalar convolution coeficient n, such that Z = Y + ... + Y is
-%          sum of n iid random variables Y, where each Y = sum_{i=1}^N
-%          coef(i) * X_i, with X_i ~ Gamma(alpha(i),beta(i))) independently
-%          and identically distributed random variables. If empty, default
-%          value is n = 1.    
+%  niid  - scalar convolution coeficient niid, such that Z = Y + ... + Y is
+%          sum of niid iid random variables Y, where each Y = sum_{i=1}^N
+%          coef(i) * log(X_i) is independently and identically distributed
+%          random variable. If empty, default value is niid = 1.   
 % 
 % PARAMETRIZATION:
 %   Notice that there are three different parametrizations for GAMMA
@@ -83,11 +82,11 @@ function cf = cf_Gamma(t,alpha,beta,coef,n)
 % Ver.: 10-May-2017 18:11:50
 
 %% ALGORITHM
-% cf = cf_Gamma(t,alpha,beta,coef,n)
+% cf = cf_Gamma(t,alpha,beta,coef,niid)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 5);
-if nargin < 5, n = []; end
+if nargin < 5, niid = []; end
 if nargin < 4, coef = []; end
 if nargin < 3, beta = []; end
 if nargin < 2, alpha = []; end
@@ -113,12 +112,12 @@ elseif isempty(coef) && ~isempty(alpha)
     coef = 1;
 end
 
-if isempty(n)
-    n = 1;
+if isempty(niid)
+    niid = 1;
 end
 
 %% Equal size of the parameters   
-if ~isempty(coef) && isscalar(alpha) && isscalar(beta) && isempty(n)
+if ~isempty(coef) && isscalar(alpha) && isscalar(beta) && isempty(niid)
     coef = sort(coef);
     m    = length(coef);
     [coef,idx] = unique(coef);
@@ -153,11 +152,11 @@ end
 cf = reshape(cf,szt);
 cf(t==0) = 1;
 
-if ~isempty(n)
-    if isscalar(n)
-        cf = cf .^ n;
+if ~isempty(niid)
+    if isscalar(niid)
+        cf = cf .^ niid;
     else
-        error('n should be a scalar (positive integer) value');
+        error('niid should be a scalar (positive integer) value');
     end
 end
 

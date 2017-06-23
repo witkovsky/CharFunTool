@@ -1,93 +1,93 @@
-function cf = cf_LogMeansRatioRV2(t,k,alpha,weight,coef,niid)
-%%cf_LogMeansRatioRV2 Characteristic function of a linear combination
-% (resp. convolution) of independent log-transformed random
-%  variables (RVs) W_i = log(R_i), for i = 1,...,N, where each R_i =
-%  G_i/A_i is a ratio of the weighted geometric mean G_i and the
-%  (unweighted) arithmetic mean A_i, of independent RVs
-%  X_{i,1},...,X_{i,k_i} with gamma distributions, with the shape
-%  parameters alpha_{i,j} and the (common) rate parameter beta_i for each i
-%  = 1,...,N.
-%
-%  Here, the weighted geometric mean is defined by G_i = (X_{i,1}^w_{i,1}
-%  *...* X_{i,k_i}^w_{i,k_i}), where the weights w_{i,j} are such that
-%  w_{i,1} +...+ w_{i,k_i} = 1, and the arithmetic mean is defined by A_i
-%  = (X_{i,1} +...+ X_{i,k_i})/k_i. The random variables  X_{i,j} are
-%  mutually independent, with X_{i,j} ~ Gamma(alpha_{i,j},beta_i) for all i
-%  = 1,...,N and j = 1,...,k_i, where alpha_{i,j} are the shape parameters
-%  and beta_i is the (common) rate parameter of the gamma distributions.
-%
-%  Note that the R_i random variables are scale invariant, so their
-%  distribution does not depend on the common rate (or scale) parameter
-%  beta_i. 
+function cf = cf_LogMeansRatioRV2(t,n,alpha,weight,coef,niid)
+%% cf_LogMeansRatioRV2 
+%  Characteristic function of a linear combination (resp. convolution) of
+%  independent LOG-TRANSFORMED WEIGHTED MEANS-RATIO random variables (RVs)
+%  W_i = log(R_i), for i = 1,...,N, where each R_i = G_i/A_i is a ratio of
+%  the weighted geometric mean G_i and the (unweighted) arithmetic mean
+%  A_i of independent RVs X_{i,1},...,X_{i,n_i} with GAMMA distributions,
+%  with the shape parameters alpha_{i,j} and the (common) rate parameter
+%  beta_i for i = 1,...,N and j = 1,...,n_i. 
 %  
 %  That is, cf_LogMeansRatioRV2 evaluates the characteristic function of a
-%  random variable Y  = coef_1*W_1 +...+ coef_N*W_N, such that cf_Y(t) =
+%  random variable Y = coef_1*W_1 +...+ coef_N*W_N, such that cf_Y(t) =
 %  cf_W_1(coef_1*t) *...* cf_W_N(coef_N*t), where cf_W_i(t) is CF of W_i
 %  = log(R_i), where R_i is the ratio statistic of the weighted geometric
-%  mean and the arithmetic mean of random sample from gamma distributed
-%  population, which depends on the shape parameter alpha_i and the vector
-%  of weights w_i = [w_{i,1},...,w_{i,k_i}], for all i = 1,...,N.
+%  mean and the arithmetic mean of independent gamma distributed RVs, which
+%  distribution depends on the shape parameter alpha_{i,j} and the vector 
+%  of weights w_{i,j}, for i = 1,...,N and j = 1,...,n_i.
+%
+%  Here, for each fixed i = 1,...,N, the weighted geometric mean is defined
+%  by G_i = (X_{i,1}^w_{i,1} *...* X_{i,n_i}^w_{i,n_i}), where the weights
+%  w_{i,j}, j = 1,...,n_i, are such that w_{i,1} +...+ w_{i,n_i} = 1, and
+%  the arithmetic mean is defined by A_i = (X_{i,1} +...+ X_{i,n_i})/n_i.
+%  The random variables  X_{i,j} are mutually independent with X_{i,j} ~
+%  Gamma(alpha_{i,j},beta_i) for all i = 1,...,N and j = 1,...,n_i, where
+%  alpha_{i,j} are the shape parameters and beta_i is the (common) rate
+%  parameter of the gamma distributions. 
+%
+%  Note that the weighted ratio random variables R_i are scale invariant,
+%  so their distribution does not depend on the common rate (or scale)
+%  parameter beta_i for each i = 1,...,N.
 %
 %  The distribution of the logarithm of the means ratio log(R_i) is defined
 %  by its characteristic function, see e.g. Chao and Glaser (JASA 1978),
 %  which is
-%   cf_{log(R_i)}(t) = k^(1i*t) * ...
+%   cf_{log(R_i)}(t) = (n_i)^(1i*t) * ...
 %   Gamma(sum(alpha_{i,j}))/Gamma(sum(alpha_{i,j})+1i*t)) * ...
-%   Prod_{j=1}^k_i Gamma(alpha_{i,j}+1i*w_{i,j}*t)/Gamma(alpha_{i,j}),
+%   Prod_{j=1}^n_i Gamma(alpha_{i,j}+1i*w_{i,j}*t)/Gamma(alpha_{i,j}),
 %  for each i = 1,...,N.
 %
 % SYNTAX
-%  cf = cf_LogMeansRatioRV2(t,k,alpha,weights,coef,niid)
+%  cf = cf_LogMeansRatioRV2(t,n,alpha,weights,coef,niid)
 %
 % INPUTS
 %  t       - vector or array of real values, where the CF is evaluated.
-%  k       - vector of sample size parameters k = (k_1,...,k_N). 
+%  n       - vector of sample size parameters n = (n_1,...,n_N). 
 %  alpha   - an N-by-1 cell array of weights vectors with shape parameters
-%            alpha{i} = [alpha_{i,1},...,alpha_{i,k_i}].  If empty,
+%            alpha{i} = [alpha_{i,1},...,alpha_{i,n_i}].  If empty,
 %            default value is alpha{i} = [1,...,1].
-%            If empty, default value is alpha = (1,...,1). 
 %  weights - an N-by-1 cell array of weights vectors with weights{i} =
-%            [w_{i,1},...,w_{i,k_i}], for i = 1,...,N. If empty, default
+%            [w_{i,1},...,w_{i,n_i}], for i = 1,...,N. If empty, default
 %            value is weights{i}  = [1/k_i,...,1/k_i].
 %  coef    - vector of the coefficients of the linear combination of the
 %            log-transformed random variables. If coef is scalar, it is
 %            assumed that all coefficients are equal. If empty, default
 %            value is coef = 1.
-%  niid    - scalar convolution coeficient niid, such that Z = Y + ... + Y
+%  niid    - scalar convolution coeficient niid, such that Z = Y +...+ Y
 %            is sum of niid random variables Y, where each Y = sum_{i=1}^N
-%            coef(i) * log(X_i) is independently and identically
-%            distributed random variable. If empty, default value is n = 1.
+%            coef_i * log(X_i) is independently and identically distributed
+%            random variable. If empty, default value is niid = 1.
 %
 % EXAMPLE 1:
-% % CF of log MeansRatio RV with and k = 5 and alpha = 7/2
-%   k     = 5;
+% % CF of log MeansRatio RV with and n = 5 and alpha = 7/2
+%   n     = 5;
 %   alpha = 7/2;
 %   t     = linspace(-100,100,201);
-%   cf    = cf_LogMeansRatioRV2(t,k,alpha);
+%   cf    = cf_LogMeansRatioRV2(t,n,alpha);
 %   figure; plot(t,real(cf),t,imag(cf)); grid on;
-%   title('CF of log MeansRatio RV with and k = 5 and alpha = 7/2')
+%   title('CF of log MeansRatio RV with and n = 5 and alpha = 7/2')
 %
 % EXAMPLE 2:
 % % CF of a weighted linear combination of minus log MeansRatio RVs 
 %   clear
-%   k        = [5 7 10];
+%   n        = [5 7 10];
 %   alpha{1} = 7/2;
 %   alpha{2} = 10/2;
 %   alpha{3} = 3/2;
 %   weight   = [];
 %   coef     = -1/3;
 %   t        = linspace(-100,100,201);
-%   cf       = cf_LogMeansRatioRV2(t,k,alpha,weight,coef);
+%   cf       = cf_LogMeansRatioRV2(t,n,alpha,weight,coef);
 %   figure; plot(t,real(cf),t,imag(cf)); grid on;
 %   title('CF of a weighted linear combination of minus log MeansRatio RVs')
 %
 % EXAMPLE 3:
-% % PDF/CDF of minus log MeansRatio RV, k = 5 and alpha = 7/2, from its CF
+% % PDF/CDF of minus log MeansRatio RV, n = 5 and alpha = 7/2, from its CF
 %   clear
-%   k     = 5;
+%   n     = 5;
 %   alpha = 7/2;
 %   coef  = -1;
-%   cf    = @(t) cf_LogMeansRatioRV2(t,k,alpha,[],coef);
+%   cf    = @(t) cf_LogMeansRatioRV2(t,n,alpha,[],coef);
 %   x = linspace(0,0.6)';
 %   prob = [0.9 0.95 0.99];
 %   options.xMin = 0;
@@ -97,11 +97,11 @@ function cf = cf_LogMeansRatioRV2(t,k,alpha,weight,coef,niid)
 % EXAMPLE 4:
 % % PDF/CDF of minus log of the (weighted) means ratio RV, from its CF
 %   clear
-%   k         = 5;
+%   n         = 5;
 %   alpha{1}  = [3 5 7 10 3]/2;
 %   weight{1} = alpha{1}/sum(alpha{1});
 %   coef      = -1;
-%   cf        = @(t) cf_LogMeansRatioRV2(t,k,alpha,weight,coef);
+%   cf        = @(t) cf_LogMeansRatioRV2(t,n,alpha,weight,coef);
 %   x = linspace(-0.15,1.15,200)';
 %   prob = [0.9 0.95 0.99];
 %   options.N = 2^12;
@@ -111,8 +111,8 @@ function cf = cf_LogMeansRatioRV2(t,k,alpha,weight,coef,niid)
 % EXAMPLE 5:
 % % Compare the exact distribution with the Bartlett's approximation
 %   clear
-%   k         = 15;
-%   df        = [1 1 1 1 1 2 2 2 2 2 3 3 3 3 3];
+%   k         = 15; % k normal populations with unequal sample sizes
+%   df        = [1 1 1 1 1 2 2 2 2 2 3 3 3 3 3]; % degrees of freedom
 %   DF        = sum(df);
 %   alpha{1}  = df/2;
 %   weight{1} = alpha{1}/sum(alpha{1});
@@ -167,13 +167,13 @@ if nargin < 4, weight = []; end
 if nargin < 3, alpha = []; end
 
 %% Check size of the parameters
-N = length(k);
+N = length(n);
 
 if isempty(coef)
     coef = ones(1,N); 
 end
 
-[errorcode,k,coef] = distchck(2,k,coef);
+[errorcode,n,coef] = distchck(2,n,coef);
 if errorcode > 0
     error(message('InputSizeMismatch'));
 end
@@ -183,14 +183,14 @@ if isempty(niid), niid = 1; end
 if isempty(alpha) 
     alpha = cell(N,1); 
     for i = 1:N
-        alpha{i} = ones(1,k(i));
+        alpha{i} = ones(1,n(i));
     end
 end
 
 if isempty(weight) 
     weight = cell(N,1); 
     for i = 1:N
-        weight{i} = ones(1,k(i))/k(i);
+        weight{i} = ones(1,n(i))/n(i);
     end
 end
 
@@ -203,7 +203,7 @@ if ~iscell(weight)
 end
 
 for i = 1:N
-    aux = ones(1,k(i));
+    aux = ones(1,n(i));
     [errorcode,alpha{i},weight{i},aux] = distchck(3,alpha{i},weight{i},aux);
     if errorcode > 0
         error(message('InputSizeMismatch'));
@@ -216,7 +216,7 @@ t   = t(:);
 
 cf  = 1;
 for i = 1:N
-    cf = cf .* cf_LogR(coef(i)*t,k(i),alpha{i},weight{i});
+    cf = cf .* cf_LogR(coef(i)*t,n(i),alpha{i},weight{i});
 end
 cf  = reshape(cf,szt);
 cf(t==0) = 1;
