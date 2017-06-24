@@ -4,7 +4,7 @@ function cf = cfX_ChiSquare(t,df,ncp)
 %  degrees of freedom and the non-cetrality parameter ncp > 0.
 %
 %  cfX_ChiSquare is an ALIAS NAME of the more general function
-%  cf_ChiSquare, used to evaluate the characteristic function of a lienar 
+%  cf_ChiSquare, used to evaluate the characteristic function of a linear 
 %  combination of independent CHI-SQUARE distributed random variables.
 %
 %  The characteristic function of the CHI-SQUARE distribution is defined by

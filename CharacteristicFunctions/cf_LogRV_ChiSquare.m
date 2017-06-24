@@ -84,6 +84,10 @@ if isempty(coef) && ~isempty(df)
     coef = 1;
 end
 
+if isempty(niid)
+    niid = 1;
+end
+
 %% Check size of the parameters
 [errorcode,coef,df] = distchck(2,coef(:)',df(:)');
 if errorcode > 0

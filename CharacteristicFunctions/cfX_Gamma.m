@@ -4,7 +4,7 @@ function cf = cfX_Gamma(t,alpha,beta)
 %  parameter alpha > 0 and the rate parameter beta > 0.
 %
 %  cfX_Gamma is an ALIAS NAME of the more general function cf_Gamma,
-%  used to evaluate the characteristic function of a lienar combination of
+%  used to evaluate the characteristic function of a linear combination of
 %  independent GAMMA distributed random variables.
 %
 %  The characteristic function of the GAMMA distribution is defined by
