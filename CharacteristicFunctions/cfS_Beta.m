@@ -28,7 +28,7 @@ function cf = cfS_Beta(t,theta)
 %   t = linspace(-50,50,501);
 %   cf = cfS_Beta(t,theta);
 %   figure; plot(t,cf),grid
-%   title('CF of the the symmetric Beta distribution on (-1,1)')
+%   title('CF of the symmetric Beta distribution on (-1,1)')
 %
 % EXAMPLE 2:
 % % PDF/CDF of the the symmetric Beta distribution on (-1,1)
