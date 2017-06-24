@@ -94,7 +94,7 @@ end
 szt = size(t);
 t   = t(:);
 aux = 1i*t*coef;
-aux = gammalog(bsxfun(@plus,aux,df/2))-ones(length(t),1)*gammalog(df/2);
+aux = GgammaLog(bsxfun(@plus,aux,df/2))-ones(length(t),1)*GgammaLog(df/2);
 aux = aux + 1i*t*log(2);
 cf  = prod(exp(aux),2);
 cf  = reshape(cf,szt);

@@ -1,4 +1,4 @@
-function f = hypergeom1F1(a,b,z)
+function f = Hypergeom1F1(a,b,z)
 %HYPERGEOM1F1 Computes the confluent hypergeometric function 1F1(a,b,z),
 % also known as the Kummer function M(a,b,z), for the real parameters a
 % and b (here assumed to be scalars), and the complex argument z
@@ -12,19 +12,19 @@ function f = hypergeom1F1(a,b,z)
 % written by Ben Barrowes (barrowes@alum.mit.edu)
 %
 % SYNTAX
-%   f = hypergeom1F1(a,b,z)
+%   f = Hypergeom1F1(a,b,z)
 %
 % EXAMPLE1 (CF of Beta(1/2,1/2) distribution)
 % a  = 1/2;
 % b  = 1/2;
 % t  = linspace(-50,50,2^11)';
-% cf =  hypergeom1F1(a,b+b,1i*t);
+% cf =  Hypergeom1F1(a,b+b,1i*t);
 % figure; plot(t,real(cf),t,imag(cf))
 % title('Characteristic function of Beta(1/2,1/2) distribution')
 % xlabel('t')
 % ylabel('CF')
 %
-% NOTE1: the functions hypergeom1F1 and kummerM are equivalent
+% NOTE1: the functions Hypergeom1F1 and KummerM are equivalent
 
 % Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 07-Aug-2015 10:19:29

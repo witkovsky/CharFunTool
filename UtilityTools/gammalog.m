@@ -1,4 +1,4 @@
-function [f] = gammalog(z)
+function [f] = GammaLog(z)
 % GAMMALOG  Natural Log of the Gamma function valid in the entire complex
 %           plane. This routine uses an excellent Lanczos series
 %           approximation for the complex ln(Gamma) function.
