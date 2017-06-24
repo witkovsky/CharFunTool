@@ -10,8 +10,8 @@ function cf = cf_vonMises(t,mu,kappa,coef,niid)
 %  the normal distribution), on a whole circle, i.e. the interval of angles
 %  (-pi,pi). 
 %
-%  cf_vonMises evaluates the characteristic function cf(t)  of  Y
-%  =  sum_{i=1}^N coef_i * X_i, where X_i ~ vonMises(mu_i,kappa_i) are
+%  cf_vonMises evaluates the characteristic function cf(t) of  Y =
+%  sum_{i=1}^N coef_i * X_i, where X_i ~ vonMises(mu_i,kappa_i) are
 %  inedependent RVs, with the locarion parameters mu_i in Real and the rate
 %  parameters kappa_i > 0, for i = 1,...,N.
 %
@@ -20,14 +20,15 @@ function cf = cf_vonMises(t,mu,kappa,coef,niid)
 %         = besseli(t,kappa)/besseli(0,kappa) .* exp(1i*t*mu).
 %
 % SYNTAX
-%  cf = cf_vonMises(t,mu,kappa) 
+%  cf = cf_vonMises(t,mu,kappa,coef,niid)
 % 
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
-%  mu    - location parameter, mu in (-pi,pi). If empty, default value is
-%          mu = 0. 
-%  kappa - rate (1/scale) parameter, kappa > 0. If empty, default value is
-%          kappa = 0, i.e. uniform distribution on (-pi,pi). 
+%  mu    - vector of location parameters, mu in (-pi,pi). If empty, default
+%          value is mu = 0. 
+%  kappa - vector of rate (1/scale) parameters, kappa_i > 0. If empty,
+%          default value is kappa = 0, i.e. uniform distribution on
+%          (-pi,pi).  
 %  coef  - vector of the coefficients of the linear combination of the
 %          IGamma random variables. If coef is scalar, it is assumed
 %          that all coefficients are equal. If empty, default value is
@@ -93,6 +94,8 @@ function cf = cf_vonMises(t,mu,kappa,coef,niid)
 %  clear options
 %  options.isCircular   = true;
 %  options.correctedCDF = true;
+%  options.xMin = 0;
+%  options.xMax = 2*pi;
 %  x = linspace(0,2*pi);
 %  result = cf2DistGP(cf,x,[],options)
 %  angle  = result.x;
@@ -104,7 +107,7 @@ function cf = cf_vonMises(t,mu,kappa,coef,niid)
 % Ver.: 24-Jun-2017 18:25:56
 
 %% ALGORITHM
-%cf = cf_vonMises(t,mu,kappa)
+%cf = cf_vonMises(t,mu,kappa,coef,niid)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 5);
@@ -128,8 +131,13 @@ end
 szt = size(t);
 t   = t(:);
 
-cf  = prod((besseli(abs(t)*coef,ones(size(t))*kappa,1) ...
-    ./ besseli(0,ones(size(t))*kappa,1)) .* exp(1i*t*(mu.*coef)),2);
+if length(coef)==1
+    cf  = real((besseli(abs(t*coef),kappa,1) ...
+        ./ besseli(0,kappa,1)) .* exp(1i*t*mu*coef));
+else
+    cf  = real(prod((besseli(abs(t*coef),ones(size(t))*kappa,1) ...
+        ./ besseli(0,ones(size(t))*kappa,1)) .* exp(1i*t*(mu.*coef)),2));
+end
 
 cf  = reshape(cf,szt);
 cf(t==0) = 1;
