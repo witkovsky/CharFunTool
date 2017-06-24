@@ -1,4 +1,4 @@
-function cf = cfS_Student(t,df)
+function cf = cfS_Student(t,df,mu,sigma,coef,niid)
 %cfS_Student
 %  Characteristic function of the STUDENT's t-distribution with df > 0
 %  degrees of freedom.
@@ -15,7 +15,8 @@ function cf = cfS_Student(t,df)
 %          (sqrt(df)*abs(t))^(df/2) / 2^(df/2-1)/gamma(df/2);
 %
 % SYNTAX:
-%  cf = cfS_Student(t,df);
+%  cf = cfS_Student(t,df)
+%  cf = cfS_Student(t,df,mu,sigma,coef,niid)
 %
 % INPUTS:
 %  t      - vector or array of real values, where the CF is evaluated.
@@ -38,9 +39,11 @@ function cf = cfS_Student(t,df)
 %   df = 3;
 %   cf = @(t) cfS_Student(t,df);
 %   x = linspace(-8,8,101);
+%   prob = [0.9 0.95 0.975 0.99];
 %   clear options
-%   options.SixSigmaRule = 8;
-%   result = cf2DistGP(cf,x,[],options)
+%   options.N = 2^12;
+%   options.SixSigmaRule = 30;
+%   result = cf2DistGP(cf,x,prob,options)
 %
 % REFERENCES:
 %   WITKOVSKY, V.: On the exact computation of the density and of the
@@ -51,9 +54,13 @@ function cf = cfS_Student(t,df)
 % Ver.: 02-Jun-2017 12:08:24
 
 %% ALGORITHM
-narginchk(1, 2);
-if nargin < 2,  df = []; end
-if isempty(df), df = 1; end
+narginchk(1, 6);
+if nargin < 6,  niid = []; end
+if nargin < 5,  coef = []; end
+if nargin < 4, sigma = []; end
+if nargin < 3,    mu = []; end
+if nargin < 2,    df = []; end
 
-cf = cf_Student(t,df);
+cf = cf_Student(t,df,mu,sigma,coef,niid);
+
 end

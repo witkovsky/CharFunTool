@@ -1,4 +1,4 @@
-function cf = cfS_Triangular(t)
+function cf = cfS_Triangulart,coef,niid)
 %cfS_Triangular(t)
 
 %  Characteristic function of the zero-mean symmetric TRIANGULAR
@@ -14,6 +14,7 @@ function cf = cfS_Triangular(t)
 %
 % SYNTAX:
 %  cf = cfS_Triangular(t);
+%  cf = cfS_Triangulart,coef,niid);
 %
 % INPUTS:
 %  t      - vector or array of real values, where the CF is evaluated.
@@ -47,6 +48,10 @@ function cf = cfS_Triangular(t)
 % Ver.: 02-Jun-2017 12:08:24
 
 %% ALGORITHM
-cf = cf_TriangularSymmetric(t);
+narginchk(1, 3);
+if nargin < 3, niid = []; end
+if nargin < 2, coef = []; end
+
+cf = cf_TriangularSymmetric(t,coef,niid);
 
 end

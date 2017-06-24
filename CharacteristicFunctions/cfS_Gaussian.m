@@ -1,4 +1,4 @@
-function cf = cfS_Gaussian(t)
+function cf = cfS_Gaussian(t,mu,sigma,coef,niid)
 %% cfS_Gaussian
 %  Characteristic function of a GAUSSIAN (standard normal) distribution.
 %
@@ -12,6 +12,7 @@ function cf = cfS_Gaussian(t)
 %
 % SYNTAX
 %  cf = cfS_Gaussian(t)
+%  cf = cfS_Gaussian(t,mu,sigma,coef,niid)
 %
 % INPUTS:
 %  t      - vector or array of real values, where the CF is evaluated.
@@ -40,6 +41,12 @@ function cf = cfS_Gaussian(t)
 % Ver.: 02-Jun-2017 12:08:24
 
 %% ALGORITHM
-cf = cf_Normal(t);
+narginchk(1, 5);
+if nargin < 5, niid = []; end
+if nargin < 4, coef = []; end
+if nargin < 3, sigma = []; end
+if nargin < 2, mu = []; end
+
+cf = cf_Normal(t,mu,sigma,coef,niid);
 
 end
