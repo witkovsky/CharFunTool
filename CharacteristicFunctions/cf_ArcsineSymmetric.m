@@ -9,7 +9,7 @@ function cf = cf_ArcsineSymmetric(t,coef,niid)
 %  independent RVs defined on (-1,1), for all i = 1,...,N.
 %
 %  The characteristic function of X ~ ArcsineSymmetric is defined by
-%   cf(t) = cfS_Arcsine(t) = besselj(0,t);
+%   cf(t) = cf_ArcsineSymmetric(t) = besselj(0,t);
 %
 % SYNTAX
 %  cf = cf_ArcsineSymmetric(t,coef,niid)
@@ -29,34 +29,34 @@ function cf = cf_ArcsineSymmetric(t,coef,niid)
 %  https://en.wikipedia.org/wiki/Arcsine_distribution
 %
 % EXAMPLE 1:
-%  % CF of the symmetric Arcsine distribution on (-1,1))
-%  t = linspace(-50,50,501);
-%  cf = cf_ArcsineSymmetric(t);
-%  figure; plot(t,cf),grid
-%  title('CF of the the Arcsine distribution on (-1,1)')
+% % CF of the symmetric Arcsine distribution on (-1,1))
+%   t = linspace(-50,50,501);
+%   cf = cf_ArcsineSymmetric(t);
+%   figure; plot(t,cf),grid
+%   title('CF of the the Arcsine distribution on (-1,1)')
 %
 % EXAMPLE 2:
-%  % CF of a linear combination of independent Arcsine RVs
-%  t = linspace(-1,1,501);
-%  coef = [1 2 3 4 5];
-%  cf = cf_ArcsineSymmetric(t,coef);
-%  figure; plot(t,cf),grid
-%  title('CF of a linear combination of independent Arcsine RVs')
+% % CF of a linear combination of independent Arcsine RVs
+%   t = linspace(-1,1,501);
+%   coef = [1 2 3 4 5];
+%   cf = cf_ArcsineSymmetric(t,coef);
+%   figure; plot(t,cf),grid
+%   title('CF of a linear combination of independent Arcsine RVs')
 %
 % EXAMPLE 3:
-%  % PDF/CDF of a linear combination of independent Arcsine RVs
-%  coef = [1 2 3 4 5];
-%  cf   = @(t) cf_ArcsineSymmetric(t,coef);
-%  x    = linspace(-20,20,201);
-%  prob = [0.9 0.95 0.99];
-%  clear options
-%  options.N = 2^12;
-%  result = cf2DistGP(cf,x,prob,options)
+% % PDF/CDF of a linear combination of independent Arcsine RVs
+%   coef = [1 2 3 4 5];
+%   cf   = @(t) cf_ArcsineSymmetric(t,coef);
+%   x    = linspace(-20,20,201);
+%   prob = [0.9 0.95 0.99];
+%   clear options
+%   options.N = 2^12;
+%   result = cf2DistGP(cf,x,prob,options)
 %
 % REFERENCES:
-%  WITKOVSKY V. (2016). Numerical inversion of a characteristic
-%  function: An alternative tool to form the probability distribution of
-%  output quantity in linear measurement models. Acta IMEKO, 5(3), 32-44.  
+%   WITKOVSKY V. (2016). Numerical inversion of a characteristic
+%   function: An alternative tool to form the probability distribution of
+%   output quantity in linear measurement models. Acta IMEKO, 5(3), 32-44.  
 
 % (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 02-Jun-2017 12:08:24
@@ -87,6 +87,5 @@ if ~isempty(niid)
         error('niid should be a scalar (positive integer) value');
     end
 end
-
 
 end
