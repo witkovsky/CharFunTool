@@ -1,22 +1,36 @@
 function cf = cfX_Exponential(t,lambda)
-%cfX_Exponential(t,lambda) evaluates the characteristic function cf(t) of
-% the Exponential distribution with the parameter lambda (rate, lambda > 0),
-% i.e.   
-%   cf(t) = cfX_Exponential(t,lambda) = lambda / (lambda - 1i*t)
-% For more details see also WIKIPEDIA: 
-% https://en.wikipedia.org/wiki/Exponential_distribution
+%% cfX_Exponential
+%  Characteristic function of the EXPONENTIAL distribution with the rate
+%  parameter lambda > 0.
 %
-% SYNTAX
+%  cfX_Exponential is an ALIAS NAME of the more general function
+%  cf_Exponential, used to evaluate the characteristic function of a lienar
+%  combination of independent EXPONENTIAL distributed random variables.
+%
+%  The characteristic function of the EXPONENTIAL distribution is
+%   cf(t) = lambda / (lambda - 1i*t)
+%
+% SYNTAX:
 %  cf = cfX_Exponential(t,lambda)
 %
-% EXAMPLE1 (CF of the Exponential distribution with lambda = 5)
+% INPUTS:
+%  t      - vector or array of real values, where the CF is evaluated.
+%  lambda - vector of the 'rate' parameters lambda > 0. If empty, default
+%           value is lambda = 1.   
+% 
+% WIKIPEDIA: 
+%  https://en.wikipedia.org/wiki/Exponential_distribution.
+%
+% EXAMPLE 1:
+%  % CF of the Exponential distribution with lambda = 5
 %  lambda = 5;  
 %  t = linspace(-50,50,501);
 %  cf = cfX_Exponential(t,lambda);
 %  figure; plot(t,real(cf),t,imag(cf)),grid
 %  title('CF of the Exponential distribution with lambda = 5')
 %
-% EXAMPLE2 (PDF/CDF of the Exponential distribution with lambda = 5)
+% EXAMPLE 2:
+%  % PDF/CDF of the Exponential distribution with lambda = 5
 %  lambda = 5;  
 %  cf = @(t) cfX_Exponential(t,lambda);
 %  x  = linspace(0,1.5,101);
@@ -25,7 +39,8 @@ function cf = cfX_Exponential(t,lambda)
 %  options.SixSigmaRule = 8;
 %  result = cf2DistGP(cf,x,[],options)
 %
-% EXAMPLE3 (PDF/CDF of the compound Binomial-Exponential distribution)
+% EXAMPLE 3:
+% % PDF/CDF of the compound Binomial-Exponential distribution
 %  n = 25;  
 %  p = 0.3;
 %  lambda = 5;
@@ -36,44 +51,15 @@ function cf = cfX_Exponential(t,lambda)
 %  clear options
 %  options.isCompound = true;
 %  result = cf2DistGP(cf,x,prob,options)
-%
-% REFERENCES:
-% [1] WITKOVSKY, V.: On the exact computation of the density and of
-%     the quantiles of linear combinations of t and F random
-%     variables. Journal of Statistical Planning and Inference 94
-%     (2001), 1–13.
-% [2] WITKOVSKY V. (2016). Numerical inversion of a characteristic
-%     function: An alternative tool to form the probability distribution of
-%     output quantity in linear measurement models. Acta IMEKO, 5(3), 32-44.  
-% [3] WITKOVSKY V., WIMMER G., DUBY T. (2016). Computing the aggregate loss
-%     distribution based on numerical inversion of the compound empirical
-%     characteristic function of frequency and severity. Working Paper.
-%     Insurance: Mathematics and Economics. 
-% [4] DUBY T., WIMMER G., WITKOVSKY V.(2016). MATLAB toolbox CRM for
-%     computing distributions of collective risk models.  Working Paper.
-%     Journal of Statistical Software.
 
-% (c) 2016 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 15-Nov-2016 13:36:26
+% (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 24-Jun-2017 10:07:43
 
 %% ALGORITHM
-%cf = cfX_Exponential(t,lambda);
-
-%% CHECK THE INPUT PARAMETERS
 narginchk(1, 2);
-if nargin < 2, lambda = []; end
+if nargin < 2, lambda  = []; end
+if isempty(lambda), lambda = 1; end
 
-%%
-if isempty(lambda)
-    lambda = 1;
-end
-
-%% Characteristic function of the Exponential distribution
-szt = size(t);
-t   = t(:);
-
-cf  = lambda ./ (lambda - 1i.*t);
-cf = reshape(cf,szt);
-cf(t==0) = 1;
+cf =  cf_Exponential(t,lambda);
 
 end

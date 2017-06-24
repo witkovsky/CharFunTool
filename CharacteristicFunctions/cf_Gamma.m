@@ -5,8 +5,8 @@ function cf = cf_Gamma(t,alpha,beta,coef,niid)
 %
 %  That is, cf_Gamma evaluates the characteristic function cf(t)  of  Y =
 %  sum_{i=1}^N coef_i * X_i, where X_i ~ Gamma(alpha_i,beta_i) are
-%  inedependent RVs, with with the shape parameters alpha_i > 0 and the
-%  rate parameters beta_i > 0, for i = 1,...,N. 
+%  inedependent RVs, with the shape parameters alpha_i > 0 and the rate
+%  parameters beta_i > 0, for i = 1,...,N.
 %
 %  The characteristic function of Y is defined by
 %   cf(t) = Prod( (1 - i*t*coef(i)/beta(i))^(-alpha(i)) )
@@ -56,7 +56,7 @@ function cf = cf_Gamma(t,alpha,beta,coef,niid)
 %   https://en.wikipedia.org/wiki/Gamma_distribution.
 %
 % EXAMPLE 1:
-% % CF of a linear combination of K=100 independent Gamma RVs)
+% % CF of a linear combination of independent Gamma RVs)
 %   coef = 1./(((1:50) - 0.5)*pi).^2;
 %   figure; plot(coef,'.-');grid on
 %   title('Coefficients of the linear combination of GAMMA RVs')
