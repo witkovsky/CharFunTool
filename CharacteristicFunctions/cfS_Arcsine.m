@@ -5,8 +5,7 @@ function cf = cfS_Arcsine(t)
 %
 %  cfS_Arcsine is an ALIAS NAME of the more general function
 %  cf_ArcsineSymmetric, used to evaluate the characteristic function of a
-%  linear combination of independent EXPONENTIAL distributed random
-%  variables.
+%  linear combination of independent ARCSINE distributed random variables.
 %
 %  The characteristic function of the symmetric ARCSINE distribution is
 %   cf(t) = besselj(0,t);
@@ -46,17 +45,6 @@ function cf = cfS_Arcsine(t)
 % Ver.: 02-Jun-2017 12:08:24
 
 %% ALGORITHM
-%cf = cfS_Arcsine(t);
-
-%% CHECK THE INPUT PARAMETERS
-narginchk(1, 1);
-
-%% Characteristic function
-szt = size(t);
-t   = t(:);
-
-cf = besselj(0,t);
-cf = reshape(cf,szt);
-cf(t==0) = 1;
+cf = cf_ArcsineSymmetric(t);
 
 end
