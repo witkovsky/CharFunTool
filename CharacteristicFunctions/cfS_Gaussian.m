@@ -1,48 +1,45 @@
 function cf = cfS_Gaussian(t)
-%cfS_Gaussian(t) evaluates the characteristic function cf(t) of
-% the symmetric zero-mean standard Gaussian distribution (i.e. the standard
-% normal distribution with zero mean and unit variance: N(0,1)), i.e.   
-%   cf(t) = cfS_Gaussian(t) = exp(-t^2/2)
-% For more details see also WIKIPEDIA: 
-% https://en.wikipedia.org/wiki/Normal_distribution
+%% cfS_Gaussian
+%  Characteristic function of a GAUSSIAN (standard normal) distribution.
+%
+%  cfS_Gaussian is a version resp. ALIAS of the more general function
+%  cf_Normal, used to evaluate the characteristic function of a linear
+%  combination of independent normally distributed random variables.
+%
+%  The characteristic function of the standard normally distributed random
+%  variable, X ~ N(0,1), is defined by 
+%   cf(t) = cfS_Gaussian(t) = exp(-t^2/2);
 %
 % SYNTAX
 %  cf = cfS_Gaussian(t)
 %
-% EXAMPLE1 (CF of the Gaussian distribution N(0,1))
-%  t = linspace(-5,5,501);
-%  cf = cfS_Gaussian(t);
-%  figure; plot(t,cf),grid
-%  title('CF of the Gaussian distribution N(0,1)')
+% INPUTS:
+%  t      - vector or array of real values, where the CF is evaluated.
+% 
+% WIKIPEDIA: 
+%  https://en.wikipedia.org/wiki/Normal_distribution.
 %
-% EXAMPLE2 (PDF/CDF of the Gaussian distribution N(0,1))
-%  cf = @(t) cfS_Gaussian(t);
-%  x = linspace(-4,4,101);
-%  clear options
-%  options.N = 2^5;
-%  options.SixSigmaRule = 8;
-%  result = cf2DistGP(cf,x,[],options)
+% EXAMPLE 1:
+% % CF of the Gaussian distribution N(0,1)
+%   t = linspace(-5,5,501);
+%   cf = cfS_Gaussian(t);
+%   figure; plot(t,cf),grid
+%   title('CF of the Gaussian distribution N(0,1)')
 %
-% REFERENCES:
-% [1] WITKOVSKY V. (2016). Numerical inversion of a characteristic
-%     function: An alternative tool to form the probability distribution of
-%     output quantity in linear measurement models. Acta IMEKO, 5(3), 32-44.  
+% EXAMPLE 2:
+% % PDF/CDF of the Gaussian distribution N(0,1)
+%   cf   = @(t) cfS_Gaussian(t);
+%   x    = linspace(-4,4,101);
+%   prob = [0.9 0.95 0.975 0.99];
+%   clear options
+%   options.N = 2^5;
+%   options.SixSigmaRule = 8;
+%   result = cf2DistGP(cf,x,prob,options)
 
-% (c) 2016 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 15-Nov-2016 13:36:26
+% (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 02-Jun-2017 12:08:24
 
 %% ALGORITHM
-%cf = cfS_Gaussian(t);
-
-%% CHECK THE INPUT PARAMETERS
-narginchk(1, 1);
-
-%% Characteristic function of the Exponential distribution
-szt = size(t);
-t   = t(:);
-
-cf  = exp(-t.^2/2);
-cf = reshape(cf,szt);
-cf(t==0) = 1;
+cf = cf_Normal(t);
 
 end
