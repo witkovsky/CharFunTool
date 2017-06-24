@@ -1,5 +1,5 @@
-function cf = cf_LogMeansRatioRV2(t,n,alpha,weight,coef,niid)
-%% cf_LogMeansRatioRV2 
+function cf = cf_LogRV_MeansRatioW(t,n,alpha,weight,coef,niid)
+%% cf_LogRV_MeansRatioW 
 %  Characteristic function of a linear combination (resp. convolution) of
 %  independent LOG-TRANSFORMED WEIGHTED MEANS-RATIO random variables (RVs)
 %  W_i = log(R_i), for i = 1,...,N, where each R_i = G_i/A_i is a ratio of
@@ -8,7 +8,7 @@ function cf = cf_LogMeansRatioRV2(t,n,alpha,weight,coef,niid)
 %  with the shape parameters alpha_{i,j} and the (common) rate parameter
 %  beta_i for i = 1,...,N and j = 1,...,n_i. 
 %  
-%  That is, cf_LogMeansRatioRV2 evaluates the characteristic function of a
+%  That is, cf_LogRV_MeansRatioW evaluates the characteristic function of a
 %  random variable Y = coef_1*W_1 +...+ coef_N*W_N, such that cf_Y(t) =
 %  cf_W_1(coef_1*t) *...* cf_W_N(coef_N*t), where cf_W_i(t) is CF of W_i
 %  = log(R_i), where R_i is the ratio statistic of the weighted geometric
@@ -38,7 +38,7 @@ function cf = cf_LogMeansRatioRV2(t,n,alpha,weight,coef,niid)
 %  for each i = 1,...,N.
 %
 % SYNTAX
-%  cf = cf_LogMeansRatioRV2(t,n,alpha,weights,coef,niid)
+%  cf = cf_LogRV_MeansRatioW(t,n,alpha,weights,coef,niid)
 %
 % INPUTS
 %  t       - vector or array of real values, where the CF is evaluated.
@@ -58,12 +58,15 @@ function cf = cf_LogMeansRatioRV2(t,n,alpha,weight,coef,niid)
 %            coef_i * log(X_i) is independently and identically distributed
 %            random variable. If empty, default value is niid = 1.
 %
+%  WIKIPEDIA
+%   https://en.wikipedia.org/wiki/Bartlett%27s_test
+%
 % EXAMPLE 1:
 % % CF of log MeansRatio RV with and n = 5 and alpha = 7/2
 %   n     = 5;
 %   alpha = 7/2;
 %   t     = linspace(-100,100,201);
-%   cf    = cf_LogMeansRatioRV2(t,n,alpha);
+%   cf    = cf_LogRV_MeansRatioW(t,n,alpha);
 %   figure; plot(t,real(cf),t,imag(cf)); grid on;
 %   title('CF of log MeansRatio RV with and n = 5 and alpha = 7/2')
 %
@@ -77,7 +80,7 @@ function cf = cf_LogMeansRatioRV2(t,n,alpha,weight,coef,niid)
 %   weight   = [];
 %   coef     = -1/3;
 %   t        = linspace(-100,100,201);
-%   cf       = cf_LogMeansRatioRV2(t,n,alpha,weight,coef);
+%   cf       = cf_LogRV_MeansRatioW(t,n,alpha,weight,coef);
 %   figure; plot(t,real(cf),t,imag(cf)); grid on;
 %   title('CF of a weighted linear combination of minus log MeansRatio RVs')
 %
@@ -87,7 +90,7 @@ function cf = cf_LogMeansRatioRV2(t,n,alpha,weight,coef,niid)
 %   n     = 5;
 %   alpha = 7/2;
 %   coef  = -1;
-%   cf    = @(t) cf_LogMeansRatioRV2(t,n,alpha,[],coef);
+%   cf    = @(t) cf_LogRV_MeansRatioW(t,n,alpha,[],coef);
 %   x = linspace(0,0.6)';
 %   prob = [0.9 0.95 0.99];
 %   options.xMin = 0;
@@ -101,7 +104,7 @@ function cf = cf_LogMeansRatioRV2(t,n,alpha,weight,coef,niid)
 %   alpha{1}  = [3 5 7 10 3]/2;
 %   weight{1} = alpha{1}/sum(alpha{1});
 %   coef      = -1;
-%   cf        = @(t) cf_LogMeansRatioRV2(t,n,alpha,weight,coef);
+%   cf        = @(t) cf_LogRV_MeansRatioW(t,n,alpha,weight,coef);
 %   x = linspace(-0.15,1.15,200)';
 %   prob = [0.9 0.95 0.99];
 %   options.N = 2^12;
@@ -120,7 +123,7 @@ function cf = cf_LogMeansRatioRV2(t,n,alpha,weight,coef,niid)
 %   C_B       = 1 + 1/(3*(k-1))*(sum(1./df) - 1/DF);
 %   shift     = C/C_B;
 %   coef      = -DF/C_B;
-%   cf_R      = @(t) cf_LogMeansRatioRV2(t,k,alpha,weight,coef);
+%   cf_R      = @(t) cf_LogRV_MeansRatioW(t,k,alpha,weight,coef);
 %   cf        = @(t) exp(1i*t*shift) .* cf_R(t)
 %   prob = [0.9 0.95 0.99];
 %   options.xMin = 0;
@@ -135,9 +138,6 @@ function cf = cf_LogMeansRatioRV2(t,n,alpha,weight,coef,niid)
 %   disp(prob)
 %   disp(result.qf)
 %   disp(chi2inv(prob,k-1))
-%
-%  WIKIPEDIA
-%  https://en.wikipedia.org/wiki/Bartlett%27s_test
 %
 %  REFERENCES
 %  Glaser, R. E. (1976a). The ratio of the geometric mean to the arithmetic
@@ -157,7 +157,7 @@ function cf = cf_LogMeansRatioRV2(t,n,alpha,weight,coef,niid)
 % Ver.: 17-Jun-2017 17:18:39
 
 %% ALGORITHM
-% cf = cf_LogMeansRatioRV2(t,k,alpha,weight,coef,niid)
+% cf = cf_LogRV_MeansRatioW(t,k,alpha,weight,coef,niid)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(2, 6);
