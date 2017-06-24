@@ -1,5 +1,5 @@
 function cf = cf_Gamma(t,alpha,beta,coef,niid)
-%%cf_Gamma 
+%% cf_Gamma 
 %  Characteristic function of a linear combination (resp. convolution) of
 %  independent GAMMA random variables.
 %
