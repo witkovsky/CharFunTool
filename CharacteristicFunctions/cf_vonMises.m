@@ -43,17 +43,17 @@ function cf = cf_vonMises(t,mu,kappa,coef,niid)
 %
 % EXAMPLE 1:
 % % CF of the weighted linear combinantion of the von Mises RVs
-%   mu    = [0 0 -1 1 0];
+%   mu    = [0 0 -pi/2 pi/2 0];
 %   kappa = [1 2 3 4 5];
 %   coef  = [1 2 3 4 5]/15;
 %   t     = linspace(-20,20,201);
 %   cf    = cf_vonMises(t,mu,kappa,coef);
-%   figure; plot(t,cf),grid
+%   figure; plot(t,real(cf),t,imag(cf)),grid
 %   title('CF of the weighted linear combinantion of the von Mises RVs')
 %
 % EXAMPLE 2:
 % % CDR/PDF of the weighted linear combinantion of the von Mises RVs
-%   mu    = [0 0 -1 1 0];
+%   mu    = [0 0 -pi/2 pi/2 0];
 %   kappa = [1 2 3 4 5];
 %   coef  = [1 2 3 4 5]/15;
 %   t     = linspace(-20,20,201);
@@ -132,11 +132,11 @@ szt = size(t);
 t   = t(:);
 
 if length(coef)==1
-    cf  = real((besseli(abs(t*coef),kappa,1) ...
-        ./ besseli(0,kappa,1)) .* exp(1i*t*mu*coef));
+    cf  = (besseli(abs(t*coef),kappa,1) ...
+        ./ besseli(0,kappa,1)) .* exp(1i*t*mu*coef);
 else
-    cf  = real(prod((besseli(abs(t*coef),ones(size(t))*kappa,1) ...
-        ./ besseli(0,ones(size(t))*kappa,1)) .* exp(1i*t*(mu.*coef)),2));
+    cf  = prod((besseli(abs(t*coef),ones(size(t))*kappa,1) ...
+        ./ besseli(0,ones(size(t))*kappa,1)) .* exp(1i*t*(mu.*coef)),2);
 end
 
 cf  = reshape(cf,szt);

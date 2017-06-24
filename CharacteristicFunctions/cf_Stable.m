@@ -9,7 +9,6 @@ function cf = cf_Stable(t,alpha,mu,sigma,coef,niid)
 %  symmetric stable Paretian) distributions, with the stability parameters
 %  0 < alpha <= 2, the location parameters mu in Real, and the scale
 %  parameters sigma > 0, for all i = 1,...,N.
-% 
 %
 %  Characteristic function of the Stable(alpha,mu,sigma) distribution is 
 %   cf(t) = cf_Stable(t,alpha,mu,sigma) = exp( 1i*mu*t - |sigma*t|^alpha).
@@ -38,21 +37,37 @@ function cf = cf_Stable(t,alpha,mu,sigma,coef,niid)
 %  https://en.wikipedia.org/wiki/Stable_distribution.
 %
 % EXAMPLE 1:
-% % CF of the symmetric Alpha Stable distribution with alpha=1.75
-%  alpha = 1.75;
-%  t     = linspace(-10,10,201);
-%  cf    = cf_Stable(t,alpha);
-%  figure; plot(t,cf),grid
-%  title('CF of the alpha-Stable distribution with alpha=1.75')
+% % CF of the symmetric alpha-Stable distribution with alpha=1.75
+%   alpha = 1.75;
+%   t     = linspace(-10,10,201);
+%   cf    = cf_Stable(t,alpha);
+%   figure; plot(t,cf),grid
+%   title('CF of the alpha-Stable distribution with alpha=1.75')
 %
-% EXAMPLE2 (PDF/CDF the symmetric Alpha Stable distribution with alpha=1)
-%  alpha = 1;
-%  x = linspace(-5,5,501);
-%  cf = @(t) cf_Stable(t,alpha);
-%  clear options
-%  options.N = 2^12;
-%  options.SixSigmaRule = 3;
-%  result = cf2DistGP(cf,x,[],options)
+% EXAMPLE 2:
+% % CF of the linear combinantion of independent alpha-Stable RVs
+%   alpha = [1 1.25 1.5 1.75 2];
+%   mu    = 0;
+%   sigma = [1 1 1 1 6]/10;
+%   coef  = 1/5;
+%   t     = linspace(-20,20,201);
+%   cf    = cf_Stable(t,alpha,mu,sigma,coef);
+%   figure; plot(t,real(cf),t,imag(cf)),grid
+%   title('CF of the linear combinantion of independent alpha-Stable RVs')
+%
+% EXAMPLE 3:
+% % PDF/CDF of the linear combinantion of independent alpha-Stable RVs
+%   alpha = [1 1.25 1.5 1.75 2];
+%   mu    = 0;
+%   sigma = [1 1 1 1 6]/10;
+%   coef  = 1/5;
+%   cf    = @(t) cf_Stable(t,alpha,mu,sigma,coef);
+%   x     = linspace(-2,2,201);
+%   prob  = [0.9 0.95 0.99]; 
+%   clear options
+%   options.N = 2^12;
+%   options.SixSigmaRule = 3;
+%   result = cf2DistGP(cf,x,prob,options)
 
 % (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 24-Jun-2017 18:25:56
@@ -71,7 +86,7 @@ if nargin < 2, alpha = []; end
 %%
 if isempty(alpha), alpha = 2; end
 if isempty(mu),       mu = 0; end
-if isempty(sigma), sigma = 0; end
+if isempty(sigma), sigma = 1; end
 if isempty(coef),   coef = 1; end
 if isempty(niid),   niid = 1; end
 
@@ -81,11 +96,19 @@ if errorcode > 0
     error(message('InputSizeMismatch'));
 end
 
-%% Characteristic function of the Exponential distribution
+%% Characteristic function
 szt = size(t);
 t   = t(:);
-cf  = prod(exp(1i*t*(mu.*coef) - ...
-      abs(t*(sigma.*coef)).^(ones(size(t))*(alpha.*coef))),2);
+
+%cf(t) = exp( 1i*mu*t - |sigma*t|^alpha).
+
+if length(coef)==1
+    cf  = exp(1i*t*mu*coef - abs(t*sigma*coef).^alpha);
+else
+    cf  = prod(exp(1i*t*(mu.*coef) - ...
+        abs(t*(sigma.*coef)).^(ones(size(t))*(alpha))),2);
+end
+
 cf  = reshape(cf,szt);
 cf(t==0) = 1;
 
