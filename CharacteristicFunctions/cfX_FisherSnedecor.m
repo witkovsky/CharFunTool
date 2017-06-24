@@ -5,7 +5,7 @@ function cf = cfX_FisherSnedecor(t,df1,df2)
 %
 %  cfX_FisherSnedecor is an ALIAS NAME of the more general function
 %  cf_FisherSnedecor, used to evaluate the characteristic function of a
-%  lienar combination of independent FISHER-SNEDECOR F-distributed random
+%  linear combination of independent FISHER-SNEDECOR F-distributed random
 %  variables. 
 % 
 %  The characteristic function of X ~ F(df1,df2) is defined by

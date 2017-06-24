@@ -98,6 +98,11 @@ elseif isempty(coef) && ~isempty(df1)
     coef = 1;
 end
 
+if isempty(niid)
+    niid = 1;
+end
+
+
 %% Check size of the parameters
 [errorcode,coef,df1,df2] = distchck(3,coef(:)',df1(:)',df2(:)');
 if errorcode > 0

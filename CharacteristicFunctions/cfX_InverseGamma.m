@@ -5,7 +5,7 @@ function cf = cfX_InverseGamma(t,alpha,beta)
 %
 %  cfX_InverseGamma is an ALIAS NAME of the more general function
 %  cf_InverseGamma, used to evaluate the characteristic function of a
-%  lienar combination of independent INVERSE GAMMA distributed random
+%  linear combination of independent INVERSE GAMMA distributed random
 %  variables.
 %
 %  The characteristic function of the GAMMA distribution is defined by

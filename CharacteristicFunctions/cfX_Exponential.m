@@ -4,7 +4,7 @@ function cf = cfX_Exponential(t,lambda)
 %  parameter lambda > 0.
 %
 %  cfX_Exponential is an ALIAS NAME of the more general function
-%  cf_Exponential, used to evaluate the characteristic function of a lienar
+%  cf_Exponential, used to evaluate the characteristic function of a linear
 %  combination of independent EXPONENTIAL distributed random variables.
 %
 %  The characteristic function of the EXPONENTIAL distribution is

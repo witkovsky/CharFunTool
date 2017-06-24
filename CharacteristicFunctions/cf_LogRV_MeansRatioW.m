@@ -210,6 +210,8 @@ for i = 1:N
     end
 end
 
+if isempty(niid), niid = 1; end
+
 %% Characteristic function of a linear combination 
 szt = size(t);
 t   = t(:);

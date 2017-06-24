@@ -5,7 +5,7 @@ function cf = cf_Beta(t,alpha,beta,coef,niid)
 %
 %  That is, cf_Beta evaluates the characteristic function cf(t)  of  Y =
 %  sum_{i=1}^N coef_i * X_i, where X_i ~ Beta(alpha_i,beta_i) are
-%  inedependent RVs, with the shape parameters alpha_i > 0 and beta_i >0,
+%  independent RVs, with the shape parameters alpha_i > 0 and beta_i >0,
 %  and with the mean = alpha_i / (alpha_i + beta)_i and the variance =
 %  (alpha_i*beta_i) / ((alpha_i+beta_i)^2*(alpha_i+beta_i+1)), for i =
 %  1,...,N.  
@@ -34,6 +34,9 @@ function cf = cf_Beta(t,alpha,beta,coef,niid)
 %          sum of niid iid random variables Y, where each Y = sum_{i=1}^N
 %          coef(i) * log(X_i) is independently and identically distributed
 %          random variable. If empty, default value is niid = 1.   
+%
+% WIKIPEDIA: 
+%   https://en.wikipedia.org/wiki/Beta_distribution
 %
 % EXAMPLE 1:
 % % CF of a Beta RV
@@ -81,9 +84,6 @@ function cf = cf_Beta(t,alpha,beta,coef,niid)
 %   x = linspace(0,1,201);
 %   prob = [0.9 0.95 0.99];
 %   result = cf2DistGP(cf,x,prob,options)
-%
-% WIKIPEDIA: 
-% https://en.wikipedia.org/wiki/Beta_distribution
 
 % (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 14-May-2017 12:08:24
