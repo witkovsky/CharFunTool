@@ -16,7 +16,7 @@ function cf = cfS_Beta(t,theta)
 %
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
-%  theta - vector of the 'shape' parameters theta > 0. If empty, default
+%  theta - the 'shape' parameter theta > 0. If empty, default
 %          value is theta = 1. 
 %
 % WIKIPEDIA: 

@@ -1,4 +1,4 @@
-function cf = cf_Student(t,df,coef,n)
+function cf = cf_Student(t,df,coef,niid)
 %% cf_Student 
 %  Characteristic function of a linear combination (resp. convolution) of
 %  independent STUDENT's t random variables. 
@@ -16,7 +16,7 @@ function cf = cf_Student(t,df,coef,n)
 %  is the characteristic function of X_i ~ t(df_i). 
 %
 % SYNTAX:
-%  cf = cf_Student(t,df,coef,n)
+%  cf = cf_Student(t,df,coef,niid)
 % 
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -27,10 +27,10 @@ function cf = cf_Student(t,df,coef,n)
 %          log-transformed random variables. If coef is scalar, it is
 %          assumed that all coefficients are equal. If empty, default value
 %          is coef = 1.
-%  n     - scalar convolution coeficient n, such that Z = Y + ... + Y is
-%          sum of n iid random variables Y, where each Y = sum_{i=1}^N
+%  niid  - scalar convolution coeficient n, such that Z = Y + ... + Y is
+%          sum of niid random variables Y, where each Y = sum_{i=1}^N
 %          coef_i * X_i is independently and identically distributed random
-%          variable. If empty, default value is n = 1. 
+%          variable. If empty, default value is niid = 1. 
 %
 % WIKIPEDIA: 
 %   https://en.wikipedia.org/wiki/Student%27s_t-distribution.
@@ -69,7 +69,7 @@ function cf = cf_Student(t,df,coef,n)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 4);
-if nargin < 4, n = []; end
+if nargin < 4, niid = []; end
 if nargin < 3, coef = []; end
 if nargin < 2, df = []; end
 
@@ -115,11 +115,11 @@ end
 cf = reshape(cf,szt);
 cf(t==0) = 1;
 
-if ~isempty(n)
-    if isscalar(n)
-        cf = cf .^ n;
+if ~isempty(niid)
+    if isscalar(niid)
+        cf = cf .^ niid;
     else
-        error('n should be a scalar (positive integer) value');
+        error('niid should be a scalar (positive integer) value');
     end
 end
 
