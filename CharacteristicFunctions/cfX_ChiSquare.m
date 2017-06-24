@@ -1,4 +1,4 @@
-function cf = cfX_ChiSquare(t,df,ncp)
+function cf = cfX_ChiSquare(t,df,ncp,coef,niid)
 %% cfX_ChiSquare
 %  Characteristic function of the CHI-SQUARE distribution with df > 0
 %  degrees of freedom and the non-cetrality parameter ncp > 0.
@@ -12,6 +12,7 @@ function cf = cfX_ChiSquare(t,df,ncp)
 %
 % SYNTAX
 %  cf = cfX_ChiSquare(t,df,ncp)
+%  cf = cfX_ChiSquare(t,df,ncp,coef,niid)
 %
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -59,12 +60,12 @@ function cf = cfX_ChiSquare(t,df,ncp)
 % Ver.: 24-Jun-2017 10:07:43
 
 %% ALGORITHM
-narginchk(1, 3);
+narginchk(1, 5);
+if nargin < 5, niid = []; end
+if nargin < 4, coef = []; end
 if nargin < 3, ncp  = []; end
 if nargin < 2, df   = []; end
-if isempty(df),   df = 1; end
-if isempty(ncp), ncp = 0; end
 
-cf = cf_ChiSquare(t,df,ncp);
+cf = cf_ChiSquare(t,df,ncp,coef,niid);
 
 end

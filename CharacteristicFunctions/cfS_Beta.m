@@ -1,4 +1,4 @@
-function cf = cfS_Beta(t,theta)
+function cf = cfS_Beta(t,theta,coef,niid)
 %% cfS_Beta
 %  Characteristic function of the zero-mean symmetric BETA distribution
 %  defined on the interval (-1,1). 
@@ -13,6 +13,7 @@ function cf = cfS_Beta(t,theta)
 %
 % SYNTAX:
 %  cf = cfS_Beta(t,theta);
+%  cf = cfS_Beta(t,theta,coef,niid);
 %
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -50,10 +51,11 @@ function cf = cfS_Beta(t,theta)
 % Ver.: 02-Jun-2017 12:08:24
 
 %% ALGORITHM
-narginchk(1, 2);
-if nargin < 2, theta  = []; end
-if isempty(theta), theta = 1; end
+narginchk(1, 4);
+if nargin < 4, niid  = []; end
+if nargin < 3, coef  = []; end
+if nargin < 2, theta = []; end
 
-cf = cf_BetaSymmetric(t,theta);
+cf = cf_BetaSymmetric(t,theta,coef,niid);
 
 end

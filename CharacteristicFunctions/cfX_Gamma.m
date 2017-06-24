@@ -1,4 +1,4 @@
-function cf = cfX_Gamma(t,alpha,beta)
+function cf = cfX_Gamma(t,alpha,beta,coef,niid)
 %% cfX_Gamma 
 %  Characteristic function of the GAMMA distribution with the shape
 %  parameter alpha > 0 and the rate parameter beta > 0.
@@ -12,6 +12,7 @@ function cf = cfX_Gamma(t,alpha,beta)
 %
 % SYNTAX:
 %  cf = cfX_Gamma(t,alpha,beta)
+%  cf = cfX_Gamma(t,alpha,beta,coef,niid)
 %
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -62,12 +63,12 @@ function cf = cfX_Gamma(t,alpha,beta)
 % Ver.: 24-Jun-2017 10:07:43
 
 %% ALGORITHM
-narginchk(1, 3);
-if nargin < 3, alpha = []; end
-if nargin < 2, beta  = []; end
-if isempty(alpha), alpha = 1; end
-if isempty(beta),   beta = 1; end
+narginchk(1, 5);
+if nargin < 5, niid = []; end
+if nargin < 4, coef = []; end
+if nargin < 3, beta = []; end
+if nargin < 2, alpha = []; end
 
-cf = cf_Gamma(t,alpha,beta);
+cf = cf_Gamma(t,alpha,beta,coef,niid);
 
 end

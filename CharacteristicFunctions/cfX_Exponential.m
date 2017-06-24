@@ -1,4 +1,4 @@
-function cf = cfX_Exponential(t,lambda)
+function cf = cfX_Exponential(t,lambda,coef,niid)
 %% cfX_Exponential
 %  Characteristic function of the EXPONENTIAL distribution with the rate
 %  parameter lambda > 0.
@@ -12,6 +12,7 @@ function cf = cfX_Exponential(t,lambda)
 %
 % SYNTAX:
 %  cf = cfX_Exponential(t,lambda)
+%  cf = cfX_Exponential(t,lambda,coef,niid)
 %
 % INPUTS:
 %  t      - vector or array of real values, where the CF is evaluated.
@@ -56,10 +57,11 @@ function cf = cfX_Exponential(t,lambda)
 % Ver.: 24-Jun-2017 10:07:43
 
 %% ALGORITHM
-narginchk(1, 2);
-if nargin < 2, lambda  = []; end
-if isempty(lambda), lambda = 1; end
+narginchk(1, 4);
+if nargin < 4, niid = []; end
+if nargin < 3, coef = []; end
+if nargin < 2, lambda = []; end
 
-cf =  cf_Exponential(t,lambda);
+cf = cf_Exponential(t,lambda,coef,niid);
 
 end

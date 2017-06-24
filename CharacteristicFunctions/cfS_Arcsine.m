@@ -1,4 +1,4 @@
-function cf = cfS_Arcsine(t)
+function cf = cfS_Arcsine(t,coef,niid)
 %% cfS_Arcsine
 %  Characteristic function of the zero-mean symmetric ARCSINE distribution
 %  defined on the interval (-1,1). 
@@ -12,6 +12,7 @@ function cf = cfS_Arcsine(t)
 %
 % SYNTAX:
 %  cf = cfS_Arcsine(t);
+%  cf = cfS_Arcsine(t,coef,niid);
 %
 % INPUTS:
 %  t      - vector or array of real values, where the CF is evaluated.
@@ -45,6 +46,10 @@ function cf = cfS_Arcsine(t)
 % Ver.: 02-Jun-2017 12:08:24
 
 %% ALGORITHM
-cf = cf_ArcsineSymmetric(t);
+narginchk(1, 3);
+if nargin < 3, niid = []; end
+if nargin < 2, coef = []; end
+
+cf = cf_ArcsineSymmetric(t,coef,niid);
 
 end

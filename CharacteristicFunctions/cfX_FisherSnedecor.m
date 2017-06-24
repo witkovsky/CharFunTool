@@ -1,4 +1,4 @@
-function cf = cfX_FisherSnedecor(t,df1,df2) 
+function cf = cfX_FisherSnedecor(t,df1,df2,coef,niid)
 %% cfX_FisherSnedecor 
 %  Characteristic function of the central FISHER-SNEDECOR F-distribution
 %  with df1 > 0 and df2 > 0 degrees of freedom.
@@ -15,6 +15,7 @@ function cf = cfX_FisherSnedecor(t,df1,df2)
 %
 % SYNTAX
 %  cf = cfX_FisherSnedecor(t,df1,df2)
+%  cf = cfX_FisherSnedecor(t,df1,df2,coef,niid);
 %
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -74,12 +75,12 @@ function cf = cfX_FisherSnedecor(t,df1,df2)
 % Ver.: 24-Jun-2017 10:07:43
 
 %% ALGORITHM
-narginchk(1, 3);
-if nargin < 3, df2  = []; end
-if nargin < 2, df1  = []; end
-if isempty(df1), df1 = 1; end
-if isempty(df2), df2 = 1; end
+narginchk(1, 5);
+if nargin < 5, niid = []; end
+if nargin < 4, coef = []; end
+if nargin < 3, df2 = []; end
+if nargin < 2, df1 = []; end
 
-cf = cf_FisherSnedecor(t,df1,df2);
+cf = cf_LogRV_FisherSnedecor(t,df1,df2,coef,niid);
 
 end

@@ -1,4 +1,4 @@
-function cf = cfS_Trapezoidal(t,lambda)
+function cf = cfS_Trapezoidal(t,lambda,coef,niid)
 %% cfS_Trapezoidal
 %  Characteristic function of the zero-mean symmetric TRAPEZOIDAL
 %  distribution defined on the interval (-1,1). 
@@ -15,6 +15,7 @@ function cf = cfS_Trapezoidal(t,lambda)
 %
 % SYNTAX:
 %  cf = cfS_Trapezoidal(t,lambda);
+%  cf = cfS_Trapezoidal(t,lambda,coef,niid);
 %
 % INPUTS:
 %  t      - vector or array of real values, where the CF is evaluated.
@@ -49,10 +50,11 @@ function cf = cfS_Trapezoidal(t,lambda)
 % Ver.: 02-Jun-2017 12:08:24
 
 %% ALGORITHM
-narginchk(1, 2);
-if nargin < 2, lambda  = []; end
-if isempty(lambda), lambda = 1; end
+narginchk(1, 4);
+if nargin < 4, niid  = []; end
+if nargin < 3, coef  = []; end
+if nargin < 2, lambda = []; end
 
-cf = cf_TrapezoidalSymmetric(t,lambda);
+cf = cf_TrapezoidalSymmetric(t,lambda,coef,niid);
 
 end

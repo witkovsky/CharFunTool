@@ -1,4 +1,4 @@
-function cf = cfX_InverseGamma(t,alpha,beta)
+function cf = cfX_InverseGamma(t,alpha,beta,coef,niid)
 %% cfX_InverseGamma
 %  Characteristic function of the INVERSE GAMMA distribution with the shape
 %  parameter alpha > 0 and the rate parameter beta > 0.
@@ -14,6 +14,7 @@ function cf = cfX_InverseGamma(t,alpha,beta)
 %
 % SYNTAX:
 %  cf = cfX_InverseGamma(t,alpha,beta)
+%  cf = cfX_InverseGamma(t,alpha,beta,coef,niid)
 %
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -69,12 +70,12 @@ function cf = cfX_InverseGamma(t,alpha,beta)
 % Ver.: 15-Nov-2016 13:36:26
 
 %% ALGORITHM
-narginchk(1, 3);
-if nargin < 3, alpha = []; end
-if nargin < 2, beta  = []; end
-if isempty(alpha), alpha = 1; end
-if isempty(beta),   beta = 1; end
+narginchk(1, 5);
+if nargin < 5, niid = []; end
+if nargin < 4, coef = []; end
+if nargin < 3, beta = []; end
+if nargin < 2, alpha = []; end
 
-cf = cf_InverseGamma(t,alpha,beta);
+cf = cf_LogRV_InverseGamma(t,alpha,beta,coef,niid);
 
 end

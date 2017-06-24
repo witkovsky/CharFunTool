@@ -1,4 +1,4 @@
-function cf = cfS_Rectangular(t)
+function cf = cfS_Rectangular(t,coef,niid)
 %% cfS_Rectangular
 %  Characteristic function of the zero-mean symmetric RECTANGULAR
 %  distribution defined on the interval (-1,1). 
@@ -13,6 +13,7 @@ function cf = cfS_Rectangular(t)
 %
 % SYNTAX:
 %  cf = cfS_Rectangular(t);
+%  cf = cfS_Rectangular(t,coef,niid);
 %
 % INPUTS:
 %  t      - vector or array of real values, where the CF is evaluated.
@@ -46,6 +47,10 @@ function cf = cfS_Rectangular(t)
 % Ver.: 02-Jun-2017 12:08:24
 
 %% ALGORITHM
-cf = cf_RectangularSymmetric(t);
+narginchk(1, 3);
+if nargin < 3, niid = []; end
+if nargin < 2, coef = []; end
+
+cf = cf_RectangularSymmetric(t,coef,niid);
 
 end
