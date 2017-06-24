@@ -1,5 +1,5 @@
-function cf = cf_LogBetaRV(t,alpha,beta,coef,niid)
-%% cf_LogBetaRV 
+function cf = cf_LogRV_Beta(t,alpha,beta,coef,niid)
+%% cf_LogRV_Beta 
 %  Characteristic function of a linear combination (resp.
 %  convolution) of independent LOG-TRANSFORMED BETA random variables (RVs)
 %  log(X), where X ~ BETA(alpha,beta), and alpha > 0 and beta > 0
@@ -23,7 +23,7 @@ function cf = cf_LogBetaRV(t,alpha,beta,coef,niid)
 %  is evaluated with the parameters alpha(i) and beta(i).
 %
 % SYNTAX
-%  cf = cf_LogBetaRV(t,alpha,beta,coef,niid)
+%  cf = cf_LogRV_Beta(t,alpha,beta,coef,niid)
 %
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -40,6 +40,9 @@ function cf = cf_LogBetaRV(t,alpha,beta,coef,niid)
 %          coef(i) * log(X_i) is independently and identically distributed
 %          random variable. If empty, default value is niid = 1.  
 %
+%  WIKIPEDIA: 
+%  https://en.wikipedia.org/wiki/Beta_distribution
+%
 % EXAMPLE 1:
 % % CF of a linear combination of K=50 independent log-Beta RVs
 %   coef = 1./(((1:50) - 0.5)*pi).^2;
@@ -48,7 +51,7 @@ function cf = cf_LogBetaRV(t,alpha,beta,coef,niid)
 %   alpha = 5/2;
 %   beta  = 3/2;
 %   t     = linspace(-100,100,201);
-%   cf    = cf_LogBetaRV(t,alpha,beta,coef);
+%   cf    = cf_LogRV_Beta(t,alpha,beta,coef);
 %   figure; plot(t,real(cf),t,imag(cf)); grid on;
 %   title('Characteristic function of a linear combination of log-Beta RVs')
 %
@@ -57,13 +60,13 @@ function cf = cf_LogBetaRV(t,alpha,beta,coef,niid)
 %   alpha = 5/2;
 %   beta  = 3/2;
 %   coef  = 1./(((1:50) - 0.5)*pi).^2;
-%   cf    = @(t) cf_LogBetaRV(t,alpha,beta,coef);
+%   cf    = @(t) cf_LogRV_Beta(t,alpha,beta,coef);
 %   clear options
 %   options.xMax = 0;
 %   result = cf2DistGP(cf,[],[],options);
 %
 % EXAMPLE 3: 
-% % Distribution of log(R), where R = geometric/arithmetic mean of Gamma RVs
+% % Distribution of log(R), where R=geometric/arithmetic mean of Gamma RVs
 % % Let X_1,...,X_n are iid RVs, X_j ~ Gamma(A,B), where A > 0 is the known
 % % shape parameter and B > 0 is the (unknown, common) rate parameter.  
 % % Let R = geometricmean(X)/mean(X). According to Glaser (JASA 1976) 
@@ -76,7 +79,7 @@ function cf = cf_LogBetaRV(t,alpha,beta,coef,niid)
 %   alpha = 1; % A = 1, i.e. X_j are from exponential distribution
 %   beta  = (1:n-1)'/n;
 %   coef  = -1/n;
-%   cf = @(t) cf_LogBetaRV(t,alpha,beta,coef);
+%   cf = @(t) cf_LogRV_Beta(t,alpha,beta,coef);
 %   t = linspace(-25,25,201);
 %   figure; plot(t,real(cf(t)),t,imag(cf(t))); grid on;
 %   prob = [ 0.9 0.95 0.99];
@@ -105,7 +108,7 @@ function cf = cf_LogBetaRV(t,alpha,beta,coef,niid)
 %   alpha = (m+1-i)/2;
 %   beta  = n/2;
 %   coef  = -1;
-%   cf = @(t) cf_LogBetaRV(t,alpha,beta,coef);
+%   cf = @(t) cf_LogRV_Beta(t,alpha,beta,coef);
 %   t = linspace(-5,5,201);
 %   figure; plot(t,real(cf(t)),t,imag(cf(t))); grid on;
 %   prob = [ 0.99 0.95 0.9];
@@ -133,19 +136,16 @@ function cf = cf_LogBetaRV(t,alpha,beta,coef,niid)
 %   disp(['alpha    = ',num2str(1-prob)])
 %   disp(['quantile = ',num2str(exp(-result.qf))])
 %
-%  WIKIPEDIA: 
-%  https://en.wikipedia.org/wiki/Beta_distribution
-%
-%  REFERENCES:
-%  GLASER, R.E. (1976). The ratio of the geometric mean to the arithmetic
-%  mean for a random sample from a gamma distribution. Journal of the
-%  American Statistical Association, 71(354), 480-487.
+% REFERENCES:
+%   GLASER, R.E. (1976). The ratio of the geometric mean to the arithmetic
+%   mean for a random sample from a gamma distribution. Journal of the
+%   American Statistical Association, 71(354), 480-487.
 
 % (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 02-Jun-2017 12:08:24
 
 %% ALGORITHM
-% cf = cf_LogBetaRV(t,alpha,beta,coef,niid)
+% cf = cf_LogRV_Beta(t,alpha,beta,coef,niid)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 5);
@@ -200,78 +200,4 @@ if ~isempty(niid)
     end
 end
 
-end
-%% Function gammalog
-function [f] = gammalog(z)
-% GAMMALOG  Natural Log of the Gamma function valid in the entire complex
-%           plane. This routine uses an excellent Lanczos series
-%           approximation for the complex ln(Gamma) function.
-%
-%usage: [f] = gammalog(z)
-%             z may be complex and of any size.
-%             Also  n! = prod(1:n) = exp(gammalog(n+1))
-%
-%References: C. Lanczos, SIAM JNA  1, 1964. pp. 86-96
-%            Y. Luke, "The Special ... approximations", 1969 pp. 29-31
-%            Y. Luke, "Algorithms ... functions", 1977
-%            J. Spouge,  SIAM JNA 31, 1994. pp. 931
-%            W. Press,  "Numerical Recipes"
-%            S. Chang, "Computation of special functions", 1996
-
-% Paul Godfrey, pgodfrey@conexant.com, 07-13-01
-
-siz = size(z);
-z   = z(:);
-zz  = z;
-
-%f = 0.*z; % reserve space in advance
-
-p = find(real(z)<0);
-if ~isempty(p)
-    z(p) = -z(p);
-end
-
-%Lanczos approximation for the complex plane
-
-g=607/128; % best results when 4<=g<=5
-
-c = [0.99999999999999709182;
-    57.156235665862923517;
-    -59.597960355475491248;
-    14.136097974741747174;
-    -0.49191381609762019978;
-    0.33994649984811888699e-4;
-    0.46523628927048575665e-4;
-    -0.98374475304879564677e-4;
-    0.15808870322491248884e-3;
-    -0.21026444172410488319e-3;
-    0.21743961811521264320e-3;
-    -0.16431810653676389022e-3;
-    0.84418223983852743293e-4;
-    -0.26190838401581408670e-4;
-    0.36899182659531622704e-5];
-
-s = 0;
-for k = size(c,1):-1:2
-    s = s + c(k)./(z+(k-2));
-end
-
-zg   = z+g-0.5;
-s2pi = 0.9189385332046727417803297;
-
-f = (s2pi + log(c(1)+s)) - zg + (z-0.5).*log(zg);
-
-f(z==1 | z==2) = 0.0;
-
-if ~isempty(p)
-    lpi  = 1.14472988584940017414342735 + 1i*pi;
-    f(p) = lpi-log(zz(p))-f(p)-log(sin(pi*zz(p)));
-end
-
-p = find(round(zz)==zz & imag(zz)==0 & real(zz)<=0);
-if ~isempty(p)
-    f(p) = Inf;
-end
-
-f = reshape(f,siz);
 end
