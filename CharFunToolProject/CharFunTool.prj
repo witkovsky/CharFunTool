@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.toolbox" plugin-version="1.0">
-  <configuration build-checksum="3094216073" file="C:\Users\Viktor\Documents\GitHub\CharFunTool\UtilityTools\CharFunTool.prj" location="C:\Users\Viktor\Documents\GitHub\CharFunTool\UtilityTools" name="CharFunTool" target="target.toolbox" target-name="Package Toolbox">
+  <configuration build-checksum="547885742" file="C:\Users\Viktor\Documents\GitHub\CharFunTool\CharFunToolProject\CharFunTool.prj" location="C:\Users\Viktor\Documents\GitHub\CharFunTool\CharFunToolProject" name="CharFunTool" target="target.toolbox" target-name="Package Toolbox">
     <param.appname>CharFunTool 1.0-beta</param.appname>
     <param.authnamewatermark>Viktor Witkovsky</param.authnamewatermark>
     <param.email>witkovsky@gmail.com</param.email>
@@ -33,7 +33,8 @@
 .git*
 % All files matching a pattern in all subfolders of the toolbox folder:
 % **/*.bak
-%</param.exclude.filters>
+%
+CharFunToolProject/</param.exclude.filters>
     <param.examples />
     <param.demosxml />
     <param.apps />
@@ -72,42 +73,10 @@
       <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\UtilityTools</file>
     </fileset.rootfiles>
     <fileset.depfun.included />
-    <fileset.depfun.excluded>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cf2DistFFT.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cf2DistGP.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfC_vonMises.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfE_DiracMixture.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfE_Empirical.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfN_Binomial.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfN_Delaporte.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfN_GeneralizedPoisson.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfN_NegativeBinomial.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfN_Poisson.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfN_PolyaEggenberger.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfN_Quinkert.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfN_Waring.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfS_Arcsine.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfS_Gaussian.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfS_Rectangular.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfS_StudentT.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfS_Trapezoidal.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfS_Triangular.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfX_ChiSquared.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfX_Exponential.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfX_FisherSnedecorF.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfX_Gamma.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfX_GeneralizedPareto.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfX_LogLogistic.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfX_LogNormal.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfX_Pareto.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfX_PDF.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfX_PearsonVI.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\cfX_Weibull.p</file>
-      <file>C:\Users\Viktor\Documents\MATLAB\Add-Ons\Toolboxes\CF TOOLBOX\code\Data\DanishFireData.mat</file>
-    </fileset.depfun.excluded>
+    <fileset.depfun.excluded />
     <fileset.package />
     <build-deliverables>
-      <file location="C:\Users\Viktor\Documents\GitHub\CharFunTool\UtilityTools" name="CharFunTool 1.0-beta.mltbx" optional="false">C:\Users\Viktor\Documents\GitHub\CharFunTool\UtilityTools\CharFunTool 1.0-beta.mltbx</file>
+      <file location="C:\Users\Viktor\Documents\GitHub\CharFunTool\CharFunToolProject" name="CharFunTool 1.0-beta.mltbx" optional="false">C:\Users\Viktor\Documents\GitHub\CharFunTool\CharFunToolProject\CharFunTool 1.0-beta.mltbx</file>
     </build-deliverables>
     <workflow />
     <matlab>

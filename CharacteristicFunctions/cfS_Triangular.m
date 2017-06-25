@@ -1,6 +1,5 @@
-function cf = cfS_Triangulart,coef,niid)
+function cf = cfS_Triangular(t,coef,niid)
 %cfS_Triangular(t)
-
 %  Characteristic function of the zero-mean symmetric TRIANGULAR
 %  distribution defined on the interval (-1,1). 
 %
@@ -32,10 +31,9 @@ function cf = cfS_Triangulart,coef,niid)
 % EXAMPLE 2:
 % % PDF/CDF of the the symmetric Triangular distribution on (-1,1)
 %   cf = @(t) cfS_Triangular(t);
-%   x = linspace(-2,2,101);
+%   x = linspace(-1,1,101);
 %   xRange = 2;
 %   clear options
-%   options.N = 2^5;
 %   options.dt = 2*pi/xRange;
 %   result = cf2DistGP(cf,x,[],options)
 %
