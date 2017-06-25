@@ -3,10 +3,10 @@ function cf = cfS_Rectangular(t,coef,niid)
 %  Characteristic function of the zero-mean symmetric RECTANGULAR
 %  distribution defined on the interval (-1,1). 
 %
-%  cfS_Rectangular is a version resp. ALIAS of the more the more general
-%  function cf_ArcsineSymmetric, used to evaluate the characteristic
-%  function of a linear combination of independent RECTANGULAR distributed
-%  random variables.
+%  cfS_Rectangular is an ALIAS of the more general function
+%  cf_RectangularSymmetric, used to evaluate the characteristic function of
+%  a linear combination of independent RECTANGULAR distributed random
+%  variables.
 %
 %  The characteristic function of X ~ RectangularSymmetric is defined by
 %   cf(t) = sinc(t) = sin(t)/t;

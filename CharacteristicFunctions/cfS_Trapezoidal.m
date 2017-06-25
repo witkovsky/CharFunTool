@@ -3,10 +3,10 @@ function cf = cfS_Trapezoidal(t,lambda,coef,niid)
 %  Characteristic function of the zero-mean symmetric TRAPEZOIDAL
 %  distribution defined on the interval (-1,1). 
 %
-%  cfS_Trapezoidal is a version resp. ALIAS of the more the more general
-%  function cf_TrapezoidalSymmetric, used to evaluate the characteristic
-%  function of a linear combination of independent TRAPEZOIDAL distributed
-%  random variables.
+%  cfS_Trapezoidal is an ALIAS of the more  general function
+%  cf_TrapezoidalSymmetric, used to evaluate the characteristic function of
+%  a linear combination of independent TRAPEZOIDAL distributed random
+%  variables.
 %
 %  The characteristic function of X ~ TrapezoidalSymmetric(lambda), where
 %  0<= lambda <=1 is the offset parameter is defined by

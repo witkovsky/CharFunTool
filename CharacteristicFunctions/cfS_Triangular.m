@@ -3,10 +3,10 @@ function cf = cfS_Triangular(t,coef,niid)
 %  Characteristic function of the zero-mean symmetric TRIANGULAR
 %  distribution defined on the interval (-1,1). 
 %
-%  cfS_Triangular is a version resp. ALIAS of the more the more general
-%  function cf_TriangularSymmetric, used to evaluate the characteristic
-%  function of a linear combination of independent TRIANGULAR distributed
-%  random variables.
+%  cfS_Triangular is an ALIAS of the more general function
+%  cf_TriangularSymmetric, used to evaluate the characteristic function of
+%  a linear combination of independent TRIANGULAR distributed random
+%  variables.
 %
 %  The characteristic function of X ~ TriangularSymmetric is defined by
 %   cf(t) = (2-2*cos(t))/t^2;;

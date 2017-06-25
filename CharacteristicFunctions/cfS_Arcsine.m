@@ -3,8 +3,8 @@ function cf = cfS_Arcsine(t,coef,niid)
 %  Characteristic function of the zero-mean symmetric ARCSINE distribution
 %  defined on the interval (-1,1). 
 %
-%  cfS_Arcsine is an ALIAS NAME of the more general function
-%  cf_ArcsineSymmetric, used to evaluate the characteristic function of a
+%  cfS_Arcsine is an ALIAS of the more general function
+%  cf_ArcsineSymmetric, used to evaluate the characteristic function of a 
 %  linear combination of independent ARCSINE distributed random variables.
 %
 %  The characteristic function of the symmetric ARCSINE distribution is
