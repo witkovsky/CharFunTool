@@ -3,8 +3,8 @@ function cf = cfS_Beta(t,theta,coef,niid)
 %  Characteristic function of the zero-mean symmetric BETA distribution
 %  defined on the interval (-1,1). 
 %
-%  cfS_Beta is an ALIAS NAME of the more general function cf_BetaSymmetric,
-%  used to evaluate the characteristic function of a linear combination of
+%  cfS_Beta is an ALIAS of the more general function cf_BetaSymmetric, used
+%  to evaluate the characteristic function of a linear combination of
 %  independent BETA distributed random variables.
 %
 %  The characteristic function of X ~ BetaSymmetric(theta) is defined by

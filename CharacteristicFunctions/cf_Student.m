@@ -3,10 +3,10 @@ function cf = cf_Student(t,df,mu,sigma,coef,niid)
 %  Characteristic function of a linear combination (resp. convolution) of
 %  independent (location and scale shifted) STUDENT's t random variables.
 %
-%  That is, cf_Student evaluates the characteristic function cf(t) of  Y =
-%  sum_{i=1}^N coef_i * X_i, where X_i ~ t(df_i) are inedependent RVs, with
-%  df_i > 0 degrees of freedom, possibly shifted by real mu_i and scaled by
-%  sigma > 0, for i = 1,...,N. 
+%  That is, cf_Student evaluates the characteristic function cf(t) of Y =
+%  sum_{i=1}^N coef_i * (mu_i + sigma_i * X_i), where X_i ~ t(df_i) are
+%  inedependent (symmetric) t-distributed RVs, with df_i > 0 degrees of
+%  freedom, for i = 1,...,N.
 %
 %  The characteristic function of the random variable mu + sigma*X, where
 %  X ~ t(df) is given by 
@@ -14,16 +14,17 @@ function cf = cf_Student(t,df,mu,sigma,coef,niid)
 %           exp(-abs(sigma*t)*sqrt(df)) * (sqrt(df)*abs(aigma*t))^(df/2)...
 %           / 2^(df/2-1)/gamma(df/2).
 %
-%  Hence, the characteristic function of Y  = coef_1*X_1 +...+ coef_N*X_N
-%  is cf_Y(t) =  cf_1(coef_1*t) *...* cf_N(coef_N*t), where cf_i(t) 
-%  is the characteristic function of X_i ~ t(df_i). 
+%  Hence, the characteristic function of Y  = coef_1*(mu_1+sigma_1*X_1)
+%  +...+ coef_N*(mu_N+sigma_N*X_N) is cf_Y(t) = exp(1i*mu*t) *
+%  (cf_1(coef_1*sigma_1*t) *...* cf_N(coef_N*sigma_N*t)), where cf_i(t) is
+%  the characteristic function of X_i ~ t(df_i).
 %
 % SYNTAX:
 %  cf = cf_Student(t,df,mu,sigma,coef,niid)
 % 
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
-%  df    - vector of the degrees of freedom of the the chi-squared random
+%  df    - vector of the degrees of freedom of the t-distributed random
 %          variables.  If df is scalar, it is assumed that all degrees of
 %          freedom are equal. If empty, default value is df = 1.
 %  mu    - vector of location parameters, mu in Real. If empty, default
@@ -72,7 +73,7 @@ function cf = cf_Student(t,df,mu,sigma,coef,niid)
 % Ver.: 02-Jun-2017 12:08:24
 
 %% ALGORITHM
-% cf = cf_Student(t,df,coef,n)
+% cf = cf_Student(t,df,mu,sigma,coef,niid);
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 6);
@@ -110,7 +111,7 @@ sz       = szt(1)*szt(2);
 szcLimit = ceil(1e3 / (sz/2^16));
 idc = 1:fix(szcoefs/szcLimit)+1;
 
-%% Characteristic function of linear combination of noncentral chi-squares
+%% Characteristic function 
 df2   = df/2;
 t     = t(:);
 o     = ones(length(t),1);

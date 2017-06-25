@@ -2,9 +2,9 @@ function cf = cfS_Gaussian(t,mu,sigma,coef,niid)
 %% cfS_Gaussian
 %  Characteristic function of a GAUSSIAN (standard normal) distribution.
 %
-%  cfS_Gaussian is a version resp. ALIAS of the more general function
-%  cf_Normal, used to evaluate the characteristic function of a linear
-%  combination of independent normally distributed random variables.
+%  cfS_Gaussian is an ALIAS of the more general function cf_Normal, used to
+%  evaluate the characteristic function of a linear combination of
+%  independent normally distributed random variables.
 %
 %  The characteristic function of the standard normally distributed random
 %  variable, X ~ N(0,1), is defined by 

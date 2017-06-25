@@ -3,10 +3,9 @@ function cf = cfS_Student(t,df,mu,sigma,coef,niid)
 %  Characteristic function of the STUDENT's t-distribution with df > 0
 %  degrees of freedom.
 %
-%  cfS_Student is a version resp. ALIAS of the more the more general
-%  function cf_Student, used to evaluate the characteristic function of a
-%  linear combination of independent  STUDENT's t-distributed random
-%  variables.
+%  cfS_Student is an ALIAS of the more general function cf_Student, used to
+%  evaluate the characteristic function of a linear combination of
+%  independent (location-scale) STUDENT's t-distributed random variables.
 %
 %  The characteristic function of the STUDENT's t-distribution with df
 %  degrees of freedom is defined by
