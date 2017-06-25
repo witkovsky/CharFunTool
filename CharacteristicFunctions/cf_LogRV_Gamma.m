@@ -129,7 +129,7 @@ end
 szt = size(t);
 t   = t(:);
 aux = 1i*t*coef;
-aux = GgammaLog(bsxfun(@plus,aux,alpha))-ones(length(t),1)*GgammaLog(alpha);
+aux = GammaLog(bsxfun(@plus,aux,alpha))-ones(length(t),1)*GammaLog(alpha);
 aux = aux - 1i*t*log(beta);
 cf  = prod(exp(aux),2);
 cf  = reshape(cf,szt);

@@ -243,9 +243,9 @@ function cf = cf_LogR(t,k,alpha,weight)
 % Ver.: 20-Jun-2017 12:08:24
 
 A = sum(alpha);
-cf = (1i*t)*log(k) + GgammaLog(A) - GgammaLog(A+1i*t);
+cf = (1i*t)*log(k) + GammaLog(A) - GammaLog(A+1i*t);
 for j = 1:k
-    cf = cf + GgammaLog(alpha(j)+1i*t*weight(j)) - GgammaLog(alpha(j));
+    cf = cf + GammaLog(alpha(j)+1i*t*weight(j)) - GammaLog(alpha(j));
 end
 cf = exp(cf);
 
