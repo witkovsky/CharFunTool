@@ -76,6 +76,6 @@ if nargin < 4, coef = []; end
 if nargin < 3, beta = []; end
 if nargin < 2, alpha = []; end
 
-cf = cf_LogRV_InverseGamma(t,alpha,beta,coef,niid);
+cf = cf_InverseGamma(t,alpha,beta,coef,niid);
 
 end
