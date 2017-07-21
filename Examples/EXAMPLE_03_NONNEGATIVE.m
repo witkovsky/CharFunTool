@@ -574,39 +574,32 @@ close all
  disp(result)
  
 %% *CHARACTERISTIC FUNCTION FROM PDF*
-% |cfX_PDF(t,pdfFun,tol)| calculates the characteristic function of the
-% continuos distribution defined by its PDF function, pdfFun = @(x) pdf(x),
-% here we assume x>=0, computed for real  vector argument t.
+% |cfX_PDF(t,pdfFun,method,tol)| computes the characteristic function of
+% the continuos distribution defined by its PDF function, pdfFun = @(x)
+% pdf(x), here we assume x>=0, computed for real vector argument t.
 %
 % DEFINITION:
-%
 %  cfX_PDF is based on the standard integral representation of the
 %  characteristic function of the continuous distribution defined by its 
 %  PDF (here PDF is represented by the function handle pdfFun(x) defined 
 %  for x >= 0). Then, 
-%
-%  |CF(t) = Integral_0^inf exp(i*t*x) * pdfFun(x) dx|.
-%
-%  By using the half-space Fourier integral transformation we get
-%
-%  |CF(t) = Integral_0^inf (i/t) * exp(-x) * pdfFun(i*x/t) dx|.
-%
+%    CF(t) = Integral_0^inf exp(i*t*x) * pdfFun(x) dx.
+%  Alternatively, by using the half-space Fourier Integral Transformation
+%  (FIT), which could improve the highly oscillatory behaviour of the
+%  integrand function, we get    
+%    CF(t) = Integral_0^inf (i/t) * exp(-x) * pdfFun(i*x/t) dx.
 %  If we define the integrand as 
-%
-%  |funCF(t,x) = (i/t) * exp(-x) * pdfFun(i*x/t)|,
-%
+%    funCF(t,x) = (i/t) * exp(-x) * pdfFun(i*x/t),
 %  then by using a stabilizing transformation from [0,inf] to [0,1], we can
 %  evaluate the CF by the following (well behaved) integral:
+%    CF(t) = Integral_0^1 2x/(1-x)^3 * funCF(t,(x/(1-x))^2) dx.
 %
-%  |CF(t) = Integral_0^1 2x/(1-x)^3 * funCF(t,(x/(1-x))^2) dx|.
+%  Selection of the proper method (standard definition of FIT) depends on
+%  the distribution and particular form of its PDF.  
 %
 %  cfX_PDF evaluates this integral by using the MATLAB built in function
 %  'integral', with precission specified by tolerance tol (default value is 
 %  tol = 1e-6).
-%
-% SYNTAX:
-%
-% |cf = cfX_PDF(t,pdfFun,tol)|
 
 %% III.11.a EXAMPLE CF from PDF of the Exponential distribution, mu = 1
 %
@@ -622,7 +615,7 @@ close all
  sigma = 1;
  pdfFun = @(x) exp(-0.5*((log(x)-mu)./sigma).^2)./(x.*sqrt(2*pi).*sigma);
  t = linspace(-20,20,2^10+1)';
- cf = cfX_PDF(t,pdfFun);
+ cf = cfX_PDF(t,pdfFun,'fit');
  plot(t,real(cf),t,imag(cf));grid
  title('Characteristic function of the LogNormal distribution')
 
@@ -631,7 +624,7 @@ close all
  mu = 0;
  sigma = 1; 
  pdfFun = @(x) exp(-0.5*((log(x)-mu)./sigma).^2)./(x.*sqrt(2*pi).*sigma);
- cf = @(t) cfX_PDF(t,pdfFun);
+ cf = @(t) cfX_PDF(t,pdfFun,'fit');
  clear options
  options.xMin = 0;
  result = cf2DistGP(cf,[],[],options);
@@ -644,6 +637,6 @@ close all
  pdfFun = @(x) (x./a).^(b-1) .* exp(-((x./a).^b)) .* b ./ a;
  t = linspace(-20,20,2^10+1)';
  tol = 1e-10;
- cf = cfX_PDF(t,pdfFun,tol);
+ cf = cfX_PDF(t,pdfFun,'fit',tol);
  plot(t,real(cf),t,imag(cf));grid
  title('Characteristic function of the Weibull distribution')
