@@ -1,9 +1,9 @@
-function cf = cf_LogWilksLambdaRV(t,p,m,n,coef,niid)
-%% cf_LogWilksLambdaRV 
+function cf = cf_LogRV_WilksLambda(t,p,m,n,coef,niid)
+%% cf_LogRV_WilksLambda 
 %  Characteristic function of a linear combination (resp. convolution) of
 %  independent LOG-TRANSFORMED WILK's LAMBDA random variables.
 %  
-%  That is, cf_LogWilksLambdaRV evaluates the characteristic function of a
+%  That is, cf_LogRV_WilksLambda evaluates the characteristic function of a
 %  random variable Y  = coef_1*W_1 +...+ coef_N*W_N, such that cf_Y(t) =
 %  cf_W_1(coef_1*t) *...* cf_W_N(coef_N*t), where cf_W_i(t) is CF of W_i =
 %  log(Lambda_i), and each Lambda_i has  WILK's LAMBDA distribution,
@@ -24,7 +24,7 @@ function cf = cf_LogWilksLambdaRV(t,p,m,n,coef,niid)
 %  independent Beta distributions for all i = 1,...,N and j = 1,...,p_i.   
 %
 % SYNTAX
-%  cf = cf_LogWilksLambdaRV(t,p,m,n,coef,niid)
+%  cf = cf_LogRV_WilksLambda(t,p,m,n,coef,niid)
 %
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -43,13 +43,16 @@ function cf = cf_LogWilksLambdaRV(t,p,m,n,coef,niid)
 %          coef(i) * log(X_i) is independently and identically
 %          distributed random variable. If empty, default value is n = 1.  
 %
+%  WIKIPEDIA: 
+%   https://en.wikipedia.org/wiki/Wilks%27s_lambda_distribution
+%
 % EXAMPLE 1:
 % % CF of log Wilks Lambda RV distribution Lambda(p,m,n)
 %   p  = 5;
 %   m  = 10;
 %   n  = 3;
 %   t  = linspace(-10,10,201);
-%   cf = cf_LogWilksLambdaRV(t,p,m,n);
+%   cf = cf_LogRV_WilksLambda(t,p,m,n);
 %   figure; plot(t,real(cf),t,imag(cf)); grid on;
 %   title('CF of log Wilks Lambda RV with Lambda(p,m,n), p=5, m=10, n=3')
 %
@@ -60,7 +63,7 @@ function cf = cf_LogWilksLambdaRV(t,p,m,n,coef,niid)
 %   n    = [3 2 1];
 %   coef = -[10 15 20]/45;
 %   t    = linspace(-20,20,201);
-%   cf   = cf_LogWilksLambdaRV(t,p,m,n,coef);
+%   cf   = cf_LogRV_WilksLambda(t,p,m,n,coef);
 %   figure; plot(t,real(cf),t,imag(cf)); grid on;
 %   title('CF of a weighted linear combination of -log Wilks Lambda RVs')
 %
@@ -70,7 +73,7 @@ function cf = cf_LogWilksLambdaRV(t,p,m,n,coef,niid)
 %   m    = 10;
 %   n    = 3;
 %   coef = -1;
-%   cf   = @(t) cf_LogWilksLambdaRV(t,p,m,n,coef);
+%   cf   = @(t) cf_LogRV_WilksLambda(t,p,m,n,coef);
 %   x    = linspace(0,5)';
 %   prob = [0.9 0.95 0.99];
 %   clear options
@@ -79,14 +82,14 @@ function cf = cf_LogWilksLambdaRV(t,p,m,n,coef,niid)
 %   disp(result)
 %
 % EXAMPLE 4:
-% % Compare the the exact distribution with the Bartlett's approximation
+% % Compare the exact distribution with the Bartlett's approximation
 % % The Bartlett's approximation (see e.g. Wikipedia) is given by:
 % % ((p-n+1)/2 - m)*log(Lambda(p,m,n)) ~ chi^2_{n*p}
 %   p    = 15;
 %   m    = 30;
 %   n    = 3;
 %   coef = (p-n+1)/2 - m;
-%   cf   = @(t) cf_LogWilksLambdaRV(t,p,m,n,coef);
+%   cf   = @(t) cf_LogRV_WilksLambda(t,p,m,n,coef);
 %   prob = [0.9 0.95 0.99];
 %   clear options
 %   options.xMin = 0;
@@ -100,15 +103,12 @@ function cf = cf_LogWilksLambdaRV(t,p,m,n,coef,niid)
 %   disp(prob)
 %   disp(result.qf)
 %   disp(chi2inv(prob,n*p))
-%
-%  WIKIPEDIA: 
-%  https://en.wikipedia.org/wiki/Wilks%27s_lambda_distribution
 
 % (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 17-Jun-2017 17:18:39
 
 %% ALGORITHM
-% cf = cf_LogWilksLambdaRV(t,p,m,n,coef,niid)
+% cf = cf_LogRV_WilksLambda(t,p,m,n,coef,niid)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 6);
@@ -139,7 +139,7 @@ cf  = 1;
 for i = 1:length(coef)
     alpha = (m(i)+1-(1:p(i)))/2;
     beta  = n(i)/2;
-    cf = cf .* cf_LogBetaRV(coef(i)*t,alpha,beta);
+    cf = cf .* cf_LogRV_Beta(coef(i)*t,alpha,beta);
 end
 cf  = reshape(cf,szt);
 cf(t==0) = 1;

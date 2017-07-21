@@ -1,8 +1,8 @@
 function cf = cf_FisherSnedecor(t,df1,df2,coef,niid,tol)
 %% cf_FisherSnedecor 
 %  Characteristic function of the distribution of a linear combination of
-%  independent random variables with central Fisher-Snedecor
-%  F-distribution.  
+%  independent random variables with the central FISHER-SNEDECOR
+%  F-distribution.   
 %
 %  That is, cf_FisherSnedecor evaluates the characteristic function cf(t)
 %  of  Y = sum_{i=1}^N coef_i * X_i, where X_i ~ F(df1_i,df2_i) are
@@ -35,9 +35,11 @@ function cf = cf_FisherSnedecor(t,df1,df2,coef,niid,tol)
 %          sum of niid iid random variables Y, where each Y = sum_{i=1}^N
 %          coef(i) * log(X_i) is independently and identically distributed
 %          random variable. If empty, default value is niid = 1.
+%  tol   - relative tolerance used for integration.  If empty, default
+%          value is tol = 1e-6.  
 %
 % WIKIPEDIA: 
-%   https://en.wikipedia.org/wiki/F-distribution.
+%  https://en.wikipedia.org/wiki/F-distribution.
 %
 % EXAMPLE 1: 
 %   % CF of a linear combination of independent F RVs
@@ -63,12 +65,14 @@ function cf = cf_FisherSnedecor(t,df1,df2,coef,niid,tol)
 %   disp(result)
 %
 % REFERENCES:
-%   WITKOVSKY, V.: On the exact computation of the density and of the
-%   quantiles of linear combinations of t and F random variables. Journal
-%   of Statistical Planning and Inference 94 (2001), 1–13.
+% [1] PHILLIPS, P.C.B. The true characteristic function of the F
+%     distribution. Biometrika (1982), 261-264. 
+% [2] WITKOVSKY, V.: On the exact computation of the density and of the
+%     quantiles of linear combinations of t and F random variables. Journal
+%     of Statistical Planning and Inference 94 (2001), 1–13.
 
 % (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 10-May-2017 18:11:50
+% Ver.: 24-Jun-2017 10:07:43
 
 %% ALGORITHM
 % cf = cf_FisherSnedecor(t,df1,df2,coef,niid,tol)

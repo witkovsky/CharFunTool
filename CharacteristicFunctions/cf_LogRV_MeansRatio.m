@@ -1,12 +1,12 @@
-function cf = cf_LogMeansRatioRV(t,n,alpha,coef,niid)
-%% cf_LogMeansRatioRV 
+function cf = cf_LogRV_MeansRatio(t,n,alpha,coef,niid)
+%% cf_LogRV_MeansRatio 
 %  Characteristic function of a linear combination (resp. convolution) of N
 %  independent LOG-TRANSFORMED MEANS-RATIO random variables (RVs), W_i =
 %  log(R_i) for i = 1,...,N, where each R_i = G_i/A_i is a ratio of G_i
 %  (the geometric mean) and A_i (the arithmetic mean) of a random sample
 %  X_{i,1},...,X_{i,n_i} from a GAMMA distribution.
 %  
-%  That is, cf_LogMeansRatioRV evaluates the characteristic function of a
+%  That is, cf_LogRV_MeansRatio evaluates the characteristic function of a
 %  random variable Y  = coef_1*W_1 +...+ coef_N*W_N, such that
 %  cf_Y(t) =  cf_W_1(coef_1*t) *...* cf_W_N(coef_N*t), where cf_W_i(t)
 %  is CF of W_i = log(R_i), and  R_i ~ MeansRatio(n_i,alpha_i), where
@@ -29,7 +29,7 @@ function cf = cf_LogMeansRatioRV(t,n,alpha,coef,niid)
 %  log(B_{i,k_{i-1}}))/k_i. 
 %
 % SYNTAX
-%  cf = cf_LogMeansRatioRV(t,n,alpha,coef,niid)
+%  cf = cf_LogRV_MeansRatio(t,n,alpha,coef,niid)
 %
 % INPUTS
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -46,12 +46,16 @@ function cf = cf_LogMeansRatioRV(t,n,alpha,coef,niid)
 %          coef(i) * log(X_i) is independently and identically distributed
 %          random variable. If empty, default value is niid = 1.
 %
+%  WIKIPEDIA
+%  https://en.wikipedia.org/wiki/Beta_distribution
+%  https://en.wikipedia.org/wiki/Bartlett%27s_test
+%
 % EXAMPLE 1:
 % % CF of log MeansRatio RV with n = 5 and alpha = 7/2 
 %   n     = 5;
 %   alpha = 7/2;
 %   t     = linspace(-100,100,201);
-%   cf    =  cf_LogMeansRatioRV(t,n,alpha);
+%   cf    =  cf_LogRV_MeansRatio(t,n,alpha);
 %   figure; plot(t,real(cf),t,imag(cf)); grid on;
 %   title('CF of log MeansRatio RV with n = 5 and alpha = 7/2')
 %
@@ -61,7 +65,7 @@ function cf = cf_LogMeansRatioRV(t,n,alpha,coef,niid)
 %   alpha = [7 10 15]/2;
 %   coef  = -[5 7 10]/22;
 %   t     = linspace(-100,100,201);
-%   cf    =  cf_LogMeansRatioRV(t,n,alpha,coef);
+%   cf    =  cf_LogRV_MeansRatio(t,n,alpha,coef);
 %   figure; plot(t,real(cf),t,imag(cf)); grid on;
 %   title('CF of a weighted linear combination of -log MeansRatio RVs')
 %
@@ -70,7 +74,7 @@ function cf = cf_LogMeansRatioRV(t,n,alpha,coef,niid)
 %   n     = 5;
 %   alpha = 7/2;
 %   coef  = -1;
-%   cf    = @(t) cf_LogMeansRatioRV(t,n,alpha,coef);
+%   cf    = @(t) cf_LogRV_MeansRatio(t,n,alpha,coef);
 %   x = linspace(0,0.6)';
 %   prob = [0.9 0.95 0.99];
 %   clear options
@@ -79,14 +83,14 @@ function cf = cf_LogMeansRatioRV(t,n,alpha,coef,niid)
 %   disp(result)
 %
 % EXAMPLE 4:
-% % Compare the the exact distribution with the Bartlett's approximation
+% % Compare the exact distribution with the Bartlett's approximation
 %   k     = 25; % number of normal populations
 %   df    = 3;  % degrees of freedom used in each of n populations 
 %   DF    = k*df; 
 %   alpha = df/2;
 %   C_B   = (1 + 1/(3*(k-1))*(k/df - 1/DF));
 %   coef  = -DF/C_B;
-%   cf    = @(t) cf_LogMeansRatioRV(t,k,alpha,coef);
+%   cf    = @(t) cf_LogRV_MeansRatio(t,k,alpha,coef);
 %   prob  = [0.9 0.95 0.99];
 %   clear options
 %   options.xMin = 0;
@@ -116,7 +120,7 @@ function cf = cf_LogMeansRatioRV(t,n,alpha,coef,niid)
 %   options.isPlot = false;
 %   critW = zeros(length(df),length(prob));
 %   for i = 1:length(df)
-%      cf     = @(t) cf_LogMeansRatioRV(t,k,alpha(i),coef);
+%      cf     = @(t) cf_LogRV_MeansRatio(t,k,alpha(i),coef);
 %      result = cf2DistGP(cf,[],prob,options);
 %      critW(i,:) = result.qf;
 %   end;
@@ -136,16 +140,12 @@ function cf = cf_LogMeansRatioRV(t,n,alpha,coef,niid)
 %  S^2_j = (1/(m-1))*Sum(X_jk - mean(X_jk))^2. Notice that df*S^2_j/sigma^2
 %  ~ Chi^2_df = Gamma(df/2,1/2) for all j = 1,...,k. The exact critical
 %  values can be calculated from the distribution of W = -log(L) by
-%  inverting the characteristic function cf_LogMeansRatioRV.  
+%  inverting the characteristic function cf_LogRV_MeansRatio.  
 %  
 %  The corrected version of the test statistic W with better convergence to
 %  the asymptotic chi-square distribution with k-1 degrees of freedom is
 %  Chi2 =  DF*(log(S^2_pool) - Sum(log(S^2_j))/k)/C_B, where the
 %  Bartlett's correction constant is C_B = (1+1/(3*(k-1))*(k/df-1/DF)).
-%
-%  WIKIPEDIA
-%  https://en.wikipedia.org/wiki/Beta_distribution
-%  https://en.wikipedia.org/wiki/Bartlett%27s_test
 %
 %  REFERENCES
 %  Glaser, R. E. (1976a). The ratio of the geometric mean to the arithmetic
@@ -165,7 +165,7 @@ function cf = cf_LogMeansRatioRV(t,n,alpha,coef,niid)
 % Ver.: 17-Jun-2017 17:18:39
 
 %% ALGORITHM
-% cf = cf_LogMeansRatioRV(t,n,alpha,coef,niid)
+% cf = cf_LogRV_MeansRatio(t,n,alpha,coef,niid)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 5);
@@ -194,7 +194,7 @@ cf  = 1;
 for i = 1:length(coef)
     if n(i)>1
         beta  = (1:(n(i)-1))/n(i);
-        cf = cf .* cf_LogBetaRV(coef(i)*t,alpha(i),beta,1/n(i));
+        cf = cf .* cf_LogRV_Beta(coef(i)*t,alpha(i),beta,1/n(i));
     end
 end
 cf  = reshape(cf,szt);

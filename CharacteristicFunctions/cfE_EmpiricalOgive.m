@@ -1,33 +1,25 @@
-function cf = cfE_EmpiricalOgive(t,bins,freq,cfX)
-%%  cfE_EmpiricalOgive
-%   Characteristic function of the OGIVE EMPIRICAL distribution based on
-%   the observed histogram (given by bins and frequencies).
+function cf = cfE_EmpiricalOgive(t,bins,freq)
+%% cfE_EmpiricalOgive
+%  Characteristic function of the OGIVE EMPIRICAL distribution based on
+%  the observed histogram (given by bins and frequencies).
 % 
-%   That is, cf(t) is given as a weighted mixture of the UNIFORM iid RVs.
-%     cf(t) = cfE_EmpiricalOgive(t,bins,freq) =
-%           = sum_{j=1}^n freq(j) * cf_Uniform(t,bins_{j-1},bins_{j}), 
-%   where cf_Uniform(t,bin_{j-1},bin_{j}) is CF of the Uniform distribution
-%   on the interval [bins_{j-1},bins_j].
+%  That is, cf(t) is given as a weighted mixture of the UNIFORM iid RVs.
+%   cf(t) = cfE_EmpiricalOgive(t,bins,freq) =
+%         = sum_{j=1}^n freq_j * cf_Uniform(t,bins_{j-1},bins_{j}), 
+%  where cf_Uniform(t,bin_{j-1},bin_{j}) is CF of the Uniform distribution
+%  on the interval [bins_{j-1},bins_j].
 % 
-%   cfE_EmpiricalOgive(t,bins,freq,cfX) evaluates the compound
-%   characteristic function   
-%     cf(t) = cfE_EmpiricalOgive(-1i*log(cfX(t)),bins,freq),
-%   where cfX is function handle of the characteristic function cfX(t) of
-%   the random variable X (as e.g. another empirical CF based on observed
-%   data of X).
-% 
-%   The bins and frequencies = counts/sum(counts) are based on the
-%   discretized/grouped or histogram data, for more details see e.g. the
-%   MATLAB function HISTC.m: N = HISTC(X,EDGES), counts the number of
-%   values in X that fall between the elements in the EDGES vector (which
-%   must contain monotonically non-decreasing values). N is a LENGTH(EDGES)
-%   vector containing these counts, N(k) will count the value X(i) if
-%   EDGES(k) <= X(i) < EDGES(k+1).  The last bin will count any values of X
-%   that match EDGES(end).
+%  The bins and frequencies = counts/sum(counts) are based on the
+%  discretized/grouped or histogram data, for more details see e.g. the
+%  MATLAB function HISTC.m: COUNTS = HISTC(X,EDGES), counts the number of
+%  values in X that fall between the elements in the EDGES vector (which
+%  must contain monotonically non-decreasing values). COUNTS is a
+%  LENGTH(EDGES) vector containing these counts, COUNTS(k) is count of the
+%  X values if, such that EDGES(k) <= X < EDGES(k+1). The last bin counts
+%  any values of X that match EDGES(end). 
 %
 % SYNTAX
 %   cf = cfE_EmpiricalOgive(t,bins,freq)
-%   cf = cfE_EmpiricalOgive(t,bins,freq,cfX)
 %
 % INPUTS:
 %  t      - vector or array of real values, where the CF is evaluated.
@@ -35,9 +27,6 @@ function cf = cfE_EmpiricalOgive(t,bins,freq,cfX)
 %           concentrated. If empty, default value is data = 1. 
 %  freq   - vector of data, i.e. constants where the DIRAC RVs are
 %           concentrated. If empty, default value is data = 1. 
-%  cfX    - function handle of the characteristic function of a random
-%           variable X. If cfX is non-empty, a compound CF is evaluated as
-%           cf(t) = cf(-1i*log(cfX(t)),bins,frequencies).
 %
 % WIKIPEDIA: 
 %  https://en.wikipedia.org/wiki/Empirical_distribution_function.
@@ -94,17 +83,16 @@ function cf = cfE_EmpiricalOgive(t,bins,freq,cfX)
 %  characteristic function of frequency and severity. arXiv preprint
 %  arXiv:1701.08299.  
 
-% (c) 2016 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 15-Nov-2016 13:36:26
+% (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 24-Jun-2017 09:34:15
 
 %% ALGORITHM
-%cf = cfE_EmpiricalOgive(t,bins,freq,cfX);
+%cf = cfE_EmpiricalOgive(t,bins,freq);
 
 %% CHECK THE INPUT PARAMETERS
-narginchk(1, 4);
+narginchk(1, 3);
 if nargin < 2, bins = []; end
 if nargin < 3, freq = []; end
-if nargin < 4, cfX = []; end
 
 %%
 if isempty(bins)
@@ -135,12 +123,7 @@ end
 n  = length(bins);
 n1 = n-1;
 
-if isempty(cfX)
-    aux  = exp(1i * t * bins);
-else
-    aux  = bsxfun(@power,cfX(t),bins);
-end
-
+aux  = exp(1i * t * bins);
 aux  = (aux(:,2:n)-aux(:,1:n1)) ./ (1i*t.*(bins(:,2:n)-bins(:,1:n1)));
 if isscalar(freq)
     cf   = cf + sum(freq*aux,2);
@@ -149,7 +132,6 @@ else
 end
 
 cf(t==0) = 1;
-
 cf = reshape(cf,szt);
 
 end

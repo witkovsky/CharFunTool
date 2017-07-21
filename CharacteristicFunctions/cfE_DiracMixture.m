@@ -12,7 +12,7 @@ function cf = cfE_DiracMixture(t,d,weight,cfX)
 %  function  
 %   cf(t) = cfE_DiracMixture(-1i*log(cfX(t)),d,weight)
 %         = weight_1*cfX(t)^d_1 +...+ weight_N*cfX(t)^d_N
-%  where cfX denotes teh function handle of the characteristic function
+%  where cfX denotes the function handle of the characteristic function
 %  cfX(t) of the random variable X.   
 %
 % SYNTAX

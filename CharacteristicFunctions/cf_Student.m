@@ -1,36 +1,44 @@
-function cf = cf_Student(t,df,coef,n)
+function cf = cf_Student(t,df,mu,sigma,coef,niid)
 %% cf_Student 
 %  Characteristic function of a linear combination (resp. convolution) of
-%  independent STUDENT's t random variables. 
+%  independent (location and scale shifted) STUDENT's t random variables.
 %
-%  That is, cf_Student evaluates the characteristic function cf(t) of  Y =
-%  sum_{i=1}^N coef_i * X_i, where X_i ~ t(df_i) are inedependent RVs, with
-%  df_i > 0 degrees of freedom, for i = 1,...,N.
+%  That is, cf_Student evaluates the characteristic function cf(t) of Y =
+%  sum_{i=1}^N coef_i * (mu_i + sigma_i * X_i), where X_i ~ t(df_i) are
+%  inedependent (symmetric) t-distributed RVs, with df_i > 0 degrees of
+%  freedom, for i = 1,...,N.
 %
-%  The characteristic function of X ~ t(df) is 
-%   cf(t) = besselk(df/2,abs(t)*sqrt(df),1) * exp(-abs(t)*sqrt(df)) * ...
-%          (sqrt(df)*abs(t))^(df/2) / 2^(df/2-1)/gamma(df/2).
+%  The characteristic function of the random variable mu + sigma*X, where
+%  X ~ t(df) is given by 
+%   cf(t) = exp(1i*t*mu) * besselk(df/2,abs(sigma*t)*sqrt(df),1) * ...
+%           exp(-abs(sigma*t)*sqrt(df)) * (sqrt(df)*abs(aigma*t))^(df/2)...
+%           / 2^(df/2-1)/gamma(df/2).
 %
-%  Hence, the characteristic function of Y  = coef_1*X_1 +...+ coef_N*X_N
-%  is cf_Y(t) =  cf_1(coef_1*t) *...* cf_N(coef_N*t), where cf_i(t) 
-%  is the characteristic function of X_i ~ t(df_i). 
+%  Hence, the characteristic function of Y  = coef_1*(mu_1+sigma_1*X_1)
+%  +...+ coef_N*(mu_N+sigma_N*X_N) is cf_Y(t) = exp(1i*mu*t) *
+%  (cf_1(coef_1*sigma_1*t) *...* cf_N(coef_N*sigma_N*t)), where cf_i(t) is
+%  the characteristic function of X_i ~ t(df_i).
 %
 % SYNTAX:
-%  cf = cf_Student(t,df,coef,n)
+%  cf = cf_Student(t,df,mu,sigma,coef,niid)
 % 
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
-%  df    - vector of the degrees of freedom of the the chi-squared random
+%  df    - vector of the degrees of freedom of the t-distributed random
 %          variables.  If df is scalar, it is assumed that all degrees of
 %          freedom are equal. If empty, default value is df = 1.
+%  mu    - vector of location parameters, mu in Real. If empty, default
+%          value is mu = 0. 
+%  sigma - vector of scale parameters, sigma_i > 0. If empty, default value
+%          is sigma = 1.
 %  coef  - vector of the coefficients of the linear combination of the
 %          log-transformed random variables. If coef is scalar, it is
 %          assumed that all coefficients are equal. If empty, default value
 %          is coef = 1.
-%  n     - scalar convolution coeficient n, such that Z = Y + ... + Y is
-%          sum of n iid random variables Y, where each Y = sum_{i=1}^N
+%  niid  - scalar convolution coeficient n, such that Z = Y + ... + Y is
+%          sum of niid random variables Y, where each Y = sum_{i=1}^N
 %          coef_i * X_i is independently and identically distributed random
-%          variable. If empty, default value is n = 1. 
+%          variable. If empty, default value is niid = 1. 
 %
 % WIKIPEDIA: 
 %   https://en.wikipedia.org/wiki/Student%27s_t-distribution.
@@ -65,13 +73,15 @@ function cf = cf_Student(t,df,coef,n)
 % Ver.: 02-Jun-2017 12:08:24
 
 %% ALGORITHM
-% cf = cf_Student(t,df,coef,n)
+% cf = cf_Student(t,df,mu,sigma,coef,niid);
 
 %% CHECK THE INPUT PARAMETERS
-narginchk(1, 4);
-if nargin < 4, n = []; end
-if nargin < 3, coef = []; end
-if nargin < 2, df = []; end
+narginchk(1, 6);
+if nargin < 6,  niid = []; end
+if nargin < 5,  coef = []; end
+if nargin < 4, sigma = []; end
+if nargin < 3,    mu = []; end
+if nargin < 2,    df = []; end
 
 %%
 if isempty(df) && ~isempty(coef)
@@ -82,8 +92,13 @@ if isempty(coef) && ~isempty(df)
     coef = 1;
 end
 
+if isempty(mu), mu = 0; end
+if isempty(sigma), sigma = 1; end
+if isempty(niid), niid = 1; end
+
 %% Equal size of the parameters
-[errorcode,coef,df] = distchck(2,coef(:)',df(:)');
+[errorcode,coef,df,mu,sigma] = ...
+    distchck(4,coef(:)',df(:)',mu(:)',sigma(:)');
 if errorcode > 0
     error(message('InputSizeMismatch'));
 end
@@ -96,7 +111,7 @@ sz       = szt(1)*szt(2);
 szcLimit = ceil(1e3 / (sz/2^16));
 idc = 1:fix(szcoefs/szcLimit)+1;
 
-%% Characteristic function of linear combination of noncentral chi-squares
+%% Characteristic function 
 df2   = df/2;
 t     = t(:);
 o     = ones(length(t),1);
@@ -106,22 +121,22 @@ for j = 1:idc(end)
     idx1 = min(idc(j)*szcLimit,szcoefs);
     idx  = idx0:idx1;
     idx0 = idx1+1;
-    aux = bsxfun(@times,abs(t),abs(df(idx).*coef(idx)));
-    aux = - aux + bsxfun(@times,df2(idx),log(aux)) + ...
+    aux  = bsxfun(@times,abs(t),abs(sqrt(df(idx)).*coef(idx).*sigma(idx)));
+    aux  = - aux + bsxfun(@times,df2(idx),log(aux)) + ...
         log(besselk(o*df2(idx),aux,1));
     aux = bsxfun(@plus,aux,(-log(2)*(df2(idx)-1))-gammaln(df2(idx)));
+    aux = 1i*t*(coef(idx).*mu(idx)) + aux;
     cf  = exp(sum(aux,2));
 end
 cf = reshape(cf,szt);
 cf(t==0) = 1;
 
-if ~isempty(n)
-    if isscalar(n)
-        cf = cf .^ n;
+if ~isempty(niid)
+    if isscalar(niid)
+        cf = cf .^ niid;
     else
-        error('n should be a scalar (positive integer) value');
+        error('niid should be a scalar (positive integer) value');
     end
 end
-
 
 end

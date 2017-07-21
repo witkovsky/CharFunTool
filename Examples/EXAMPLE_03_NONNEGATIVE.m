@@ -58,12 +58,12 @@ close all
  disp(result)
 
 %% *FISHER-SNEDECOR F DISTIBUTION*
-% |cfX_FisherSnedecorF(t,df1,df2,tol)| evaluates the characteristic
+% |cfX_FisherSnedecor(t,df1,df2,tol)| evaluates the characteristic
 % function cf(t) of the Fisher-Snedecor F-distribution with the parameters
 % df1 and df2 (degrees of freedom, df1>=1, df2>=1) computed for real vector
 % argument t, i.e. 
 %
-% |cf(t) = cfX_FisherSnedecorF(t,df1,df2)  
+% |cf(t) = cfX_FisherSnedecor(t,df1,df2)  
 %        = (gamma(df1/2+df2/2)/gamma(df2/2)) * U(df1/2, 1-df2/2, -1i*(df2/df1)*t)|,
 %
 %  where U(a,b,z) denotes the confluent hypergeometric function of the
@@ -72,14 +72,14 @@ close all
 %
 % SYNTAX:
 %
-% * |cf = cfX_FisherSnedecorF(df1,df2,t,tol)|
+% * |cf = cfX_FisherSnedecor(df1,df2,t,tol)|
 
 %% III.2.a EXAMPLE: CF of the F-distribution with df1 = 3, df2 = 5
 %
  df1 = 3;
  df2 = 5;
  t   = linspace(-30,30,2^10+1)';
- cf  = cfX_FisherSnedecorF(t,df1,df2);
+ cf  = cfX_FisherSnedecor(t,df1,df2);
  plot(t,real(cf),t,imag(cf));grid
  title('Characteristic function of the F-distribution')
 
@@ -89,7 +89,7 @@ close all
  df2 = 5;
  x = linspace(0,25,101);
  prob = [0.9 0.95 0.99];
- cf = @(t) cfX_FisherSnedecorF(t,df1,df2);
+ cf = @(t) cfX_FisherSnedecor(t,df1,df2);
  clear options
  options.xMin = 0;
  options.xMax = 500;
@@ -103,7 +103,7 @@ close all
  p = 0.3;
  df1 = 3;
  df2 = 5;
- cfX = @(t) cfX_FisherSnedecorF(t,df1,df2);
+ cfX = @(t) cfX_FisherSnedecor(t,df1,df2);
  cf = @(t) cfN_Binomial(t,n,p,cfX);
  x = linspace(0,80,101);
  prob = [0.9 0.95 0.99];
@@ -223,24 +223,24 @@ close all
  disp(result)
   
 %% *CHISQUARED DISTRIBUTION*
-% |cfX_ChiSquared(t,df)| evaluates the characteristic function cf(t) of 
+% |cfX_ChiSquare(t,df)| evaluates the characteristic function cf(t) of 
 % the CHI-SUQARED distribution with the parameter df (degrees of freedom,
 % df >= 1), i.e. 
 %
-% |cf(t) = cfX_ChiSquared(t,df) = (1 - 2i*t)^(-df/2) =
+% |cf(t) = cfX_ChiSquare(t,df) = (1 - 2i*t)^(-df/2) =
 %         = cfX_Gamma(t,alpha,beta) = cfX_Gamma(t,df/2,1/2)|;
 % For more details see WIKIPEDIA: 
 % <https://en.wikipedia.org/wiki/Chi-squared_distribution>
 %
 % SYNTAX:
 %
-% * |cf = cfX_ChiSquared(t,df)|
+% * |cf = cfX_ChiSquare(t,df)|
 
 %% III.5.a EXAMPLE: CF of the ChiSquared distribution, df = 1
 %
  df = 1;
  t = linspace(-50,50,501);
- cf = cfX_ChiSquared(t,df);
+ cf = cfX_ChiSquare(t,df);
  figure; plot(t,real(cf),t,imag(cf)),grid
  title('CF of the ChiSquared distribution with df = 1')
 
@@ -249,7 +249,7 @@ close all
  df = 3;
  x = linspace(0,15,101);
  prob = [0.9 0.95 0.99];
- cf = @(t) cfX_ChiSquared(t,df);
+ cf = @(t) cfX_ChiSquare(t,df);
  clear options
  options.xMin = 0;
  options.xMax = 22;
@@ -262,7 +262,7 @@ close all
  n = 25;  
  p = 0.3;
  df = 3;
- cfX = @(t) cfX_ChiSquared(t,df);
+ cfX = @(t) cfX_ChiSquare(t,df);
  cf = @(t) cfN_Binomial(t,n,p,cfX);
  x = linspace(0,80,101);
  prob = [0.9 0.95 0.99];

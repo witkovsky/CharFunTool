@@ -1,16 +1,33 @@
-function cf = cfX_InverseGamma(t,alpha,beta)
-%cfX_InverseGamma(t,alpha,beta)  evaluates the characteristic function
-% cf(t) of the Inverse Gamma distribution with the parameters alpha (shape,
-% alpha > 0) and beta (rate, beta > 0), i.e. 
-%   cf(t) = cfX_InverseGamma(t,alpha,beta) 
-%         = 
-% For more details see WIKIPEDIA: 
-% https://en.wikipedia.org/wiki/Inverse-gamma_distribution
+function cf = cfX_InverseGamma(t,alpha,beta,coef,niid)
+%% cfX_InverseGamma
+%  Characteristic function of the INVERSE GAMMA distribution with the shape
+%  parameter alpha > 0 and the rate parameter beta > 0.
 %
-% SYNTAX
+%  cfX_InverseGamma is an ALIAS NAME of the more general function
+%  cf_InverseGamma, used to evaluate the characteristic function of a
+%  linear combination of independent INVERSE GAMMA distributed random
+%  variables.
+%
+%  The characteristic function of the GAMMA distribution is defined by
+%   cf(t) =  2 / gamma(alpha) * (-1i*beta*t).^(alpha/2) ...
+%                 * besselk(alpha,sqrt(-4i*beta*t)).
+%
+% SYNTAX:
 %  cf = cfX_InverseGamma(t,alpha,beta)
+%  cf = cfX_InverseGamma(t,alpha,beta,coef,niid)
 %
-% EXAMPLE1 (CF of the InverseGamma distribution with alpha = 2, beta = 2)
+% INPUTS:
+%  t     - vector or array of real values, where the CF is evaluated.
+%  alpha - the shape parameter alpha > 0. If empty, default value is alpha
+%          = 1.   
+%  beta  - the rate (1/scale) parameter beta > 0. If empty, default value
+%          is beta = 1.   
+%
+% WIKIPEDIA: 
+%  https://en.wikipedia.org/wiki/Inverse-gamma_distribution
+%
+% EXAMPLE 1:
+%  % CF of the Inverse Gamma distribution with alpha = 2, beta = 2
 %  alpha = 2;
 %  beta = 2;
 %  t = linspace(-20,20,501);
@@ -18,18 +35,21 @@ function cf = cfX_InverseGamma(t,alpha,beta)
 %  figure; plot(t,real(cf),t,imag(cf)),grid
 %  title('CF of the InverseGamma distribution with alpha = 2, beta = 2')
 %
-% EXAMPLE2 (PDF/CDF of the InverseGamma distribution with alpha = 2, beta = 2)
+% EXAMPLE 2:
+%  % PDF/CDF of the Inverse Gamma distribution with alpha = 2, beta = 2
 %  alpha = 2;
 %  beta = 2;
 %  x = linspace(0,15,101);
 %  prob = [0.9 0.95 0.99];
 %  clear options
 %  options.xMin = 0;
+%  options.SixSigmaRule = 10;
 %  options.N = 2^14;
 %  cf = @(t) cfX_InverseGamma(t,alpha,beta);
 %  result = cf2DistGP(cf,x,prob,options)
 %
-% EXAMPLE3 (PDF/CDF of the compound Binomial-InverseGamma distribution)
+% EXAMPLE 3:
+%  % PDF/CDF of the compound Binomial-InverseGamma distribution
 %  n = 25;  
 %  p = 0.3;
 %  alpha = 2;
@@ -43,50 +63,19 @@ function cf = cfX_InverseGamma(t,alpha,beta)
 %  result = cf2DistGP(cf,x,prob,options)
 %
 % REFERENCES:
-% [1] WITKOVSKY, V.: Computing the distribution of a linear combination of
-%     inverted gamma variables, Kybernetika 37(2001), 79-90.
-% [2] WITKOVSKY, V.: On the exact computation of the density and of
-%     the quantiles of linear combinations of t and F random
-%     variables. Journal of Statistical Planning and Inference 94
-%     (2001), 1–13.
-% [3] WITKOVSKY V. (2016). Numerical inversion of a characteristic
-%     function: An alternative tool to form the probability distribution of
-%     output quantity in linear measurement models. Acta IMEKO, 5(3), 32-44.  
-% [4] WITKOVSKY V., WIMMER G., DUBY T. (2016). Computing the aggregate loss
-%     distribution based on numerical inversion of the compound empirical
-%     characteristic function of frequency and severity. Working Paper.
-%     Insurance: Mathematics and Economics. 
-% [5] DUBY T., WIMMER G., WITKOVSKY V.(2016). MATLAB toolbox CRM for
-%     computing distributions of collective risk models.  Working Paper.
-%     Journal of Statistical Software.
+%  WITKOVSKY, V.: Computing the distribution of a linear combination of
+%  inverted gamma variables, Kybernetika 37 (2001), 79-90.
 
 % (c) 2016 Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 15-Nov-2016 13:36:26
 
 %% ALGORITHM
-%cf = cfX_InverseGamma(t,alpha,beta);
-
-%% CHECK THE INPUT PARAMETERS
-narginchk(3,1);
-if nargin < 2, alpha = []; end
+narginchk(1, 5);
+if nargin < 5, niid = []; end
+if nargin < 4, coef = []; end
 if nargin < 3, beta = []; end
+if nargin < 2, alpha = []; end
 
-%%
-if isempty(alpha)
-    alpha = 1;
-end
-
-if isempty(beta)
-    beta = 1;
-end
-
-%% Characteristic function of the Gamma distribution
-szt = size(t);
-t   = t(:);
-
-cf  = 2 / gamma(alpha);
-cf  = cf * (-1i*beta*t).^(alpha/2) .* besselk(alpha,sqrt(-4i*beta*t));
-cf  = reshape(cf,szt);
-cf(t==0) = 1;
+cf = cf_InverseGamma(t,alpha,beta,coef,niid);
 
 end

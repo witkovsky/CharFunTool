@@ -104,11 +104,11 @@ close all
  disp(result)
  
 %% *STUDENT T DISTRIBUTION*
-% |cfS_StudentT(t,df)| evaluates the characteristic function cf(t) of
+% |cfS_Student(t,df)| evaluates the characteristic function cf(t) of
 % the Student's t-distribution with the parameter df (degrees of freedom,
 % df>=1) computed for real vector argument t, i.e.   
 %
-% |cf(t) = cfS_StudentT(t,df) 
+% |cf(t) = cfS_Student(t,df) 
 %         = besselk(df/2,abs(t)*sqrt(df),1) * exp(-abs(t)*sqrt(df)) * ...
 %          (sqrt(df)*abs(t))^(df/2) / 2^(df/2-1)/gamma(df/2);|
 %
@@ -116,20 +116,20 @@ close all
 % <https://en.wikipedia.org/wiki/Student%27s_t-distribution>
 %
 % SYNTAX:
-% |cf = cfS_StudentT(t,df)|
+% |cf = cfS_Student(t,df)|
 
 %% I.4.a EXAMPLE: CF of the Student t-distribution, df = 3
 %
  df = 3;
  t = linspace(-5,5,501);
- cf = cfS_StudentT(t,df);
+ cf = cfS_Student(t,df);
  figure; plot(t,cf),grid
  title('CF of the Student t-distribution with df = 3')
 
 %% I.4.b EXAMPLE: PDF/CDF of the Student t-distribution, df = 3
 %
  df = 3;
- cf = @(t) cfS_StudentT(t,df);
+ cf = @(t) cfS_Student(t,df);
  x = linspace(-8,8,101);
  clear options
  options.SixSigmaRule = 8;
