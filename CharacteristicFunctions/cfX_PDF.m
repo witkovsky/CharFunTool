@@ -1,7 +1,7 @@
-function cf = cfX_PDF(t,pdfFun,tol)
-%cfX_PDF(t,pdfFun,tol) Characteristic function of the continuos
+function cf = cfX_PDF(t,pdfFun,method,tol)
+%cfX_PDF Computes the characteristic function of the continuos
 % distribution defined by its PDF function, pdfFun = @(x) pdf(x), here we
-% assume x>=0, computed for real  vector argument t.
+% assume x>=0, computed for real vector argument t.
 %
 % DEFINITION:
 %  cfX_PDF is based on the standard integral representation of the
@@ -9,7 +9,9 @@ function cf = cfX_PDF(t,pdfFun,tol)
 %  PDF (here PDF is represented by the function handle pdfFun(x) defined 
 %  for x >= 0). Then, 
 %    CF(t) = Integral_0^inf exp(i*t*x) * pdfFun(x) dx.
-%  By using the half-space Fourier integral transformation we get
+%  Alternatively, by using the half-space Fourier Integral Transformation
+%  (FIT), which could improve the highly oscillatory behaviour of the
+%  integrand function, we get    
 %    CF(t) = Integral_0^inf (i/t) * exp(-x) * pdfFun(i*x/t) dx.
 %  If we define the integrand as 
 %    funCF(t,x) = (i/t) * exp(-x) * pdfFun(i*x/t),
@@ -17,12 +19,16 @@ function cf = cfX_PDF(t,pdfFun,tol)
 %  evaluate the CF by the following (well behaved) integral:
 %    CF(t) = Integral_0^1 2x/(1-x)^3 * funCF(t,(x/(1-x))^2) dx.
 %
+%  Selection of the proper method (standard definition or the integral
+%  transformation FIT) depends on the distribution and the particular form
+%  of its PDF.   
+%
 %  cfX_PDF evaluates this integral by using the MATLAB built in function
 %  'integral', with precission specified by tolerance tol (default value is 
 %  tol = 1e-6).
 %
 % SYNTAX:
-%  cf = cfX_PDF(t,pdfFun,tol)
+%  cf = cfX_PDF(t,pdfFun,method,tol)
 %
 % INPUTS:
 %  t      - real vector, where the characteristic function CF(t) will
@@ -30,6 +36,11 @@ function cf = cfX_PDF(t,pdfFun,tol)
 %  pdfFun - function handle used as the PDF function with the argument x,
 %           for x >= 0. However, pdfFun(z) should accept as an input value 
 %           any complex matrix z,
+%  method - set the method used to compute the characteristic function,
+%           either method = 'def' (or the standard definition of CF by using
+%           the pdf) or method = 'fit' (by using the half-space Fourier
+%           integral transform of the pdf). Default value is method =
+%           'def'. 
 %  tol    - relative tolerance parameter used in the built-in Matlab
 %           numerical integration algorithm 'integral'. Default value is
 %           tol = 1e-6.
@@ -40,36 +51,48 @@ function cf = cfX_PDF(t,pdfFun,tol)
 %
 % EXAMPLE1 (CF of the Exponential distribution with mu = 1)
 %  pdfFun = @(x) exp(-x);
-%  t = linspace(-20,20,2^10+1)';
+%  t  = linspace(-20,20,2^10+1)';
 %  cf = cfX_PDF(t,pdfFun);
 %  plot(t,real(cf),t,imag(cf));grid
 %  title('Characteristic function of the Exponential distribution')
 %
 % EXAMPLE2 (CF of the LogNormal distribution with mu = 0, sigma = 1)
-%  mu = 0;
-%  sigma = 1;
+%  mu     = 0;
+%  sigma  = 1;
 %  pdfFun = @(x) exp(-0.5*((log(x)-mu)./sigma).^2)./(x.*sqrt(2*pi).*sigma);
-%  t = linspace(-20,20,2^10+1)';
-%  cf = cfX_PDF(t,pdfFun);
+%  method = 'fit';
+%  t  = linspace(-20,20,2^10+1)';
+%  cf = cfX_PDF(t,pdfFun,method);
 %  plot(t,real(cf),t,imag(cf));grid
 %  title('Characteristic function of the LogNormal distribution')
 %
 % EXAMPLE3 (CDF/PDF of the LogNormal distribution with mu = 0, sigma = 1)
-%  mu = 0;
-%  sigma = 1; 
+%  mu     = 0;
+%  sigma  = 1; 
 %  pdfFun = @(x) exp(-0.5*((log(x)-mu)./sigma).^2)./(x.*sqrt(2*pi).*sigma);
-%  cf = @(t) cfX_PDF(t,pdfFun);
+%  method = 'fit';
+%  cf = @(t) cfX_PDF(t,pdfFun,method);
 %  clear options
 %  options.xMin = 0;
 %  result = cf2DistGP(cf,[],[],options);
 %
-% EXAMPLE4 (CF of the Weibull distribution with a = 1.5, b = 1)
-%  a = 1.5;
-%  b = 1;
+% EXAMPLE4 (CF of the Weibull distribution with a = 1.5, and small b<1)
+%  a      = 1.5;
+%  b      = 0.5;
 %  pdfFun = @(x) (x./a).^(b-1) .* exp(-((x./a).^b)) .* b ./ a;
-%  t = linspace(-20,20,2^10+1)';
-%  tol = 1e-10;
-%  cf = cfX_PDF(t,pdfFun,tol);
+%  method = 'fit';
+%  t  = linspace(-20,20,2^10+1)';
+%  cf = cfX_PDF(t,pdfFun,method);
+%  plot(t,real(cf),t,imag(cf));grid
+%  title('Characteristic function of the Weibull distribution')
+%
+% EXAMPLE5 (CF of the Weibull distribution with a = 1.5, and large b > 1)
+%  a      = 1.5;
+%  b      = 3.5;
+%  pdfFun = @(x) (x./a).^(b-1) .* exp(-((x./a).^b)) .* b ./ a;
+%  method = 'def';
+%  t  = linspace(-10,10,2^10+1)';
+%  cf = cfX_PDF(t,pdfFun,method);
 %  plot(t,real(cf),t,imag(cf));grid
 %  title('Characteristic function of the Weibull distribution')
 %
@@ -90,10 +113,10 @@ function cf = cfX_PDF(t,pdfFun,tol)
 %     Journal of Statistical Software.
 
 % (c) 2016 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 15-Nov-2016 13:36:26
+% Ver.: 21-Jul-2017 20:53:22
 
 %% ALGORITHM
-%cf = cfX_PDF(t,pdfFun,tol);
+%cf = cfX_PDF(t,pdfFun,method,tol);
 
 %% CHECK THE INPUT PARAMETERS
 
@@ -101,10 +124,15 @@ if nargin < 1
     error(message('VW:cfX_PDF:TooFewInputs'));
 end
 if nargin < 2, pdfFun = []; end
-if nargin < 3, tol = []; end
+if nargin < 3, method = []; end
+if nargin < 4, tol = []; end
 
 if isempty(pdfFun)
     pdfFun = @(x) exp(-x);
+end
+
+if isempty(method) 
+    method = 'definition'; 
 end
 
 if isempty(tol) 
@@ -118,31 +146,57 @@ sz = size(t);
 t  = t(:);
 cf = ones(size(t));
 id = t~=0;
-cf(id) = integral(@(x) bsxfun(@times,funCF(pdfFun,t(id),(x/(1-x))^2), ...
-    2*x/(1-x)^3),0,1,'ArrayValued',true,'RelTol',reltol);
+
+switch lower(method)
+    case {'def','definition','standard','direct'}
+        cf(id) = integral(@(x) bsxfun(@times,funCFdef(pdfFun,t(id), ...
+            (x/(1-x))^2), 2*x/(1-x)^3),0,1,'ArrayValued',true, ...
+            'RelTol',reltol);
+    case {'fit','fourier','transform'}
+        cf(id) = integral(@(x) bsxfun(@times,funCFfit(pdfFun,t(id), ...
+            (x/(1-x))^2), 2*x/(1-x)^3),0,1,'ArrayValued',true, ...
+            'RelTol',reltol);
+    otherwise
+        cf(id) = integral(@(x) bsxfun(@times,funCFdef(pdfFun,t(id), ...
+            (x/(1-x))^2), 2*x/(1-x)^3),0,1,'ArrayValued',true, ...
+            'RelTol',reltol);
+end
 cf = reshape(cf,sz);
 
 end
-
-%% Function funCF
-function f = funCF(pdfFun,t,x)
-%funCF Integrand function of the integral representation of the
-%  characteristic function CF of the distribution defined by its pdfFun(x),
+%% Function funCFdef
+function f = funCFdef(pdfFun,t,x)
+%funCFdef Integrand function of the integral representation of the
+%  characteristic function CF defined by using the pdfFun(x), 
 %  for x >=0, and the real (vector) argument t.
 %
 % SYNTAX:
-%   f = funCF(pdfFun,t,x)
+%  f = funCFdef(pdfFun,t,x)
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 04-Apr-2016 18:03:14
+% Ver.: 21-Jul-2017 20:53:22
 
-%% ALGORITHM FUNCF
+%% ALGORITHM 
+x  = x(:)';
+f  = pdfFun(x) .* exp(1i*t*x);
+end
+%% Function funCFfit
+function f = funCFfit(pdfFun,t,x)
+%funCFfit Integrand function of the integral representation of the
+%  characteristic function CF of the distribution defined by using the
+%  half-space Fourier Integral Transform (FIT) of its pdfFun(x), 
+%  for x >=0, and the real (vector) argument t.
+%
+% SYNTAX:
+%    f = funCFfit(pdfFun,t,x)
+
+% Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 21-Jul-2017 20:53:22
+
+%% ALGORITHM 
 ti  = 1./t(:);
 x  = x(:)';
 ot = ones(size(ti));
 ox = ones(size(x));
-
-funT    = @(x,ti)(1i*ti*ox) .* pdfFun(1i*ti*x) .* exp(-ot*x);
-f       = funT(x,ti);
-
+f  = (1i*ti*ox) .* pdfFun(1i*ti*x) .* exp(-ot*x);
 end
