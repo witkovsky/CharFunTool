@@ -6,14 +6,34 @@ function cf = cfX_Weibull(t,alpha,beta,tol)
 %  cf(t) = cfX_Weibull(t,alpha,beta);
 %
 %  The closed-form analytic expression of the characteristic function of
-%  the Weibull distribution is unknown. The series expansion of the CF,
-%  numerically stable for abs(t)<1, is known. For more details see also
-%  WIKIPEDIA:
-%  https://en.wikipedia.org/wiki/Weibull_distribution
+%  the Weibull distribution is unknown. The series expansion of the CF
+%  based on moments of the distribution for beta >= 1, is numerically
+%  stable for abs(t*alpha) < 1. 
+%
+%  In particular, for beta > 1 and small t, say abs(t*alpha) < 1, we get 
+%   cf(t) = sum_{n=0}^inf (-1i*alpha*t)^n * gamma(1 + n/beta) / gamma(1+n)
+%         = FoxWrightPsi(1,1/beta,[],[],-1i*alpha*t).
+%  For  beta > 1 and large t, say abs(t*alpha) > 50, we can use the
+%  asymptotic expansion, based on the propeties of the H-function, derived
+%  by T. Duby (2017), 
+%   cf(t) = sum_{n=0}^inf 1/(alpha*1i*t)^n * gamma(1 + n/beta) / gamma(1+n)
+%         = FoxWrightPsi(1,1/beta,[],[],1./(alpha*1i*t)).
 %  
+%  For more details see also WIKIPEDIA:
+%  https://en.wikipedia.org/wiki/Weibull_distribution
+%
+%  Here, the characteristic function is computed directly from the
+%  definition of the characteristic function (and/or its alternative
+%  half-space Fourier Integral Transform (FIT), by numerical integration. 
+%
 % SYNTAX:
 %  cf = cfX_Weibull(t,alpha,beta)
 %  cf = cfX_Weibull(t,alpha,beta,tol)
+%
+% REMARK:
+%  This algorithm is still under development. It does not work properly
+%  for all combinations of the parameters alpha and beta, and/or the
+%  argument values t. 
 %
 % EXAMPLE1 (CF of the Weibull distribution with alpha=1, beta=1)
 %  alpha = 1;
@@ -109,20 +129,91 @@ t        = t(:);
 cf       = zeros(size(t));
 
 if beta > 1
+    id     = abs(t*alpha) < 0.99;
+    cf(id) = FoxWrightPsi(1,1/beta,[],[],1i*alpha*t(id));
+    id     = abs(t*alpha) >= 0.99 & abs(t*alpha) <= 10;
     method = 'def';
-    cf     = cfX_PDF(t,pdfFun,method,tol);
-elseif beta == 1
-    method = 'fit';
-    id     = abs(t/alpha) <= 0.99;
-    cf(id) = FoxWrightPsi(1,1/beta,[],[],-1i*alpha*t(id));
-    id     = abs(t/alpha) > 0.99;
     cf(id) = cfX_PDF(t(id),pdfFun,method,tol);
+    id     = abs(t*alpha) > 10;
+    %cf(id) = 1-FoxWrightPsi(1,1/beta,[],[],1./(1i*alpha*t(id)));
+    cf(id) = AsyHFun(t(id),alpha,beta);
+elseif beta == 1
+    id     = abs(t*alpha) < 0.9;
+    cf(id) = FoxWrightPsi(1,1/beta,[],[],1i*alpha*t(id),100);
+    id     = abs(t*alpha) >= 0.9 & abs(t*alpha) <= 1.1;
+    method = 'def';
+    cf(id) = cfX_PDF(t(id),pdfFun,method,tol);
+    id     = abs(t*alpha) > 1.1;
+    cf(id) = AsyHFun(t(id),alpha,beta,100);
 else
-    method = 'fit';
-    cf     = cfX_PDF(t,pdfFun,method,tol);
+    %     asyLim = (1-1/beta)^(1-1/beta);
+    %     id     = abs(t*alpha) < asyLim;
+    %     method = 'fit';
+    %     cf(id) = cfX_PDF(t(id),pdfFun,method,tol);
+    %     id     = abs(t*alpha) >= asyLim;
+    %     cf(id) = AsyHFun(t(id),alpha,beta,100);
+    cf = AsyHFun(t,alpha,beta,100);
 end
 
 cf       = reshape(cf,szt);
 cf(t==0) = 1;
+
+end
+%% Function AsyHFun
+function fun = AsyHFun(t,alpha,beta,N)
+% AsyHFun computes the aymptotic expansion (for large values t) of the
+% Weibull characteristic function based on method 1 by T. Duby (2017).
+
+% Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 18-Aug-2015 11:00:07
+
+%% CHECK THE INPUT PARAMETERS
+narginchk(3, 4);
+if nargin < 4, N = []; end
+
+if isempty(N)
+    N = 500;
+end
+
+%% ALGORITHM
+sz = size(t);
+t  = t(:);
+z  = -1i*t'*alpha;
+n  = (0:N)';
+
+fun = bsxfun(@plus,GammaLog((1+n)*beta)-GammaLog(1+n),-beta*(1+n)*log(z));
+fun = sum(bsxfun(@times,beta*(-1).^n,exp(fun)));
+
+fun(z==0) = 1;
+fun  = reshape(fun,sz);
+
+end
+%% Function AsyHFun
+function fun = AsyHFun2(t,alpha,beta,N)
+% AsyHFun computes the aymptotic expansion (for large values t) of the
+% Weibull characteristic function based on method 1 by T. Duby (2017).
+
+% Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 18-Aug-2015 11:00:07
+
+%% CHECK THE INPUT PARAMETERS
+narginchk(3, 4);
+if nargin < 4, N = []; end
+
+if isempty(N)
+    N = 500;
+end
+
+%% ALGORITHM
+sz = size(t);
+t  = t(:);
+z  = 1i*t'*alpha;
+n  = (0:N)';
+
+fun = bsxfun(@plus,GammaLog(1+n/beta)-GammaLog(1+n),-n*log(z));
+fun = sum(exp(fun));
+
+fun(z==0) = 1;
+fun  = reshape(fun,sz);
 
 end

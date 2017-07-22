@@ -19,8 +19,9 @@ function cf = cfX_PDF(t,pdfFun,method,tol)
 %  evaluate the CF by the following (well behaved) integral:
 %    CF(t) = Integral_0^1 2x/(1-x)^3 * funCF(t,(x/(1-x))^2) dx.
 %
-%  Selection of the proper method (standard definition of FIT) depends on
-%  the distribution and particular form of its PDF.  
+%  Selection of the proper method (standard definition or the integral
+%  transformation FIT) depends on the distribution and the particular form
+%  of its PDF.   
 %
 %  cfX_PDF evaluates this integral by using the MATLAB built in function
 %  'integral', with precission specified by tolerance tol (default value is 
