@@ -25,18 +25,9 @@ function cf = cfX_Weibull(t,alpha,beta,tol)
 %  For more details see also WIKIPEDIA:
 %  https://en.wikipedia.org/wiki/Weibull_distribution
 %
-%  Here, the characteristic function is computed directly from the
-%  definition of the characteristic function (and/or its alternative
-%  half-space Fourier Integral Transform (FIT), by numerical integration. 
-%
 % SYNTAX:
 %  cf = cfX_Weibull(t,alpha,beta)
 %  cf = cfX_Weibull(t,alpha,beta,tol)
-%
-% REMARK:
-%  This algorithm is still under development. It does not work properly
-%  for all combinations of the parameters alpha and beta, and/or the
-%  argument values t. 
 %
 % EXAMPLE1 (CF of the Weibull distribution with alpha=1, beta=1)
 %  alpha = 1;
