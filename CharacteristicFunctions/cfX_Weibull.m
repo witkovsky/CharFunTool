@@ -5,19 +5,22 @@ function cf = cfX_Weibull(t,alpha,beta,tol)
 %  elsewhere denoted as k, beta > 0), for real (vector) argument t, i.e.
 %  cf(t) = cfX_Weibull(t,alpha,beta);
 %
-%  The closed-form analytic expression of the characteristic function of
-%  the Weibull distribution is unknown. The series expansion of the CF
-%  based on moments of the distribution for beta >= 1, is numerically
-%  stable for abs(t*alpha) < 1. 
+%  The characteristic function of the Weibull distribution can be expressed
+%  by a special Fox H-function, see Duby (2017). In particular, the CF can
+%  be expressed by the Mellin-Barnes integral defining the Fox H-function.
+%  The standard (known) represetation of the CF by the series expansion
+%  based on the moments is numerically stable for abs(t*alpha) < 1 and beta
+%  >= 1, only.
 %
-%  In particular, for beta > 1 and small t, say abs(t*alpha) < 1, we get 
-%   cf(t) = sum_{n=0}^inf (-1i*alpha*t)^n * gamma(1 + n/beta) / gamma(1+n)
-%         = FoxWrightPsi(1,1/beta,[],[],-1i*alpha*t).
-%  For  beta > 1 and large t, say abs(t*alpha) > 50, we can use the
-%  asymptotic expansion, based on the propeties of the H-function, derived
-%  by T. Duby (2017), 
-%   cf(t) = sum_{n=0}^inf 1/(alpha*1i*t)^n * gamma(1 + n/beta) / gamma(1+n)
-%         = FoxWrightPsi(1,1/beta,[],[],1./(alpha*1i*t)).
+%  In particular,
+%   cf(t) = 1/(2i*pi)* int_L gamma(u)*gamma(1-u/beta)*(-1i*t*alpha)^(-u) du
+%         = H^{1,1}_{1,1}(-1i*t*alpha | (0,1/beta);(0,1))
+%         = FoxWrightPsi(1,1/beta,[],[],-1i*alpha*t)
+%         = sum_{n=0}^inf (-1i*alpha*t)^n * gamma(1 + n/beta) / gamma(1+n)
+%  For  beta < 1 we can use the asymptotic expansion based on the
+%  propeties of the H-functions, see Mathai et al. (2009) and Duby (2017),
+%   cf(t) = sum_{n=0}^inf (-1)^n * beta * (1/(alpha*1i*t)^(beta*(1+n)) ...
+%           * gamma(beta*(1+n)) / gamma(1+n)
 %  
 %  For more details see also WIKIPEDIA:
 %  https://en.wikipedia.org/wiki/Weibull_distribution
@@ -83,23 +86,27 @@ function cf = cfX_Weibull(t,alpha,beta,tol)
 %  result = cf2DistGP(cf,x,prob,options)
 %
 % REFERENCES:
-% [1] WITKOVSKY, V.: On the exact computation of the density and of
+% [1] DUBY T. (2017). Characteristic function of Weibull distribution.
+%     Work in Progress. 
+% [2] DUBY T., WIMMER G., WITKOVSKY V.(2016). MATLAB toolbox CRM for
+%     computing distributions of collective risk models.  Working Paper.
+%     Journal of Statistical Software.
+% [3] MATHAI, A.M., SAXENA, R.K., HAUBOLD, H.J. (2009). The H-function:
+%     theory and applications. Springer Science & Business Media. 
+% [4] WITKOVSKY, V.: On the exact computation of the density and of
 %     the quantiles of linear combinations of t and F random
 %     variables. Journal of Statistical Planning and Inference 94
 %     (2001), 1–13.
-% [2] WITKOVSKY V. (2016). Numerical inversion of a characteristic
+% [5] WITKOVSKY V. (2016). Numerical inversion of a characteristic
 %     function: An alternative tool to form the probability distribution of
 %     output quantity in linear measurement models. Acta IMEKO, 5(3), 32-44.  
-% [3] WITKOVSKY V., WIMMER G., DUBY T. (2016). Computing the aggregate loss
+% [6] WITKOVSKY V., WIMMER G., DUBY T. (2017). Computing the aggregate loss
 %     distribution based on numerical inversion of the compound empirical
-%     characteristic function of frequency and severity. Working Paper.
-%     Insurance: Mathematics and Economics. 
-% [4] DUBY T., WIMMER G., WITKOVSKY V.(2016). MATLAB toolbox CRM for
-%     computing distributions of collective risk models.  Working Paper.
-%     Journal of Statistical Software.
+%     characteristic function of frequency and severity. arXiv preprint
+%     arXiv:1701.08299.     
 
 % (c) 2016 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 15-Nov-2016 13:36:26
+% Ver.: 23-Jul-2017 11:09:09
 
 %% ALGORITHM
 %cf = cfX_Weibull(t,alpha,beta,tol);
@@ -121,51 +128,38 @@ alpha(alpha <= 0) = NaN;
 beta(beta <= 0) = NaN;
 
 %% EVALUATE THE CHARACTERISTIC FUNCTION: cfX_Weibull(t,alpha,beta)
-
-pdfFun   = @(x) (x./alpha).^(beta-1) .* ...
-           exp(-((x./alpha).^beta)) .* beta./alpha;
 szt      = size(t);
 t        = t(:);
 cf       = zeros(size(t));
 
 if beta > 1
-    id     = abs(t*alpha) < 0.99;
+    id     = abs(t*alpha) < 0.9;
     cf(id) = FoxWrightPsi(1,1/beta,[],[],1i*alpha*t(id));
-    id     = abs(t*alpha) >= 0.99 & abs(t*alpha) <= 10;
-    method = 'def';
-    cf(id) = cfX_PDF(t(id),pdfFun,method,tol);
-    id     = abs(t*alpha) > 10;
-    %cf(id) = 1-FoxWrightPsi(1,1/beta,[],[],1./(1i*alpha*t(id)));
-    cf(id) = AsyHFun(t(id),alpha,beta);
+    id     = abs(t*alpha) >= 0.9; 
+    cf(id) = cf_HIntegral(t(id),alpha,beta,tol);
 elseif beta == 1
     id     = abs(t*alpha) < 0.9;
     cf(id) = FoxWrightPsi(1,1/beta,[],[],1i*alpha*t(id),100);
     id     = abs(t*alpha) >= 0.9 & abs(t*alpha) <= 1.1;
-    method = 'def';
-    cf(id) = cfX_PDF(t(id),pdfFun,method,tol);
+    cf(id) = cf_HIntegral(t(id),alpha,beta,tol);
     id     = abs(t*alpha) > 1.1;
-    cf(id) = AsyHFun(t(id),alpha,beta,100);
+    cf(id) = cf_HAsymptotic(t(id),alpha,beta,100);
 else
-    %     asyLim = (1-1/beta)^(1-1/beta);
-    %     id     = abs(t*alpha) < asyLim;
-    %     method = 'fit';
-    %     cf(id) = cfX_PDF(t(id),pdfFun,method,tol);
-    %     id     = abs(t*alpha) >= asyLim;
-    %     cf(id) = AsyHFun(t(id),alpha,beta,100);
-    cf = AsyHFun(t,alpha,beta,100);
+    cf = cf_HAsymptotic(t,alpha,beta,100);
 end
 
 cf       = reshape(cf,szt);
 cf(t==0) = 1;
 
 end
-%% Function AsyHFun
-function fun = AsyHFun(t,alpha,beta,N)
-% AsyHFun computes the aymptotic expansion (for large values t) of the
-% Weibull characteristic function based on method 1 by T. Duby (2017).
+%% Function cf_HAsymptotic
+function cf = cf_HAsymptotic(t,alpha,beta,N)
+% cf_HAsymptotic Computes the Weibull characteristic function by using the
+% the aymptotic expansion (for large values t) of the Fox's H-function for
+% 0< beta < 1, see Duby (2017).
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 18-Aug-2015 11:00:07
+% Ver.: 23-Jul-2017 12:58:35
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(3, 4);
@@ -181,39 +175,127 @@ t  = t(:);
 z  = -1i*t'*alpha;
 n  = (0:N)';
 
-fun = bsxfun(@plus,GammaLog((1+n)*beta)-GammaLog(1+n),-beta*(1+n)*log(z));
-fun = sum(bsxfun(@times,beta*(-1).^n,exp(fun)));
+cf = bsxfun(@plus,GammaLog((1+n)*beta)-GammaLog(1+n),-beta*(1+n)*log(z));
+cf = sum(bsxfun(@times,beta*(-1).^n,exp(cf)));
 
-fun(z==0) = 1;
-fun  = reshape(fun,sz);
+cf(z==0) = 1;
+cf  = reshape(cf,sz);
 
 end
-%% Function AsyHFun
-function fun = AsyHFun2(t,alpha,beta,N)
-% AsyHFun computes the aymptotic expansion (for large values t) of the
-% Weibull characteristic function based on method 1 by T. Duby (2017).
+%% Function cf_HIntegral
+function cf = cf_HIntegral(t,alpha,beta,reltol)
+% cf_HIntegral Computes the Weibull characteristic function by using the
+% integral representation of the H-function, see Duby (2017).  
+
+% Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 23-Jul-2017 12:58:35
+
+%% CHECK THE INPUT PARAMETERS
+narginchk(3, 4);
+if nargin < 4, reltol = []; end
+
+if isempty(reltol)
+    reltol = 1e-6;
+end
+
+%% ALGORITHM
+sz = size(t);
+cf = integral(@(x) integrandFun(x,t,alpha,beta),-Inf,+Inf, ...
+    'ArrayValued',true,'RelTol',reltol)/(2*pi);
+cf = reshape(cf,sz);
+
+end
+%%
+function f = integrandFun(v,t,alpha,beta)
+% integrandFun Integrand of the integral representation of the H-function
+% based, see Duby (2017).   
+
+% Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 23-Jul-2017 12:58:35    
+%%
+g = beta/2;
+v = v(:);
+t = t(:)';
+f = exp((GammaLog(g+1i*v)+GammaLog(1-(g+1i*v)/beta))*ones(size(t)) ...
+     -(g+1i*v)*log(-1i*t*alpha));
+end
+function [pPSIq,c] = FoxWrightPsi(a,A,b,B,z,N)
+%FoxWrightPsi  The Fox-Wright Psi function pPSIq(a,A,b,B,z) for complex
+%  arguments ai, Ai, for i = 1,...,p, and bj, Bj for j = 1,...,q, and z.
+%  With a = [a1, a2, …, ap], A = [A1, A2, …, Ap], b = [b1, b2, …, bq], 
+%  and B = [B1, B2, …, Bq], the Fox-Wright Psi function of order p, q
+%  is defined as
+%   pPSIq(a,A,b,B,z) = \sum_{n=0}^\infty 
+%      \frac{\Gamma( a_1 + A_1 n )\cdots\Gamma( a_p + A_p n )}
+%           {\Gamma( b_1 + B_1 n )\cdots\Gamma( b_q + B_q n )} 
+%      \frac {z^n} {n!}.
+%
+%  This is a very simple implementation of the function pPSIq(a,A,b,B,z)
+%  which is computed directly from the definition - as a truncated power
+%  series. The sum is truncated to n terms (by default N = 500).
+% 
+%  An important property is the convergence criteria of the  functions
+%  depending on the values of p and q (the radius of convergence of a
+%  series as a variable of z).
+% 
+%  Numerical stability of the present algorithm could be strongly affected
+%  at z values close to the border of the convergence region.
+%
+% SYNTAX
+%    pPSIq = FoxWrightPsi(a,A,b,B,z)
+%    pPSIq = FoxWrightPsi(a,A,b,B,z,N)
+% 
+% For more details see WIKIPEDIA:
+% https://en.wikipedia.org/wiki/Fox%E2%80%93Wright_function
+%
+% EXAMPLE1
+%  a = 3; A = 1.5;
+%  b = 1.5; B = 2.5;
+%  z = 1i*(0:0.05:1)';
+%  pPSIq = FoxWrightPsi(a,A,b,B,z)
+%
+% EXAMPLE2 (Characteristic function of the Weibull distribution)
+%  lambda = 1; % scale parameter of the Weibull distribution
+%  k = 5;      % shape parameter of the Weibull distribution
+%  a = 1; A = 1/k;
+%  b = []; B = [];
+%  t = linspace(-20,20,501)';
+%  z = lambda*1i*t;
+%  cf = FoxWrightPsi(a,A,b,B,z);
+%  figure; plot(t,real(cf),t,imag(cf))
+%  title('Characteristic function of the Weibull(1,5) distribution')
+%  xlabel('t')
+%  ylabel('CF')
 
 % Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 18-Aug-2015 11:00:07
 
 %% CHECK THE INPUT PARAMETERS
-narginchk(3, 4);
-if nargin < 4, N = []; end
+narginchk(5, 6);
+if nargin < 6, N = []; end
 
 if isempty(N)
     N = 500;
 end
 
 %% ALGORITHM
-sz = size(t);
-t  = t(:);
-z  = 1i*t'*alpha;
+sz = size(z);
+z  = z(:);
+a  = a(:)';
+A  = A(:)';
+b  = b(:)';
+B  = B(:)';
 n  = (0:N)';
 
-fun = bsxfun(@plus,GammaLog(1+n/beta)-GammaLog(1+n),-n*log(z));
-fun = sum(exp(fun));
+c  = sum(GammaLog(bsxfun(@plus,a,bsxfun(@times,A,n))),2);
 
-fun(z==0) = 1;
-fun  = reshape(fun,sz);
+if ~isempty(b) || ~isempty(B)
+    c  = c - sum(GammaLog(bsxfun(@plus,b,bsxfun(@times,B,n))),2);
+end
+
+pPSIq  = sum(exp(bsxfun(@plus,c-GammaLog(n+1),n*log(z.'))));
+
+pPSIq(z==0) = complex(exp(c(1)));
+pPSIq  = reshape(pPSIq,sz);
 
 end
