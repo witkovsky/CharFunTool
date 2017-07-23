@@ -135,7 +135,7 @@ cf       = zeros(size(t));
 if beta > 1
     id     = abs(t*alpha) < 0.9;
     cf(id) = FoxWrightPsi(1,1/beta,[],[],1i*alpha*t(id));
-    id     = abs(t*alpha) >= 0.9; 
+    id     = abs(t*alpha) >= 0.9;
     cf(id) = cf_HIntegral(t(id),alpha,beta,tol);
 elseif beta == 1
     id     = abs(t*alpha) < 0.9;
@@ -145,7 +145,10 @@ elseif beta == 1
     id     = abs(t*alpha) > 1.1;
     cf(id) = cf_HAsymptotic(t(id),alpha,beta,100);
 else
-    cf = cf_HAsymptotic(t,alpha,beta,100);
+    id     = abs(t)>0 & abs(t*alpha) < 1.1;
+    cf(id) = cf_HIntegral(t(id),alpha,beta,tol);
+    id     = abs(t*alpha) >= 1.1;
+    cf(id) = cf_HAsymptotic(t(id),alpha,beta,100);
 end
 
 cf       = reshape(cf,szt);
