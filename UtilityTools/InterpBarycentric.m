@@ -47,8 +47,8 @@ function [funNew,xNew] = InterpBarycentric(x,fun,xNew,options)
 %   prob = linspace(1e-4,1-1e-4,201);
 %   figure;plot(result.cdf,result.x,prob,QF(prob),'.');
 
-% (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 15-Jan-2017 17:28:22
+% Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 24-Jul-2017 10:06:48
 
 %% FUNCTION
 %  [funNew,xNew] = InterpBarycentric(x,fun,xNew,options);

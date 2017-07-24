@@ -47,7 +47,10 @@ function [pPSIq,c] = FoxWrightPsi(a,A,b,B,z,N)
 %  ylabel('CF')
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 18-Aug-2015 11:00:07
+% Ver.: 24-Jul-2017 10:06:48
+
+%% FUNCTION
+%  [pPSIq,c] = FoxWrightPsi(a,A,b,B,z,N)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(5, 6);

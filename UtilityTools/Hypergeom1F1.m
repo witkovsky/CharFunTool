@@ -27,9 +27,12 @@ function f = Hypergeom1F1(a,b,z)
 % NOTE1: the functions Hypergeom1F1 and KummerM are equivalent
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 07-Aug-2015 10:19:29
+% Ver.: 24-Jul-2017 10:06:48
 
-%% CHECK THE PARAMETERS
+%% FUNCTION
+%  f = Hypergeom1F1(a,b,z)
+
+%% CHECK THE INPUT PARAMETERS
 sz = size(z);
 
 if max(sz) > 1

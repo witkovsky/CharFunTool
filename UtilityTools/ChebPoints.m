@@ -12,10 +12,13 @@ function pts = ChebPoints(N,interval)
 %   plot(x,f,xNew,fNew,'.')
 %   disp([xNew fNew sin(xNew)])
 
-% (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
+% Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 24-Jul-2017 10:06:48
-%% CHECK THE INPUT PARAMETERS
 
+%% FUNCTION
+%  pts = ChebPoints(N,interval)
+
+%% CHECK THE INPUT PARAMETERS
 narginchk(1, 2);
 if nargin < 2, interval = []; end
 

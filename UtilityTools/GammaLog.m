@@ -1,21 +1,31 @@
-function [f] = GammaLog(z)
-% GAMMALOG  Natural Log of the Gamma function valid in the entire complex
+function f = GammaLog(z)
+% GammaLog  Natural Log of the Gamma function valid in the entire complex
 %           plane. This routine uses an excellent Lanczos series
 %           approximation for the complex ln(Gamma) function.
 %
-%usage: [f] = gammalog(z)
+% SYNTAX:
+%  f = GammaLog(z)
 %             z may be complex and of any size.
 %             Also  n! = prod(1:n) = exp(gammalog(n+1))
 %
-%References: C. Lanczos, SIAM JNA  1, 1964. pp. 86-96
-%            Y. Luke, "The Special ... approximations", 1969 pp. 29-31
-%            Y. Luke, "Algorithms ... functions", 1977
-%            J. Spouge,  SIAM JNA 31, 1994. pp. 931
-%            W. Press,  "Numerical Recipes"
-%            S. Chang, "Computation of special functions", 1996
+% REFERENCES: 
+%  C. Lanczos, SIAM JNA  1, 1964. pp. 86-96
+%  Y. Luke, "The Special ... approximations", 1969 pp. 29-31
+%  Y. Luke, "Algorithms ... functions", 1977
+%  J. Spouge,  SIAM JNA 31, 1994. pp. 931
+%  W. Press,  "Numerical Recipes"
+%  S. Chang, "Computation of special functions", 1996
+%
+% AUTHOR:
+%  Paul Godfrey, pgodfrey@conexant.com, 07-13-01
 
-% Paul Godfrey, pgodfrey@conexant.com, 07-13-01
+% Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 24-Jul-2017 10:06:48
 
+%% FUNCTION
+%  f = GammaLog(z)
+
+%% CHECK THE INPUT PARAMETERS
 siz = size(z);
 z   = z(:);
 zz  = z;
@@ -27,6 +37,7 @@ if ~isempty(p)
     z(p) = -z(p);
 end
 
+%% ALGORITHM
 %Lanczos approximation for the complex plane
 
 g=607/128; % best results when 4<=g<=5
