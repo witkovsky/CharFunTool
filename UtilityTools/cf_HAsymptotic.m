@@ -4,7 +4,10 @@ function cf = cf_HAsymptotic(t,alpha,beta,N)
 % 0< beta < 1, see Duby (2017).
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 23-Jul-2017 12:58:35
+% Ver.: 24-Jul-2017 10:06:48
+
+%% FUNCTION
+%  cf = cf_HAsymptotic(t,alpha,beta,N)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(3, 4);

@@ -1,4 +1,4 @@
-function [diff1,diff2,diff1B,diff2B] = numDiff(fun,x,h)
+function [diff1,diff2,diff1B,diff2B] = NumDiff(fun,x,h)
 % NUMDIFF  Auxiliary function to calculate numerical (first) derivative.
 %          Given below is the five point method for the first derivative
 %          (five-point stencil in one dimension). See  Abramowitz & Stegun,
@@ -7,8 +7,12 @@ function [diff1,diff2,diff1B,diff2B] = numDiff(fun,x,h)
 %          https://en.wikipedia.org/wiki/Finite_difference_coefficient
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 12-Mar-2015 08:36:01
+% Ver.: 24-Jul-2017 10:06:48
 
+%% FUNCTION
+%  [diff1,diff2,diff1B,diff2B] = NumDiff(fun,x,h)
+
+%% CHECK THE INPUT PARAMETERS
 if nargin < 3
     h = 1e-3;
 end
@@ -17,6 +21,7 @@ if nargin < 3
     x = 0;
 end
 
+%% ALGORITHM
 diff1 = (-fun(x+2*h)+8*fun(x+h)-8*fun(x-h)+fun(x-2*h))/(12*h);
 
 diff2 = (fun(x-4*h) - 16*fun(x-3*h) + 64*fun(x-2*h) + 16*fun(x-h) - 130*fun(x) + ...

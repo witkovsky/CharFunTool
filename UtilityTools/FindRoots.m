@@ -52,19 +52,21 @@ function [roots,warning,err] = FindRoots(fun,A,B,n,isplot)
 % B   = 200;
 % roots = FindRoots(fun,A,B)
 %
-% References
+% REFERENCES:
 %   Day, D., Romero, L. (2005): Roots Of Polynomials Expressed In Terms Of
 %   Orthogonal Polynomials. SIAM Journal on Numerical Analysis, 43,
 %   1969 - 1987.
 %
-% Acknowledgements	
+% ACKNOWLEDGEMENS:
 % Chebfun inspired this file. For more details see http://www.chebfun.org/
 
-% Viktor Witkovsky (witkovsky@savba.sk)
-% Ver.: 02-Feb-2016 09:08:42
+% Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 24-Jul-2017 10:06:48
 
+%% FUNCTION
+%  [roots,warning,err] = FindRoots(fun,A,B,n,isplot)
 
-%% SET THE DEFAULT VALUES (input parameters)
+%% CHECK THE INPUT PARAMETERS
 narginchk(1, 5);
 if nargin < 5, isplot = []; end
 if nargin < 4, n = []; end
@@ -97,7 +99,7 @@ else
     divisionrule = 0;
 end
 
-%% Estimate the roots of the real function fun over (A,B)
+%% ALGORITHM
 [cgl, M] = setupChebyshev(n);
 
 roots = [];
