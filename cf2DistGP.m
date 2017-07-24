@@ -218,7 +218,7 @@ end
 
 % Other options parameters
 if ~isfield(options, 'qf0')
-    options.qf0 = (cf(1e-4)-cf(-1e-4))/(2e-4*1i);
+    options.qf0 = real((cf(1e-4)-cf(-1e-4))/(2e-4*1i));
 end
 
 if ~isfield(options, 'maxiter')

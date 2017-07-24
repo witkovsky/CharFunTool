@@ -53,24 +53,25 @@ function cf = cfX_Weibull(t,alpha,beta,tol)
 %  plot(t,real(cf),t,imag(cf));grid
 %  title('Characteristic function of the Weibull distribution')
 %
-% EXAMPLE4 (CDF/PDF of the  Weibull distribution with alpha=1, beta=1)
+% EXAMPLE4 (CDF/PDF of the  Weibull distribution with alpha=1, beta=0.75)
 %  alpha = 1;
-%  beta  = 1;
-%  x    = linspace(0,7,101);
+%  beta  = 0.75;
+%  x    = linspace(0,10,101);
 %  prob = [0.9 0.95 0.99];
 %  clear options
 %  options.xMin = 0;
+%  options.xMax = 20;
 %  options.N = 2^10;
 %  cf = @(t) cfX_Weibull(t,alpha,beta);
 %  result = cf2DistGP(cf,x,prob,options)
 %
 % EXAMPLE5 (PDF/CDF of the compound Poisson-Weibull distribution)
 %  alpha = 1;
-%  beta = 1;
+%  beta = 0.75;
 %  lambda = 10;
 %  cfX = @(t)cfX_Weibull(t,alpha,beta);
 %  cf = @(t) cfN_Poisson(t,lambda,cfX);
-%  x = linspace(0,35,101);
+%  x = linspace(0,40,101);
 %  prob = [0.9 0.95 0.99];
 %  clear options
 %  options.isCompound = true;
