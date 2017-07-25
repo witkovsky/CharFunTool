@@ -134,17 +134,29 @@ cf       = zeros(size(t));
 
 if beta > 1
     % CF by using direct integration with exponential PDF
-    cf     = cfWintegral(t,alpha,beta,tol);
+    id     = abs(t*alpha) < 10*beta^(9/10);
+    if any(id)
+        cf(id) = cfWintegral(t(id),alpha,beta,tol);
+    end
+    % CF by using the asymptotic expansion of the H-function for large t
+    id     = abs(t*alpha) >= 10*beta^(9/10);
+    if any(id)
+        cf(id) = cfHasymptotic(t(id),alpha,beta);
+    end
 elseif beta == 1
     % CF by using the exact CF of the exponential distribution
     cf     = alpha ./ (alpha - 1i*t);
 else
     % CF by using the inegral representation of the H-function
     id     = abs(t)>0 & abs(t*alpha) < 1.1;
+    if any(id)
+    end
     cf(id) = cfHintegral(t(id),alpha,beta,tol);
     % CF by using the asymptotic expansion of the H-function
     id     = abs(t*alpha) >= 1.1;
-    cf(id) = cfHasymptotic(t(id),alpha,beta,100);
+    if any(id)
+        cf(id) = cfHasymptotic(t(id),alpha,beta,100);
+    end
 end
 
 cf       = reshape(cf,szt);
@@ -253,10 +265,15 @@ t  = t(:);
 z  = -1i*t'*alpha;
 n  = (0:N)';
 
+% Optimum stopping rule for the (divergent) asymptotic expansion
 cf = bsxfun(@plus,GammaLog((1+n)*beta)-GammaLog(1+n),-beta*(1+n)*log(z));
-cf = sum(bsxfun(@times,beta*(-1).^n,exp(cf)));
+[~,id] = min(max(-325,real(cf)));
+
+ % CF by using the asymptotic expansion of the H-function
+cf = cumsum(bsxfun(@times,beta*(-1).^n,exp(cf)));
+cf = diag(cf(id,:));
 
 cf(z==0) = 1;
-cf  = reshape(cf,sz);
+cf = reshape(cf,sz);
 
 end
