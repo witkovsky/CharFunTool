@@ -134,12 +134,12 @@ cf       = zeros(size(t));
 
 if beta > 1
     % CF by using direct integration with exponential PDF
-    id     = abs(t*alpha) < 10*(1+beta^(9/10));
+    id     = abs(t*alpha) < 25*(1+beta^(9/10));
     if any(id)
         cf(id) = cfWintegral(t(id),alpha,beta,tol);
     end
     % CF by using the asymptotic expansion of the H-function for large t
-    id     = abs(t*alpha) >= 10*(1+beta^(9/10));
+    id     = abs(t*alpha) >= 25*(1+beta^(9/10));
     if any(id)
         cf(id) = cfHasymptotic(t(id),alpha,beta);
     end
