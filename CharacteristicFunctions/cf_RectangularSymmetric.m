@@ -76,9 +76,10 @@ if isempty(coef), coef = 1; end
 if isempty(niid), niid = 1; end
 
 %% Characteristic function
-szt = size(t);
-t   = t(:);
-cf  = prod(sin(t*coef)./(t*coef),2);
+szt  = size(t);
+t    = t(:);
+coef = coef(:)';
+cf   = prod(sin(t*coef)./(t*coef),2);
 
 cf  = reshape(cf,szt);
 cf(t==0) = 1;

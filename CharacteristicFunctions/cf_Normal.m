@@ -12,7 +12,7 @@ function cf = cf_Normal(t,mu,sigma,coef,niid)
 %   cf(t) = exp(1i*(coef'*mu)*t - (1/2)*(coef^2'*sigma^2)*t^2 )
 %
 % SYNTAX:
-%  cf = cf_Normal(t,alpha,beta,coef,n)
+%  cf = cf_Normal(t,mu,sigma,coef,niid)
 %
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
