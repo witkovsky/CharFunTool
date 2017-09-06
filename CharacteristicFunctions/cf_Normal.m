@@ -13,7 +13,7 @@ function cf = cf_Normal(t,mu,sigma,coef,niid)
 %
 % SYNTAX:
 %  cf = cf_Normal(t,mu,sigma,coef,niid)
-%0
+%
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
 %  mu    - vector of the 'location' parameters mu in R. If empty, default
