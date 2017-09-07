@@ -1,6 +1,6 @@
 function cf = cf_PDF(t,pdfFun,A,B,nPts)
 %cf_PDF Computes the characteristic function of the continuos
-% distribution defined from its PDF function.
+% distribution defined by its PDF function.
 %
 % DEFINITION:
 %  cf_PDF is evaluated from the standard integral representation of the
@@ -106,13 +106,14 @@ if isempty(A)
     A = -Inf;
 end
 
-if ~isfinite(A)
-    A = -1.3748e+15;
-end
-
-if ~isfinite(B)
-    B = 1.3748e+15;
-end
+% % Set proper rules for dealing with infinite A and/or B
+% if ~isfinite(A)
+%     A = -1e2;
+% end
+% 
+% if ~isfinite(B)
+%     B = 1e2;
+% end
 
 %% BAKHVALOV-VASILEVA ALGORITHM
 
