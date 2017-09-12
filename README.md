@@ -66,9 +66,11 @@ For a more advanced distribution, based on the theory of Gaussian Processes, typ
 
  prob   = [0.9 0.95 0.99];
  x      = linspace(0,3,500);
+
  options.N = 2^12;
  options.xMin = 0;
  options.SixSigmaRule = 10;
+
  result = cf2DistGP(cf,x,prob,options)    % Invert the CF to get the CDF and PDF 
 ```
 
