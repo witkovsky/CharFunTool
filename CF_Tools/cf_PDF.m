@@ -58,7 +58,6 @@ function cf = cf_PDF(t,pdfFun,A,B,nPts)
 %  cf = cf_PDF(t,pdfFun,A,B,nPts);
 %  plot(t,real(cf),t,imag(cf));grid
 %  title('Characteristic function of the Normal distribution')
-
 %
 % EXAMPLE3 (CF of the Exponential distribution with lambda = 1)
 %  pdfFun = @(x) exp(-x);
