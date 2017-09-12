@@ -1,8 +1,7 @@
 function cf = cf_PDF(t,pdfFun,A,B,nPts)
 %cf_PDF Computes the characteristic function of the continuos
-% distribution defined by its PDF function.
+%  distribution defined by its PDF function.
 %
-% DEFINITION:
 %  cf_PDF is evaluated from the standard integral representation of the
 %  characteristic function of the continuous distribution defined by its
 %  PDF (here represented by the function handle pdfFun), i.e.
@@ -11,9 +10,13 @@ function cf = cf_PDF(t,pdfFun,A,B,nPts)
 %  the oscillatory Fourier integrals, which is based on approximation of
 %  the PDF function by the Legendre polynomials and observation that
 %  Fourier transform of the Legendre polynomials is related to the Belssel
-%  J functions.  
+%  J functions. For more details see Evans and Webster (1999).
 %
-% For more details see Evans and Webster (1999).
+% REMARK:
+%  cf_PDF is suggested for situations when the PDF can be well approximated
+%  by the nth order polynomial over known (given) support interval [A,B],
+%  as e.g. the uniform distribution PDF = 1 over [0,1].
+%  Otherwise the computed result could be misleading!
 %
 % SYNTAX:
 %  cf = cf_PDF(t,pdfFun,A,B,nPts)
@@ -35,7 +38,29 @@ function cf = cf_PDF(t,pdfFun,A,B,nPts)
 %  cf     - (complex) vector of the characteristic function values,
 %            evalated at the required t, i.e. CF(t).
 %
-% EXAMPLE1 (CF of the Exponential distribution with lambda = 1)
+% EXAMPLE1 (CF of the Uniform distribution on the interval [0,1])
+%  pdfFun = @(x) 1;
+%  A = 0;
+%  B = 1;
+%  nPts   = 1;
+%  t  = linspace(-50,50,2^10+1)';
+%  cf = cf_PDF(t,pdfFun,A,B,nPts);
+%  plot(t,real(cf),t,imag(cf));grid
+%  title('Characteristic function of the Uniform distribution')
+%
+% EXAMPLE2 (CF of the Normal distribution on the interval [-8,8])
+%  % !!The PDF cannot be well approximated by the 20th degree polynomial!
+%  pdfFun = @(x) exp(-x.^2/2)/sqrt(2*pi);
+%  A = -8;
+%  B = 8;
+%  nPts   = 20;
+%  t  = linspace(-10,10,2^10+1)';
+%  cf = cf_PDF(t,pdfFun,A,B,nPts);
+%  plot(t,real(cf),t,imag(cf));grid
+%  title('Characteristic function of the Normal distribution')
+
+%
+% EXAMPLE3 (CF of the Exponential distribution with lambda = 1)
 %  pdfFun = @(x) exp(-x);
 %  A = 0;
 %  B = 100;
@@ -45,7 +70,7 @@ function cf = cf_PDF(t,pdfFun,A,B,nPts)
 %  plot(t,real(cf),t,imag(cf));grid
 %  title('Characteristic function of the Exponential distribution')
 %
-% EXAMPLE2 (CF of the LogNormal distribution with mu = 0, sigma = 1)
+% EXAMPLE4 (CF of the LogNormal distribution with mu = 0, sigma = 1)
 %  mu     = 0;
 %  sigma  = 1;
 %  pdfFun = @(x) exp(-0.5*((log(x)-mu)./sigma).^2)./(x.*sqrt(2*pi).*sigma);
@@ -57,7 +82,7 @@ function cf = cf_PDF(t,pdfFun,A,B,nPts)
 %  plot(t,real(cf),t,imag(cf));grid
 %  title('Characteristic function of the LogNormal distribution')
 %
-% EXAMPLE3 (CF of the Weibull distribution with a = 1.5, and large b > 1)
+% EXAMPLE5 (CF of the Weibull distribution with a = 1.5, and large b > 1)
 %  a      = 1.5;
 %  b      = 3.5;
 %  pdfFun = @(x) (x./a).^(b-1) .* exp(-((x./a).^b)) .* b ./ a;

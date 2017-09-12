@@ -150,12 +150,16 @@ else
     % CF by using the inegral representation of the H-function
     id     = abs(t)>0 & abs(t*alpha) < 1.1;
     if any(id)
+        cf(id) = cfHintegral(t(id),alpha,beta,tol);
     end
-    cf(id) = cfHintegral(t(id),alpha,beta,tol);
     % CF by using the asymptotic expansion of the H-function
     id     = abs(t*alpha) >= 1.1;
     if any(id)
         cf(id) = cfHasymptotic(t(id),alpha,beta,100);
+        % pdfFun = @(x) (x./alpha).^(beta-1) .* exp(-((x./alpha).^beta)) ...
+        %          .* beta ./ alpha;
+        % B = 3*alpha*sqrt(gamma(1+2/beta)-(gamma(1+1/beta))^2);
+        % cf(id) = cf_PDF(t(id),pdfFun,0,B,250);
     end
 end
 
