@@ -35,13 +35,11 @@ function cf = cf_Conv(t,cfX,coef,n)
 %     cfX = @(t) cfX_ChiSquared(t,df);
 %     coef = 1./(1:100);
 %     cf = @(t) cf_Conv(t,cfX,coef);
-%     figure
 %     t = linspace(-10,10,501);
 %     plot(t, real(cf(t)),t,imag(cf(t)));grid on
 %     title('CF of a Linear Combination of iid Chi-Square RVs')
 %     clear options;
 %     options.xMin = 0;
-%     figure
 %     result = cf2DistGP(cf,[],[],options)
 %
 % EXAMPLE:
@@ -54,11 +52,9 @@ function cf = cf_Conv(t,cfX,coef,n)
 %     cfE   = @(t) cfE_Empirical(t,data);
 %     coef = 1./[ 1 2 3 4 5 6 7 8 9 10];
 %     cf    = @(t) cf_Conv(t,cfE,coef);
-%     figure
 %     t = linspace(-10,10,501);
 %     plot(t, real(cf(t)),t,imag(cf(t)));grid on
 %     title('CF of a Linear Combination of iid RVs')
-%     figure
 %     result = cf2DistGP(cf)
 
 % Copyright (c) 2017, Viktor Witkovsky (witkovsky@savba.sk)
