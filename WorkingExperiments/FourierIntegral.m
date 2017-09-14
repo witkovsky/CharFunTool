@@ -63,6 +63,20 @@ function [Q,Fw] = FourierIntegral(omega,fun,A,B,nPts)
 %  figure
 %  plot(t,real(cf),t,imag(cf))
 %  title('Characteristic function: Fourier transform of Beta PDF')
+%
+% EXAMPLE 4 (CF of the Weibull distribution with a = 1.5, and b = 0.5)
+%  a   = 1.5;
+%  b   = 3.5;
+%  pdf = @(x) (x./a).^(b-1) .* exp(-((x./a).^b)) .* b ./ a;
+%  A   = 0;
+%  B   = 15;
+%  t   = linspace(-10,10,2^10+1)';
+%  [cf,coefs]  = FourierIntegral(t,pdf,A,B);
+%  plot(coefs,'o-');grid
+%  title('Chebyshev coefficients')
+%  figure
+%  plot(t,real(cf),t,imag(cf));grid
+%  title('Characteristic function of the Weibull distribution')
 %   
 % REFERENCES: 
 % [1] BAKHVALOV, N.S., VASILEVA, L.G. Evaluation of the integrals of
@@ -103,35 +117,34 @@ end
 %% ALGORITHM
 
 % Transform Fun from [A,B] to [-1,1]
-sz        = size(omega);
-scale     = (B - A) / 2;
-shift     = (B + A) / 2;
-omega     = omega(:)';
-id        = omega < 0;
-omega(id) = -omega(id);
-K         = scale * exp(1i*omega*shift);
-Omega     = scale * omega;
-s         = 0:nPts;
-k         = s'; 
-F         = fun(scale * cos(pi*s/nPts) + shift);
+sz          = size(omega);
+scale       = (B - A) / 2;
+shift       = (B + A) / 2;
+omega       = omega(:)';
+id          = omega < 0;
+omega(id)   = -omega(id);
+K           = scale * exp(1i*omega*shift);
+Omega       = scale * omega;
+s           = 0:nPts;
+k           = s'; 
+F           = fun(scale * cos(pi*s/nPts) + shift);
 
 % Coefficients of Chebyshev series expansion of the function F
-w         = cos(pi * k * s / nPts);
-F(1)      = F(1)/2;
-F(nPts+1) = F(nPts+1)/2;
-Fw        = 2 * sum(bsxfun(@times,w,F),2) / nPts;
+w           = cos(pi * k * s / nPts);
+F(1)        = F(1)/2;
+F(nPts+1)   = F(nPts+1)/2;
+Fw          = 2 * sum(bsxfun(@times,w,F),2) / nPts;
 
 % Fourier integrals of the Chebyshev polynomials
-I         = ChebIntegral(nPts,Omega);
-I(1,:)    = I(1,:)/2;
-I(nPts,:) = I(nPts,:)/2;
+I           = ChebIntegral(nPts,Omega);
+I(1,:)      = I(1,:)/2;
+I(nPts+1,:) = I(nPts+1,:)/2;
 
 % Fourier integral Q = Integral_A^B  fun(x) * exp(i*omega*x) dx
-Q         = sum(bsxfun(@times,I,Fw));
-Q         = K .* Q;
-Q(id)     = conj(Q(id));
-Q         = reshape(Q,sz);
-
+Q           = sum(bsxfun(@times,I,Fw));
+Q           = K .* Q;
+Q(id)       = conj(Q(id));
+Q           = reshape(Q,sz);
 end
 %% Function ChebIntegral
 function I = ChebIntegral(n,t)
