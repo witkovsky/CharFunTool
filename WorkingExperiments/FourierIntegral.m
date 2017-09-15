@@ -89,12 +89,17 @@ function [Q,Fw] = FourierIntegral(omega,fun,A,B,nPts)
 % [3] EVANS, G.A.; WEBSTER, J.R. A comparison of some methods for the
 %     evaluation of highly oscillatory integrals. Journal of Computational
 %     and Applied Mathematics, 1999, 112(1): 55-69.
+%
+% CREDENTIALS:
+%  'FourierIntegral' was developed based on ideas of the algorithm
+%  'integral_oscillatory_Chebyshev' created by Tomy Duby, OAA Computing
+%  Ltd (tomy@oaacomputing.co.uk).
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 11-Sep-2017 13:41:45
+% Ver.: 15-Sep-2017 14:17:51
 
-%% ALGORITHM
-%Q = FourierIntegral(omega,fun,A,B,options)
+%% ALGORITHM CALL
+%[Q,Fw] = FourierIntegral(omega,fun,A,B,nPts)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(2,5);
