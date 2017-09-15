@@ -65,6 +65,7 @@ function cf = cfE_Empirical(t,data,cfX)
 %  options.N = 2^12;
 %  options.xMin = 0;
 %  options.SixSigmaRule = 10;
+%  result = cf2DistGP(cf,x,prob,options)
 %  
 % REFERENCES:
 %  WITKOVSKY V., WIMMER G., DUBY T. (2017). Computing the aggregate

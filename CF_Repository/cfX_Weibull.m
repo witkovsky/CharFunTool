@@ -5,15 +5,23 @@ function cf = cfX_Weibull(t,alpha,beta,tol)
 %  elsewhere denoted as k, beta > 0), for real (vector) argument t, i.e.
 %  cf(t) = cfX_Weibull(t,alpha,beta);
 %
-%  The characteristic function of the Weibull distribution can be expressed
-%  by a special Fox H-function, see Duby (2017). In particular, the CF can
-%  be expressed by the Mellin-Barnes integral defining the Fox H-function.
-%  The standard (known) represetation of the CF by the series expansion
-%  based on the moments is numerically stable for abs(t*alpha) < 1 and beta
-%  >= 1, only.
+%  If W ~ Weibull(alpha,beta) then W = alpha * X^(1/beta), where X ~
+%  Exponential(1). In particular, if alpha=1 and beta=1 W ~ Exponential(1).
+%  From that, the integral definition of the characteristic function of the
+%  Weilbull random variable W, by using PDF of the Exponential(1)
+%  distribution, is given by  
+%   cf(t) = int_0^Inf exp(1i*t * alpha*x^(1/beta)) * exp(-x) dx
 %
-%  In particular,
-%   cf(t) = 1/(2i*pi)* int_L gamma(u)*gamma(1-u/beta)*(-1i*t*alpha)^(-u) du
+%  Alternatively, the characteristic function of the Weibull distribution
+%  can be expressed by a special Fox H-function, see Duby (2017). In
+%  particular, the CF can be expressed by the Mellin-Barnes integral
+%  defining the Fox H-function. The standard (known) represetation of the
+%  CF by the series expansion based on the moments is numerically stable
+%  for abs(t*alpha) < 1 and beta >= 1, only.
+%
+%  In summary,
+%   cf(t) = int_0^Inf exp(1i*t * alpha*x^(1/beta)) * exp(-x) dx 
+%         = 1/(2i*pi)* int_L gamma(u)*gamma(1-u/beta)*(-1i*t*alpha)^(-u) du
 %         = H^{1,1}_{1,1}(-1i*t*alpha | (0,1/beta);(0,1))
 %         = FoxWrightPsi(1,1/beta,[],[],-1i*alpha*t)
 %         = sum_{n=0}^inf (-1i*alpha*t)^n * gamma(1 + n/beta) / gamma(1+n)
@@ -97,8 +105,8 @@ function cf = cfX_Weibull(t,alpha,beta,tol)
 %     characteristic function of frequency and severity. arXiv preprint
 %     arXiv:1701.08299.     
 
-% (c) 2016 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 23-Jul-2017 11:09:09
+% Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 24-Jul-2017 18:01:45
 
 %% ALGORITHM
 %cf = cfX_Weibull(t,alpha,beta,tol);
@@ -125,31 +133,127 @@ t        = t(:);
 cf       = zeros(size(t));
 
 if beta > 1
-    id     = abs(t*alpha) < 0.9;
-    cf(id) = FoxWrightPsi(1,1/beta,[],[],1i*alpha*t(id));
-    id     = abs(t*alpha) >= 0.9;
-    cf(id) = cf_HIntegral(t(id),alpha,beta,tol);
+    % CF by using direct integration with exponential PDF
+    id     = abs(t*alpha) < 25*(1+beta^(9/10));
+    if any(id)
+        cf(id) = cfWintegral(t(id),alpha,beta,tol);
+    end
+    % CF by using the asymptotic expansion of the H-function for large t
+    id     = abs(t*alpha) >= 25*(1+beta^(9/10));
+    if any(id)
+        cf(id) = cfHasymptotic(t(id),alpha,beta);
+    end
 elseif beta == 1
+    % CF by using the exact CF of the exponential distribution
     cf     = alpha ./ (alpha - 1i*t);
 else
+    % CF by using the inegral representation of the H-function
     id     = abs(t)>0 & abs(t*alpha) < 1.1;
-    cf(id) = cf_HIntegral(t(id),alpha,beta,tol);
+    if any(id)
+        cf(id) = cfHintegral(t(id),alpha,beta,tol);
+    end
+    % CF by using the asymptotic expansion of the H-function
     id     = abs(t*alpha) >= 1.1;
-    cf(id) = cf_HAsymptotic(t(id),alpha,beta,100);
+    if any(id)
+        cf(id) = cfHasymptotic(t(id),alpha,beta,100);
+        % pdfFun = @(x) (x./alpha).^(beta-1) .* exp(-((x./alpha).^beta)) ...
+        %          .* beta ./ alpha;
+        % B = 3*alpha*sqrt(gamma(1+2/beta)-(gamma(1+1/beta))^2);
+        % cf(id) = cf_PDF(t(id),pdfFun,0,B,250);
+    end
 end
 
 cf       = reshape(cf,szt);
 cf(t==0) = 1;
 
 end
-%% Function cf_HAsymptotic
-function cf = cf_HAsymptotic(t,alpha,beta,N)
-% cf_HAsymptotic Computes the Weibull characteristic function by using the
-% the aymptotic expansion (for large values t) of the Fox's H-function for
-% 0< beta < 1, see Duby (2017).
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Function cfWintegral
+function cf = cfWintegral(t,alpha,beta,reltol)
+%  cfWintegral Computes the Weibull characteristic function by using the
+%  direct integration. If W ~ Weibull(alpha,beta) then W = alpha *
+%  X^(1/beta), where X ~ Exponential(1). From that we get the integral
+%  representation of the characteristic function of the Weilbull random
+%  variable W, using PDF of the Exponential(1) distribution, given by 
+%  cf(t) = int_0^Inf exp(1i*t*alpha*x^(1/beta)) * exp(-x) dx
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 23-Jul-2017 12:58:35
+% Ver.: 24-Jul-2017 18:01:45
+
+%% CHECK THE INPUT PARAMETERS
+narginchk(3, 4);
+if nargin < 4, reltol = []; end
+
+if isempty(reltol)
+    reltol = 1e-6;
+end
+
+%% ALGORITHM
+sz = size(t);
+cf = integral(@(x) integrandWfun(x,t,alpha,beta),0,+Inf, ...
+    'ArrayValued',true,'RelTol',reltol);
+cf = reshape(cf,sz);
+
+end
+%% Function integrandWfun
+function f = integrandWfun(x,t,alpha,beta)
+% integrandWfun Integrand of the integral representation of characteristic
+% function  cf(t) = int_0^Inf exp(1i*alpha*t*x^(1/beta)) * exp(-x) dx
+
+% Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 24-Jul-2017 18:01:45    
+%%
+x = x(:);
+t = t(:)';
+
+f =  exp(1i*alpha*x.^(1/beta)*t) .* exp(-x*ones(size(t)));
+end
+
+%% Function cfHintegral
+function cf = cfHintegral(t,alpha,beta,reltol)
+% cfHintegral Computes the Weibull characteristic function by using the
+% integral representation of the H-function, see Duby (2017).  
+
+% Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 24-Jul-2017 18:01:45
+
+%% CHECK THE INPUT PARAMETERS
+narginchk(3, 4);
+if nargin < 4, reltol = []; end
+
+if isempty(reltol)
+    reltol = 1e-6;
+end
+
+%% ALGORITHM
+sz = size(t);
+cf = integral(@(x) integrandHfun(x,t,alpha,beta),-Inf,+Inf, ...
+    'ArrayValued',true,'RelTol',reltol)/(2*pi);
+cf = reshape(cf,sz);
+
+end
+%% Function integrandHfun
+function f = integrandHfun(v,t,alpha,beta)
+% integrandFun Integrand of the integral representation of the H-function
+% based, see Duby (2017).   
+
+% Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 23-Jul-2017 12:58:35    
+%%
+g = beta/2;
+v = v(:);
+t = t(:)';
+f = exp((GammaLog(g+1i*v)+GammaLog(1-(g+1i*v)/beta))*ones(size(t)) ...
+     -(g+1i*v)*log(-1i*t*alpha));
+end
+%% Function cfHasymptotic
+function cf = cfHasymptotic(t,alpha,beta,N)
+% cfHasymptotic Computes the Weibull characteristic function by using the
+% the aymptotic expansion (for large values t) of the Fox's H-function for
+% 0 < beta < 1, see Duby (2017).
+
+% Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 24-Jul-2017 18:01:45
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(3, 4);
@@ -165,47 +269,15 @@ t  = t(:);
 z  = -1i*t'*alpha;
 n  = (0:N)';
 
+% Optimum stopping rule for the (divergent) asymptotic expansion
 cf = bsxfun(@plus,GammaLog((1+n)*beta)-GammaLog(1+n),-beta*(1+n)*log(z));
-cf = sum(bsxfun(@times,beta*(-1).^n,exp(cf)));
+[~,id] = min(max(-325,real(cf)));
+
+ % CF by using the asymptotic expansion of the H-function
+cf = cumsum(bsxfun(@times,beta*(-1).^n,exp(cf)));
+cf = diag(cf(id,:));
 
 cf(z==0) = 1;
-cf  = reshape(cf,sz);
-
-end
-%% Function cf_HIntegral
-function cf = cf_HIntegral(t,alpha,beta,reltol)
-% cf_HIntegral Computes the Weibull characteristic function by using the
-% integral representation of the H-function, see Duby (2017).  
-
-% Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 23-Jul-2017 12:58:35
-
-%% CHECK THE INPUT PARAMETERS
-narginchk(3, 4);
-if nargin < 4, reltol = []; end
-
-if isempty(reltol)
-    reltol = 1e-6;
-end
-
-%% ALGORITHM
-sz = size(t);
-cf = integral(@(x) integrandFun(x,t,alpha,beta),-Inf,+Inf, ...
-    'ArrayValued',true,'RelTol',reltol)/(2*pi);
 cf = reshape(cf,sz);
 
-end
-%%
-function f = integrandFun(v,t,alpha,beta)
-% integrandFun Integrand of the integral representation of the H-function
-% based, see Duby (2017).   
-
-% Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 23-Jul-2017 12:58:35    
-%%
-g = beta/2;
-v = v(:);
-t = t(:)';
-f = exp((GammaLog(g+1i*v)+GammaLog(1-(g+1i*v)/beta))*ones(size(t)) ...
-     -(g+1i*v)*log(-1i*t*alpha));
 end

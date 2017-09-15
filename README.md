@@ -57,19 +57,21 @@ To get a taste of what computing with CharFunTool is like, try to invert the cha
 ```
 For a more advanced distribution, based on the theory of Gaussian Processes, type 
 ```
- df      = 1;
- cf_Chi2 = @(t) (1-2i*t).^(-df/2);         % CF of the chi-squared distribution
+ df     = 1;
+ cfChi2 = @(t) (1-2i*t).^(-df/2);         % CF of the chi-squared distribution
 
- idx     = 1:100;
- coef    = 1./((idx-0.5)*pi).^2;
- cf_GP   = @(t) cf4Conv(t,cf_Chi2,coef);   % CF of the linear combination of iid RVs 
+ idx    = 1:100;
+ coef   = 1./((idx-0.5)*pi).^2;
+ cf     = @(t) cf_Conv(t,cfChi2,coef);    % CF of the linear combination of iid RVs 
 
- prob    = [0.9 0.95 0.99];
- x       = linspace(0,3,500);
+ prob   = [0.9 0.95 0.99];
+ x      = linspace(0,3,500);
+
  options.N = 2^12;
  options.xMin = 0;
  options.SixSigmaRule = 10;
- result = cf2DistGP(cf_GP,x,prob,options)  % Invert the CF to get the CDF and PDF 
+
+ result = cf2DistGP(cf,x,prob,options)    % Invert the CF to get the CDF and PDF 
 ```
 
 License

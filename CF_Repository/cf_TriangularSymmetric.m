@@ -1,19 +1,19 @@
-function cf = cf_RectangularSymmetric(t,coef,niid)
-%% cf_RectangularSymmetric
+function cf = cf_TriangularSymmetric(t,coef,niid)
+%% cf_TriangularSymmetric
 %  Characteristic function of a linear combination (resp. convolution) of
-%  independent zero-mean symmetric RECTANGULAR random variables defined on
+%  independent zero-mean symmetric TRIANGULAR random variables defined on
 %  the interval (-1,1).
 %
-%  That is, cf_RectangularSymmetric evaluates the characteristic function
-%  cf(t) of  Y = sum_{i=1}^N coef_i * X_i, where X_i ~ RectangularSymmetric
+%  That is, cf_TriangularSymmetric evaluates the characteristic function
+%  cf(t) of  Y = sum_{i=1}^N coef_i * X_i, where X_i ~ TriangularSymmetric
 %  are independent uniformly distributed RVs defined on (-1,1), for all i =
 %  1,...,N. 
 %
-%  The characteristic function of X ~ RectangularSymmetric is defined by
-%   cf(t) = cf_RectangularSymmetric(t) = sinc(t) = sin(t)/t;
+%  The characteristic function of X ~ TriangularSymmetric is defined by
+%   cf(t) = cf_TriangularSymmetric(t) = (2-2*cos(t))/t^2;
 %
 % SYNTAX
-%  cf = cf_RectangularSymmetric(t,coef,niid)
+%  cf = cf_TriangularSymmetric(t,coef,niid)
 %
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -27,27 +27,27 @@ function cf = cf_RectangularSymmetric(t,coef,niid)
 %          random variable. If empty, default value is niid = 1.   
 %
 % WIKIPEDIA: 
-%  https://en.wikipedia.org/wiki/Uniform_distribution_(continuous)
+%  https://en.wikipedia.org/wiki/Triangular_distribution
 %
 % EXAMPLE 1:
-% % CF of the Rectangular distribution on (-1,1)
+% % CF of the Triangular distribution on (-1,1)
 %   t = linspace(-50,50,201);
-%   cf = cf_RectangularSymmetric(t);
+%   cf = cf_TriangularSymmetric(t);
 %   figure; plot(t,cf),grid
-%   title('CF of the Rectangular distribution on (-1,1)')
+%   title('CF of the Triangular distribution on (-1,1)')
 %
 % EXAMPLE 2:
-% % CF of a weighted linear combination of independent Rectangular RVs
-%   t = linspace(-10,10,201);
+% % CF of a weighted linear combination of independent Triangular RVs
+%   t = linspace(-20,20,201);
 %   coef = [1 2 3 4 5]/15;
-%   cf = cf_RectangularSymmetric(t,coef);
+%   cf = cf_TriangularSymmetric(t,coef);
 %   figure; plot(t,cf),grid
-%   title('CF of a weighted linear combination of Rectangular RVs')
+%   title('CF of a weighted linear combination of Triangular RVs')
 %
 % EXAMPLE 3:
-% % PDF/CDF of a weighted linear combination of independent Rectangular RVs
+% % PDF/CDF of a weighted linear combination of independent Triangular RVs
 %   coef = [1 2 3 4 5]/15;
-%   cf   = @(t) cf_RectangularSymmetric(t,coef);
+%   cf   = @(t) cf_TriangularSymmetric(t,coef);
 %   x    = linspace(-1,1,201);
 %   prob = [0.9 0.95 0.99];
 %   clear options
@@ -65,7 +65,7 @@ function cf = cf_RectangularSymmetric(t,coef,niid)
 % Ver.: 02-Jun-2017 12:08:24
 
 %% ALGORITHM
-%cf = cf_RectangularSymmetric(t,coef,niid);
+%cf = cf_TriangularSymmetric(t,coef,niid);
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 3);
@@ -76,9 +76,10 @@ if isempty(coef), coef = 1; end
 if isempty(niid), niid = 1; end
 
 %% Characteristic function
-szt = size(t);
-t   = t(:);
-cf  = prod(sin(t*coef)./(t*coef),2);
+szt  = size(t);
+t    = t(:);
+coef = coef(:)';
+cf   = prod((2-2*cos(t*coef))./(t*coef).^2,2);
 
 cf  = reshape(cf,szt);
 cf(t==0) = 1;
