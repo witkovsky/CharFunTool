@@ -9,9 +9,9 @@ function [result,cdf,pdf,qf] = cf2DistGP(cf,x,prob,options)
 %  [result,cdf,pdf,qf] = cf2DistGP(cf,x,prob,options)
 %
 % INPUT:
-%  cf      - function handle of the characteristic function (CF), x
-%          - vector of x values where the CDF/PDF is computed, prob
-%          - vector of values from [0,1] for which the quantiles
+%  cf      - function handle of the characteristic function (CF), 
+%  x       - vector of x values where the CDF/PDF is computed, 
+%  prob    - vector of values from [0,1] for which the quantiles
 %            function is evaluated,
 %  options - structure with the following default parameters:
 %             options.isCompound = false  % treat the compound distributions
