@@ -1,4 +1,4 @@
-function [FI,Fw] = FourierIntegral_BV(t,fun,A,B,nPts)
+function [FI,coefs] = FourierIntegral_BV(t,fun,A,B,nPts)
 % FourierIntegral_BV approximates the Fourier integral of function FUN from 
 %   A to B using the BAKHVALOV-VASILEVA algorithm suggested for computing
 %   the oscillatory Fourier integrals based on approximation of the
@@ -21,7 +21,7 @@ function [FI,Fw] = FourierIntegral_BV(t,fun,A,B,nPts)
 %  Otherwise the computed result could be misleading!
 %
 % SYNTAX:
-%  FI = FourierIntegral_BV(t,fun,A,B,nPts)
+%  [FI,coefs] = FourierIntegral_BV(t,fun,A,B,nPts)
 %
 % INPUTS:
 %  t      - real vector, where the characteristic function CF(t) will
@@ -29,16 +29,21 @@ function [FI,Fw] = FourierIntegral_BV(t,fun,A,B,nPts)
 %  fun    - function handle used as the PDF function with the argument x.
 %  A      - finite minimum value of the distribution support. If the true
 %           minimum is -Inf, than A should be set as a reasonable finite
-%           approximation of the minimum value of the support. 
+%           approximation of the minimum value of the support. Default
+%           value is A = -1.
 %  B      - finite maximum value of the distribution support. If the true
 %           maximum is Inf, than B should be set as a reasonable finite
-%           approximation of the maximum value of the support. 
+%           approximation of the maximum value of the support.  Default
+%           value is B = 1.
 %  nPts   - Order of Legendre polynomial approximation. Default value is
 %           nPts = 100.
 %
 % OUTPUT:
-%  Q     - (complex) vector of function values evalated at the required t,
-%          i.e. Q(t). 
+%  FI     - (complex) vector of Fourier integral values evalated at the
+%           required t, i.e. FI(t). 
+%  coefs  - vector of the polynomial expansion coefficiens of the PDF.
+%           This allows to check the quality of the polynomial
+%           approaximation over the interval [A,B].
 %
 % EXAMPLE1 (CF of the Uniform distribution on the interval [0,1])
 %  fun = @(x) 1;
@@ -124,7 +129,7 @@ function [FI,Fw] = FourierIntegral_BV(t,fun,A,B,nPts)
 % Ver.: 07-Sep-2017 17:28:00
 
 %% ALGORITHM CALL
-%Q = FourierIntegral_BV(t,fun,A,B,nPts)
+%[FI,coefs] = FourierIntegral_BV(t,fun,A,B,nPts)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 5);
@@ -170,8 +175,8 @@ end
 scale = (B - A) / 2;
 shift = (B + A) / 2;
 F     = fun(scale*x + shift);
-Fw    = F.*w;
-Fw    = sum(bsxfun(@times,P,Fw),2);
+coefs = F.*w;
+coefs = sum(bsxfun(@times,P,coefs),2);
 
 % Bessel J functions evaluated at required values
 szt   = size(t);
@@ -187,7 +192,7 @@ for k = 0:nPts
 end
 
 % Fourier integral evaluated at required values t
-FI    = K .* sum(bsxfun(@times,B,Fw));
+FI    = K .* sum(bsxfun(@times,B,coefs));
 FI(id)= conj(FI(id));
 FI    = reshape(FI,szt);
 end

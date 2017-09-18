@@ -1,4 +1,4 @@
-function [FI,Fw] = FourierIntegral_P(omega,fun,A,B,nPts)
+function [FI,coefs] = FourierIntegral_P(omega,fun,A,B,nPts)
 % FourierIntegral_P approximates the Fourier integral of function FUN
 %   from A to B by using the PATTERSON method (extended Clenshaw-Curtis
 %   quadrature) suggested in Patterson (1976), based on the Bakhlanov
@@ -19,7 +19,7 @@ function [FI,Fw] = FourierIntegral_P(omega,fun,A,B,nPts)
 %  [0,1]. Otherwise the computed result could be misleading!
 %  
 % SYNTAX:
-%  FI = FourierIntegral_P(omega,fun,A,B,nPts)
+%  [FI,coefs] = FourierIntegral_P(omega,fun,A,B,nPts)
 %
 % INPUTS:
 %  omega  - real vector, where the Fourier integral will be evaluated,
@@ -27,12 +27,21 @@ function [FI,Fw] = FourierIntegral_P(omega,fun,A,B,nPts)
 %           interval [A,B].  
 %  A      - finite minimum value of the function support. If the true
 %           minimum is -Inf, than A should be set as a reasonable finite
-%           approximation of the minimum value of the support. 
+%           approximation of the minimum value of the support. Default
+%           value is A = -1.
 %  B      - finite maximum value of the function support. If the true
 %           maximum is Inf, than B should be set as a reasonable finite
-%           approximation of the maximum value of the support. 
+%           approximation of the maximum value of the support. Default
+%           value is B = 1.
 %  nPts   - Order of Chebyshev polynomial approximation. Default value is
 %           nPts = 100.
+%
+% OUTPUT:
+%  FI     - (complex) vector of Fourier integral values evalated at the
+%           required t, i.e. FI(t). 
+%  coefs  - vector of the polynomial expansion coefficiens of the PDF.
+%           This allows to check the quality of the polynomial
+%           approaximation over the interval [A,B].
 %
 % EXAMPLE 1 (Fourier transform of Gaussian PDF)
 %  t   = linspace(-5,5);
@@ -100,7 +109,7 @@ function [FI,Fw] = FourierIntegral_P(omega,fun,A,B,nPts)
 % Ver.: 15-Sep-2017 14:17:51
 
 %% ALGORITHM CALL
-%[Q,Fw] = FourierIntegral_P(omega,fun,A,B,nPts)
+%[FI,coefs] = FourierIntegral_P(omega,fun,A,B,nPts)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(2,5);
@@ -139,7 +148,7 @@ F           = fun(scale * cos(pi*s/nPts) + shift);
 w           = cos(pi * k * s / nPts);
 F(1)        = F(1)/2;
 F(nPts+1)   = F(nPts+1)/2;
-Fw          = 2 * sum(bsxfun(@times,w,F),2) / nPts;
+coefs       = 2 * sum(bsxfun(@times,w,F),2) / nPts;
 
 % Fourier integrals of the Chebyshev polynomials
 I           = ChebFourierIntegral(nPts,Omega);
@@ -147,8 +156,8 @@ I(1,:)      = I(1,:)/2;
 I(nPts+1,:) = I(nPts+1,:)/2;
 
 % Fourier integral Q = Integral_A^B  fun(x) * exp(i*omega*x) dx
-FI           = sum(bsxfun(@times,I,Fw));
-FI           = K .* FI;
-FI(id)       = conj(FI(id));
-FI           = reshape(FI,sz);
+FI          = sum(bsxfun(@times,I,coefs));
+FI          = K .* FI;
+FI(id)      = conj(FI(id));
+FI          = reshape(FI,sz);
 end
