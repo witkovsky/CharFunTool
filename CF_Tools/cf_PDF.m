@@ -1,4 +1,4 @@
-function cf = cf_PDF(t,pdfFun,A,B,nPts)
+function [cf,coefs,method] = cf_PDF(t,pdfFun,A,B,method,nPts)
 %cf_PDF Computes the characteristic function of the continuos
 %  distribution defined by its PDF function.
 %
@@ -6,11 +6,14 @@ function cf = cf_PDF(t,pdfFun,A,B,nPts)
 %  characteristic function of the continuous distribution defined by its
 %  PDF (here represented by the function handle pdfFun), i.e.
 %    CF(t) = Integral_A^B exp(i*t*x) * pdfFun(x) dx,
-%  using the efficient BAKHVALOV-VASILEVA algorithm suggested for computing
-%  the oscillatory Fourier integrals, which is based on approximation of
-%  the PDF function by the Legendre polynomials and observation that
-%  Fourier transform of the Legendre polynomials is related to the Belssel
-%  J functions. For more details see Evans and Webster (1999).
+%  using the algorithms suggested for computing the oscillatory Fourier
+%  integrals, based on approximation of the PDF function by the polynomials
+%  and observation that Fourier transform of the Legendre polynomials is
+%  related to the Belssel J functions. For more details see Evans and
+%  Webster (1999). 
+%
+%  pdfFun must be a function handle. In the current version, A and B must
+%  be finite. 
 %
 % REMARK:
 %  cf_PDF is suggested for situations when the PDF can be well approximated
@@ -19,43 +22,59 @@ function cf = cf_PDF(t,pdfFun,A,B,nPts)
 %  Otherwise the computed result could be misleading!
 %
 % SYNTAX:
-%  cf = cf_PDF(t,pdfFun,A,B,nPts)
+%  [cf,coefs,method] = cf_PDF(t,pdfFun,A,B,method,nPts)
 %
 % INPUTS:
 %  t      - real vector, where the characteristic function CF(t) will
-%           be evaluated,
+%           be evaluated.
 %  pdfFun - function handle used as the PDF function with the argument x.
 %  A      - finite minimum value of the distribution support. If the true
 %           minimum is -Inf, than A should be set as a reasonable finite
-%           approximation of the minimum value of the support. 
+%           approximation of the minimum value of the support. Default
+%           value is A = -100.
 %  B      - finite maximum value of the distribution support. If the true
 %           maximum is Inf, than B should be set as a reasonable finite
-%           approximation of the maximum value of the support. 
+%           approximation of the maximum value of the support. Default
+%           value is B = 100.
+%  method - select method for computing the required Fourier Integral.
+%           Currently, there are two possible algorithms: (i)the
+%           BAKHVALOV-VASILEVA method (method = 'bv') and (ii) the
+%           PATTERSON method (method = 'pat'). Deafault value is  method =
+%           'pat'. 
 %  nPts   - Order of Legendre polynomial approximation. Default value is
 %           nPts = 100.
 %
 % OUTPUT:
 %  cf     - (complex) vector of the characteristic function values,
 %            evalated at the required t, i.e. CF(t).
+%  coefs  - vector of the polynomial expansion coefficiens of the PDF.
+%           This allows to check the quality of the polynomial
+%           approaximation over the interval [A,B].
+%  method - selected method for computing the required Fourier Integral.
 %
 % EXAMPLE1 (CF of the Uniform distribution on the interval [0,1])
 %  pdfFun = @(x) 1;
 %  A = 0;
 %  B = 1;
+%  method = 'bv';
 %  nPts   = 1;
 %  t  = linspace(-50,50,2^10+1)';
-%  cf = cf_PDF(t,pdfFun,A,B,nPts);
+%  cf = cf_PDF(t,pdfFun,A,B,method,nPts);
 %  plot(t,real(cf),t,imag(cf));grid
 %  title('Characteristic function of the Uniform distribution')
 %
 % EXAMPLE2 (CF of the Normal distribution on the interval [-8,8])
-%  % !!The PDF cannot be well approximated by the 20th degree polynomial!
+%  % !!PDF cannot be approximated by the 20th degree Legendre expansion!
 %  pdfFun = @(x) exp(-x.^2/2)/sqrt(2*pi);
 %  A = -8;
 %  B = 8;
+%  method = 'bv';
 %  nPts   = 20;
 %  t  = linspace(-10,10,2^10+1)';
-%  cf = cf_PDF(t,pdfFun,A,B,nPts);
+%  [cf,coefs] = cf_PDF(t,pdfFun,A,B,method,nPts);
+%  plot(coefs,'o-');grid
+%  title('Expansion coefficients')
+%  figure
 %  plot(t,real(cf),t,imag(cf));grid
 %  title('Characteristic function of the Normal distribution')
 %
@@ -63,9 +82,13 @@ function cf = cf_PDF(t,pdfFun,A,B,nPts)
 %  pdfFun = @(x) exp(-x);
 %  A = 0;
 %  B = 100;
+%  method = 'patterson';
 %  nPts   = 25;
 %  t  = linspace(-20,20,2^10+1)';
-%  cf = cf_PDF(t,pdfFun,A,B,nPts);
+%  [cf,coefs] = cf_PDF(t,pdfFun,A,B,method,nPts);
+%  plot(coefs,'o-');grid
+%  title('Expansion coefficients')
+%  figure
 %  plot(t,real(cf),t,imag(cf));grid
 %  title('Characteristic function of the Exponential distribution')
 %
@@ -75,9 +98,11 @@ function cf = cf_PDF(t,pdfFun,A,B,nPts)
 %  pdfFun = @(x) exp(-0.5*((log(x)-mu)./sigma).^2)./(x.*sqrt(2*pi).*sigma);
 %  A = 0;
 %  B = 100;
-%  nPts   = 100;
 %  t  = linspace(-20,20,2^10+1)';
-%  cf = cf_PDF(t,pdfFun,A,B,nPts);
+%  [cf,coefs] = cf_PDF(t,pdfFun,A,B);
+%  plot(coefs,'o-');grid
+%  title('Expansion coefficients')
+%  figure
 %  plot(t,real(cf),t,imag(cf));grid
 %  title('Characteristic function of the LogNormal distribution')
 %
@@ -85,31 +110,38 @@ function cf = cf_PDF(t,pdfFun,A,B,nPts)
 %  a      = 1.5;
 %  b      = 3.5;
 %  pdfFun = @(x) (x./a).^(b-1) .* exp(-((x./a).^b)) .* b ./ a;
-%  A = 0;
+%  A = 1e-8;
 %  B = 100;
 %  t  = linspace(-10,10,2^10+1)';
-%  cf = cf_PDF(t,pdfFun,A,B);
+%  [cf,coefs] = cf_PDF(t,pdfFun,A,B);
+%  plot(coefs,'o-');grid
+%  title('Expansion coefficients')
+%  figure
 %  plot(t,real(cf),t,imag(cf));grid
 %  title('Characteristic function of the Weibull distribution')
-%
-% REFERENCES:
+%   
+% REFERENCES: 
 % [1] BAKHVALOV, N.S., VASILEVA, L.G. Evaluation of the integrals of
 %     oscillating functions by interpolation at nodes of Gaussian
 %     quadratures. USSR Computational Mathematics and Mathematical Physics,
 %     1968, 8(1): 241-249.
-% [2] EVANS, G.A.; WEBSTER, J.R. A comparison of some methods for the
+% [2] PATTERSON, T. N. L. On high precision methods for the evaluation of
+%     Fourier integrals with finite and infinite limits. Numerische
+%     Mathematik, 1976, 27(1): 41-52.  
+% [3] EVANS, G.A.; WEBSTER, J.R. A comparison of some methods for the
 %     evaluation of highly oscillatory integrals. Journal of Computational
 %     and Applied Mathematics, 1999, 112(1): 55-69.
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 07-Sep-2017 17:28:00
+% Ver.: 8-Sep-2017 15:27:01
 
-%% ALGORITHM
-%cf = cf_PDF(t,pdfFun,A,B,nPts)
+%% ALGORITHM CALL
+%[cf,coefs,method] = cf_PDF(t,pdfFun,A,B,method,nPts)
 
 %% CHECK THE INPUT PARAMETERS
-narginchk(1, 5);
-if nargin < 5, nPts = []; end
+narginchk(1, 6);
+if nargin < 6, nPts = []; end
+if nargin < 5, method = []; end
 if nargin < 4, B = []; end
 if nargin < 3, A = []; end
 if nargin < 2, pdfFun = []; end
@@ -118,67 +150,31 @@ if isempty(nPts)
     nPts = 100;
 end
 
+if isempty(method)
+    method = 'patterson';
+end
+
 if isempty(pdfFun)
-    pdfFun = @(x) exp(-x);
+    pdfFun = @(x) exp(-x.^2/2)/sqrt(2*pi);
 end
 
 if isempty(B)
-    B = Inf;
+    B = 100;
 end
 
 if isempty(A)
-    A = -Inf;
+    A = -100;
 end
 
-% % Set proper rules for dealing with infinite A and/or B
-% if ~isfinite(A)
-%     A = -1e2;
-% end
-% 
-% if ~isfinite(B)
-%     B = 1e2;
-% end
+%% ALGORITHM
 
-%% BAKHVALOV-VASILEVA ALGORITHM
-
-% Nodes and weights of the n-th order Gauss-Legendre quadrature on [-1,1]
-[x,w]  = LegendrePts(nPts+1);
-P      = zeros(nPts+1);
-P(1,:) = 1;
-
-% The Legendre polynomials evaluated at x
-p1 = 1;
-p2 = 0;
-for k = 1:nPts
-    p3 = p2;
-    p2 = p1;
-    p1 = ((2*k-1) .* x .* p2 - (k-1) * p3) / k;
-    P(k+1,:) = p1;
+switch lower(method)
+    case {'patterson','pat','p'}
+        [cf,coefs] = FourierIntegral_P(t,pdfFun,A,B,nPts);
+    case {'bakhvalov-vasileva','bv','b'}
+        [cf,coefs] = FourierIntegral_BV(t,pdfFun,A,B,nPts);
+    otherwise
+        [cf,coefs] = FourierIntegral_P(t,pdfFun,A,B,nPts);
 end
-
-% PDF function (weighted, shifted and scaled) evaluated at x
-scale   = (B - A) / 2;
-shift   = (B + A) / 2;
-f   = pdfFun(scale*x + shift);
-fw  = f.*w;
-Pfw = sum(bsxfun(@times,P,fw),2);
-
-% Bessel J functions evaluated at required values
-szt   = size(t);
-t     = t(:)';
-id    = t < 0;
-t(id) = -t(id);
-nt    = length(t);
-K     = scale * exp(1i*t*shift);
-t     = scale * t;
-B     = zeros(nPts+1,nt);
-for k = 0:nPts
-    B(k+1,:) = 1i^k * (2*k+1) * (pi ./ (2*t)).^0.5 .* besselj(k+0.5,t);
-end
-
-% Characteristic function evaluated at required values t
-cf       = K .* sum(bsxfun(@times,B,Pfw));
 cf(t==0) = 1;
-cf(id)   = conj(cf(id));
-cf       = reshape(cf,szt);
 end
