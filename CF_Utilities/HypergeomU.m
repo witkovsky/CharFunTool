@@ -62,7 +62,6 @@ else
 end
                 
 end
-
 %% FUNCTION CHGU
 function [hu,md] = chgu(a,b,x)
 %CHGU Confluent hypergeometric function of second kind (Kummer U).
@@ -95,7 +94,6 @@ end
 hu = reshape( hu, sz );
 md = reshape( md, sz );
 end
-
 %% FUNCTION CHGU_L
 function [hu, md] =  chgu_1( a, b, x )
 %  CHGU_L Calculate the confluent hypergeometric function of the second
@@ -397,7 +395,6 @@ end
 return
 
 end
-
 %% FUNCTION CHGUIT
 function [hu,id]=chguit(a,b,x)
 %  CHGUIT Compute hypergeometric function U(a,b,x)by using
