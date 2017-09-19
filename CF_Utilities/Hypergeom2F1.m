@@ -3,39 +3,33 @@ function f = Hypergeom2F1(a,b,c,z)
 % for the real parameters a, b and c (here assumed to be scalars), and the
 % complex argument z (could be scalar, vector or array).
 %
-% The algorithm is based on a Fortran program in S. Zhang & J. Jin
-% "Computation of Special Functions" (Wiley, 1996).
-% http://iris-lee3.ece.uiuc.edu/~jjin/routines/routines.html
-%
-% Converted by using f2matlab: https://sourceforge.net/projects/f2matlab/
-% written by Ben Barrowes (barrowes@alum.mit.edu)
-%
 % SYNTAX
 %   f = Hypergeom2F1(a,b,c,z)
 %
 % EXAMPLE1
-% a = 3;
-% b = 2.5;
-% c = 1.5;
-% z = 1i*(0:0.05:1)';
-% f =  Hypergeom2F1(a,b,c,z)
+%  a = 3;
+%  b = 2.5;
+%  c = 1.5;
+%  z = 1i*(0:0.05:1)';
+%  f =  Hypergeom2F1(a,b,c,z)
 %
-% See also: hypergeom1F1, Hypergeom2F1, hypergeomU, kummerM, kummerU,
-%        whittakerM, whittakerW, gammaincc,
+% NOTE:  
+%  The functions based on Hypergeom2F1 is badly conditioned for when c is
+%  negative integer. In such situations, approximate the function value by
+%  using the noninteger parameter c, say c = c + eps, for some small eps.
 %
-% NOTE:  the functions based on Hypergeom2F1 is badly conditioned for when
-%        c is negative integer. In such situations, approximate the the
-%        function value by using the noninteger parameter c, say c = c +
-%        eps, for some small eps.
+% CREDENTIALS:
+%  The algorithm is based on a Fortran program in S. Zhang & J. Jin
+%  "Computation of Special Functions" (Wiley, 1996). Converted by Ben
+%  Barrowes (barrowes@alum.mit.edu) 
 
 % Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 24-Jul-2017 10:06:48
 
-%% FUNCTION
+%% FUNCTION CALL
 %  f = Hypergeom2F1(a,b,c,z)
 
 %% CHECK THE INPUT PARAMETERS
-
 sz = size(z);
 
 if max(sz) > 1
@@ -52,21 +46,15 @@ end
 end
 %% FUNCTION HYGFZ
 function [zhf]=hygfz(a,b,c,z)
-
-%     ======================================================
-%     Purpose: Compute the hypergeometric function for a
-%     complex argument, F(a,b,c,z)
-%     Input :
+%  HYGFZ Compute the hypergeometric function for a complex argument,
+%  F(a,b,c,z) 
+%  Input :
 %     a --- Parameter
 %     b --- Parameter
 %     c --- Parameter,  c <> 0,-1,-2,...
 %     z --- Complex argument
 %     Output:
 %     ZHF --- F(a,b,c,z)
-%     Routines called:
-%     (1)GAMMA for computing gamma function
-%     (2)PSI for computing psi function
-%     ======================================================
 
 %% ALGORITHM
 zw  = 0;
@@ -377,124 +365,6 @@ elseif (a0 > 1.0d0)
         zhf = zf0 + zf1;
     end
 end
-% if (k > 150)
-%     fprintf(1,[repmat(' ',1,1),'warning% you should check the accuracy' ' \n']);
-% end
-return
-end
-%% FUNCTION GAMMA
-function ga = gamma(x)
-%     ==================================================
-%     Purpose: Compute gamma function gamma(x)
-%     Input :
-%     x  --- Argument of gamma(x)
-%     (x is not equal to 0,-1,-2,...)
-%     Output:
-%     GA --- â(x)
-%     ==================================================
-%
 
-g  = zeros(1,26);
-pi = 3.141592653589793;
-if (x == fix(x))
-    if (x > 0)
-        ga = 1;
-        m1 = x - 1;
-        for  k = 2:m1
-            ga = ga * k;
-        end
-    else
-        ga = 1e+300;
-    end
-else
-    if (abs(x)> 1)
-        z = abs(x);
-        m = fix(z);
-        r = 1;
-        for  k = 1:m
-            r = r * (z-k);
-        end
-        z = z - m;
-    else
-        z = x;
-    end
-    g(:) = [1, 0.5772156649015329, -0.6558780715202538, ...
-        -0.420026350340952d-1, 0.1665386113822915, ...
-        -0.421977345555443d-1, -0.96219715278770d-2, ...
-        0.72189432466630d-2, -0.11651675918591d-2, ...
-        -0.2152416741149d-3, 0.1280502823882d-3, -0.201348547807d-4, ...
-        -0.12504934821d-5, 0.11330272320d-5, -0.2056338417d-6, ...
-        0.61160950d-8, 0.50020075d-8, -0.11812746d-8, 0.1043427d-9, ...
-        0.77823d-11, -0.36968d-11, 0.51d-12, -0.206d-13, -0.54d-14, ...
-        0.14d-14, 0.1d-15];
-    gr=g(26);
-    for  k = 25:-1:1
-        gr = gr * z + g(k);
-    end
-    ga = 1 / (gr * z);
-    if (abs(x) > 1)
-        ga = ga * r;
-        if(x < 0)
-            ga = -pi / (x * ga * sin(pi*x));
-        end
-    end
-end
-return
-end
-%% FUNCTION PSI
-function [ps]=psi(x)
-%     ======================================
-%     Purpose: Compute Psi function
-%     Input :
-%     x  --- Argument of psi(x)
-%     Output:
-%     PS --- psi(x)
-%     ======================================
-%
-
-xa = abs(x);
-pi = 3.141592653589793;
-el = 0.5772156649015329;
-s  = 0;
-if (x == fix(x) && x <= 0)
-    ps = 1e+300;
-    return
-elseif (xa == fix(xa))
-    n = xa;
-    for  k = 1:n-1
-        s = s + 1 / k;
-    end
-    ps = -el + s;
-elseif (xa + 0.5 == fix(xa + 0.5))
-    n = xa - 0.5;
-    for  k = 1:n
-        s = s + 1 / (2 * k - 1);
-    end
-    ps = -el + 2 * s - 1.386294361119891;
-else
-    if (xa < 10)
-        n = 10 - fix(xa);
-        for  k = 0:n-1
-            s = s + 1 / (xa + k);
-        end
-        xa = xa+n;
-    end
-    x2 = 1 / (xa * xa);
-    a1 = -0.8333333333333d-01;
-    a2 = 0.83333333333333333d-02;
-    a3 = -0.39682539682539683d-02;
-    a4 = 0.41666666666666667d-02;
-    a5 = -0.75757575757575758d-02;
-    a6 = 0.21092796092796093d-01;
-    a7 = -0.83333333333333333d-01;
-    a8 = 0.4432598039215686d0;
-    ps = log(xa) - 0.5 / xa + x2 * ...
-        (((((((a8 * x2 + a7) * x2 +a6) * x2 + a5) * x2 + a4) * x2 + a3) ...
-        * x2 + a2) * x2 + a1);
-    ps = ps - s;
-end
-if (x < 0)
-    ps = ps - pi * cos(pi * x) / sin(pi * x) -1 / x;
-end
 return
 end

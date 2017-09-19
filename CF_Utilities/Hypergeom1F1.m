@@ -1,35 +1,31 @@
 function f = Hypergeom1F1(a,b,z)
 %HYPERGEOM1F1 Computes the confluent hypergeometric function 1F1(a,b,z),
-% also known as the Kummer function M(a,b,z), for the real parameters a
-% and b (here assumed to be scalars), and the complex argument z
-% (could be scalar, vector or array).
+%  also known as the Kummer function M(a,b,z), for the real parameters a
+%  and b (here assumed to be scalars), and the complex argument z
+%  (could be scalar, vector or array).
 %
-% The algorithm is based on a Fortran program in S. Zhang & J. Jin
-% "Computation of Special Functions" (Wiley, 1996).
-% http://iris-lee3.ece.uiuc.edu/~jjin/routines/routines.html
-%
-% Converted by using f2matlab: https://sourceforge.net/projects/f2matlab/
-% written by Ben Barrowes (barrowes@alum.mit.edu)
-%
-% SYNTAX
+% SYNTAX:
 %   f = Hypergeom1F1(a,b,z)
 %
-% EXAMPLE1 (CF of Beta(1/2,1/2) distribution)
-% a  = 1/2;
-% b  = 1/2;
-% t  = linspace(-50,50,2^11)';
-% cf =  Hypergeom1F1(a,b+b,1i*t);
-% figure; plot(t,real(cf),t,imag(cf))
-% title('Characteristic function of Beta(1/2,1/2) distribution')
-% xlabel('t')
-% ylabel('CF')
+% EXAMPLE 1 (CF of Beta(1/2,1/2) distribution)
+%  a  = 1/2;
+%  b  = 1/2;
+%  t  = linspace(-50,50,2^11)';
+%  cf =  Hypergeom1F1(a,b+b,1i*t);
+%  figure; plot(t,real(cf),t,imag(cf))
+%  title('Characteristic function of Beta(1/2,1/2) distribution')
+%  xlabel('t')
+%  ylabel('CF')
 %
-% NOTE1: the functions Hypergeom1F1 and KummerM are equivalent
+% CREDENTIALS:
+% The algorithm is based on a Fortran program in S. Zhang & J. Jin
+% "Computation of Special Functions" (Wiley, 1996). Converted by Ben
+% Barrowes (barrowes@alum.mit.edu) 
 
 % Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 24-Jul-2017 10:06:48
 
-%% FUNCTION
+%% FUNCTION CALL
 %  f = Hypergeom1F1(a,b,z)
 
 %% CHECK THE INPUT PARAMETERS
@@ -49,18 +45,8 @@ end
 end
 %% FUNCTION CCHG
 function [chg]=cchg(a,b,z)
-%     ===================================================
-%     Purpose: Compute confluent hypergeometric function
-%     M(a,b,z) with real parameters a, b and a
-%     complex argument z
-%     Input :
-%     a --- Parameter
-%     b --- Parameter
-%     z --- Complex argument
-%     Output:
-%     CHG --- M(a,b,z)
-%     Routine called: GAMMA for computing gamma function
-%     ===================================================
+% CCHG Compute confluent hypergeometric function M(a,b,z) with real
+% parameters a, b and a complex argument z.
 
 %% ALGORITHM
 chw = 0;
@@ -173,59 +159,6 @@ else
     end
     if(x0 < 0)
         chg = chg * exp(-z);
-    end
-end
-return
-end
-%% FUNCTION GAMMA
-function ga=gamma(x)
-%     ==================================================
-%     Purpose: Compute gamma function gamma(x)
-%     Input :  x  --- Argument of gamma(x)
-%     (x is not equal to 0,-1,-2,...)
-%     Output:  GA --- gamma(x)
-%     ==================================================
-g  = zeros(1,26);
-pi = 3.141592653589793;
-if(x == fix(x))
-    if (x > 0)
-        ga = 1;
-        m1 = x - 1;
-        for  k = 2:m1
-            ga = ga * k;
-        end
-    else
-        ga = 1e+300;
-    end
-else
-    if(abs(x)> 1)
-        z = abs(x);
-        m = fix(z);
-        r = 1;
-        for  k = 1:m
-            r = r .* (z - k);
-        end
-        z = z - m;
-    else
-        z = x;
-    end
-    g(:)=[1.0d0,0.5772156649015329d0,-0.6558780715202538d0, ...
-        -0.420026350340952d-1,0.1665386113822915d0,-.421977345555443d-1,...
-        -.96219715278770d-2,.72189432466630d-2,-.11651675918591d-2,...
-        -.2152416741149d-3,.1280502823882d-3,-.201348547807d-4,...
-        -.12504934821d-5,.11330272320d-5,-.2056338417d-6,.61160950d-8,...
-        .50020075d-8,-.11812746d-8,.1043427d-9,.77823d-11,-.36968d-11,...
-        .51d-12,-.206d-13,-.54d-14,.14d-14,.1d-15];
-    gr=g(26);
-    for k = 25:-1:1
-        gr = gr * z + g(k);
-    end
-    ga = 1 / (gr * z);
-    if(abs(x)> 1)
-        ga = ga * r;
-        if(x < 0)
-            ga = -pi / (x * ga * sin(pi * x));
-        end
     end
 end
 return
