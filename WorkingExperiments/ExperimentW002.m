@@ -110,3 +110,51 @@ plot(x,PDF,'.-');grid
 
 figure
 plot(coefs,'o-');grid
+
+%% LogNormal distribution
+
+mu = 0;
+b = 1;
+cf = @(t)cfX_LogNormal(t,mu,b);
+fun = @(t) real(cf(t));
+x = linspace(0,5,501);
+nPts = 10;
+
+A1 = 1e-12;
+B1 = 1;
+[FI1,coefs1] = FourierIntegral_BV(x,fun,A1,B1,nPts);
+plot(coefs1,'o-');grid
+
+A2 = 1;
+B2 = 10;
+[FI2,coefs2] = FourierIntegral_BV(x,fun,A2,B2,nPts);
+figure
+plot(coefs2,'o-');grid
+
+A3 = 10;
+B3 = 100;
+[FI3,coefs3] = FourierIntegral_BV(x,fun,A3,B3,nPts);
+figure
+plot(coefs3,'o-');grid
+
+A4 = 100;
+B4 = 1000;
+[FI4,coefs4] = FourierIntegral_BV(x,fun,A4,B4,nPts);
+figure
+plot(coefs4,'o-');grid
+
+A5 = 1000;
+B5 = 10000;
+[FI5,coefs5] = FourierIntegral_BV(x,fun,A5,B5,nPts);
+figure
+plot(coefs5,'o-');grid
+
+
+FI = FI1 + FI2 + FI3 + FI4 + FI5;
+
+PDF = 2*real(FI)/pi;
+figure
+plot(x,PDF,'.-');grid
+hold on
+plot(x,lognpdf(x,0,1))
+hold off
