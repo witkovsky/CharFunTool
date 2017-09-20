@@ -188,11 +188,11 @@ K     = scale * exp(1i*t*shift);
 t     = scale * t;
 B     = zeros(nPts+1,nt);
 for k = 0:nPts
-    B(k+1,:) = 1i^k * (2*k+1) * (pi ./ (2*t)).^0.5 .* besselj(k+0.5,t);
+    B(k+1,:) = 1i^k * (2*k+1) * besselj(k+0.5,t);
 end
 
 % Fourier integral evaluated at required values t
-FI    = K .* sum(bsxfun(@times,B,coefs));
+FI    = sqrt(pi) * K .* sum(bsxfun(@times,B,coefs)) ./ sqrt(2*t);
 FI(id)= conj(FI(id));
 FI    = reshape(FI,szt);
 end
