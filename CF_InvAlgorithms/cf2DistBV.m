@@ -37,11 +37,20 @@ function [result,cdf,pdf,qf] = cf2DistBV(cf,x,prob,options)
 %                                          functions for PDF/CDF/QF/RND
 %             options.xMin = -Inf or 0 % set the lower limit of X
 %             options.xMax = Inf       % set the lower limit of X
-%             options.xMean = []       % set the MEAN value of X
-%             options.xStd = []        % set the STD value of X
 %             options.SixSigmaRule = 6 % set the rule for computing domain
 %             options.tolDiff = 1e-4   % tol for numerical differentiation
 %             options.isPlot = true    % plot the graphs of PDF/CDF
+%             options.tolCoefs = 1e-12 % tol for Legendre coefficients
+%             options.nMax = 100       % nMax of Legendre coefficients
+%             options.nLimits = 5      % nLimits+1 integration subintervals
+%             options.Limits           %  = [0 10^(-1:nLimits) Inf]
+%             options.DIST             % structure with precomputed Info
+%             options.qf0              % starting quantile for iterations
+%             options.crit = 1e-12;    % stopping criterion for quantiles 
+%             options.maxiter = 1000   % max numner of quantile iterations
+%             options.xN = 101         % length of the default x vector 
+%             options.chebyPts = 2^9   % number of Chebyshev points used
+%                                      % for Barycentric Interpolation
 %
 % OUTPUT:
 %  result   - structure with CDF/PDF/QF and further details,
@@ -74,7 +83,8 @@ function [result,cdf,pdf,qf] = cf2DistBV(cf,x,prob,options)
 %  x    = linspace(0,8,101);
 %  prob = [0.9 0.95 0.99];
 %  clear options
-%  options.isCompound = 1;
+%  options.isCompound = true;
+%  options.isInterp   = true;
 %  result = cf2DistBV(cf,x,prob,options)
 %
 % REFERENCES:
@@ -113,7 +123,7 @@ function [result,cdf,pdf,qf] = cf2DistBV(cf,x,prob,options)
 %[result,cdf,pdf,qf] = cf2DistBV(cf,x,prob,options);
 
 %% CHECK THE INPUT PARAMETERS
-tic;
+timeVal = tic;
 narginchk(1, 4);
 
 if nargin < 4, options = []; end
@@ -153,7 +163,7 @@ if ~isfield(options, 'tolDiff')
 end
 
 if ~isfield(options, 'tolCoefs')
-    options.tolCoefs = 1e-10;
+    options.tolCoefs = 1e-15;
 end
 
 if ~isfield(options, 'nLimits')
@@ -165,11 +175,15 @@ if ~isfield(options, 'Limits')
 end
 
 if ~isfield(options, 'nMax')
-    options.nMax = 150;
+    options.nMax = 100;
 end
 
 if ~isfield(options, 'isPlot')
     options.isPlot = true;
+end
+
+if ~isfield(options, 'DIST')
+    options.DIST = [];
 end
 
 if ~isfield(options, 'qf0')
@@ -177,7 +191,7 @@ if ~isfield(options, 'qf0')
 end
 
 if ~isfield(options, 'crit')
-    options.crit = 1e-12;
+    options.crit = 1e-10;
 end
 
 if ~isfield(options, 'maxiter')
@@ -212,26 +226,82 @@ if options.isCompound
     if const > 1e-13
         cf    = @(t) (cf(t) - const) / (1-const);
     end
+    options.isNonnegative = true;
 end
 
-tolDiff  = options.tolDiff;
-cft      = cf(tolDiff*(1:4));
-cftRe    = real(cft);
-cftIm    = imag(cft);
-xMean    = (8*cftIm(1)/5 - 2*cftIm(2)/5 + 8*cftIm(3)/105 ...
-           - 2*cftIm(4)/280) / tolDiff;
-xM2      = (205/72 - 16*cftRe(1)/5 + 2*cftRe(2)/5 ...
-           - 16*cftRe(3)/315 + 2*cftRe(4)/560) / tolDiff^2;
-xStd     = sqrt(xM2 - xMean^2);    
-xMin     = max(options.xMin,xMean - options.SixSigmaRule*xStd);
-xMax     = min(options.xMax,xMean + options.SixSigmaRule*xStd);
-
-Limits   = options.Limits;
-nLimits  = length(Limits);
-tolCoefs = options.tolCoefs;
-nMax     = options.nMax;
-pdfFun   = @(t) real(cf(t));
-cdfFun   = @(t) imag(cf(t))./t;
+if ~isempty(options.DIST)
+    xMean        = options.DIST.xMean;
+    xMin         = options.DIST.xMin;
+    xMax         = options.DIST.xMax;
+    xStd         = options.DIST.xStd;
+    cdfCoef      = options.DIST.cdfCoef;
+    pdfCoef      = options.DIST.pdfCoef;
+    scale        = options.DIST.scale;
+    shift        = options.DIST.shift;
+    nLimits      = options.DIST.nLimits;
+    nTrue        = options.DIST.nTrue;
+else
+    xMin         = options.xMin;
+    xMax         = options.xMax;
+    SixSigmaRule = options.SixSigmaRule;
+    tolDiff      = options.tolDiff;
+    cft          = cf(tolDiff*(1:4));
+    cftRe        = real(cft);
+    cftIm        = imag(cft);
+    xMean        = (8*cftIm(1)/5 - 2*cftIm(2)/5 + 8*cftIm(3)/105 ...
+                   - 2*cftIm(4)/280) / tolDiff;
+    xM2          = (205/72 - 16*cftRe(1)/5 + 2*cftRe(2)/5 ...
+                   - 16*cftRe(3)/315 + 2*cftRe(4)/560) / tolDiff^2;
+    xStd         = sqrt(xM2 - xMean^2);
+    if isfinite(xMin) && ~isfinite(xMax)
+        xMax     = xMean + SixSigmaRule * xStd;
+    elseif isfinite(xMax) && ~isfinite(xMin)
+        xMin     = xMean - SixSigmaRule * xStd;
+    elseif ~isfinite(xMax) && ~isfinite(xMin)
+        xMin     = xMean - SixSigmaRule * xStd;
+        xMax     = xMean + SixSigmaRule * xStd;
+    end
+    pdfFun   = @(t) real(cf(t));
+    cdfFun   = @(t) imag(cf(t))./t;
+    nMax     = options.nMax;
+    tolCoefs = options.tolCoefs;
+    Limits   = options.Limits;
+    nLimits  = length(Limits);
+    cdfCoef  = cell(1,nLimits-1);
+    pdfCoef  = cell(1,nLimits-1);
+    scale    = cell(1,nLimits-1);
+    shift    = cell(1,nLimits-1);
+    % Get the coefficients of Legendre series expansion of the required
+    % integrand functions: cdfFun and pdfFun
+    A = Limits(1);
+    B = Limits(2);
+    nTrue = 0;
+    [cdfCoef{1},scale{1},shift{1},xx,ww,PP] = ...
+        LegendreSeries(cdfFun,A,B,nMax,tolCoefs);
+    nTrue = max(length(cdfCoef{1}),nTrue);
+    pdfCoef{1} = LegendreSeries(pdfFun,A,B,nMax,tolCoefs,xx,ww,PP);
+    nTrue = max(length(pdfCoef{1}),nTrue);
+    for i = 1:(nLimits-2)
+        A = B;
+        B = Limits(i+2);
+        [cdfCoef{i+1},scale{i+1},shift{i+1}] = ...
+            LegendreSeries(cdfFun,A,B,nMax,tolCoefs,xx,ww,PP);
+        nTrue = max(length(cdfCoef{i+1}),nTrue);
+        pdfCoef{i+1} = LegendreSeries(pdfFun,A,B,nMax,tolCoefs,xx,ww,PP);
+        nTrue = max(length(pdfCoef{i+1}),nTrue);
+    end
+    % Save options.DIST
+    options.DIST.xMin    = xMin;
+    options.DIST.xMax    = xMax;
+    options.DIST.xMean   = xMean;
+    options.DIST.xStd    = xStd;
+    options.DIST.cdfCoef = cdfCoef;
+    options.DIST.pdfCoef = pdfCoef;
+    options.DIST.scale   = scale;
+    options.DIST.shift   = shift;
+    options.DIST.nLimits = nLimits;
+    options.DIST.nTrue   = nTrue;
+end
 
 if isempty(x)
     x    = linspace(xMin,xMax,options.xN);
@@ -243,30 +313,20 @@ if options.isInterp
     xMax = max(max(x),xMax);
     x    = ChebPoints(options.chebyPts,[xMin,xMax]);
 else
-    x0  = [];
+    x0   = [];
 end
-szx     = size(x);
-x       = x(:);
+
+szx      = size(x);
+x        = x(:);
 
 %% ALGORITHM
 
-% Integrate over all subintevals [A,B] 
-A = Limits(1);
-B = Limits(2);
-
-% Get the coefficients of Legendre series expansion of the required
-% integrand functions: cdfFun and pdfFun
-[cdfCoef,scale,shift,xx,ww,PP] = LegendreSeries(cdfFun,A,B,nMax,tolCoefs);
-pdfCoef   = LegendreSeries(pdfFun,A,B,nMax,tolCoefs,xx,ww,PP);
-[cdf,pdf] = LegendreSeriesFourierIntegral(x,cdfCoef,scale,shift,pdfCoef);
-
 % Integrate and sum-up over all subintervals
-for i = 1:(nLimits-2)
-    A = B;
-    B = Limits(i+2);
-    [cdfCoef,scale,shift] = LegendreSeries(cdfFun,A,B,nMax,tolCoefs,xx,ww,PP);
-    pdfCoef = LegendreSeries(pdfFun,A,B,nMax,tolCoefs,xx,ww,PP);
-    [I1,I2] = LegendreSeriesFourierIntegral(x,cdfCoef,scale,shift,pdfCoef);  
+cdf = 0;
+pdf = 0;
+for i = 1:(nLimits-1)
+    [I1,I2] = LegendreSeriesFourierIntegral(x,cdfCoef{i}, ...
+        scale{i},shift{i},pdfCoef{i});  
     cdf = cdf + I1;
     pdf = pdf + I2;
 end
@@ -300,6 +360,8 @@ cdf  = reshape(min(1,max(0,cdf)),szx);
 if ~isempty(prob)
     isPlot = options.isPlot;
     options.isPlot = false;
+    isInterp = options.isInterp;
+    options.isInterp = false;
     [n,m]     = size(prob);
     prob      = prob(:);
     maxiter   = options.maxiter;
@@ -322,6 +384,7 @@ if ~isempty(prob)
     qf   = reshape(qf,n,m);
     prob = reshape(prob,n,m);
     options.isPlot = isPlot;
+    options.isInterp = isInterp;
 else
     qf = [];
     count = [];
@@ -376,18 +439,22 @@ if options.isInterp
     result.QF             = QF;
     result.RND            = RND;
 end
+result.cf                 = cf;
+result.isNonnegative      = options.isNonnegative;
+result.isCompound         = options.isCompound;
+result.isInterp           = options.isInterp;
 result.SixSigmaRule       = options.SixSigmaRule;
 result.xMean              = xMean;
 result.xStd               = xStd;
 result.xMin               = xMin;
 result.xMax               = xMax;
-result.cf                 = cf;
 result.const              = const;
-result.isInterp           = options.isInterp;
 result.details.count      = count;
 result.details.correction = correction;
+result.details.nTrue      = nTrue;
 result.options            = options;
-result.tictoc             = toc;
+result.isOK               = count < options.maxiter & nTrue < options.nMax;
+result.tictoc             = toc(timeVal);
 
 %% PLOT the PDF / CDF
 if length(x)==1
