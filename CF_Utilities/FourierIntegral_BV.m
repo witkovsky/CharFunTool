@@ -1,13 +1,13 @@
 function [FI,coefs] = FourierIntegral_BV(t,fun,A,B,nPts)
-% FourierIntegral_BV approximates the Fourier integral of function FUN from 
-%   A to B using the BAKHVALOV-VASILEVA algorithm suggested for computing
-%   the oscillatory Fourier integrals based on approximation of the
-%   integrand function by the Legendre polynomials and observation that
+% FourierIntegral_BV approximates the Fourier integral of function FUN from
+%   A to B using the BAKHVALOV-VASILEVA method suggested for computing the
+%   oscillatory Fourier integrals based on approximation of the integrand
+%   function by the FOURIER-LEGENDRE SERIES EXPANSION, and observation that
 %   Fourier transform of the Legendre polynomials is related to the Belssel
-%   J functions. For more details see see Bakhlanov and Vasileva (1968) and
-%   Evans and Webster (1999).
+%   J functions. For more details see Bakhlanov and Vasileva (1968) and
+%   Evans and Webster (1999).  
 %
-%   The Fourier integral, evaluated at given vector omega, is defined by
+%   The FOURIER INTEGRAL, evaluated at given vector omega, is defined by
 %     FI(omega) = Integral_A^B  fun(x) * exp(i*omega*x) dx.
 %
 %   FUN must be a function handle. In the current version, A and B must be
@@ -40,7 +40,7 @@ function [FI,coefs] = FourierIntegral_BV(t,fun,A,B,nPts)
 %
 % OUTPUT:
 %  FI     - (complex) vector of Fourier integral values evalated at the
-%           required t, i.e. FI(t). 
+%           required t, i.e. FI(t).
 %  coefs  - vector of the polynomial expansion coefficiens of the PDF.
 %           This allows to check the quality of the polynomial
 %           approaximation over the interval [A,B].
@@ -157,42 +157,42 @@ end
 %% BAKHVALOV-VASILEVA ALGORITHM
 
 % Nodes and weights of the n-th order Gauss-Legendre quadrature on [-1,1]
-[x,w]  = LegendrePts(nPts+1);
-P      = zeros(nPts+1);
-P(1,:) = 1;
+[x,w]   = LegendrePoints(nPts+1);
+P       = zeros(nPts+1);
+P(1,:)  = 1;
 
-% The Legendre polynomials evaluated at x
+% The Legendre polynomials evaluated at nodes x
 p1 = 1;
 p2 = 0;
-for k = 1:nPts
-    p3 = p2;
-    p2 = p1;
-    p1 = ((2*k-1) .* x .* p2 - (k-1) * p3) / k;
+for k   = 1:nPts
+    p3  = p2;
+    p2  = p1;
+    p1  = ((2*k-1) .* x .* p2 - (k-1) * p3) / k;
     P(k+1,:) = p1;
 end
 
-% Function fun (weighted, shifted and scaled) evaluated at x
-scale = (B - A) / 2;
-shift = (B + A) / 2;
-F     = fun(scale*x + shift);
-coefs = F.*w;
-coefs = sum(bsxfun(@times,P,coefs),2);
+% Function fun (weighted, shifted and scaled) evaluated at nodes x
+scale  = (B - A) / 2;
+shift  = (B + A) / 2;
+F      = fun(scale*x + shift);
+coefs  = F.*w;
+coefs  = sum(bsxfun(@times,P,coefs),2);
 
-% Bessel J functions evaluated at required values
-szt   = size(t);
-t     = t(:)';
-id    = t < 0;
-t(id) = -t(id);
-nt    = length(t);
-K     = scale * exp(1i*t*shift);
-t     = scale * t;
-B     = zeros(nPts+1,nt);
-for k = 0:nPts
-    B(k+1,:) = 1i^k * (2*k+1) * (pi ./ (2*t)).^0.5 .* besselj(k+0.5,t);
+% Bessel J functions evaluated at required values t
+szt    = size(t);
+t      = t(:)';
+id     = t < 0;
+t(id)  = -t(id);
+nt     = length(t);
+K      = scale * exp(1i*t*shift);
+t      = scale * t;
+B      = zeros(nPts+1,nt);
+for k  = 0:nPts
+    B(k+1,:) = 1i^k * (2*k+1) * besselj(k+0.5,t);
 end
 
 % Fourier integral evaluated at required values t
-FI    = K .* sum(bsxfun(@times,B,coefs));
-FI(id)= conj(FI(id));
-FI    = reshape(FI,szt);
+FI     = K .* sum(bsxfun(@times,B,coefs)) ./ sqrt(2*t/pi);
+FI(id) = conj(FI(id));
+FI     = reshape(FI,szt);
 end

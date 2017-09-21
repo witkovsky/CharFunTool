@@ -1,31 +1,33 @@
-function [x,w] = LegendrePts(n,a,b)
-% LegendrePts Evaluates the n-th order nodes (zeros of Legendre polynomial
-%   Pn(x)) and the weights for the Gauss-Legendre quadrature rule on the
-%   interval [a,b]. See https://en.wikipedia.org/wiki/Gaussian_quadrature.
+function [x,w] = LegendrePoints(n,A,B)
+% LegendrePoints Evaluates the n-th order nodes (zeros of Legendre
+%   polynomial Pn(x)) and the weights for the Gauss-Legendre quadrature
+%   rule on the interval [A,B]. 
 %
 % SYNTAX:
-%   [x,w] = LegendrePts(n,a,b)
+%   [x,w] = LegendrePoints(n,A,B)
+%
+% SEE also: https://en.wikipedia.org/wiki/Gaussian_quadrature. 
 
 % Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 07-Sep-2017 16:20:17
 
 %% FUNCTION
-%  [x,w] = LegendrePts(n,a,b)
+%  [x,w] = LegendrePoints(n,A,B)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 3);
-if nargin < 3, b = []; end
-if nargin < 2, a = []; end
+if nargin < 3, B = []; end
+if nargin < 2, A = []; end
 
-if isempty(a), a = -1; end
-if isempty(b), b = 1; end
+if isempty(A), A = -1; end
+if isempty(B), B = 1; end
 
 %% ALGORITHM
 
 x = zeros(1, n);
 w = zeros(1, n);
 m = (n+1)/2;
-d = b-a;
+d = B-A;
 
 for i  = 1:m
     zr0 = cos(pi * (i-0.25) / (n+0.5));
@@ -48,7 +50,7 @@ for i  = 1:m
     w(n+1-i) = w(i);
 end
 
-if a ~= -1 || b ~= 1
-    x = (x+1)*(d/2) + a;
+if A ~= -1 || B ~= 1
+    x = (x+1)*(d/2) + A;
 end
 end
