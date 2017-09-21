@@ -4,6 +4,9 @@ function [result,cdf,pdf,qf] = cf2DistGP(cf,x,prob,options)
 %   cdf(x) = 1/2 + (1/pi) * Integral_0^inf imag(exp(-1i*t*x)*cf(t)/t)*dt.
 %   pdf(x) = (1/pi) * Integral_0^inf real(exp(-1i*t*x)*cf(t))*dt.
 %
+%  The FOURIER INTEGRALs are calculated by using the simple TRAPEZOIDAL
+%  QUADRATURE method, see below.
+%
 % SYNTAX:
 %  result = cf2DistGP(cf,x)
 %  [result,cdf,pdf,qf] = cf2DistGP(cf,x,prob,options)
@@ -14,15 +17,15 @@ function [result,cdf,pdf,qf] = cf2DistGP(cf,x,prob,options)
 %  prob    - vector of values from [0,1] for which the quantiles
 %            function is evaluated,
 %  options - structure with the following default parameters:
-%             options.isCompound = false  % treat the compound distributions
-%                                         % of the RV Y = X_1 + ... + X_N,
-%                                         % where N is discrete RV and X>=0 
-%                                         % are iid RVs from nonnegative
-%                                         % continuous distribution.
-%             options.isCircular = false  % treat the circular
-%                                         % distributions on (-pi,pi)
-%             options.isInterp   = false  % create and use the interpolant
-%                                           functions for PDF/CDF/QF/RND
+%             options.isCompound = false % treat the compound distributions
+%                                        % of the RV Y = X_1 + ... + X_N,
+%                                        % where N is discrete RV and X>=0 
+%                                        % are iid RVs from nonnegative
+%                                        % continuous distribution.
+%             options.isCircular = false % treat the circular
+%                                        % distributions on (-pi,pi)
+%             options.isInterp   = false % create and use the interpolant
+%                                          functions for PDF/CDF/QF/RND
 %             options.N = 2^10         % N points used by FFT
 %             options.xMin = -Inf      % set the lower limit of X
 %             options.xMax = Inf       % set the lower limit of X
@@ -113,29 +116,27 @@ function [result,cdf,pdf,qf] = cf2DistGP(cf,x,prob,options)
 % REFERENCES:
 % [1] WITKOVSKY, V.: On the exact computation of the density and of
 %     the quantiles of linear combinations of t and F random
-%     variables. Journal of Statistical Planning and Inference 94
-%     (2001), 1–13.
+%     variables. Journal of Statistical Planning and Inference, 2001, 94,
+%     1–13. 
 % [2] WITKOVSKY, V.: Matlab algorithm TDIST: The distribution of a
 %     linear combination of Student’s t random variables. In COMPSTAT
 %     2004 Symposium (2004), J. Antoch, Ed., Physica-Verlag/Springer
 %     2004, Heidelberg, Germany, pp. 1995–2002.
-% [3] WITKOVSKY, V.: WIMMER,G., DUBY, T. Logarithmic Lambert W x F
+% [3] WITKOVSKY, V., WIMMER, G., DUBY, T. Logarithmic Lambert W x F
 %     random variables for the family of chi-squared distributions
-%     and their applications. Statistics & Probability Letters 96
-%     (2015), 223–231.
-% [4] WITKOVSKY V. (2016). Numerical inversion of a characteristic
+%     and their applications. Statistics & Probability Letters, 2015, 96,
+%     223–231. 
+% [4] WITKOVSKY, V.: Numerical inversion of a characteristic
 %     function: An alternative tool to form the probability distribution of
-%     output quantity in linear measurement models. Acta IMEKO, 5(3), 32-44.
-% [5] WITKOVSKY V., WIMMER G., DUBY T. (2016). Computing the aggregate loss
+%     output quantity in linear measurement models. Acta IMEKO, 2016, 5(3),
+%     32-44. 
+% [5] WITKOVSKY, V., WIMMER, G., DUBY, T. Computing the aggregate loss
 %     distribution based on numerical inversion of the compound empirical
-%     characteristic function of frequency and severity. Preprint submitted
-%     to Insurance: Mathematics and Economics.
-% [6] DUBY T., WIMMER G., WITKOVSKY V.(2016). MATLAB toolbox CRM for
-%     computing distributions of collective risk models. Preprint submitted
-%     to Journal of Statistical Software.
+%     characteristic function of frequency and severity. ArXiv preprint,
+%     2017, arXiv:1701.08299.
 
-% (c) 2016 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 15-Nov-2016 13:36:26
+% (c) Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 21-Sep-2017 09:33:32
 
 %% ALGORITHM
 %[result,cdf,pdf,qf] = cf2DistGP(cf,x,prob,options);
@@ -241,6 +242,7 @@ if ~isfield(options, 'isInterp')
     options.isInterp = false;
 end
 %% GET/SET the DEFAULT parameters and the OPTIONS
+
 % First, set a special treatment if the real value of CF at infinity (large
 % value) is positive, i.e. const = real(cf(Inf)) > 0. In this case the
 % compound CDF has jump at 0 of size equal to this value, i.e. cdf(0) =
@@ -252,7 +254,7 @@ end
 % required values: Set pdf_original(0) =  Inf & pdf_original(x) =
 % pdf_new(x) * (1-const), for x > 0. Set cdf_original(x) =  const +
 % cdf_new(x) * (1-const).
-%
+
 const = real(cf(1e30));
 if options.isCompound
     cfOld = cf;
@@ -290,18 +292,6 @@ else
             % see https://en.wikipedia.org/wiki/Directional_statistics
             xMean = angle(cf(1));
         else
-            %             xMean = real((-cft(2) ...
-            %                 + 8*cft(1)-8*conj(cft(1)) ...
-            %                 + conj(cft(2)))/(1i*12*tolDiff));
-            % Alternative
-            %             xMean = real(((1/280)*conj(cft(4)) ...
-            %                 - (4/105)*conj(cft(3)) ...
-            %                 + (1/5)*conj(cft(2)) ...
-            %                 - (4/5)*conj(cft(1)) ...
-            %                 + (4/5)*cft(1) ...
-            %                 - (1/5)*cft(2) ...
-            %                 + (4/105)*cft(3) ...
-            %                 - (1/280)*cft(4))/(1i*tolDiff));
             xMean = (8*cftIm(1)/5 - 2*cftIm(2)/5 + 8*cftIm(3)/105 ...
                 - 2*cftIm(4)/280) / tolDiff;
         end
@@ -311,23 +301,6 @@ else
             % see https://en.wikipedia.org/wiki/Directional_statistics
             xStd  = sqrt(-2*log(abs(cf(1))));
         else
-            %             xM2 = real(-(conj(cft(4)) ...
-            %                 - 16*conj(cft(3)) ...
-            %                 + 64*conj(cft(2)) ...
-            %                 + 16*conj(cft(1)) ...
-            %                 - 130 + 16*cft(1) ...
-            %                 + 64*cft(2) ...
-            %                 - 16*cft(3)+cft(4))/(144*tolDiff^2));
-            % Alternative
-            %             xM2 = real(-(-(1/560)*conj(cft(4)) ...
-            %                 + (8/315)*conj(cft(3)) ...
-            %                 - (1/5)*conj(cft(2)) ...
-            %                 + (8/5)*conj(cft(1)) ...
-            %                 - (205/72) ...
-            %                 + (8/5)*cft(1) ...
-            %                 - (1/5)*cft(2) ...
-            %                 + (8/315)*cft(3) ...
-            %                 - (1/560)*cft(4))/tolDiff^2);
             xM2   = (205/72 - 16*cftRe(1)/5 + 2*cftRe(2)/5 ...
                 - 16*cftRe(3)/315 + 2*cftRe(4)/560) / tolDiff^2;
             xStd  = sqrt(xM2 - xMean^2);
@@ -372,17 +345,17 @@ if isempty(x)
 end
 
 if options.isInterp
-    xOrg = x;
+    x0 = x;
     % Chebyshev points
     x = (xMax-xMin) * (-cos(pi*(0:options.chebyPts) / ...
         options.chebyPts) + 1) / 2 + xMin;
 else
-    xOrg = [];
+    x0 = [];
 end
 
 % WARNING: Out-of-range
 if any(x < xMin) || any(x > xMax)
-    warning('VW:CFTOOLBOX:cf2DistGP',['x out-of-range (the used support): ', ...
+    warning('VW:CharFunTool:cf2DistGP',['x out-of-range: ', ...
         '[xMin, xMax] = [',num2str(xMin),...
         ', ',num2str(xMax),'] !']);
 end
@@ -392,8 +365,7 @@ end
 x       = x(:);
 E       = exp(-1i*x*t');
 
-% CDF estimate computed by using the simple trapezoidal
-% quadrature rule
+% CDF estimate computed by using the simple trapezoidal quadrature rule
 cdf     = (xMean - x)/2 + imag(E * (cft ./ t));
 cdf     = 0.5 - (cdf * dt) / pi;
 
@@ -413,8 +385,7 @@ if options.correctedCDF
 end
 cdf     = reshape(max(0,min(1,cdf)),n,m);
 
-% PDF estimate computed by using the simple trapezoidal
-% quadrature rule
+% PDF estimate computed by using the simple trapezoidal quadrature rule
 pdf     = 0.5 + real(E * cft);
 pdf     = (pdf * dt) / pi;
 pdf     = reshape(max(0,pdf),n,m);
@@ -431,7 +402,7 @@ if options.isCompound
     cf  = cfOld;
     cdf = const + cdf * (1-const);
     pdf = pdf * (1-const);
-    pdf(x==0) = inf;
+    pdf(x==0) = 0;
     pdf(x==xMax) = NaN;
 end
 
@@ -488,7 +459,7 @@ if options.isInterp
         rndFunction = @(n) qfFunction(rand(n,1));
         RND  = @(n) rndFunction(n);
     catch
-        warning('VW:CFTOOLBOX:cf2DistGP', ...
+        warning('VW:CharFunTool:cf2Dist01', ...
             'Problem using the interpolant function');
         PDF  = [];
         CDF  = [];
@@ -497,10 +468,15 @@ if options.isInterp
     end
 end
 
-if ~isempty(xOrg)
-    x   = xOrg;
+if ~isempty(x0)
+    x   = x0;
     cdf = CDF(x);
     pdf = PDF(x);
+end
+
+% Reset the correct value for compound PDF at 0
+if options.isCompound
+    pdf(x==0) = Inf;
 end
 
 %% RESULT
@@ -538,7 +514,7 @@ result.details.corrCDF    = corrCDF;
 result.options            = options;
 result.tictoc             = toc;
 
-%% PLOT the PDF / CDF / QF
+%% PLOT the PDF / CDF 
 if length(x)==1
     options.isPlot = false;
 end
@@ -556,81 +532,7 @@ if options.isPlot
     grid
     title('CDF Specified by the CF')
     xlabel('x')
-    ylabel('cdf')
-    
-    %     % QF
-    %     if ~isempty(QF)
-    %         figure
-    %         prob = (-cos(pi*(0:options.xN)/options.xN)+1)/2;
-    %         plot(prob,QF(prob),'Linewidth',1.6)
-    %         grid
-    %         title('QF Specified by the CF')
-    %         xlabel('prob')
-    %         ylabel('qf')
-    %     end
-    
+    ylabel('cdf')   
 end
 
-end
-%% Function InterpBarycentric
-function [funNew,xNew] = InterpBarycentric(x,fun,xNew)
-%   InterpBarycentric Evaluates (interpolates) function values f_new at
-%   given points x_new by barycentric interpolation from function values f
-%   given at chebpoints x. 
-%   For more details see: 
-%   https://en.wikipedia.org/wiki/Barycentric_coordinate_system
-%  
-% SYNTAX:
-%   [funNew,xNew] = InterpBarycentric(x,fun,xNew)
-
-% (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 15-Jan-2017 17:28:22
-
-%% FUNCTION
-%  [funNew,xNew] = InterpBarycentric(x,fun,xNew);
-
-%% CHECK THE INPUT PARAMETERS
-
-if nargin < 3, xNew = []; end
-
-if isempty(xNew)
-    xNew = linspace(min(x),max(x))';
-end
-
-%% ALGORITHM
-
-x      = x(:);
-fun    = fun(:);
-[n,m]  = size(xNew);
-xNew   = xNew(:);
-nx     = length(x);
-nxNew  = length(xNew);
-funNew = zeros(nxNew,1);
-
-w     = (-1).^(0:nx-1).';
-w(1)  = w(1)/2;
-w(nx) = w(nx)/2;
-for i = 1:nxNew
-    A = 0;
-    B = 0;
-    for j = 1:nx
-        if xNew(i) == x(j)
-            exactVal  = true;
-            funNew(i) = fun(j);
-        else
-            exactVal = false;
-            weight   = w(j) ./ (xNew(i)-x(j));
-            A = A + weight * fun(j);
-            B = B + weight;
-        end
-        if exactVal == true
-            break;
-        else
-            funNew(i) = A / B;
-        end
-    end
-end
-
-xNew   = reshape(xNew,n,m);
-funNew = reshape(funNew,n,m);
 end

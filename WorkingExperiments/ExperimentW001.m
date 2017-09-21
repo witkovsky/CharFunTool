@@ -111,3 +111,51 @@ plot(x,CDF,'.-');grid
 
 figure
 plot(coefs,'o-');grid
+
+%% LogNormal distribution
+
+mu = 0;
+b = 1;
+cf = @(t)cfX_LogNormal(t,mu,b);
+fun = @(t) imag(cf(t)./t);
+x = linspace(0,5,1001);
+nMax = 150;
+tol = 1e-12;
+
+A = 1e-15; B = 0.1;
+[coefs,scale,shift,xNodes,w,P] = LegendreSeries(fun,A,B,nMax,tol);
+FI1 = LegendreSeriesFourierIntegral(x,coefs,scale,shift);
+
+A = B; B = 1;
+[coefs,scale,shift] = LegendreSeries(fun,A,B,nMax,tol,xNodes,w,P);
+FI2 = LegendreSeriesFourierIntegral(x,coefs,scale,shift);
+
+A = B; B = 10;
+[coefs,scale,shift] = LegendreSeries(fun,A,B,nMax,tol,xNodes,w,P);
+FI3 = LegendreSeriesFourierIntegral(x,coefs,scale,shift);
+
+A = B; B = 100;
+[coefs,scale,shift] = LegendreSeries(fun,A,B,nMax,tol,xNodes,w,P);
+FI4 = LegendreSeriesFourierIntegral(x,coefs,scale,shift);
+
+A = B; B = 1000;
+[coefs,scale,shift] = LegendreSeries(fun,A,B,nMax,tol,xNodes,w,P);
+FI5 = LegendreSeriesFourierIntegral(x,coefs,scale,shift);
+
+A = B; B = 10000;
+[coefs,scale,shift] = LegendreSeries(fun,A,B,nMax,tol,xNodes,w,P);
+FI6 = LegendreSeriesFourierIntegral(x,coefs,scale,shift);
+
+A = B; B = 1e+300;
+[coefs,scale,shift] = LegendreSeries(fun,A,B,nMax,tol,xNodes,w,P);
+FI7 = LegendreSeriesFourierIntegral(x,coefs,scale,shift);
+
+FI = FI1 + FI2 + FI3 + FI4 + FI5 + FI6 + FI7;
+
+CDF = 1-2*real(FI)/pi;
+figure
+plot(x,CDF,'.-');grid
+
+hold on
+plot(x,logncdf(x,0,1))
+hold off
