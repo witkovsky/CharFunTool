@@ -142,7 +142,7 @@ function [result,cdf,pdf,qf] = cf2DistGP(cf,x,prob,options)
 %[result,cdf,pdf,qf] = cf2DistGP(cf,x,prob,options);
 
 %% CHECK THE INPUT PARAMETERS
-tic;
+timeVal = tic;
 narginchk(1, 4);
 
 if nargin < 4, options = []; end
@@ -416,6 +416,8 @@ isPrecisionOK = (PrecisionCrit<=options.crit);
 if ~isempty(prob)
     isPlot = options.isPlot;
     options.isPlot = false;
+    isInterp = options.isInterp;
+    options.isInterp = false;
     [n,m]     = size(prob);
     prob      = prob(:);
     maxiter   = options.maxiter;
@@ -438,6 +440,7 @@ if ~isempty(prob)
     qf   = reshape(qf,n,m);
     prob = reshape(prob,n,m);
     options.isPlot = isPlot;
+    options.isInterp = isInterp;
 else
     qf = [];
     count = [];
@@ -492,6 +495,10 @@ if options.isInterp
     result.QF             = QF;
     result.RND            = RND;
 end
+result.cf                 = cf;
+result.isCompound         = options.isCompound;
+result.isCircular         = options.isCircular;
+result.isInterp           = options.isInterp;
 result.SixSigmaRule       = options.SixSigmaRule;
 result.N                  = N;
 result.dt                 = dt;
@@ -503,16 +510,12 @@ result.xMean              = xMean;
 result.xStd               = xStd;
 result.xMin               = xMin;
 result.xMax               = xMax;
-result.cf                 = cf;
 result.const              = const;
-result.isCompound         = options.isCompound;
-result.isCircular         = options.isCircular;
-result.isInterp           = options.isInterp;
 result.details.count      = count;
 result.details.correction = correction;
 result.details.corrCDF    = corrCDF;
 result.options            = options;
-result.tictoc             = toc;
+result.tictoc             = toc(timeVal);
 
 %% PLOT the PDF / CDF 
 if length(x)==1
