@@ -136,7 +136,7 @@ function [result,cdf,pdf,qf] = cf2DistGP(cf,x,prob,options)
 %     2017, arXiv:1701.08299.
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 21-Sep-2017 09:33:32
+% Ver.: 22-Sep-2017 11:11:11
 
 %% ALGORITHM
 %[result,cdf,pdf,qf] = cf2DistGP(cf,x,prob,options);
@@ -231,7 +231,7 @@ if ~isfield(options, 'xN')
 end
 
 if ~isfield(options, 'chebyPts')
-    options.chebyPts = 2^8;
+    options.chebyPts = 2^9;
 end
 
 if ~isfield(options, 'correctedCDF')
@@ -242,33 +242,14 @@ if ~isfield(options, 'isInterp')
     options.isInterp = false;
 end
 %% GET/SET the DEFAULT parameters and the OPTIONS
-
-% First, set a special treatment if the real value of CF at infinity (large
-% value) is positive, i.e. const = real(cf(Inf)) > 0. In this case the
-% compound CDF has jump at 0 of size equal to this value, i.e. cdf(0) =
-% const, and pdf(0) = Inf. In order to simplify the calculations, here we
-% calculate PDF and CDF of a distribution given by transformed CF, i.e.
-% cf_new(t) = (cf(t)-const) / (1-const); which is converging to 0 at Inf,
-% i.e. cf_new(Inf) = 0. Using the transformed CF requires subsequent
-% recalculation of the computed CDF and PDF, in order to get the originaly
-% required values: Set pdf_original(0) =  Inf & pdf_original(x) =
-% pdf_new(x) * (1-const), for x > 0. Set cdf_original(x) =  const +
-% cdf_new(x) * (1-const).
-
-const = real(cf(1e30));
-if options.isCompound
-    cfOld = cf;
-    if const > 1e-13
-        cf    = @(t) (cf(t) - const) / (1-const);
-        %    prob  = max(0,(prob - const) / (1-const));
-    end
-end
+cfOld  = [];
 
 if ~isempty(options.DIST)
     xMean              = options.DIST.xMean;
     cft                = options.DIST.cft;
     xMin               = options.DIST.xMin;
     xMax               = options.DIST.xMax;
+    cfLimit            = options.DIST.cfLimit;
     range              = xMax - xMin;
     dt                 = 2*pi / range;
     N                  = length(cft);
@@ -284,9 +265,29 @@ else
     xStd               = options.xStd;
     SixSigmaRule       = options.SixSigmaRule;
     tolDiff            = options.tolDiff;
-    cft                = cf(tolDiff*(1:4));
-    cftRe              = real(cft);
-    cftIm              = imag(cft);
+    % Special treatment for compound distributions. If the real value of CF
+    % at infinity (large value) is positive cfLimitant, i.e. cfLimit =
+    % real(cf(Inf)) > 0. In this case the compound CDF has jump at 0 of
+    % size equal to this value, i.e. cdf(0) = cfLimit, and pdf(0) = Inf. In
+    % order to simplify the calculations, here we calculate PDF and CDF of
+    % a distribution given by transformed CF, i.e. cf_new(t) =
+    % (cf(t)-cfLimit) / (1-cfLimit); which is converging to 0 at Inf, i.e.
+    % cf_new(Inf) = 0. Using the transformed CF requires subsequent
+    % recalculation of the computed CDF and PDF, in order to get the
+    % originaly required values: Set pdf_original(0) =  Inf &
+    % pdf_original(x) = pdf_new(x) * (1-cfLimit), for x > 0. Set
+    % cdf_original(x) =  cfLimit + cdf_new(x) * (1-cfLimit).
+    cfLimit           = real(cf(1e300));
+    cfOld             = cf;
+    if options.isCompound
+        if cfLimit > 1e-13
+            cf        = @(t) (cf(t) - cfLimit) / (1-cfLimit);
+        end
+        options.isNonnegative = true;
+    end
+    cft               = cf(tolDiff*(1:4));
+    cftRe             = real(cft);
+    cftIm             = imag(cft);
     if isempty(xMean)
         if options.isCircular
             % see https://en.wikipedia.org/wiki/Directional_statistics
@@ -318,24 +319,25 @@ else
             xMax       = pi;
         else
             if isfinite(xMin)
-                xMax       = xMean + SixSigmaRule * xStd;
+                xMax     = xMean + SixSigmaRule * xStd;
             elseif isfinite(xMax)
-                xMin       = xMean - SixSigmaRule * xStd;
+                xMin     = xMean - SixSigmaRule * xStd;
             else
-                xMin       = xMean - SixSigmaRule * xStd;
-                xMax       = xMean + SixSigmaRule * xStd;
+                xMin     = xMean - SixSigmaRule * xStd;
+                xMax     = xMean + SixSigmaRule * xStd;
             end
         end
-        range          = xMax - xMin;
+        range            = xMax - xMin;
     end
-    dt                 = 2*pi / range;
-    t                  = (1:N)' * dt;
-    cft                = cf(t);
-    cft(N)             = cft(N)/2;
-    options.DIST.xMin  = xMin;
-    options.DIST.xMax  = xMax;
-    options.DIST.xMean = xMean;
-    options.DIST.cft   = cft;
+    dt                   = 2*pi / range;
+    t                    = (1:N)' * dt;
+    cft                  = cf(t);
+    cft(N)               = cft(N)/2;
+    options.DIST.xMin    = xMin;
+    options.DIST.xMax    = xMax;
+    options.DIST.xMean   = xMean;
+    options.DIST.cft     = cft;
+    options.DIST.cfLimit = cfLimit;
 end
 
 %% ALGORITHM
@@ -372,15 +374,15 @@ cdf     = 0.5 - (cdf * dt) / pi;
 % Correct the CDF (if the computed result is out of (0,1))
 % This is useful for circular distributions over intervals of length 2*pi,
 % as e.g. the von Mises distribution
-corrCDF = 0;
+cdfAdjust = 0;
 if options.correctedCDF
     if min(cdf) < 0
-        corrCDF = min(cdf);
-        cdf     = cdf - corrCDF;
+        cdfAdjust = min(cdf);
+        cdf     = cdf - cdfAdjust;
     end
     if max(cdf) > 1
-        corrCDF = max(cdf)-1;
-        cdf     = cdf - corrCDF;
+        cdfAdjust = max(cdf)-1;
+        cdf     = cdf - cdfAdjust;
     end
 end
 cdf     = reshape(max(0,min(1,cdf)),n,m);
@@ -394,14 +396,13 @@ x       = reshape(x,n,m);
 % REMARK:
 % Note that, exp(-1i*x_i*0) = cos(x_i*0) + 1i*sin(x_i*0) = 1. Moreover,
 % cf(0) = 1 and lim_{t -> 0} cf(t)/t = E(X) - x. Hence, the leading term of
-% the trapezoidal rule for computing the CDF integral is CDFfun_1 = (xMean
-% - x)/2, and PDFfun_1 = 1/2 for the PDF integral, respectively.
+% the trapezoidal rule for computing the CDF integral is cdfIntegrand_1 = (xMean
+% - x)/2, and pdfIntegrand_1 = 1/2 for the PDF integral, respectively.
 
 % Reset the transformed CF, PDF, and CDF to the original values
 if options.isCompound
-    cf  = cfOld;
-    cdf = const + cdf * (1-const);
-    pdf = pdf * (1-const);
+    cdf = cfLimit + cdf * (1-cfLimit);
+    pdf = pdf * (1-cfLimit);
     pdf(x==0) = 0;
     pdf(x==xMax) = NaN;
 end
@@ -424,18 +425,18 @@ if ~isempty(prob)
     crit      = options.crit;
     qf        = options.qf0;
     criterion = true;
-    count     = 0;
+    nNewtonRaphsonLoops     = 0;
     [res,cdfQ,pdfQ] = cf2DistGP(cf,qf,[],options);
     options = res.options;
     while criterion
-        count  = count + 1;
-        correction  = ((cdfQ-corrCDF) - prob) ./ pdfQ;
-        qf = max(xMin,min(xMax,qf - correction));
+        nNewtonRaphsonLoops  = nNewtonRaphsonLoops + 1;
+        qfCorrection  = ((cdfQ-cdfAdjust) - prob) ./ pdfQ;
+        qf = max(xMin,min(xMax,qf - qfCorrection));
         [~,cdfQ,pdfQ] = cf2DistGP(cf,qf,[],options);
-        criterion = any(abs(correction) ...
+        criterion = any(abs(qfCorrection) ...
             > crit * abs(qf)) ...
-            && max(abs(correction)) ...
-            > crit && count < maxiter;
+            && max(abs(qfCorrection)) ...
+            > crit && nNewtonRaphsonLoops < maxiter;
     end
     qf   = reshape(qf,n,m);
     prob = reshape(prob,n,m);
@@ -443,20 +444,20 @@ if ~isempty(prob)
     options.isInterp = isInterp;
 else
     qf = [];
-    count = [];
-    correction =[];
+    nNewtonRaphsonLoops = [];
+    qfCorrection =[];
 end
 
 if options.isInterp
     try
         id   = isfinite(pdf);
-        pdfFunction = @(xNew) max(0, ...
+        pdfIntegrandction = @(xNew) max(0, ...
             InterpBarycentric(x(id),pdf(id),xNew));
-        PDF  = @(x) pdfFunction(x);
+        PDF  = @(x) pdfIntegrandction(x);
         id   = isfinite(cdf);
-        cdfFunction = @(xNew) max(0,min(1, ...
+        cdfIntegrandction = @(xNew) max(0,min(1, ...
             InterpBarycentric(x(id),cdf(id),xNew)));
-        CDF  = @(x) cdfFunction(x);
+        CDF  = @(x) cdfIntegrandction(x);
         qfFunction = @(prob) InterpBarycentric(cdf(id),x(id),prob);
         QF   = @(prob) qfFunction(prob);
         rndFunction = @(n) qfFunction(rand(n,1));
@@ -483,39 +484,39 @@ if options.isCompound
 end
 
 %% RESULT
-result.Description        = 'CDF/PDF/QF from the characteristic function CF';
-result.x                  = x;
-result.cdf                = cdf;
-result.pdf                = pdf;
-result.prob               = prob;
-result.qf                 = qf;
+result.Description         = 'CDF/PDF/QF from the characteristic function CF';
+result.x                   = x;
+result.cdf                 = cdf;
+result.pdf                 = pdf;
+result.prob                = prob;
+result.qf                  = qf;
 if options.isInterp
-    result.PDF            = PDF;
-    result.CDF            = CDF;
-    result.QF             = QF;
-    result.RND            = RND;
+    result.PDF             = PDF;
+    result.CDF             = CDF;
+    result.QF              = QF;
+    result.RND             = RND;
 end
-result.cf                 = cf;
-result.isCompound         = options.isCompound;
-result.isCircular         = options.isCircular;
-result.isInterp           = options.isInterp;
-result.SixSigmaRule       = options.SixSigmaRule;
-result.N                  = N;
-result.dt                 = dt;
-result.T                  = t(end);
-result.PrecisionCrit      = PrecisionCrit;
-result.myPrecisionCrit    = options.crit;
-result.isPrecisionOK      = isPrecisionOK;
-result.xMean              = xMean;
-result.xStd               = xStd;
-result.xMin               = xMin;
-result.xMax               = xMax;
-result.const              = const;
-result.details.count      = count;
-result.details.correction = correction;
-result.details.corrCDF    = corrCDF;
-result.options            = options;
-result.tictoc             = toc(timeVal);
+result.cf                  = cfOld;
+result.isCompound          = options.isCompound;
+result.isCircular          = options.isCircular;
+result.isInterp            = options.isInterp;
+result.SixSigmaRule        = options.SixSigmaRule;
+result.N                   = N;
+result.dt                  = dt;
+result.T                   = t(end);
+result.PrecisionCrit       = PrecisionCrit;
+result.myPrecisionCrit     = options.crit;
+result.isPrecisionOK       = isPrecisionOK;
+result.xMean               = xMean;
+result.xStd                = xStd;
+result.xMin                = xMin;
+result.xMax                = xMax;
+result.cfLimit             = cfLimit;
+result.cdfAdjust           = cdfAdjust;
+result.nNewtonRaphsonLoops = nNewtonRaphsonLoops;
+result.qfCorrection        = qfCorrection;
+result.options             = options;
+result.tictoc              = toc(timeVal);
 
 %% PLOT the PDF / CDF 
 if length(x)==1

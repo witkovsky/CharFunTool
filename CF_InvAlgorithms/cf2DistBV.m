@@ -40,10 +40,10 @@ function [result,cdf,pdf,qf] = cf2DistBV(cf,x,prob,options)
 %             options.SixSigmaRule = 6 % set the rule for computing domain
 %             options.tolDiff = 1e-4   % tol for numerical differentiation
 %             options.isPlot = true    % plot the graphs of PDF/CDF
-%             options.tolCoefs = 1e-12 % tol for Legendre coefficients
+%             options.tolCoefs = 1e-15 % tol for Legendre coefficients
 %             options.nMax = 100       % nMax of Legendre coefficients
-%             options.nLimits = 5      % nLimits+1 integration subintervals
-%             options.Limits           %  = [0 10^(-1:nLimits) Inf]
+%             options.nLimits = 6      % nLimits+1 integration subintervals
+%             options.Limits           % = [0 10^(-1:0.5:nLimits) Inf]
 %             options.DIST             % structure with precomputed Info
 %             options.qf0              % starting quantile for iterations
 %             options.crit = 1e-12;    % stopping criterion for quantiles 
@@ -117,7 +117,7 @@ function [result,cdf,pdf,qf] = cf2DistBV(cf,x,prob,options)
 %     2017, arXiv:1701.08299.
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 21-Sep-2017 09:33:32
+% Ver.: 22-Sep-2017 11:11:11
 
 %% ALGORITHM
 %[result,cdf,pdf,qf] = cf2DistBV(cf,x,prob,options);
@@ -167,11 +167,11 @@ if ~isfield(options, 'tolCoefs')
 end
 
 if ~isfield(options, 'nLimits')
-    options.nLimits = 5;
+    options.nLimits = 6;
 end
 
 if ~isfield(options, 'Limits')
-    options.Limits = [1e-15 10.^(-1:options.nLimits) 1e+300];
+    options.Limits = [1e-15 10.^(-1:0.5:options.nLimits) 1e+300];
 end
 
 if ~isfield(options, 'nMax')
@@ -187,11 +187,11 @@ if ~isfield(options, 'DIST')
 end
 
 if ~isfield(options, 'qf0')
-    options.qf0 = real((cf(1e-4)-cf(-1e-4))/(2e-4*1i));
+    options.qf0 = [];
 end
 
 if ~isfield(options, 'crit')
-    options.crit = 1e-10;
+    options.crit = 1e-12;
 end
 
 if ~isfield(options, 'maxiter')
@@ -207,27 +207,7 @@ if ~isfield(options, 'chebyPts')
 end
 
 %% SET the DEFAULT parameters
-
-% Special treatment for compound distributions. If the real value of CF at
-% infinity (large value) is positive constant, i.e. const = real(cf(Inf)) >
-% 0. In this case the compound CDF has jump at 0 of size equal to this
-% value, i.e. cdf(0) = const, and pdf(0) = Inf. In order to simplify the
-% calculations, here we calculate PDF and CDF of a distribution given by
-% transformed CF, i.e. cf_new(t) = (cf(t)-const) / (1-const); which is
-% converging to 0 at Inf, i.e. cf_new(Inf) = 0. Using the transformed CF
-% requires subsequent recalculation of the computed CDF and PDF, in order
-% to get the originaly required values: Set pdf_original(0) =  Inf &
-% pdf_original(x) = pdf_new(x) * (1-const), for x > 0. Set cdf_original(x)
-% =  const + cdf_new(x) * (1-const).
-
-const = real(cf(1e300));
-if options.isCompound
-    cfOld = cf;
-    if const > 1e-13
-        cf    = @(t) (cf(t) - const) / (1-const);
-    end
-    options.isNonnegative = true;
-end
+cfOld  = [];
 
 if ~isempty(options.DIST)
     xMean        = options.DIST.xMean;
@@ -238,13 +218,35 @@ if ~isempty(options.DIST)
     pdfCoef      = options.DIST.pdfCoef;
     scale        = options.DIST.scale;
     shift        = options.DIST.shift;
+    nCoef        = options.DIST.nCoef;
     nLimits      = options.DIST.nLimits;
-    nTrue        = options.DIST.nTrue;
+    nCoefsMaxDim = options.DIST.nCoefsMaxDim;
+    cfLimit      = options.DIST.cfLimit;
 else
     xMin         = options.xMin;
     xMax         = options.xMax;
     SixSigmaRule = options.SixSigmaRule;
     tolDiff      = options.tolDiff;
+    % Special treatment for compound distributions. If the real value of CF
+    % at infinity (large value) is positive constant, i.e. cfLimit =
+    % real(cf(Inf)) > 0. In this case the compound CDF has jump at 0 of
+    % size equal to this value, i.e. cdf(0) = cfLimit, and pdf(0) = Inf. In
+    % order to simplify the calculations, here we calculate PDF and CDF of
+    % a distribution given by transformed CF, i.e. cf_new(t) =
+    % (cf(t)-cfLimit) / (1-cfLimit); which is converging to 0 at Inf, i.e.
+    % cf_new(Inf) = 0. Using the transformed CF requires subsequent
+    % recalculation of the computed CDF and PDF, in order to get the
+    % originaly required values: Set pdf_original(0) =  Inf &
+    % pdf_original(x) = pdf_new(x) * (1-cfLimit), for x > 0. Set
+    % cdf_original(x) =  cfLimit + cdf_new(x) * (1-cfLimit).
+    cfLimit      = real(cf(1e300));
+    cfOld        = cf;
+    if options.isCompound
+        if cfLimit > 1e-13
+            cf   = @(t) (cf(t) - cfLimit) / (1-cfLimit);
+        end
+        options.isNonnegative = true;
+    end
     cft          = cf(tolDiff*(1:4));
     cftRe        = real(cft);
     cftIm        = imag(cft);
@@ -261,8 +263,6 @@ else
         xMin     = xMean - SixSigmaRule * xStd;
         xMax     = xMean + SixSigmaRule * xStd;
     end
-    pdfFun   = @(t) real(cf(t));
-    cdfFun   = @(t) imag(cf(t))./t;
     nMax     = options.nMax;
     tolCoefs = options.tolCoefs;
     Limits   = options.Limits;
@@ -271,36 +271,35 @@ else
     pdfCoef  = cell(1,nLimits-1);
     scale    = cell(1,nLimits-1);
     shift    = cell(1,nLimits-1);
+    nCoef    = cell(1,nLimits-1);
     % Get the coefficients of Legendre series expansion of the required
-    % integrand functions: cdfFun and pdfFun
+    % integrand functions: cdfIntegrand and pdfIntegrand
     A = Limits(1);
     B = Limits(2);
-    nTrue = 0;
-    [cdfCoef{1},scale{1},shift{1},xx,ww,PP] = ...
-        LegendreSeries(cdfFun,A,B,nMax,tolCoefs);
-    nTrue = max(length(cdfCoef{1}),nTrue);
-    pdfCoef{1} = LegendreSeries(pdfFun,A,B,nMax,tolCoefs,xx,ww,PP);
-    nTrue = max(length(pdfCoef{1}),nTrue);
+    nCoefsMaxDim = 0;
+    [nCoef{1},pdfCoef{1},cdfCoef{1},scale{1},shift{1},xx,ww,PP] = ...
+        CFGLSeries(cf,A,B,nMax,tolCoefs);
+    nCoefsMaxDim = max(nCoef{1},nCoefsMaxDim);
     for i = 1:(nLimits-2)
         A = B;
         B = Limits(i+2);
-        [cdfCoef{i+1},scale{i+1},shift{i+1}] = ...
-            LegendreSeries(cdfFun,A,B,nMax,tolCoefs,xx,ww,PP);
-        nTrue = max(length(cdfCoef{i+1}),nTrue);
-        pdfCoef{i+1} = LegendreSeries(pdfFun,A,B,nMax,tolCoefs,xx,ww,PP);
-        nTrue = max(length(pdfCoef{i+1}),nTrue);
+        [nCoef{i+1},pdfCoef{i+1},cdfCoef{i+1},scale{i+1},shift{i+1}] = ...
+            CFGLSeries(cf,A,B,nMax,tolCoefs,xx,ww,PP);
+        nCoefsMaxDim = max(nCoef{i+1},nCoefsMaxDim);
     end
     % Save options.DIST
-    options.DIST.xMin    = xMin;
-    options.DIST.xMax    = xMax;
-    options.DIST.xMean   = xMean;
-    options.DIST.xStd    = xStd;
-    options.DIST.cdfCoef = cdfCoef;
-    options.DIST.pdfCoef = pdfCoef;
-    options.DIST.scale   = scale;
-    options.DIST.shift   = shift;
-    options.DIST.nLimits = nLimits;
-    options.DIST.nTrue   = nTrue;
+    options.DIST.xMin         = xMin;
+    options.DIST.xMax         = xMax;
+    options.DIST.xMean        = xMean;
+    options.DIST.xStd         = xStd;
+    options.DIST.cdfCoef      = cdfCoef;
+    options.DIST.pdfCoef      = pdfCoef;
+    options.DIST.scale        = scale;
+    options.DIST.shift        = shift;
+    options.DIST.nCoef        = nCoef;
+    options.DIST.nLimits      = nLimits;
+    options.DIST.nCoefsMaxDim = nCoefsMaxDim;
+    options.DIST.cfLimit      = cfLimit;
 end
 
 if isempty(x)
@@ -325,10 +324,10 @@ x        = x(:);
 cdf = 0;
 pdf = 0;
 for i = 1:(nLimits-1)
-    [I1,I2] = LegendreSeriesFourierIntegral(x,cdfCoef{i}, ...
-        scale{i},shift{i},pdfCoef{i});  
-    cdf = cdf + I1;
-    pdf = pdf + I2;
+    [pdfI,cdfI] = CFGLSeriesFourierIntegral(x,nCoef{i}, ...
+        pdfCoef{i},cdfCoef{i},scale{i},shift{i});
+    pdf = pdf + pdfI;
+    cdf = cdf + cdfI;
 end
 
 % Use the Gil-Pelaez formulae for PDF and CDF
@@ -344,9 +343,8 @@ end
 
 % Reset the transformed CF, PDF, and CDF to the original values
 if options.isCompound
-    cf  = cfOld;
-    cdf = const + cdf * (1-const);
-    pdf = pdf * (1-const);
+    cdf = cfLimit + cdf * (1-cfLimit);
+    pdf = pdf * (1-cfLimit);
     pdf(x==0) = 0;
     pdf(x==xMax) = NaN;
 end
@@ -366,20 +364,24 @@ if ~isempty(prob)
     prob      = prob(:);
     maxiter   = options.maxiter;
     crit      = options.crit;
-    qf        = options.qf0;
+    if isempty(options.qf0)
+        qf    = real((cf(1e-4)-cf(-1e-4))/(2e-4*1i));
+    else
+        qf    = options.qf0;
+    end
     criterion = true;
-    count     = 0;
+    nNewtonRaphsonLoops     = 0;
     [res,cdfQ,pdfQ] = cf2DistBV(cf,qf,[],options);
     options = res.options;
     while criterion
-        count  = count + 1;
-        correction  = (cdfQ - prob) ./ pdfQ;
-        qf = max(xMin,min(xMax,qf - correction));
+        nNewtonRaphsonLoops  = nNewtonRaphsonLoops + 1;
+        qfCorrection  = (cdfQ - prob) ./ pdfQ;
+        qf = max(xMin,min(xMax,qf - qfCorrection));
         [~,cdfQ,pdfQ] = cf2DistBV(cf,qf,[],options);
-        criterion = any(abs(correction) ...
+        criterion = any(abs(qfCorrection) ...
             > crit * abs(qf)) ...
-            && max(abs(correction)) ...
-            > crit && count < maxiter;
+            && max(abs(qfCorrection)) ...
+            > crit && nNewtonRaphsonLoops < maxiter;
     end
     qf   = reshape(qf,n,m);
     prob = reshape(prob,n,m);
@@ -387,20 +389,20 @@ if ~isempty(prob)
     options.isInterp = isInterp;
 else
     qf = [];
-    count = [];
-    correction =[];
+    nNewtonRaphsonLoops = [];
+    qfCorrection =[];
 end
 
 if options.isInterp
     try
         id   = isfinite(pdf);
-        pdfFunction = @(xNew) max(0, ...
+        pdfIntegrandction = @(xNew) max(0, ...
             InterpBarycentric(x(id),pdf(id),xNew));
-        PDF  = @(x) pdfFunction(x);
+        PDF  = @(x) pdfIntegrandction(x);
         id   = isfinite(cdf);
-        cdfFunction = @(xNew) max(0,min(1, ...
+        cdfIntegrandction = @(xNew) max(0,min(1, ...
             InterpBarycentric(x(id),cdf(id),xNew)));
-        CDF  = @(x) cdfFunction(x);
+        CDF  = @(x) cdfIntegrandction(x);
         qfFunction = @(prob) InterpBarycentric(cdf(id),x(id),prob);
         QF   = @(prob) qfFunction(prob);
         rndFunction = @(n) qfFunction(rand(n,1));
@@ -427,34 +429,34 @@ if options.isCompound
 end
 
 %% RESULT
-result.Description        = 'CDF/PDF/QF from the characteristic function CF';
-result.x                  = x;
-result.cdf                = cdf;
-result.pdf                = pdf;
-result.prob               = prob;
-result.qf                 = qf;
+result.Description         = 'CDF/PDF/QF from the characteristic function CF';
+result.x                   = x;
+result.cdf                 = cdf;
+result.pdf                 = pdf;
+result.prob                = prob;
+result.qf                  = qf;
 if options.isInterp
-    result.PDF            = PDF;
-    result.CDF            = CDF;
-    result.QF             = QF;
-    result.RND            = RND;
+    result.PDF             = PDF;
+    result.CDF             = CDF;
+    result.QF              = QF;
+    result.RND             = RND;
 end
-result.cf                 = cf;
-result.isNonnegative      = options.isNonnegative;
-result.isCompound         = options.isCompound;
-result.isInterp           = options.isInterp;
-result.SixSigmaRule       = options.SixSigmaRule;
-result.xMean              = xMean;
-result.xStd               = xStd;
-result.xMin               = xMin;
-result.xMax               = xMax;
-result.const              = const;
-result.details.count      = count;
-result.details.correction = correction;
-result.details.nTrue      = nTrue;
-result.options            = options;
-result.isOK               = count < options.maxiter & nTrue < options.nMax;
-result.tictoc             = toc(timeVal);
+result.cf                  = cfOld;
+result.isNonnegative       = options.isNonnegative;
+result.isCompound          = options.isCompound;
+result.isInterp            = options.isInterp;
+result.SixSigmaRule        = options.SixSigmaRule;
+result.xMean               = xMean;
+result.xStd                = xStd;
+result.xMin                = xMin;
+result.xMax                = xMax;
+result.cfLimit             = cfLimit;
+result.nSubintervals       = nLimits-1;
+result.nCoefsMaxDim        = nCoefsMaxDim;
+result.nNewtonRaphsonLoops = nNewtonRaphsonLoops;
+result.qfCorrection        = qfCorrection;
+result.options             = options;
+result.tictoc              = toc(timeVal);
 
 %% PLOT the PDF / CDF
 if length(x)==1
