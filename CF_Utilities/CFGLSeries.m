@@ -51,7 +51,7 @@ end
 if isempty(x) || isempty(w)
     [x,w]  = LegendrePoints(nMax+1);
 end
-% The Legendre polynomials of orders 0:nPts evaluated at the nodes x
+% The Legendre polynomials of orders 0:nCoefs evaluated at the nodes x
 if isempty(P)
     P      = zeros(nMax+1);
     P(1,:) = 1;
@@ -77,9 +77,29 @@ cdfCoefs = imag(F) .* w ./ t;
 pdfCoefs = sum(bsxfun(@times,P,pdfCoefs),2);
 cdfCoefs = sum(bsxfun(@times,P,cdfCoefs),2);
 
-% Coefficients (greater than tol = 1e-15) of the Legendre Series
 pdfCoefs = pdfCoefs(abs(pdfCoefs)>tol);
-nCoefs   = length(pdfCoefs);
-cdfCoefs = cdfCoefs(1:nCoefs);
+cdfCoefs = cdfCoefs(abs(cdfCoefs)>tol);
+
+% Coefficients (greater than tol = 1e-15) of the Legendre Series
+if ~isempty(pdfCoefs) && ~isempty(cdfCoefs)
+    nCoefs = max(length(pdfCoefs)-1,length(cdfCoefs)-1);
+elseif ~isempty(pdfCoefs) && isempty(cdfCoefs)
+    nCoefs = length(pdfCoefs)-1;
+elseif isempty(pdfCoefs) && ~isempty(cdfCoefs)
+    nCoefs = length(cdfCoefs)-1;
+else
+    nCoefs = 0;
+end
+
+if ~isempty(pdfCoefs) && length(pdfCoefs) < nCoefs+1
+    coef0 = pdfCoefs;
+    pdfCoefs  = zeros(nCoefs+1,1);
+    pdfCoefs(1:length(coef0)) = coef0;
+end
+if ~isempty(cdfCoefs) && length(cdfCoefs) < nCoefs+1
+    coef0 = cdfCoefs;
+    cdfCoefs  = zeros(nCoefs+1,1);
+    cdfCoefs(1:length(coef0)) = coef0;
+end
 
 end
