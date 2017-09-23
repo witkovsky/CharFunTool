@@ -43,7 +43,7 @@ function [result,cdf,pdf,qf] = cf2DistBV(cf,x,prob,options)
 %             options.tolCoefs = 1e-15 % tol for Legendre coefficients
 %             options.nMax = 100       % nMax of Legendre coefficients
 %             options.nLimits = 6      % nLimits+1 integration subintervals
-%             options.Limits           % = [0 10^(-1:0.5:nLimits) Inf]
+%             options.Limits           % = [0 10^(-3:0.5:nLimits) Inf]
 %             options.DIST             % structure with precomputed Info
 %             options.qf0              % starting quantile for iterations
 %             options.crit = 1e-12;    % stopping criterion for quantiles 
@@ -171,7 +171,7 @@ if ~isfield(options, 'nLimits')
 end
 
 if ~isfield(options, 'Limits')
-    options.Limits = [1e-15 10.^(-1:0.5:options.nLimits) 1e+300];
+    options.Limits = [1e-15 10.^(-3:0.5:options.nLimits) 1e+300];
 end
 
 if ~isfield(options, 'nMax')

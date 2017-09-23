@@ -82,23 +82,23 @@ cdfCoefs = cdfCoefs(abs(cdfCoefs)>tol);
 
 % Coefficients (greater than tol = 1e-15) of the Legendre Series
 if ~isempty(pdfCoefs) && ~isempty(cdfCoefs)
-    nCoefs = max(length(pdfCoefs)-1,length(cdfCoefs)-1);
+    nCoefs = max(length(pdfCoefs),length(cdfCoefs));
 elseif ~isempty(pdfCoefs) && isempty(cdfCoefs)
-    nCoefs = length(pdfCoefs)-1;
+    nCoefs = length(pdfCoefs);
 elseif isempty(pdfCoefs) && ~isempty(cdfCoefs)
-    nCoefs = length(cdfCoefs)-1;
+    nCoefs = length(cdfCoefs);
 else
     nCoefs = 0;
 end
 
-if ~isempty(pdfCoefs) && length(pdfCoefs) < nCoefs+1
+if ~isempty(pdfCoefs) && length(pdfCoefs) < nCoefs
     coef0 = pdfCoefs;
-    pdfCoefs  = zeros(nCoefs+1,1);
+    pdfCoefs = zeros(nCoefs,1);
     pdfCoefs(1:length(coef0)) = coef0;
 end
-if ~isempty(cdfCoefs) && length(cdfCoefs) < nCoefs+1
+if ~isempty(cdfCoefs) && length(cdfCoefs) < nCoefs
     coef0 = cdfCoefs;
-    cdfCoefs  = zeros(nCoefs+1,1);
+    cdfCoefs = zeros(nCoefs,1);
     cdfCoefs(1:length(coef0)) = coef0;
 end
 
