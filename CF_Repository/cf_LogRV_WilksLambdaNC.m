@@ -24,7 +24,7 @@ function cf = cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef,niid,MAX)
 %  independent Beta distributions for all i = 1,...,N and j = 1,...,p_i.
 %
 % SYNTAX
-%  cf = cf_LogRV_WilksLambdaNC(t,p,q,n,delta,coef,niid)
+%  cf = cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef,niid,MAX)
 %
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -85,11 +85,10 @@ function cf = cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef,niid,MAX)
 %   delta = sort(rand(1,p));
 %   coef  = -1;
 %   cf    = @(t) cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef);
-%   x     = linspace(0,5)';
 %   prob  = [0.9 0.95 0.99];
 %   clear options
 %   options.xMin = 0;
-%   result = cf2DistGP(cf,x,prob,options);
+%   result = cf2DistGP(cf,[],prob,options);
 %   disp(result)
 %
 % EXAMPLE 4:
@@ -194,6 +193,8 @@ for i = 1:length(coef)
     if ~isempty(delta{i})
         cf = cf .* Hypergeom1F1Mat(1i*coef(i)*t, ...
             1i*coef(i)*t + (m(i)+n(i))/2,-delta{i},MAX);
+%         cf = cf .* Hypergeom1F1Mat(1i*coef(i)*t, ...
+%             1i*coef(i)*t + (m(i)+n(i))/2,delta{i},MAX);
     end
 end
 cf  = reshape(cf,szt);
