@@ -30,10 +30,10 @@ function cf = cf_LogRV_WilksLambda(t,p,m,n,coef,niid)
 %  t     - vector or array of real values, where the CF is evaluated.
 %  p     - vector of the dimension parameters p = (p_1,...,p_N). If empty,
 %          default value is p = (1,...,1).  
-%  m     - vector of sample size parameters m = (m_1,...,m_N). If empty,
-%          default value is m = (1,...,1). 
-%  n     - vector of sample size parameters n = (n_1,...,n_N). If empty,
-%          default value is n = (1,...,1). 
+%  m     - vector of degrees of freedom of the Wishart matrices E_i, m =
+%          (m_1,...,m_N). If empty, default value is m = (1,...,1).
+%  n     - vector of degrees of freedom of the Wishart matrices H_i, n =
+%          (n_1,...,n_N). If empty, default value is n = (1,...,1).
 %  coef  - vector of the coefficients of the linear combination of the
 %          log-transformed random variables. If coef is scalar, it is
 %          assumed that all coefficients are equal. If empty, default value
@@ -49,8 +49,8 @@ function cf = cf_LogRV_WilksLambda(t,p,m,n,coef,niid)
 % EXAMPLE 1:
 % % CF of log Wilks Lambda RV distribution Lambda(p,m,n)
 %   p  = 5;
-%   m  = 10;
-%   n  = 3;
+%   m  = 10; % elsewhere it is denoted as n (d.f. of within SS&P)
+%   n  = 3;  % elsewhere it is denoted as q (d.f. of between SS&P)
 %   t  = linspace(-10,10,201);
 %   cf = cf_LogRV_WilksLambda(t,p,m,n);
 %   figure; plot(t,real(cf),t,imag(cf)); grid on;
@@ -105,7 +105,7 @@ function cf = cf_LogRV_WilksLambda(t,p,m,n,coef,niid)
 %   disp(chi2inv(prob,n*p))
 
 % (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 17-Jun-2017 17:18:39
+% Ver.: 23-Oct-2017 12:44:48
 
 %% ALGORITHM
 % cf = cf_LogRV_WilksLambda(t,p,m,n,coef,niid)

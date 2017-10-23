@@ -1,31 +1,35 @@
 function f = Hypergeom1F1(a,b,z)
 %HYPERGEOM1F1 Computes the confluent hypergeometric function 1F1(a,b,z),
-%  also known as the Kummer function M(a,b,z), for the real parameters a
-%  and b (here assumed to be scalars), and the complex argument z
-%  (could be scalar, vector or array).
+% also known as the Kummer function M(a,b,z), for the parameters a
+% and b (here assumed to be scalars), and the complex argument z
+% (could be scalar, vector or array).
 %
-% SYNTAX:
+% The algorithm is based on a Fortran program in S. Zhang & J. Jin
+% "Computation of Special Functions" (Wiley, 1996).
+% http://iris-lee3.ece.uiuc.edu/~jjin/routines/routines.html
+%
+% Converted by using f2matlab: https://sourceforge.net/projects/f2matlab/
+% written by Ben Barrowes (barrowes@alum.mit.edu)
+%
+% SYNTAX
 %   f = Hypergeom1F1(a,b,z)
 %
-% EXAMPLE 1 (CF of Beta(1/2,1/2) distribution)
-%  a  = 1/2;
-%  b  = 1/2;
-%  t  = linspace(-50,50,2^11)';
-%  cf =  Hypergeom1F1(a,b+b,1i*t);
-%  figure; plot(t,real(cf),t,imag(cf))
-%  title('Characteristic function of Beta(1/2,1/2) distribution')
-%  xlabel('t')
-%  ylabel('CF')
+% EXAMPLE1 (CF of Beta(1/2,1/2) distribution)
+% a  = 1/2;
+% b  = 1/2;
+% t  = linspace(-50,50,2^11)';
+% cf =  Hypergeom1F1(a,b+b,1i*t);
+% figure; plot(t,real(cf),t,imag(cf))
+% title('Characteristic function of Beta(1/2,1/2) distribution')
+% xlabel('t')
+% ylabel('CF')
 %
-% CREDENTIALS:
-% The algorithm is based on a Fortran program in S. Zhang & J. Jin
-% "Computation of Special Functions" (Wiley, 1996). Converted by Ben
-% Barrowes (barrowes@alum.mit.edu) 
+% NOTE1: the functions Hypergeom1F1 and KummerM are equivalent
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 24-Jul-2017 10:06:48
+% Ver.: 19-Oct-2017 12:16:34
 
-%% FUNCTION CALL
+%% FUNCTION
 %  f = Hypergeom1F1(a,b,z)
 
 %% CHECK THE INPUT PARAMETERS
@@ -45,8 +49,17 @@ end
 end
 %% FUNCTION CCHG
 function [chg]=cchg(a,b,z)
-% CCHG Compute confluent hypergeometric function M(a,b,z) with real
-% parameters a, b and a complex argument z.
+%     ===================================================
+%     Purpose: Compute confluent hypergeometric function
+%     M(a,b,z) with parameters a, b and complex argument z
+%     Input :
+%     a --- Parameter
+%     b --- Parameter
+%     z --- Complex argument
+%     Output:
+%     CHG --- M(a,b,z)
+%     Routine called: GammaZX for computing Gamma function
+%     ===================================================
 
 %% ALGORITHM
 chw = 0;
@@ -81,19 +94,19 @@ else
         a0 = a;
         z  = -z;
     end
-    if (a < 2)
+    if (real(a) < 2)
         nl = 0;
     end
-    if(a >= 2)
+    if(real(a) >= 2)
         nl = 1;
-        la = fix(a);
+        la = fix(real(a));
         a  = a - la - 1;
     end
     for  n = 0:nl
-        if(a0 >= 2)
+        if(real(a0) >= 2)
             a = a + 1;
         end
-        if (abs(z)< 20 + abs(b) || a < 0)
+        if (abs(z)< 20 + abs(b) || real(a) < 0)
             chg = 1;
             crg = 1;
             for  j = 1:500
@@ -105,10 +118,10 @@ else
                 chw = chg;
             end
         else
-            g1 = gamma(a);
-            g2 = gamma(b);
+            g1 = GammaZX(a);
+            g2 = GammaZX(b);
             ba = b - a;
-            g3 = gamma(ba);
+            g3 = GammaZX(ba);
             cs1 = 1;
             cs2 = 1;
             cr1 = 1;

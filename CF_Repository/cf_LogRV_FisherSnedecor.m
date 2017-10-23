@@ -10,16 +10,21 @@ function cf = cf_LogRV_FisherSnedecor(t,df1,df2,coef,niid)
 %  F(df1_i,df2_i), with degrees of freedom df1_i and df2_i, for i =
 %  1,...,N.
 %
-%  The characteristic function of Y = log(X), with X ~ F(df1,df2) is
-%  defined by cf_Y(t) = E(exp(1i*t*Y)) = E(exp(1i*t*log(X))) = E(X^(1i*t)). 
+%  The characteristic function of Y = log(X), with X ~ F(df1,df2,lambda),
+%  where lambda is the non-centrality parameter, is defined by cf_Y(t) =
+%  E(exp(1i*t*Y)) = E(exp(1i*t*log(X))) = E(X^(1i*t)).  
 %  That is, the characteristic function can be derived from expression for
 %  the r-th moment of X, E(X^r) by using (1i*t) instead of r. In
 %  particular, the characteristic function of Y = log(X) is defined by  
-%   cf_Y(t) = (df2/df1)^(1i*t) .* gamma(df1/2 + 1i*t) / gamma(df1) .* ...
-%             gamma(df2/2 - 1i*t) / gamma(df2).
+%   cf_Y(t) = (df2/df1)^(1i*t) .* gamma(df1/2 + 1i*t) / gamma(df1/2) .* ...
+%             gamma(df2/2 - 1i*t) / gamma(df2/2) .* ...
+%             1F1(-1i*t;df1/2;-lambda/2),
+%  where 1F1(a;b;z) is the hypergeometric function confluent hypergeometric
+%  function, also known as the Kummer function M(a,b,z).
+%
 %  Hence,the characteristic function of Y  = coef(1)*Y1 + ... + coef(N)*YN
 %  is  cf_Y(t) =  cf_Y1(coef(1)*t) * ... * cf_YN(coef(N)*t), where cf_Yi(t)
-%  is evaluated with the parameters df1(i) and df2(i).
+%  is evaluated with the parameters df1(i), df2(i), and lambda(i).
 %
 % SYNTAX
 %  cf = cf_LogRV_FisherSnedecor(t,df1,df2,coef,niid)
