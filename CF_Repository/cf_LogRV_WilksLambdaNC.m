@@ -116,11 +116,16 @@ function cf = cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef,niid,MAX)
 %   disp(chi2inv(prob,n*p))
 %
 % REMARK:
-%  cf_LogRV_WilksLambdaNC is FRAGILE and could lead to nonstable results.
+%  cf_LogRV_WilksLambdaNC is FRAGILE! (it could lead to nonstable results).
 %  Computing CF of the LOG-TRANSFORMED NON-CENTARL WILK's LAMBDA random
 %  variable depends on computing the generalized hypergeometric function of
-%  matrix argument. Current version of cf_LogRV_WilksLambdaNC uses modified
-%  implementation of the algorithm suggested in Koev and Edelman (2006). 
+%  matrix argument. 
+%  Current version of cf_LogRV_WilksLambdaNC uses modified implementation
+%  for computing the truncated hypergeometric function, see the algorithm
+%  HypergeompFqMat.m, as originaly suggested in Koev and Edelman (2006).        
+%  The truncation of the hypergeometric series is controled by the
+%  parameter MAX. Here, the default value is MAX = 15. If necessary, the
+%  parameter MAX should be set to larger value.
 %
 % REFERENCES:
 % [1] Koev, P. and Edelman, A., 2006. The efficient evaluation of the
@@ -150,6 +155,7 @@ if isempty(n), n = 1; end
 if isempty(delta), delta = cell(1); end
 if isempty(coef),  coef  = 1; end
 if isempty(niid),  niid  = 1; end
+if isempty(MAX),   MAX   = 15; end
 
 if ~iscell(delta)
     [p1,p2] =size(delta);
@@ -191,10 +197,8 @@ for i = 1:length(coef)
     beta  = n(i)/2;
     cf = cf .* cf_LogRV_Beta(coef(i)*t,alpha,beta);
     if ~isempty(delta{i})
-        cf = cf .* Hypergeom1F1Mat(1i*coef(i)*t, ...
-            1i*coef(i)*t + (m(i)+n(i))/2,-delta{i},MAX);
-%         cf = cf .* Hypergeom1F1Mat(1i*coef(i)*t, ...
-%             1i*coef(i)*t + (m(i)+n(i))/2,delta{i},MAX);
+        HypergeompFqMat(1i*coef(i)*t,1i*coef(i)*t + (m(i)+n(i))/2, ...
+            -delta{i},[],1,MAX);
     end
 end
 cf  = reshape(cf,szt);
@@ -206,24 +210,5 @@ if ~isempty(niid)
     else
         error('niid should be a scalar (positive integer) value');
     end
-end
-end
-%% FUNCTION Hypergeom1F1Mat
-function f = Hypergeom1F1Mat(a,b,x,MAX)
-% Hypergeom1F1Mat Computes truncated hypergeometric function
-% 1F1^alpha(a;b;x) with parameters a and b and matrix argument x. the
-% maximum number of partitions in the truncated hypergeometric series is
-% equal to given parameter MAX (default value is MAX = 10).
-
-%% ALGORITHM
-if nargin < 4, MAX = 10; end
-
-alpha = 1;
-y     = [];
-nt    = length(a);
-f     = zeros(nt,1);
-
-for i = 1:nt
-    f(i) = HypergeompFqMat(a(i),b(i),x,y,alpha,MAX);
 end
 end
