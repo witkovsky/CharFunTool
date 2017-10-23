@@ -1,65 +1,91 @@
-function [s,ss] = HypergeomMatFun(MAX,alpha,p,q,x,y,lam)
-% HypergeomMatFun - the hypergeometric function of a matrix argument.
-% Computes truncated hypergeometric function pFq^alpha(p;q;x;y) of two
-% matrix arguments, x and y.
+function [s,ss] = HypergeompFqMat(a,b,x,y,alpha,MAX,lam)
+% HypergeompFqMat - The hypergeometric function of a matrix argument.
+%  Computes truncated hypergeometric function pFq^alpha(a;b;x;y) with
+%  parameters a and b and of two matrix arguments, x and y.
+%
+%  For more details and definition of the hypergeometric function
+%  pFq^alpha(a;b;x;y) with matrix argument see, e.g., Koev and Edelman
+%  (2006). 
 %
 % SYNTAX:
-%  [s,ss] = HypergeomMatFun(MAX,alpha,p,q,x,y,lam)
+%  [s,ss] = HypergeompFqMat(a,b,x,y,alpha,MAX,lam)
 %
 % INPUTS:
-%  MAX    - maximum number of partitions, |kappa|<=MAX.
-%  alpha  - parameter of the hypergeometric function pFq^alpha(p;q;x;y),
-%  p      - parameter of the hypergeometric function pFq^alpha(p;q;x;y),
-%  q      - parameter of the hypergeometric function pFq^alpha(p;q;x;y),
-%  x      - matrix argument (vector of eigenvalues),
+%  a      - parameter of the hypergeometric function pFq^alpha(a;b;x;y),
+%  b      - parameter of the hypergeometric function pFq^alpha(a;b;x;y),
+%  x      - matrix argument (given as vector of eigenvalues),
 %  y      - optional second matrix argument (vector of eigenvalues),
-%  lam    - optional parameter, kappa<=lam
+%  alpha  - parameter of the hypergeometric function pFq^alpha(a;b;x;y),
+%           default value is alpha = 1,
+%  MAX    - maximum number of partitions, |kappa|<=MAX, default value is
+%           MAX = 10,
+%  lam    - optional parameter, kappa<=lam.
 %
 % OUTPUTS:
-%  s     - hypergeometric sum, pFq^alpha(p;q;x;y).
+%  s     - hypergeometric sum, pFq^alpha(a;b;x;y).
 %  ss    - partial sums.
 %
-% EXAMPLE (2F3^9([3 4];[5 6 7];[1 2];[8,9]) & kappa<=(4,3) & |kappa|<=6)
-% [s,ss] = HypergeomMatFun(6,9,[3 4],[5 6 7],[1,2],[8 9],[4 3])
+% EXAMPLE:
+%  % Evaluate 2F3^9([3 4];[5 6 7];[1 2];[8,9]) & kappa<=(4,3), |kappa|<=6
+%  a      = [3 4];
+%  b      = [5 6 7];
+%  x      = [1,2];
+%  y      = [8 9];
+%  alpha  = 9;
+%  MAX    = 6;
+%  lam    = [4,3];
+%  [s,ss] = HypergeompFqMat(a,b,x,y,alpha,MAX,lam)
 %
 % AUTHOR/CREDITS:
-% Plamen Koev, February 2004, May 22, 2004. See also MHG.
-% MHG is a collection of MATLAB functions written in C for computing the
-% hypergeometric function of a matrix argument.
+%  Copyright (c) 2004 Plamen Koev.
+%  MHG is a collection of MATLAB functions written in C for computing the
+%  hypergeometric function of a matrix argument.
 %
-% MHG is Copyright (c) 2004 Plamen Koev
+% MHG LICENCE:
+%  This program is free software; you can redistribute it and/or modify it
+%  under the terms of the GNU General Public License as published by the
+%  Free Software Foundation; either version 2 of the License, or (at your
+%  option) any later version.
 %
-% This program is free software; you can redistribute it and/or modify it
-% under the terms of the GNU General Public License as published by the
-% Free Software Foundation; either version 2 of the License, or (at your
-% option) any later version.
+%  This program is distributed in the hope that it will be useful, but
+%  WITHOUT ANY WARRANTY; without even the implied warranty of
+%  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+%  Public License for more details.
 %
-% This program is distributed in the hope that it will be useful, but
-% WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
-% Public License for more details.
+%  You should have received a copy of the GNU General Public License along
+%  with this program; if not, write to the Free Software Foundation, Inc.,
+%  59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 %
-% You should have received a copy of the GNU General Public License along
-% with this program; if not, write to the Free Software Foundation, Inc.,
-% 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+%  If you use MHG in any program or publication, please acknowledge
+%  its author by adding a reference.
 %
-% If you use MHG in any program or publication, please acknowledge
-% its author by adding a reference to:
-%
-% Plamen Koev and Alan Edelman, The Efficient Evaluation of the
-% Hypergeometric Function of a Matrix Argument, Mathematics of Computation
-% 75 (2006), 833-846.
+% REFERENCES:
+% [1] Koev, P. and Edelman, A., 2006. The efficient evaluation of the
+%     hypergeometric function of a matrix argument. Mathematics of
+%     Computation, 75(254), 833-846.
 
 % This is modified version of the original MATLAB code hg.m by Plamen Koev
 % 2017 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 13-Oct-2017 15:00:12
+% Ver.: 23-Oct-2017 11:47:05
+
+%% FUNCTION CALL
+% [s,ss] = HypergeompFqMat(a,b,x,y,alpha,MAX,lam)
+
+%% CHECK THE INPUT PARAMETERS
+narginchk(3, 7);
+if nargin < 7, lam   = []; end
+if nargin < 6, MAX   = []; end
+if nargin < 5, alpha = []; end
+if nargin < 4, y     = []; end
+
+if isempty(alpha), alpha = 1; end
+if isempty(MAX), MAX  = 10; end
 
 %% ALGORITHM
-
 n      = length(x);
 lambda = floor(MAX./(1:n));
 
-if nargin == 7
+if ~isempty(lam)
     lambda = min(lam,lambda(1:length(lam)));
     MAX    = min(sum(lambda),MAX);
 end
@@ -133,8 +159,8 @@ while h > 0
         end
         w  = ww(h);
         c  = -(h-1)/alpha + l(h) - 1;
-        zn = prod(p+c) * alpha;
-        dn = prod(q+c) * (kt(h)+h+1);
+        zn = prod(a+c) * alpha;
+        dn = prod(b+c) * (kt(h)+h+1);
         if XY
             zn = zn * alpha * l(h);
             dn = dn * (n+alpha*c);
@@ -237,14 +263,14 @@ while h > 0
             cc1 = k + (1-k) * cc1;
             if XY
                 cc1 = cc1*(prod(1+kt(1:n-1)-kt(n)) ...
-                      * (1/alpha+l(n)-1) ...
-                      / (prod(alpha+kt(1:n-1)-kt(n))*l(n)))^2 ...
-                      * prodx(n) * prody(n);
+                    * (1/alpha+l(n)-1) ...
+                    / (prod(alpha+kt(1:n-1)-kt(n))*l(n)))^2 ...
+                    * prodx(n) * prody(n);
                 ss(sl)= ss(sl) + z(n) * cc1 * Sx(pp,n) * Sy(pp,n);
             else
                 cc1 = cc1 * prod(1+kt(1:n-1)-kt(n)) ...
-                      * prodx(n) * (1/alpha+l(n)-1) ...
-                      / (prod(alpha+kt(1:n-1)-kt(n))*l(n));
+                    * prodx(n) * (1/alpha+l(n)-1) ...
+                    / (prod(alpha+kt(1:n-1)-kt(n))*l(n));
                 ss(sl) = ss(sl) + z(n) * cc1 * Sx(pp,n);
             end
         end
