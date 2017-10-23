@@ -25,7 +25,7 @@ function [s,ss] = HypergeompFqMat(a,b,x,y,alpha,MAX,lam)
 %  s     - hypergeometric sum, pFq^alpha(a;b;x;y).
 %  ss    - partial sums.
 %
-% EXAMPLE:
+% EXAMPLE 1:
 %  % Evaluate 2F3^9([3 4];[5 6 7];[1 2];[8,9]) & kappa<=(4,3), |kappa|<=6
 %  a      = [3 4];
 %  b      = [5 6 7];
@@ -35,6 +35,21 @@ function [s,ss] = HypergeompFqMat(a,b,x,y,alpha,MAX,lam)
 %  MAX    = 6;
 %  lam    = [4,3];
 %  [s,ss] = HypergeompFqMat(a,b,x,y,alpha,MAX,lam)
+%
+% EXAMPLE 2: 
+% % CF of minus log of noncentral Wilks Lambda RV distribution
+% % cf_LogRV_WilksLambdaNC is using HypergeompFqMat
+%   p     = 5;
+%   m     = 10; % elsewhere it is denoted as n (d.f. of within SS&P)
+%   n     = 3;  % elsewhere it is denoted as q (d.f. of between SS&P)
+%   delta = sort(rand(1,p));
+%   coef  = -1;
+%   niid  = [];
+%   MAX   = 10;
+%   t     = linspace(-10,10,201);
+%   cf    = cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef,niid,MAX);
+%   figure; plot(t,real(cf),t,imag(cf)); grid on;
+%   title('CF of log of noncentral Wilks Lambda RV')
 %
 % AUTHOR/CREDITS:
 %  Copyright (c) 2004 Plamen Koev.
@@ -80,6 +95,13 @@ if nargin < 4, y     = []; end
 
 if isempty(alpha), alpha = 1; end
 if isempty(MAX), MAX  = 10; end
+
+%% CHECK THE COMMON SIZE of the parameters a and b
+na     = size(a,1);
+nb     = size(b,1);
+if na ~= nb
+    error(message('InputSizeMismatch'));
+end
 
 %% ALGORITHM
 n      = length(x);
@@ -136,11 +158,11 @@ if XY
 end
 
 l     = zeros(1,Lp);
-z     = ones(1,Lp);
+z     = ones(na,Lp);
 kt    = -(1:Lp);
 cc1   = 0;
-ss    = zeros(1,MAX+1);
-ss(1) = 1;
+ss    = zeros(na,MAX+1);
+ss(:,1) = 1;
 sl    = 1;
 h     = 1;
 ww    = ones(1,Lp);
@@ -158,9 +180,9 @@ while h > 0
             ww(h) = ww(h) + 1;
         end
         w  = ww(h);
-        c  = -(h-1)/alpha + l(h) - 1;
-        zn = prod(a+c) * alpha;
-        dn = prod(b+c) * (kt(h)+h+1);
+        c  = -(h-1)/alpha + l(h) - 1;       
+        zn = prod(a+c,2) * alpha;
+        dn = prod(b+c,2) * (kt(h)+h+1);
         if XY
             zn = zn * alpha * l(h);
             dn = dn * (n+alpha*c);
@@ -176,7 +198,7 @@ while h > 0
             zn    = zn * delta;
             dn    = dn * (delta+1);
         end
-        z(h) = z(h) * zn/dn;
+        z(:,h) = z(:,h) .* zn./dn;
         sl   = sl + 1;
         if h < n
             if h > 1
@@ -248,9 +270,9 @@ while h > 0
                 for k = h+1:n
                     Sy(w,k) = Sy(w,k) + Sy(w,k-1);
                 end
-                ss(sl) = ss(sl) + z(h) * Sx(w,n) * Sy(w,n);
+                ss(:,sl) = ss(:,sl) + z(:,h) * Sx(w,n) * Sy(w,n);
             else
-                ss(sl) = ss(sl) + z(h) * Sx(w,n);
+                ss(:,sl) = ss(:,sl) + z(:,h) * Sx(w,n);
             end
         else
             pp = l(1) + 1 - l(n);
@@ -266,16 +288,16 @@ while h > 0
                     * (1/alpha+l(n)-1) ...
                     / (prod(alpha+kt(1:n-1)-kt(n))*l(n)))^2 ...
                     * prodx(n) * prody(n);
-                ss(sl)= ss(sl) + z(n) * cc1 * Sx(pp,n) * Sy(pp,n);
+                ss(:,sl)= ss(:,sl) + z(:,n) * cc1 * Sx(pp,n) * Sy(pp,n);
             else
                 cc1 = cc1 * prod(1+kt(1:n-1)-kt(n)) ...
                     * prodx(n) * (1/alpha+l(n)-1) ...
                     / (prod(alpha+kt(1:n-1)-kt(n))*l(n));
-                ss(sl) = ss(sl) + z(n) * cc1 * Sx(pp,n);
+                ss(:,sl) = ss(:,sl) + z(:,n) * cc1 * Sx(pp,n);
             end
         end
         if h < Lp
-            z(h+1)  = z(h);
+            z(:,h+1)  = z(:,h);
             ww(h+1) = w;
             h       = h + 1;
         end
@@ -286,5 +308,5 @@ while h > 0
         h     = h - 1;
     end
 end
-s = sum(ss);
+s = sum(ss,2);
 end
