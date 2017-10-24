@@ -198,7 +198,7 @@ for i = 1:length(coef)
     cf = cf .* cf_LogRV_Beta(coef(i)*t,alpha,beta);
     if ~isempty(delta{i})
         HypergeompFqMat(1i*coef(i)*t,1i*coef(i)*t + (m(i)+n(i))/2, ...
-            -delta{i},[],1,MAX);
+            -delta{i},[],2,MAX);
     end
 end
 cf  = reshape(cf,szt);

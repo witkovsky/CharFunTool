@@ -16,7 +16,7 @@ function [s,ss] = HypergeompFqMat(a,b,x,y,alpha,MAX,lam)
 %  x      - matrix argument (given as vector of eigenvalues),
 %  y      - optional second matrix argument (vector of eigenvalues),
 %  alpha  - parameter of the hypergeometric function pFq^alpha(a;b;x;y),
-%           default value is alpha = 1,
+%           default value is alpha = 2,
 %  MAX    - maximum number of partitions, |kappa|<=MAX, default value is
 %           MAX = 10,
 %  lam    - optional parameter, kappa<=lam.
@@ -93,7 +93,7 @@ if nargin < 6, MAX   = []; end
 if nargin < 5, alpha = []; end
 if nargin < 4, y     = []; end
 
-if isempty(alpha), alpha = 1; end
+if isempty(alpha), alpha = 2; end
 if isempty(MAX), MAX  = 10; end
 
 %% CHECK THE COMMON SIZE of the parameters a and b
