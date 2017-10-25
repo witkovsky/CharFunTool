@@ -1,4 +1,4 @@
-function cf = cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef,niid,MAX)
+function cf = cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef,niid,method1F1,MAX)
 %% cf_LogRV_WilksLambdaNC
 %  Characteristic function of a linear combination (resp. convolution) of
 %  independent LOG-TRANSFORMED WILK's LAMBDA random variables.
@@ -24,7 +24,7 @@ function cf = cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef,niid,MAX)
 %  independent Beta distributions for all i = 1,...,N and j = 1,...,p_i.
 %
 % SYNTAX
-%  cf = cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef,niid,MAX)
+%  cf = cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef,niid,method1F1,MAX)
 %
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -46,10 +46,14 @@ function cf = cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef,niid,MAX)
 %          sum of niid random variables Y, where each Y = sum_{i=1}^N
 %          coef(i) * log(X_i) is independently and identically
 %          distributed random variable. If empty, default value is n = 1.
-%  MAX   - maximum number of partitions used for computing the
-%          hypergeometric 1F1 function with matrix argument, for more
-%          details see HypergeomMatFun.m. If empty MAX, default value is
-%          MAX = 10;
+%  method1F1 - select the appropriate method (algorithm) for computing the
+%          used confluent hypergeometric function 1F1(a,b,X). Default value
+%          is method1F1 = 'exact', alternatively choose method1F1 =
+%          'approx'. 
+%  MAX   - Is method1F1 = 'exact', MAX set the maximum number of partitions
+%          used for computing the hypergeometric 1F1 function with matrix
+%          argument, for more details see HypergeomMatFun.m. If empty MAX,
+%          default value is MAX = 15.
 %
 % WIKIPEDIA:
 %  https://en.wikipedia.org/wiki/Wilks%27s_lambda_distribution
@@ -78,18 +82,33 @@ function cf = cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef,niid,MAX)
 %   title('CF of a weighted linear combination of -log Wilks Lambda RVs')
 %
 % EXAMPLE 3:
-% % PDF/CDF of minus log Wilks Lambda RV (p=5, m=10, n=3) from its CF
-%   p     = 5;
-%   m     = 10;
-%   n     = 3;
-%   delta = sort(rand(1,p));
+% % PDF/CDF of minus log Wilks Lambda RV (p=10, m=30, n=5) from its CF
+%   p     = 10;
+%   m     = 30;
+%   n     = 5;
+%   X     = [1 2 3 10 30];
+%   niid  = [];
 %   coef  = -1;
-%   cf    = @(t) cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef);
+%   method1F41 = 'approx';
+%   cf0   = @(t) cf_LogRV_WilksLambdaNC(t,p,m,n,[],coef,niid,method1F41);
+%   cf    = @(t) cf_LogRV_WilksLambdaNC(t,p,m,n,X,coef,niid,method1F41);
 %   prob  = [0.9 0.95 0.99];
 %   clear options
 %   options.xMin = 0;
-%   result = cf2DistGP(cf,[],prob,options);
+%   result0 = cf2DistGP(cf0,[],prob,options);
+%   figure
+%   result  = cf2DistGP(cf,[],prob,options);
 %   disp(result)
+%   figure
+%   plot(result0.x,result0.cdf,result.x,result.cdf);grid on
+%   xlabel('x')
+%   ylabel('CDF')
+%   title('CDFs of -log(\Lambda) under null and alternative hypothesis')
+%   figure
+%   plot(result0.x,result0.pdf,result.x,result.pdf);grid on
+%   xlabel('x')
+%   ylabel('PDF')
+%   title('PDFs of -log(\Lambda) under null and alternative hypothesis')
 %
 % EXAMPLE 4:
 % % Compare the exact distribution with the Bartlett's approximation
@@ -139,8 +158,9 @@ function cf = cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef,niid,MAX)
 % cf = cf_LogRV_WilksLambdaNC(t,p,m,n,coef,niid)
 
 %% CHECK THE INPUT PARAMETERS
-narginchk(1, 8);
-if nargin < 8, MAX   = []; end
+narginchk(1, 9);
+if nargin < 9, MAX   = []; end
+if nargin < 8, method1F1 = []; end
 if nargin < 7, niid  = []; end
 if nargin < 6, coef  = []; end
 if nargin < 5, delta = []; end
@@ -156,6 +176,10 @@ if isempty(delta), delta = cell(1); end
 if isempty(coef),  coef  = 1; end
 if isempty(niid),  niid  = 1; end
 if isempty(MAX),   MAX   = 15; end
+
+if isempty(method1F1)
+    method1F1 = 'exact'; 
+end
 
 if ~iscell(delta)
     [p1,p2] =size(delta);
@@ -197,8 +221,17 @@ for i = 1:length(coef)
     beta  = n(i)/2;
     cf = cf .* cf_LogRV_Beta(coef(i)*t,alpha,beta);
     if ~isempty(delta{i})
-        HypergeompFqMat(1i*coef(i)*t,1i*coef(i)*t + (m(i)+n(i))/2, ...
-            -delta{i},[],2,MAX);
+        switch lower(method1F1)
+            case {'exact','koev','true'}
+                cf = cf .* Hypergeom1F1Mat(1i*coef(i)*t, ...
+                    1i*coef(i)*t + (m(i)+n(i))/2, -delta{i},MAX);
+            case {'approx','buttler','laplace'}
+                cf = cf .* Hypergeom1F1MatApprox(1i*coef(i)*t, ...
+                    1i*coef(i)*t + (m(i)+n(i))/2, -delta{i});
+            otherwise
+                cf = cf .* Hypergeom1F1MatApprox(1i*coef(i)*t, ...
+                    1i*coef(i)*t + (m(i)+n(i))/2, -delta{i});
+        end
     end
 end
 cf  = reshape(cf,szt);

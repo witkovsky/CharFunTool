@@ -1,5 +1,5 @@
 function f = Hypergeom2F1(a,b,c,z)
-%HYPERGEOM2F1 Computes the hypergeometric function 2F1(a,b,c,z),
+%HYPERGEOM2F1 Computes the Gauss hypergeometric function 2F1(a,b,c,z),
 % for the real parameters a, b and c (here assumed to be scalars), and the
 % complex argument z (could be scalar, vector or array).
 %
