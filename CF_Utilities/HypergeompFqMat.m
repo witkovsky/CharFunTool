@@ -3,9 +3,24 @@ function [s,ss] = HypergeompFqMat(a,b,x,y,alpha,MAX,lam)
 %  Computes truncated hypergeometric function pFq^alpha(a;b;x;y) with
 %  parameters a and b and of two matrix arguments, x and y.
 %
+%  Here, hypergeometric function pFq^alpha(a;b;x;y) is defined as
+%  pFq^alpha(a;b;x;y) = pFq^alpha(a1,...,ap;b1,...,bp;x;y) = 
+%    = sum_k sum_kappa [((a1)_kappa^(alpha) ... (a1)_kappa^(alpha)) ...
+%       / (k!(b1)_kappa^(alpha) ... (b1)_kappa^(alpha)] C_kappa^alpha(X),
+%  where kappa = (kappa1,kappa2,...) is a partition of k and
+%  (ak)_kappa^(alpha), (bk)_kappa^(alpha) denote the generalized 
+%  Pochhammer symbols, and C_kappa^alpha(X) is the Jack function.
+%
+%  For statistical applications considered here we need to use the
+%  confluent hypergeometric function 1F1(a;b;X) and the Gauss
+%  hypergeometric function 2F1(a,b;c;X) in matrix argument. These can be
+%  expressed as special cases of the generalized hypergeometric function
+%  pFq^alpha(a;b;X), with the parameter alpha = 2 (the case with zonal
+%  polynomials). 
+%
 %  For more details and definition of the hypergeometric function
 %  pFq^alpha(a;b;x;y) with matrix argument see, e.g., Koev and Edelman
-%  (2006). 
+%  (2006) or Muirhead (2009).
 %
 % SYNTAX:
 %  [s,ss] = HypergeompFqMat(a,b,x,y,alpha,MAX,lam)
@@ -16,9 +31,9 @@ function [s,ss] = HypergeompFqMat(a,b,x,y,alpha,MAX,lam)
 %  x      - matrix argument (given as vector of eigenvalues),
 %  y      - optional second matrix argument (vector of eigenvalues),
 %  alpha  - parameter of the hypergeometric function pFq^alpha(a;b;x;y),
-%           default value is alpha = 1,
+%           default value is alpha = 2,
 %  MAX    - maximum number of partitions, |kappa|<=MAX, default value is
-%           MAX = 10,
+%           MAX = 20,
 %  lam    - optional parameter, kappa<=lam.
 %
 % OUTPUTS:
@@ -39,17 +54,46 @@ function [s,ss] = HypergeompFqMat(a,b,x,y,alpha,MAX,lam)
 % EXAMPLE 2: 
 % % CF of minus log of noncentral Wilks Lambda RV distribution
 % % cf_LogRV_WilksLambdaNC is using HypergeompFqMat
-%   p     = 5;
-%   m     = 10; % elsewhere it is denoted as n (d.f. of within SS&P)
-%   n     = 3;  % elsewhere it is denoted as q (d.f. of between SS&P)
-%   delta = sort(rand(1,p));
+%   p     = 10;
+%   m     = 30; % elsewhere it is denoted as n (d.f. of within SS&P)
+%   n     = 5;  % elsewhere it is denoted as q (d.f. of between SS&P)
+%   X     = [0 0 0.1 1 20];
 %   coef  = -1;
 %   niid  = [];
-%   MAX   = 10;
+%   MAX   = 25;
 %   t     = linspace(-10,10,201);
-%   cf    = cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef,niid,MAX);
+%   cf    = cf_LogRV_WilksLambdaNC(t,p,m,n,X,coef,niid,MAX);
 %   figure; plot(t,real(cf),t,imag(cf)); grid on;
 %   title('CF of log of noncentral Wilks Lambda RV')
+%
+% EXAMPLE 3:
+% % PDF/CDF of minus log Wilks Lambda RV (p=10, m=30, n=5) from its CF
+%   p     = 10;
+%   m     = 30;
+%   n     = 5;
+%   X     = [0 0 0.1 1 20];
+%   niid  = [];
+%   MAX   = 30;
+%   coef  = -1;
+%   cf0   = @(t) cf_LogRV_WilksLambdaNC(t,p,m,n,[],coef,niid,MAX);
+%   cf    = @(t) cf_LogRV_WilksLambdaNC(t,p,m,n,X,coef,niid,MAX);
+%   prob  = [0.9 0.95 0.99];
+%   clear options
+%   options.xMin = 0;
+%   result0 = cf2DistGP(cf0,[],prob,options);
+%   figure
+%   result  = cf2DistGP(cf,[],prob,options);
+%   disp(result)
+%   figure
+%   plot(result0.x,result0.cdf,result.x,result.cdf);grid on
+%   xlabel('x')
+%   ylabel('CDF')
+%   title('CDFs of -log(\Lambda) under null and alternative hypothesis')
+%   figure
+%   plot(result0.x,result0.pdf,result.x,result.pdf);grid on
+%   xlabel('x')
+%   ylabel('PDF')
+%   title('PDFs of -log(\Lambda) under null and alternative hypothesis')
 %
 % AUTHOR/CREDITS:
 %  Copyright (c) 2004 Plamen Koev.
@@ -78,9 +122,11 @@ function [s,ss] = HypergeompFqMat(a,b,x,y,alpha,MAX,lam)
 % [1] Koev, P. and Edelman, A., 2006. The efficient evaluation of the
 %     hypergeometric function of a matrix argument. Mathematics of
 %     Computation, 75(254), 833-846.
+% [2] Muirhead RJ. Aspects of multivariate statistical theory. John Wiley &
+%     Sons; 2009 Sep 25. 
 
 % This is modified version of the original MATLAB code hg.m by Plamen Koev
-% 2017 Viktor Witkovsky (witkovsky@gmail.com)
+% Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 23-Oct-2017 11:47:05
 
 %% FUNCTION CALL
@@ -93,8 +139,8 @@ if nargin < 6, MAX   = []; end
 if nargin < 5, alpha = []; end
 if nargin < 4, y     = []; end
 
-if isempty(alpha), alpha = 1; end
-if isempty(MAX), MAX  = 10; end
+if isempty(alpha), alpha = 2; end
+if isempty(MAX), MAX  = 20; end
 
 %% CHECK THE COMMON SIZE of the parameters a and b
 na     = size(a,1);

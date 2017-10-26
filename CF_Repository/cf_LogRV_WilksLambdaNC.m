@@ -1,4 +1,4 @@
-function cf = cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef,niid,MAX)
+function cf = cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef,MAX)
 %% cf_LogRV_WilksLambdaNC
 %  Characteristic function of a linear combination (resp. convolution) of
 %  independent LOG-TRANSFORMED WILK's LAMBDA random variables.
@@ -24,7 +24,7 @@ function cf = cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef,niid,MAX)
 %  independent Beta distributions for all i = 1,...,N and j = 1,...,p_i.
 %
 % SYNTAX
-%  cf = cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef,niid,MAX)
+%  cf = cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef,MAX)
 %
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -42,14 +42,15 @@ function cf = cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef,niid,MAX)
 %          log-transformed random variables. If coef is scalar, it is
 %          assumed that all coefficients are equal. If empty, default value
 %          is coef = 1.
-%  niid  - scalar convolution coeficient niid, such that Z = Y + ... + Y is
-%          sum of niid random variables Y, where each Y = sum_{i=1}^N
-%          coef(i) * log(X_i) is independently and identically
-%          distributed random variable. If empty, default value is n = 1.
-%  MAX   - maximum number of partitions used for computing the
+%  MAX   - the maximum number of partitions used for computing the
 %          hypergeometric 1F1 function with matrix argument, for more
-%          details see HypergeomMatFun.m. If empty MAX, default value is
-%          MAX = 10;
+%          details see HypergeompFqMat.m. If MAX is empty, default value is
+%          set to MAX = 15. If MAX = 0, then the algorithm uses the
+%          approximate method for computing the confluent hypergeometric
+%          function 1F1(a;b;X), see Hypergeom1F1MatApprox, otherwise the
+%          algorithm uses the algorithm Hypergeom1F1Mat based on computing
+%          the truncated expansion series of 1F1(a;b;X) with MAX number of
+%          partitions. 
 %
 % WIKIPEDIA:
 %  https://en.wikipedia.org/wiki/Wilks%27s_lambda_distribution
@@ -78,42 +79,34 @@ function cf = cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef,niid,MAX)
 %   title('CF of a weighted linear combination of -log Wilks Lambda RVs')
 %
 % EXAMPLE 3:
-% % PDF/CDF of minus log Wilks Lambda RV (p=5, m=10, n=3) from its CF
-%   p     = 5;
-%   m     = 10;
-%   n     = 3;
-%   delta = sort(rand(1,p));
-%   coef  = -1;
-%   cf    = @(t) cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef);
-%   prob  = [0.9 0.95 0.99];
+% % PDF/CDF of minus log Wilks Lambda RV (p=10, m=30, n=5) from its CF
+% % CF of the non-null distribution is calculated by using the approximate
+% % Hypergeom1F1MatApprox.m, which could lead to biased PDF/CDF.
+%   p      = 10;
+%   m      = 30;
+%   n      = 5;
+%   X      = [1 2 3 10 30];
+%   coef   = -1;
+%   cf0    = @(t) cf_LogRV_WilksLambdaNC(t,p,m,n,[],coef);
+%   MAX    = 0;
+%   cf     = @(t) cf_LogRV_WilksLambdaNC(t,p,m,n,X,coef,MAX);
+%   prob   = [0.9 0.95 0.99];
 %   clear options
 %   options.xMin = 0;
-%   result = cf2DistGP(cf,[],prob,options);
+%   result0 = cf2DistGP(cf0,[],prob,options);
+%   figure
+%   result  = cf2DistGP(cf,[],prob,options);
 %   disp(result)
-%
-% EXAMPLE 4:
-% % Compare the exact distribution with the Bartlett's approximation
-% % The Bartlett's approximation (see e.g. Wikipedia) is given by:
-% % ((p-n+1)/2 - m)*log(Lambda(p,m,n)) ~ chi^2_{n*p}
-%   p     = 15;
-%   m     = 30;
-%   n     = 3;
-%   delta = [];
-%   coef  = (p-n+1)/2 - m;
-%   cf    = @(t) cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef);
-%   prob  = [0.9 0.95 0.99];
-%   clear options
-%   options.xMin = 0;
-%   result = cf2DistGP(cf,[],prob,options);
-%   disp(result)
-%   x = result.x;
-%   figure;plot(x,result.cdf,x,chi2cdf(x,n*p));grid
-%   title('Exact CDF vs. the Bartlett approximation')
-%   xlabel('transformed \Lambda(p,m,n)')
+%   figure
+%   plot(result0.x,result0.cdf,result.x,result.cdf);grid on
+%   xlabel('x')
 %   ylabel('CDF')
-%   disp(prob)
-%   disp(result.qf)
-%   disp(chi2inv(prob,n*p))
+%   title('CDFs of -log(\Lambda) under null and alternative hypothesis')
+%   figure
+%   plot(result0.x,result0.pdf,result.x,result.pdf);grid on
+%   xlabel('x')
+%   ylabel('PDF')
+%   title('PDFs of -log(\Lambda) under null and alternative hypothesis')
 %
 % REMARK:
 %  cf_LogRV_WilksLambdaNC is FRAGILE! (it could lead to nonstable results).
@@ -124,7 +117,7 @@ function cf = cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef,niid,MAX)
 %  for computing the truncated hypergeometric function, see the algorithm
 %  HypergeompFqMat.m, as originaly suggested in Koev and Edelman (2006).        
 %  The truncation of the hypergeometric series is controled by the
-%  parameter MAX. Here, the default value is MAX = 15. If necessary, the
+%  parameter MAX. Here, the default value is MAX = 20. If necessary, the
 %  parameter MAX should be set to larger value.
 %
 % REFERENCES:
@@ -136,12 +129,11 @@ function cf = cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef,niid,MAX)
 % Ver.: 23-Oct-2017 12:44:48
 
 %% ALGORITHM
-% cf = cf_LogRV_WilksLambdaNC(t,p,m,n,coef,niid)
+% cf = cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef,MAX)
 
 %% CHECK THE INPUT PARAMETERS
-narginchk(1, 8);
-if nargin < 8, MAX   = []; end
-if nargin < 7, niid  = []; end
+narginchk(1, 7);
+if nargin < 7, MAX   = []; end
 if nargin < 6, coef  = []; end
 if nargin < 5, delta = []; end
 if nargin < 4, n = []; end
@@ -154,8 +146,7 @@ if isempty(m), m = 1; end
 if isempty(n), n = 1; end
 if isempty(delta), delta = cell(1); end
 if isempty(coef),  coef  = 1; end
-if isempty(niid),  niid  = 1; end
-if isempty(MAX),   MAX   = 15; end
+if isempty(MAX),   MAX   = 20; end
 
 if ~iscell(delta)
     [p1,p2] =size(delta);
@@ -197,18 +188,19 @@ for i = 1:length(coef)
     beta  = n(i)/2;
     cf = cf .* cf_LogRV_Beta(coef(i)*t,alpha,beta);
     if ~isempty(delta{i})
-        HypergeompFqMat(1i*coef(i)*t,1i*coef(i)*t + (m(i)+n(i))/2, ...
-            -delta{i},[],1,MAX);
+        if MAX == 0
+            cf = cf .* Hypergeom1F1MatApprox(1i*coef(i)*t, ...
+                1i*coef(i)*t + (m(i)+n(i))/2, -delta{i});
+        elseif MAX > 0
+            cf = cf .* Hypergeom1F1Mat(1i*coef(i)*t, ...
+                1i*coef(i)*t + (m(i)+n(i))/2, -delta{i},ceil(MAX));
+        else
+            cf = cf .* Hypergeom1F1Mat(1i*coef(i)*t, ...
+                1i*coef(i)*t + (m(i)+n(i))/2, -delta{i},20);
+        end
     end
 end
 cf  = reshape(cf,szt);
 cf(t==0) = 1;
 
-if ~isempty(niid)
-    if isscalar(niid)
-        cf = cf .^ niid;
-    else
-        error('niid should be a scalar (positive integer) value');
-    end
-end
 end
