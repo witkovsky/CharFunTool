@@ -36,6 +36,24 @@ function f = Hypergeom1F1MatApprox(a,b,X)
 %     2002;30(4):1155-77.
 % [2] Butler RW, Wood AT. Approximation of power in multivariate analysis.
 %     Statistics and Computing. 2005 Oct 1;15(4):281-7. 
+%
+% NOTICE OF CAUTION:
+%  This is an experimental version of the algorithm for computing the
+%  hypergeometric function in matrix argument, which could lead to 
+%  false results! If possible, we suggest to use the exact methods for
+%  evaluation of the hypergeometric function (as e.g. the truncated series
+%  expansion in HypergeompFqMat). This approximate algorithm is useful in
+%  situations when HypergeompFqMat did not converge or is too slow.
+%  The possible problems include:
+%  (1) Computed value is uses pricipal branch of complex functions, such as
+%      log or sqrt. This could lead to wrong values of the calculated
+%      characteristic function in specific regions (typically the presented
+%      results differ from the correct values by its sign).
+%  (2) The approximate hypergeometric is calibrated such that its value at
+%      0 is equal to one. However, such calibration typically  brings
+%      biased values for large arguments. Consequently, the calculated
+%      characteristic functions are typically shrinked, thus leading to
+%      biased distributions.
 
 % Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 24-Oct-2017 22:15:55
@@ -69,18 +87,21 @@ f = p*(b-(p+1)/4) .* log(b);
 y = zeros(length(a),p);
 for i = 1:p
     D = (x(i)-b).^2 + 4*a.*x(i);
-    y = 2*a ./ (b - x(i) + sqrt(D));
+    sqrtD = sqrt(D);
+    y = 2*a ./ (b - x(i) + sqrtD);
     f = f +  a.*log(y./a) + (b-a).*log((1-y)./(b-a)) + x(i)*y;
     y(:,i) = y;
 end
 
-r = 1;
+R = 1;
 for i = 1:p
     for j = i:p
-        r = r .* ( y(:,i).*y(:,j)./a + (1-y(:,i)).*(1-y(:,j))./(b-a) );
+        R = R .* ( y(:,i).*y(:,j)./a + (1-y(:,i)).*(1-y(:,j))./(b-a) );
     end
 end
 
-f = reshape( exp(f-log(r)/2), sz);
+logR = log(R);
+logF = f - logR/2;
+f    = reshape( exp(logF), sz);
 
 end
