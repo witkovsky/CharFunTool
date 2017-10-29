@@ -81,6 +81,7 @@ for i = 1:p
     end
 end
 
-f = reshape( exp(f-log(r)/2), sz);
+logf = f - log(r)/2;
+f    = reshape( exp(logf), sz);
 
 end
