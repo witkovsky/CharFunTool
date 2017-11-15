@@ -78,17 +78,47 @@ function cf = cf_LogRV_WilksLambdaNC(t,p,m,n,delta,coef,MAX)
 %   figure; plot(t,real(cf),t,imag(cf)); grid on;
 %   title('CF of a weighted linear combination of -log Wilks Lambda RVs')
 %
-% EXAMPLE 3:
+% EXAMPLE 3: (! LONG TIME computation here !)
 % % PDF/CDF of minus log Wilks Lambda RV (p=10, m=30, n=5) from its CF
-% % CF of the non-null distribution is calculated by using the approximate
-% % Hypergeom1F1MatApprox.m, which could lead to biased PDF/CDF.
+% % CF of the non-null distribution is calculated by using the exact
+% % Hypergeom1F1Mat.m with MAX = 80, which could take LONG time!
 %   p      = 10;
 %   m      = 30;
 %   n      = 5;
 %   X      = [1 2 3 10 30];
 %   coef   = -1;
 %   cf0    = @(t) cf_LogRV_WilksLambdaNC(t,p,m,n,[],coef);
-%   MAX    = 0;
+%   MAX    = 80; 
+%   cf     = @(t) cf_LogRV_WilksLambdaNC(t,p,m,n,X,coef,MAX);
+%   prob   = [0.9 0.95 0.99];
+%   clear options
+%   options.xMin = 0;
+%   result0 = cf2DistGP(cf0,[],prob,options);
+%   figure
+%   result  = cf2DistGP(cf,[],prob,options);
+%   disp(result)
+%   figure
+%   plot(result0.x,result0.cdf,result.x,result.cdf);grid on
+%   xlabel('x')
+%   ylabel('CDF')
+%   title('CDFs of -log(\Lambda) under null and alternative hypothesis')
+%   figure
+%   plot(result0.x,result0.pdf,result.x,result.pdf);grid on
+%   xlabel('x')
+%   ylabel('PDF')
+%   title('PDFs of -log(\Lambda) under null and alternative hypothesis')
+%
+% EXAMPLE 4:
+% % PDF/CDF of minus log Wilks Lambda RV (p=10, m=30, n=5) from its CF
+% % CF of the non-null distribution is calculated by using the approximate
+% % Hypergeom1F1MatApprox.m, which could be biased!
+%   p      = 10;
+%   m      = 30;
+%   n      = 5;
+%   X      = [1 2 3 10 30];
+%   coef   = -1;
+%   cf0    = @(t) cf_LogRV_WilksLambdaNC(t,p,m,n,[],coef);
+%   MAX    = 0; 
 %   cf     = @(t) cf_LogRV_WilksLambdaNC(t,p,m,n,X,coef,MAX);
 %   prob   = [0.9 0.95 0.99];
 %   clear options

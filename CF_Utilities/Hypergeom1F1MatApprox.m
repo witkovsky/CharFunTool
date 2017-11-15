@@ -100,13 +100,8 @@ for i = 1:p
     end
 end
 
-<<<<<<< HEAD
-logf = f - log(r)/2;
-f    = reshape( exp(logf), sz);
-=======
 logR = log(R);
 logF = f - logR/2;
 f    = reshape( exp(logF), sz);
->>>>>>> origin/CharFunTool
 
 end
