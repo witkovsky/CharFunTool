@@ -451,13 +451,13 @@ end
 if options.isInterp
     try
         id   = isfinite(pdf);
-        pdfIntegrandction = @(xNew) max(0, ...
+        pdfFunction = @(xNew) max(0, ...
             InterpBarycentric(x(id),pdf(id),xNew));
-        PDF  = @(x) pdfIntegrandction(x);
+        PDF  = @(x) pdfFunction(x);
         id   = isfinite(cdf);
-        cdfIntegrandction = @(xNew) max(0,min(1, ...
+        cdfFunction = @(xNew) max(0,min(1, ...
             InterpBarycentric(x(id),cdf(id),xNew)));
-        CDF  = @(x) cdfIntegrandction(x);
+        CDF  = @(x) cdfFunction(x);
         qfFunction = @(prob) InterpBarycentric(cdf(id),x(id),prob);
         QF   = @(prob) qfFunction(prob);
         rndFunction = @(n) qfFunction(rand(n,1));

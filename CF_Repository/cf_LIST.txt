@@ -1,0 +1,81 @@
+CFs of general probability distributions:
+
+cf_ArcsineSymmetric
+cf_Beta
+cf_BetaSymmetric
+cf_ChiSquare
+cf_Exponential
+cf_FisherSnedecor
+cf_Gamma
+cf_InverseGamma
+cf_Normal
+cf_RectangularSymmetric
+cf_Stable
+cf_Student
+cf_TrapezoidalSymmetric
+cf_TriangularSymmetric
+cf_TSPSymmetric
+cf_Weibull
+
+CFs of circular probability distributions:
+
+cf_vonMises
+
+
+CFs of log-transformed random variables:
+
+cf_LogRV_Beta
+cf_LogRV_ChiSquare
+cf_LogRV_FisherSnedecor
+cf_LogRV_Gamma
+cf_LogRV_InverseGamma
+cf_LogRV_MeansRatio
+cf_LogRV_MeansRatioW
+cf_LogRV_WilksLambda
+cf_LogRV_WilksLambdaNC
+
+CFs of symmetric probability distributions:
+
+cfS_Arcsine
+cfS_Beta
+cfS_Gaussian
+cfS_Rectangular
+cfS_Student
+cfS_Trapezoidal
+cfS_Triangular
+cfS_TSP
+
+CFs of non-negative probability distributions:
+
+cfX_ChiSquare
+cfX_Exponential
+cfX_FisherSnedecor
+cfX_Gamma
+cfX_GeneralizedPareto
+cfX_InverseGamma
+cfX_LogLogistic
+cfX_LogNormal
+cfX_Pareto
+cfX_PDF
+cfX_PearsonV
+cfX_PearsonVI
+cfX_Weibull
+
+CFs of discrete probability distributions:
+
+cfN_Binomial
+cfN_Delaporte
+cfN_GeneralizedPoisson
+cfN_Geometric
+cfN_Logarithmic
+cfN_NegativeBinomial
+cfN_Poisson
+cfN_PolyaEggenberger
+cfN_Quinkert
+cfN_Waring
+
+CFs of mixture and empirical probability distributions:
+
+cfE_DiracMixture
+cfE_Empirical
+cfE_EmpiricalOgive
