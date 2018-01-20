@@ -2,9 +2,14 @@ function [pval,result] = LRT04_EqualityPopulations(W,n,p,q,options)
 %% LRT04_EqualityPopulations computes p-value of the log-transformed LRT 
 %  statistic W = -log(Lambda), for testing the null hypothesis of equality
 %  of q (q>1) p-dimensional normal populations, and/or its null
-%  distribution CF/PDF/CDF. In particular, let X_k ~ N_p(mu_k,Sigma_k),
-%  for k = 1,...,q. We want to test the hypothesis that the q normal
-%  populations are equally distributed. That is, we want to test that the
+%  distribution CF/PDF/CDF. 
+%
+%  This is based on BALANCED samples of size n for each population! 
+%  This is an EXPERIMENTAL version. Correctness should be checked again!
+%
+%  In particular, let X_k ~ N_p(mu_k,Sigma_k), for k = 1,...,q. We want to
+%  test the hypothesis that the q normal populations are equally
+%  distributed. That is, we want to test that the 
 %  mean vectors mu_k are equal for all k = 1,...,q, as well as the
 %  covariance matrices Sigma_k are equal for all k = 1,...,q. Then, the
 %  null hypothesis is given as  
@@ -21,15 +26,16 @@ function [pval,result] = LRT04_EqualityPopulations(W,n,p,q,options)
 %  Lambda is  
 %    Lambda ~  Lambda_Means * Lambda_Covariances, 
 %           ~  (prod_{k=1}^q prod_{j=1}^{p} (B_{jk})^{n/2}) 
-%              * (prod_{j=1}^{p} (B_j)^{n/2})
+%              * (prod_{j=1}^{p} (B_j)^{n*q/2})
 %  where the B_{jk} and B_j are mutually independent beta distributed
-%  random variables. Here we assume that n > min(p+q-1). 
+%  random variables. Here we assume that n is equal sample size for each
+%  sample, k = 1,...,q, n > p.  
 %
 %  Hence, the exact characteristic function of the null distribution of
 %  minus log-transformed LRT statistic Lambda, say W = -log(Lambda) is
 %  given by 
 %    cf = @(t) cf_LogRV_Beta(-(n/2)*t, (n-j)/2, (j*(q-1)+2*k-1-q)/(2*q)) 
-%           .* cf_LogRV_Beta(-(n/2)*t, (n-q-i+1)/2, (q-1)/2),
+%           .* cf_LogRV_Beta(-(n*q/2)*t, ((n-1)*q-i+1)/2, (q-1)/2),
 %  where i = [1, 2, ..., p]', k = [1*o,...,q*o] with p-dimensional vector
 %  of ones o = [1,...,1]  and j = [j_1,...,j_q] with j_k = 1:p. 
 %
@@ -102,31 +108,26 @@ if ~isfield(options, 'xMin')
 end
 
 %% 
-N = p + q -1;
-if n <= N 
+if n <= p 
 error('Sample size n is too small')
-end
-
-coef = options.coef;
-if isempty(coef)   
-% CHARACTERISTIC FUNCTION of -log-LRT for testing equality of means
-    coef = -n/2;  % Set this option for using with W = -log(LRT)
-    % coef = -1;  % Set this options for using normalized -log(LRT^(2/n))
 end
 
 ind   = (1:p)';
 alpha = zeros(p*(q+1),1);
 beta  = zeros(p*(q+1),1);
+coef  = zeros(p*(q+1),1); 
 % Parameters of Beta distributions used for LRT_Means
-alpha(1:p) = (n-q-ind+1)/2;
+alpha(1:p) = ((n-1)*q-ind+1)/2;
 beta(1:p)  = (q-1)/2;
+coef(1:p)  = -n*q/2;        % CHECK THIS!!! 
 % Parameters of Beta distributions used for LRT_Covariances
+coef(p+(1:p*q)) = -n/2;     % CHECK THIS!!! 
 ind    = p;
 for k  = 1:q
     for j = 1:p
         ind = ind +1;
         alpha(ind) = (n - j) / 2;
-        beta(ind)  = (j*(q-1) + 2*k - 1 - q) / (2*q);       
+        beta(ind)  = (j*(q-1) + 2*k - 1 - q) / (2*q);
     end
 end
 cf    = @(t)cf_LogRV_Beta(t,alpha,beta,coef);

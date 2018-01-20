@@ -1,9 +1,12 @@
 function [pval,result] = LRT03_EqualityCovariances(W,n,p,q,options)
 %% LRT03_EqualityCovariances computes p-value of the log-transformed LRT 
 %  statistic W = -log(Lambda), for testing the null hypothesis of equality
-%  of Covariance matrices (under normality assumptions) of q (q>1)
-%  p-dimensional populations, and/or its null distribution CF/PDF/CDF. In
-%  particular, let X_k ~ N_{p_k}(mu_k,Sigma_k) are p-dimensional random
+%  of covariance matrices (under normality assumptions) of q (q>1)
+%  p-dimensional populations, and/or its null distribution CF/PDF/CDF. 
+%
+%  This is based on BALANCED samples of size n for each population! 
+%
+%  In particular, let X_k ~ N_p(mu_k,Sigma_k) are p-dimensional random
 %  vectors, for k = 1,...,q. We want to test the hypothesis that the
 %  covariance matrix Sigma is common for all X_k, k = 1,...,q. Then, the
 %  null hypothesis is given as  
@@ -12,13 +15,12 @@ function [pval,result] = LRT03_EqualityCovariances(W,n,p,q,options)
 %  LRT test statistic is given by
 %    Lambda = ( q^{p*q} * prod(det(S_k)) / (det(S))^q )^{n/2},
 %  where S_k are MLEs of Sigma_k, for k = 1,...,q, and S = S_1 + ... + S_q,
-%  based on n = n_1 + ... + n_q  samples from the q p-dimensional
-%  populations.  
+%  based on n samples from each of the the q p-dimensional populations.  
 %
 %  Under null hypothesis, distribution of the test statistic Lambda is
 %    Lambda ~  prod_{k=1}^q prod_{j=1}^{p} (B_{jk})^{n/2}, 
 %  with B_{jk} ~ Beta((n-j)/2,(j*(q-1)+2*k-1-q)/2), and we set B_{11} = 1
-%  for j=k=1. Here we assume that  n > min(p+q-1).
+%  for j=k=1. Here we assume that  n > p.
 %
 %  Hence, the exact characteristic function of the null distribution of
 %  minus log-transformed LRT statistic Lambda, say W = -log(Lambda) is
@@ -96,8 +98,7 @@ if ~isfield(options, 'xMin')
 end
 
 %% 
-N = p + q -1;
-if n <= N 
+if n <= p 
 error('Sample size n is too small')
 end
 
