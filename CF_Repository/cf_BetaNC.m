@@ -64,6 +64,17 @@ function cf = cf_BetaNC(t,alpha,beta,delta,coef,niid,tol)
 %   options.xMax = 1;
 %   result = cf2DistGP(cf,[],[],options)
 %
+% EXAMPLE 3:
+% % CDF/PDF of the linear combination of non-central Beta RVs
+%   alpha = [5 4 3];
+%   beta  = [3 4 5];
+%   delta = [0 1 2];
+%   coef  = 1/3;
+%   cf    = @(t) cf_BetaNC(t,df1,df2,delta,coef);
+%   clear options;
+%   options.xMin = 0;
+%   result = cf2DistGP(cf,[],[],options)
+%
 % REMARK !! (TO-DO)
 % The presented calculation of the central and non-central CF depends on
 % proper evaluation of the hypergeometric function 1F1(a,b,z). Here we use

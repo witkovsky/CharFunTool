@@ -45,7 +45,7 @@ function cf = cf_LogRV_ChiSquareNC(t,df,delta,coef,niid,tol)
 %   https://en.wikipedia.org/wiki/Noncentral_chi-squared_distribution
 %
 % EXAMPLE 1:
-% % CF of non-central log-transformed ChiSquare RV with delta = 1
+% % CF of the minus log-transformed non-central ChiSquare RV with delta = 1
 %   df    = 3;
 %   delta = 1;
 %   coef  = -1;
@@ -55,7 +55,7 @@ function cf = cf_LogRV_ChiSquareNC(t,df,delta,coef,niid,tol)
 %   title('CF of minus log-transformed ChiSquare RV')
 %
 % EXAMPLE 2:
-% % CDF/PDF of the non-central minus log-transformed ChiSquare RV
+% % CDF/PDF of the minus log-transformed non-central ChiSquare RV
 %   df    = 3;
 %   delta = 1;
 %   coef  = -1;
@@ -65,7 +65,8 @@ function cf = cf_LogRV_ChiSquareNC(t,df,delta,coef,niid,tol)
 %   result = cf2DistGP(cf,[],[],options)
 %
 % EXAMPLE 3:
-% % CDF/PDF of the linear combination of non-central -log ChiSquare RVs
+% % CDF/PDF of the linear combination of the minus log-transformed
+% % non-central ChiSquare RVs 
 %   df    = [3 4 5];
 %   delta = [0 1 2];
 %   coef  = [-1 -1 -1]/3;

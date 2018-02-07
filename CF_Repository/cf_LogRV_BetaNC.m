@@ -48,7 +48,7 @@ function cf = cf_LogRV_BetaNC(t,alpha,beta,delta,coef,niid,tol)
 %   https://en.wikipedia.org/wiki/Noncentral_beta_distribution
 %
 % EXAMPLE 1:
-% % CF of non-central log-transformed Beta RV with delta = 1 and coef = -1
+% % CF of the log-transformed non-central Beta RV with delta = 1, coef = -1
 %   alpha = 1;
 %   beta  = 3;
 %   delta = 1;
@@ -59,7 +59,7 @@ function cf = cf_LogRV_BetaNC(t,alpha,beta,delta,coef,niid,tol)
 %   title('CF of minus log-transformed Beta RV')
 %
 % EXAMPLE 2:
-% % CDF/PDF of the non-central minus log-transformed Beta RV with delta = 1
+% % CDF/PDF of the minus log-transformed non-central Beta RV with delta = 1
 %   alpha = 1;
 %   beta  = 3;
 %   delta = 1;
@@ -70,7 +70,8 @@ function cf = cf_LogRV_BetaNC(t,alpha,beta,delta,coef,niid,tol)
 %   result = cf2DistGP(cf,[],[],options)
 %
 % EXAMPLE 3:
-% % CDF/PDF of the linear combination of non-central -log Beta RVs
+% % CDF/PDF of the linear combination of minus log-transformed 
+% % non-central Beta RVs
 %   alpha = [1 2 3];
 %   beta  = [3 4 5];
 %   delta = [0 1 2];
