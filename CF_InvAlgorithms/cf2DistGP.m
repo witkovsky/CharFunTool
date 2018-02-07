@@ -266,7 +266,7 @@ else
     SixSigmaRule       = options.SixSigmaRule;
     tolDiff            = options.tolDiff;
     % Special treatment for compound distributions. If the real value of CF
-    % at infinity (large value) is positive cfLimitant, i.e. cfLimit =
+    % at infinity (large value) is positive cfLimit, i.e. cfLimit =
     % real(cf(Inf)) > 0. In this case the compound CDF has jump at 0 of
     % size equal to this value, i.e. cdf(0) = cfLimit, and pdf(0) = Inf. In
     % order to simplify the calculations, here we calculate PDF and CDF of
