@@ -152,7 +152,7 @@ elseif delta > 0
         j = j + 1;
         i = i + 1;
     end
-    if (j == 5000)
+    if (i == 5000)
         warning(message('NoConvergence'));
     end
 else
