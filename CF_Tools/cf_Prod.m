@@ -111,11 +111,12 @@ if nargin < 5, b     = []; end
 if nargin < 4, a     = []; end
 if nargin < 3, pdfX2 = []; end
 
-if isempty(a),   a   = -1; end
 if isempty(b),   b   =  1; end
+if isempty(a),   a   = -b; end
 if isempty(tol), tol = 1e-6; end
+
 if isempty(pdfX2) 
-    pdfX2 = @(x) 0.5;
+    pdfX2 = @(x) 1/(b-a);
 end
 
 %% 
