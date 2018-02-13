@@ -135,10 +135,8 @@ end
 %% 
 szt = size(t);
 t   = t(:);
-n   = length(t);
 
-
-fun = @(x) cfX1(t'./x(:)) .* pdfX2(x(:)*ones(1,n));
+fun = @(x) cfX1(t/x) .* pdfX2(x);
 cf  = integral(fun,a,b,'ArrayValued',true,'RelTol',tol);
 
 cf  = reshape(cf,szt);
