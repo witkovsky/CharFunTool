@@ -45,7 +45,7 @@ function cf = cf_FisherSnedecorNC(t,df1,df2,delta,coef,niid,tol)
 %   https://en.wikipedia.org/wiki/Noncentral_F-distribution
 %
 % EXAMPLE 1:
-% % CF of the non-central F RV with delta = 1 and coef = -1
+% % CF of the non-central F RV with delta = 1
 %   df1   = 3;
 %   df2   = 5;
 %   delta = 1;

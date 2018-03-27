@@ -70,20 +70,13 @@ function cf = cf_BetaNC(t,alpha,beta,delta,coef,niid,tol)
 %   beta  = [3 4 5];
 %   delta = [0 1 2];
 %   coef  = 1/3;
-%   cf    = @(t) cf_BetaNC(t,df1,df2,delta,coef);
+%   cf    = @(t) cf_BetaNC(t,alpha,beta,delta,coef);
 %   clear options;
 %   options.xMin = 0;
 %   result = cf2DistGP(cf,[],[],options)
-%
-% REMARK !! (TO-DO)
-% The presented calculation of the central and non-central CF depends on
-% proper evaluation of the hypergeometric function 1F1(a,b,z). Here we use
-% the implementation given by the algorithm Hypergeom1F1.m which can crash
-% in specific situations for large values of t. In such situation consider
-% alternative implementation, as e.g.  Hypergeom1F1Approx.m
 
 % (c) 2018 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 07-Feb-2018 13:53:40
+% Ver.: 27-Mar-2018 23:54:13
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 7);
