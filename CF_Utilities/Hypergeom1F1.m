@@ -141,7 +141,7 @@ else
     end
     % 1F1(a,b,z) for large abs(imag(z)) by steepest descent integration
     % abs(z) >= 20 + abs(b) & abs(imag(z)) >= abs(real(z))
-    gba  = GammaLog(b) - (GammaLog(a) + GammaLog(b - a));
+    gba  = gammaln(b) - (gammaln(a) + gammaln(b - a));
     im_z = imag(z);
     re_z = real(z);
     idz2 = (abs(z) >= 20 + abs(b)) & (abs(im_z) >= abs(re_z));
