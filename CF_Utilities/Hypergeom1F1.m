@@ -162,7 +162,7 @@ else
         method(idz2) = 2;
     end
     % 1F1(a,b,z) for large z by asymptotic expansion
-    % abs(z) >= 20 & abs(imag(z)) < abs(real(z))
+    % abs(z) >= 10 & abs(imag(z)) < abs(real(z))
     idz3 = (~idz0 & ~idz1 & ~idz2);
     if any(idz3)
         zz  = z(idz3);
