@@ -142,7 +142,7 @@ else
     idz2 = (abs(z) >= 10) & (abs(im_z) >= abs(re_z)) & (a > 0);
     if any(idz2)
         [x,w] = GaussLaguerre(n);
-        gba   = gamma(b) - (gamma(a) + gamma(b - a));
+        gba   = gammaln(b) - (gammaln(a) + gammaln(b - a));
         rez   = re_z(idz2);
         imz   = im_z(idz2);
         ewa   = 1 ./ imz;
