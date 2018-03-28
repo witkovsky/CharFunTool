@@ -55,6 +55,7 @@ function [pval,result] = LRT03_EqualityCovariances(W,n,p,q,options)
 % p = 8;            % dimension of X_k, k = 1,...,q where q = 5
 % q = 5;            % number of populations 
 % W = [];           % observed value of W = -log(Lambda)
+% clear options;
 % % options.coef = -1;
 % options.prob = [0.9 0.95 0.99];
 % [pval,result] = LRT03_EqualityCovariances(W,n,p,q,options)

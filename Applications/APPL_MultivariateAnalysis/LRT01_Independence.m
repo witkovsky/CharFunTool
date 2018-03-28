@@ -49,6 +49,7 @@ function [pval,result] = LRT01_Independence(W,n,p,options)
 % n = 30;            % sample size
 % p = [3 4 5 6 7];   % dimensions of X_k,k = 1,...,m where m = 5
 % W = [];            % observed value of W = -log(Lambda)
+% clear options;
 % % options.coef = -1;
 % options.prob = [0.9 0.95 0.99];
 % [pval,result] = LRT01_Independence(W,n,p,options)
