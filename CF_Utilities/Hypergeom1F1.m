@@ -2,25 +2,25 @@ function [f, method] = Hypergeom1F1(a, b, z, n)
 %Hypergeom1F1 Computes the confluent hypergeometric function 1F1(a;b;z)
 %  also known as the Kummer's function M(a,b,z), for the parameters a and b
 %  (here assumed to be real scalars), and the complex argument z (scalar,
-%  vector or array). 
+%  vector or array).
 %
 %  For more details on confluent hypergeometric function 1F1(a;b;z) or the
-%  Kummer's (confluent hypergeometric) function M(a, b, z) see WIKIPEDIA: 
+%  Kummer's (confluent hypergeometric) function M(a, b, z) see WIKIPEDIA:
 %  https://en.wikipedia.org/wiki/Confluent_hypergeometric_function.
 %
 %  The present algorithm was adapted from the MATLAB version of the FORTRAN
 %  program suggested by S.Zhang and J.Jin (1996). For more details see also
 %  http://iris-lee3.ece.uiuc.edu/~jjin/routines/routines.html.
-% 
+%
 %  Computation of 1F1(a;b;z) for large arguments z (with |Im(z)| >=
 %  |Re(z)|) and for b > a) is based on using the steepest descent
 %  integration method as suggested by G. Navas Palencia and A.A. Arratia
-%  Quesada (2016). 
+%  Quesada (2016).
 %
 % SYNTAX
 %   f = Hypergeom1F1(a,b,z)
 %   [f,method] = Hypergeom1F1(a,b,z,n)
-% 
+%
 % INPUTS
 %  a   - parameter a (real scalar),
 %  b   - parameter b (real scalar),
@@ -45,18 +45,18 @@ function [f, method] = Hypergeom1F1(a, b, z, n)
 %  title('Characteristic function of Beta(1/2,1/2) distribution')
 %  xlabel('t')
 %  ylabel('CF')
-% 
+%
 % REFERENCES
 % [1] Jin, J. M., and Zhang Shan Jjie. Computation of Special Functions.
-%     Wiley, 1996. 
+%     Wiley, 1996.
 % [2] Navas Palencia, G. and Arratia Quesada, A.A., 2016. On the
-%     computation of confluent hypergeometric functions for large imaginary 
+%     computation of confluent hypergeometric functions for large imaginary
 %     part of parameters b and z. In Mathematical Software - ICMS 2016: 5th
 %     International Conference, Berlin, Germany, July 11-14, 2016:
-%     proceedings, pp. 241-248. Springer.  
+%     proceedings, pp. 241-248. Springer.
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 28-Mar-2018 19:16:04
+% Ver.: 28-Mar-2018 21:39:49
 
 %% FUNCTION
 %  [f, method] = Hypergeom1F1(a, b, z, n)
@@ -79,7 +79,7 @@ sz     = size(z);
 f      = NaN(sz);
 method = -ones(sz);
 
-if b <= a 
+if b < a
     transf = true;
     a      = b - a;
     z      = -z;
@@ -102,9 +102,9 @@ elseif(a == fix(a) && a < 0)
     m   = -a;
     cr  = 1;
     f = 1;
-    for  k = 1:m
-        cr  = cr .* (a + k - 1) ./ k ./ (b + k - 1) .* z;
-        f = f + cr;
+    for k  = 1:m
+        cr = cr .* (a + k - 1) ./ k ./ (b + k - 1) .* z;
+        f  = f + cr;
     end
 else
     % 1F1(a,b,0) = 1
@@ -113,9 +113,9 @@ else
         f(idz0) = 1;
         method(idz0) = 0;
     end
-    % 1F1(a,b,z) for small z
-    % abs(z) < 10
-    idz1 = (abs(z) < 10) & ~idz0;
+    % 1F1(a,b,z) for small z or negative a
+    % abs(z) < 10 & z><0 | a < 0
+    idz1 = (abs(z) < 10) & ~idz0 | (a < 0);
     if any(idz1)
         chg = 1;
         crg = 1;
@@ -148,14 +148,14 @@ else
         ba1   = b - a - 1;
         r1    = 0;
         r2    = 0;
-        for i = 1:n
-            x_i  = x(i) ./ imz * 1i;
+        for j = 1:n
+            x_i  = x(j) ./ imz * 1i;
             aux1 = rez .* x_i + a1 * log(x_i) + ba1 * log(1 - x_i);
             aux2 = rez .* (1 + x_i) + a1 * log(1+x_i) + ba1 * log(-x_i);
-            r1   = r1 + w(i) * exp(gba + aux1);
-            r2   = r2 + w(i) * exp(gba + aux2);
+            r1   = r1 + w(j) * exp(gba + aux1);
+            r2   = r2 + w(j) * exp(gba + aux2);
         end
-        f(idz2) = (ewa .* r1 - ewb .* r2) * 1i;
+        f(idz2)  = (ewa .* r1 - ewb .* r2) * 1i;
         method(idz2) = 2;
     end
     % 1F1(a,b,z) for otherwise large z by asymptotic expansion
@@ -170,21 +170,24 @@ else
         cs2 = 1;
         cr1 = 1;
         cr2 = 1;
-        for  i = 1:15
-            cr1 = -cr1 .* (a + i - 1) .* (a - b + i) ./ (zz * i);
-            cr2 =  cr2 .* (b - a + i - 1) .* (i - a) ./ (zz * i);
+        for  j  = 1:500
+            cr1 = -cr1 .* (a + j - 1) .* (a - b + j) ./ (zz * j);
+            cr2 =  cr2 .* (b - a + j - 1) .* (j - a) ./ (zz * j);
             cs1 =  cs1 + cr1;
             cs2 =  cs2 + cr2;
-        end       
+            if all(abs(cr1+cr2) < 1e-15)
+                break
+            end
+        end
         x    = real(zz);
         y    = imag(zz);
         phi  = atan(y ./ x);
         phi(x == 0 & y > 0)  = 0.5 * pi;
-        phi(x == 0 & y <= 0) = -0.5 * pi;       
+        phi(x == 0 & y <= 0) = -0.5 * pi;
         ns   = ones(size(x));
-        ns(phi > -1.5*pi & phi <= -0.5*pi) = -1;          
+        ns(phi > -1.5*pi & phi <= -0.5*pi) = -1;
         cfac = exp(1i * pi * a * ns);
-        cfac(y == 0) = cos(pi * a);                   
+        cfac(y == 0) = cos(pi * a);
         chg1 = (g2 / g3) * zz.^(-a) .* cfac .* cs1;
         chg2 = (g2 / g1) .* exp(zz) .* zz.^(a-b) .* cs2;
         chg  = chg1 + chg2;
