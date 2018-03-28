@@ -75,11 +75,11 @@ if nargin < 3, coef = []; end
 if nargin < 2, lambda = []; end
 
 %%
-if isempty(lambda) && ~isempty(coef)
+if isempty(lambda) 
     lambda = 1;
 end
 
-if isempty(coef) && ~isempty(lambda)
+if isempty(coef) 
     coef = 1;
 end
 

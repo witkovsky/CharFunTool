@@ -44,6 +44,7 @@ function [pval,result] = LRT05_Sphericity(W,n,p,options)
 % n = 30;           % total sample size
 % p = 8;            % dimension of X ~ N_p(mu,Sigma)
 % W = [];           % observed value of W = -log(Lambda)
+% clear options;
 % % options.coef = -1;
 % options.prob = [0.9 0.95 0.99];
 % [pval,result] = LRT05_Sphericity(W,n,p,options)
