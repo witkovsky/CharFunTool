@@ -40,13 +40,11 @@ function [f, method] = Hypergeom1F1(a, b, z, n)
 %  a  = 1/2;
 %  b  = 1/2;
 %  t  = linspace(-100,100,1001)';
-%  cf = Hypergeom1F1(a,b+b,1i*t);
+%  cf = Hypergeom1F1(a,a+b,1i*t);
 %  figure; plot(t,real(cf),t,imag(cf))
 %  title('Characteristic function of Beta(1/2,1/2) distribution')
 %  xlabel('t')
 %  ylabel('CF')
-%
-% NOTE1: the functions Hypergeom1F1 and KummerM are equivalent
 % 
 % REFERENCES
 % [1] Jin, J. M., and Zhang Shan Jjie. Computation of Special Functions.
@@ -58,7 +56,7 @@ function [f, method] = Hypergeom1F1(a, b, z, n)
 %     proceedings, pp. 241-248. Springer.  
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 28-Mar-2018 09:56:41
+% Ver.: 28-Mar-2018 19:16:04
 
 %% FUNCTION
 %  [f, method] = Hypergeom1F1(a, b, z, n)
@@ -115,11 +113,10 @@ else
         f(idz0) = 1;
         method(idz0) = 0;
     end
-    % 1F1(a,b,z) for small z, abs(z) < 10
+    % 1F1(a,b,z) for small z
+    % abs(z) < 10
     idz1 = (abs(z) < 10) & ~idz0;
     if any(idz1)
-        % 1F1(a,b,z) for small abs(z) by series expansion
-        % abs(z) < 10 or a < 0
         chg = 1;
         crg = 1;
         chw = 0;
@@ -136,7 +133,7 @@ else
         method(idz1) = 1;
     end
     % 1F1(a,b,z) for large abs(imag(z)) by steepest descent integration
-    % abs(z) >= 10 & abs(imag(z)) >= abs(real(z))
+    % abs(z) >= 10 & abs(im_z) >= abs(re_z) & a > 0
     im_z = imag(z);
     re_z = real(z);
     idz2 = (abs(z) >= 10) & (abs(im_z) >= abs(re_z)) & (a > 0);
@@ -161,8 +158,7 @@ else
         f(idz2) = (ewa .* r1 - ewb .* r2) * 1i;
         method(idz2) = 2;
     end
-    % 1F1(a,b,z) for large z by asymptotic expansion
-    % abs(z) >= 10 & abs(imag(z)) < abs(real(z))
+    % 1F1(a,b,z) for otherwise large z by asymptotic expansion
     idz3 = (~idz0 & ~idz1 & ~idz2);
     if any(idz3)
         zz  = z(idz3);
