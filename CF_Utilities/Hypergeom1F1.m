@@ -9,9 +9,8 @@ function [f, method] = Hypergeom1F1(a, b, z, n)
 %  https://en.wikipedia.org/wiki/Confluent_hypergeometric_function.
 %
 %  The present algorithm was adapted from the MATLAB version of the FORTRAN
-%  program suggested by S.Zhang and J.Jin in Computation of Special
-%  Functions, Wiley, 1996, for more details see also
-%  http://iris-lee3.ece.uiuc.edu/~jjin/routines/routines.html   
+%  program suggested by S.Zhang and J.Jin (1996). For more details see also
+%  http://iris-lee3.ece.uiuc.edu/~jjin/routines/routines.html.
 % 
 %  Computation of 1F1(a;b;z) for large arguments z (with |Im(z)| >=
 %  |Re(z)|) and for b > a) is based on using the steepest descent
@@ -41,7 +40,7 @@ function [f, method] = Hypergeom1F1(a, b, z, n)
 %  a  = 1/2;
 %  b  = 1/2;
 %  t  = linspace(-100,100,1001)';
-%  cf = Hypergeom1F1(a,a+b,1i*t);
+%  cf = Hypergeom1F1(a,b+b,1i*t);
 %  figure; plot(t,real(cf),t,imag(cf))
 %  title('Characteristic function of Beta(1/2,1/2) distribution')
 %  xlabel('t')
@@ -59,10 +58,10 @@ function [f, method] = Hypergeom1F1(a, b, z, n)
 %     proceedings, pp. 241-248. Springer.  
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 27-Mar-2018 23:25:35
+% Ver.: 28-Mar-2018 09:56:41
 
 %% FUNCTION
-%  f = Hypergeom1F1(a,b,z)
+%  [f, method] = Hypergeom1F1(a, b, z, n)
 
 %% CHECK THE INPUT PARAMETERS
 
@@ -116,15 +115,15 @@ else
         f(idz0) = 1;
         method(idz0) = 0;
     end
-    % 1F1(a,b,z) for small z, abs(z) < 20 + abs(b) and/or negative a, a < 0
+    % 1F1(a,b,z) for small z, abs(z) < 10, and/or negative a, a < 0
     if a < 0
         idz1 = ~isnan(z);
     else
-        idz1 = ((abs(z) < 20 + abs(b)) & ~idz0);
+        idz1 = ((abs(z) < 10) & ~idz0);
     end
     if any(idz1)
         % 1F1(a,b,z) for small abs(z) by series expansion
-        % abs(z) < 20 + abs(b) or a < 0
+        % abs(z) < 10 or a < 0
         chg = 1;
         crg = 1;
         chw = 0;
@@ -141,11 +140,11 @@ else
         method(idz1) = 1;
     end
     % 1F1(a,b,z) for large abs(imag(z)) by steepest descent integration
-    % abs(z) >= 20 + abs(b) & abs(imag(z)) >= abs(real(z))
+    % abs(z) >= 10 & abs(imag(z)) >= abs(real(z))
     gba  = gammaln(b) - (gammaln(a) + gammaln(b - a));
     im_z = imag(z);
     re_z = real(z);
-    idz2 = (abs(z) >= 20 + abs(b)) & (abs(im_z) >= abs(re_z));
+    idz2 = (abs(z) >= 10 ) & (abs(im_z) >= abs(re_z));
     if any(idz2)
         [x,w] = GaussLaguerre(n);
         rez   = re_z(idz2);
@@ -167,7 +166,7 @@ else
         method(idz2) = 2;
     end
     % 1F1(a,b,z) for large z by asymptotic expansion
-    %
+    % abs(z) >= 20 & abs(imag(z)) < abs(real(z))
     idz3 = (~idz0 & ~idz1 & ~idz2);
     if any(idz3)
         zz  = z(idz3);
@@ -213,7 +212,7 @@ end
 %% function GaussLaguerre
 function [x, w] = GaussLaguerre(n,alpha)
 % GaussLaguerre evaluates the Gauss-Laguerre Nodes and Weights on the
-% interval (a,Inf)
+% interval (alpha,Inf).
 
 if nargin < 2
     alpha = [];
