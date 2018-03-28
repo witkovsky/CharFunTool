@@ -81,7 +81,7 @@ sz     = size(z);
 f      = NaN(sz);
 method = -ones(sz);
 
-if b < a
+if b <= a 
     transf = true;
     a      = b - a;
     z      = -z;
@@ -115,12 +115,8 @@ else
         f(idz0) = 1;
         method(idz0) = 0;
     end
-    % 1F1(a,b,z) for small z, abs(z) < 10, and/or negative a, a < 0
-    if a < 0
-        idz1 = ~isnan(z);
-    else
-        idz1 = ((abs(z) < 10) & ~idz0);
-    end
+    % 1F1(a,b,z) for small z, abs(z) < 10
+    idz1 = (abs(z) < 10) & ~idz0;
     if any(idz1)
         % 1F1(a,b,z) for small abs(z) by series expansion
         % abs(z) < 10 or a < 0
@@ -141,12 +137,12 @@ else
     end
     % 1F1(a,b,z) for large abs(imag(z)) by steepest descent integration
     % abs(z) >= 10 & abs(imag(z)) >= abs(real(z))
-    gba  = gammaln(b) - (gammaln(a) + gammaln(b - a));
     im_z = imag(z);
     re_z = real(z);
-    idz2 = (abs(z) >= 10 ) & (abs(im_z) >= abs(re_z));
+    idz2 = (abs(z) >= 10) & (abs(im_z) >= abs(re_z)) & (a > 0);
     if any(idz2)
         [x,w] = GaussLaguerre(n);
+        gba   = gamma(b) - (gamma(a) + gamma(b - a));
         rez   = re_z(idz2);
         imz   = im_z(idz2);
         ewa   = 1 ./ imz;
@@ -178,7 +174,7 @@ else
         cs2 = 1;
         cr1 = 1;
         cr2 = 1;
-        for  i = 1:12
+        for  i = 1:15
             cr1 = -cr1 .* (a + i - 1) .* (a - b + i) ./ (zz * i);
             cr2 =  cr2 .* (b - a + i - 1) .* (i - a) ./ (zz * i);
             cs1 =  cs1 + cr1;
