@@ -41,7 +41,7 @@ function [f, method] = Hypergeom1F1(a, b, z, n)
 %  a  = 1/2;
 %  b  = 1/2;
 %  t  = linspace(-100,100,1001)';
-%  cf = Hypergeom1F1(a,b+b,1i*t);
+%  cf = Hypergeom1F1(a,a+b,1i*t);
 %  figure; plot(t,real(cf),t,imag(cf))
 %  title('Characteristic function of Beta(1/2,1/2) distribution')
 %  xlabel('t')
