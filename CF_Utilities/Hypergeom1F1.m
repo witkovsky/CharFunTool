@@ -32,9 +32,10 @@ function [f, method] = Hypergeom1F1(a, b, z, n)
 % EXAMPLE 1
 %  a = 10;
 %  b = 15;
-%  z = (0:100)' + (0:100)'*1i;
+%  z = [0; 1; 10i; 50i; 10+50i; 100+50i];
 %  n = 50;
-%  f = Hypergeom1F1(a,b,z,n)
+%  [f,method] = Hypergeom1F1(a,b,z,n);
+%  disp([f method])
 %
 % EXAMPLE 2 (CF of Beta(1/2,1/2) distribution)
 %  a  = 1/2;
@@ -205,7 +206,8 @@ if transf
     f = exp(-z) .* f;
 end
 
-f = reshape(f,szz);
+f      = reshape(f,szz);
+method = reshape(method,szz);
 end
 
 %% function GaussLaguerre
