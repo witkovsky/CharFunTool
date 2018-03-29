@@ -13,7 +13,7 @@ function [f, method] = Hypergeom1F1(a, b, z, n)
 %  http://iris-lee3.ece.uiuc.edu/~jjin/routines/routines.html.
 %
 %  Computation of 1F1(a;b;z) for large arguments z (with |Im(z)| >=
-%  |Re(z)|) and for b > a) is based on using the steepest descent
+%  |Re(z)|) and for b > a > 0) is based on using the steepest descent
 %  integration method as suggested by G. Navas Palencia and A.A. Arratia
 %  Quesada (2016).
 %
@@ -56,7 +56,7 @@ function [f, method] = Hypergeom1F1(a, b, z, n)
 %     proceedings, pp. 241-248. Springer.
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 28-Mar-2018 21:39:49
+% Ver.: 29-Mar-2018 22:50:57
 
 %% FUNCTION
 %  [f, method] = Hypergeom1F1(a, b, z, n)
@@ -72,6 +72,7 @@ if isempty(n)
 end
 
 %%
+done   = false;
 transf = false;
 szz    = size(z);
 z      = z(:);
@@ -79,25 +80,25 @@ sz     = size(z);
 f      = NaN(sz);
 method = -ones(sz);
 
-if b < a
-    transf = true;
-    a      = b - a;
-    z      = -z;
-end
-
-% Special cases
+% 1F1(a,b,z) for special cases of the parameters a and b and any argument z
 if(b == 0 || b == -fix(abs(b)))
     f = Inf;
-elseif(a == 0 )
-    f = 1;
-elseif(a == -1)
-    f = 1 - z./b;
+    done = true;
 elseif (a == b)
     f = exp(z);
+    done = true;
 elseif(a-b == 1)
     f = (1 + z ./ b) .* exp(z);
+    done = true;
+elseif(a == 0)
+    f = 1;
+    done = true;
+elseif(a == -1)
+    f = 1 - z./b;
+    done = true;
 elseif(a == 1 && b == 2)
     f = (exp(z) - 1) ./ z;
+    done = true;
 elseif(a == fix(a) && a < 0)
     m   = -a;
     cr  = 1;
@@ -106,7 +107,17 @@ elseif(a == fix(a) && a < 0)
         cr = cr .* (a + k - 1) ./ k ./ (b + k - 1) .* z;
         f  = f + cr;
     end
-else
+    done = true;
+end
+
+% 1F1(a,b,z) for other cases of the parameters a ,b and the argument z
+if ~done
+    % If b < a  set 1F1(a,b,z) = exp(z)*1F1(b-a,b,-z)
+    if (b < a)
+        transf = true;
+        a      = b - a;
+        z      = -z;
+    end
     % 1F1(a,b,0) = 1
     idz0 = z==0;
     if any(idz0)
@@ -133,10 +144,10 @@ else
         method(idz1) = 1;
     end
     % 1F1(a,b,z) for large abs(imag(z)) by steepest descent integration
-    % abs(z) >= 10 & abs(im_z) >= abs(re_z) & a > 0
+    % abs(z) >= 10 & abs(im_z) >= abs(re_z) & a > 0 & b > a
     im_z = imag(z);
     re_z = real(z);
-    idz2 = (abs(z) >= 10) & (abs(im_z) >= abs(re_z)) & (a > 0);
+    idz2 = (abs(z) >= 10) & (abs(im_z) >= abs(re_z)) & (a > 0) & (b > a);
     if any(idz2)
         [x,w] = GaussLaguerre(n);
         gba   = gammaln(b) - (gammaln(a) + gammaln(b - a));
