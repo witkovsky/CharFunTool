@@ -65,7 +65,7 @@ function [f, method, loops] = Hypergeom1F1(a, b, z, n)
 %     proceedings, pp. 241-248. Springer.
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 30-Mar-2018 13:12:09
+% Ver.: 30-Mar-2018 13:45:00
 
 %% FUNCTION
 %  [f, method] = Hypergeom1F1(a, b, z, n)
@@ -131,15 +131,19 @@ if ~done
     im_z = imag(z);
     re_z = real(z);
     ind0 = z==0;
-    ind1 = (abs(z)<20+abs(b)) & ~ind0 | (a<0);
-    ind2 = (abs(z)>=20+abs(b)) & (abs(im_z)>=abs(re_z)) & (a>0) & (b>a);
+    ind1 = (abs(z)<10 & abs(im_z)<abs(re_z) & ~ind0) | ...
+           (abs(z)<20+abs(b)) & ~ind0 | (a<0);
+    ind2 = (abs(z)>=10) & (abs(im_z)>=abs(re_z)) & (a>0) & (b>a);
     ind3 = (~ind0 & ~ind1 & ~ind2);
     % If z == 0 set 1F1(a,b,0) = 1
     if any(ind0)
         f(ind0) = 1;
         method(ind0) = 0;        
     end
-    % 1F1(a,b,z) for small z or negative a: abs(z)<20+abs(b) & z><0 OR a<0
+    % 1F1(a,b,z) for small abs(z) or negative a:
+    % abs(z) < 10 & abs(im_z) < abs(re_z) & ~ind0, OR
+    % abs(z) < 20 + abs(b) & ~ind0, OR
+    % a < 0
     if any(ind1)
         chg = 1;
         crg = 1;
@@ -157,8 +161,9 @@ if ~done
         loops(ind1)  = j;
         f(ind1)      = chg;
     end
-    % 1F1(a,b,z) for large abs(imag(z)) by steepest descent integration
-    % abs(z)>=20+abs(b) & abs(im_z)>=abs(re_z) & a>0 & b>a
+    % 1F1(a,b,z) for large abs(z) such that abs(imag(z)) >= abs(re_z)
+    % and a > b > 0 by using the steepest descent integration: 
+    % abs(z) >= 10 & abs(im_z) >= abs(re_z) & a > 0 & b > a    
     if any(ind2)
         [x,w] = GaussLaguerre(n);
         gba   = gammaln(b) - (gammaln(a) + gammaln(b - a));
@@ -181,7 +186,7 @@ if ~done
         loops(ind2)  = j;
         f(ind2)      = (ewa .* r1 - ewb .* r2) * 1i;
     end
-    % 1F1(a,b,z) for otherwise large z by asymptotic expansion
+    % 1F1(a,b,z) for (otherwise) large z by using asymptotic expansion
     if any(ind3)
         zz  = z(ind3);
         g1  = gamma(a);
