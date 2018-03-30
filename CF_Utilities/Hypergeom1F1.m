@@ -131,8 +131,8 @@ if ~done
     im_z = imag(z);
     re_z = real(z);
     ind0 = z==0;
-    ind1 = (abs(z)<10 & abs(im_z)<abs(re_z) & ~ind0) | ...
-           (abs(z)<20+abs(b)) & ~ind0 | (a<0);
+    ind1 = ((abs(z)<10 & abs(im_z)<abs(re_z)) | abs(z)<20+abs(b) | a<0)...
+           & ~ind0; 
     ind2 = (abs(z)>=10) & (abs(im_z)>=abs(re_z)) & (a>0) & (b>a);
     ind3 = (~ind0 & ~ind1 & ~ind2);
     % If z == 0 set 1F1(a,b,0) = 1
