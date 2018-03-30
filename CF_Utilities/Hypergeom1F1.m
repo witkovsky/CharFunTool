@@ -1,4 +1,4 @@
-function [f, method] = Hypergeom1F1(a, b, z, n)
+function [f, method, loops] = Hypergeom1F1(a, b, z, n)
 %Hypergeom1F1 Computes the confluent hypergeometric function 1F1(a;b;z)
 %  also known as the Kummer's function M(a,b,z), for the parameters a and b
 %  (here assumed to be real scalars), and the complex argument z (scalar,
@@ -19,22 +19,31 @@ function [f, method] = Hypergeom1F1(a, b, z, n)
 %
 % SYNTAX
 %   f = Hypergeom1F1(a,b,z)
-%   [f,method] = Hypergeom1F1(a,b,z,n)
+%   [f, method, loops] = Hypergeom1F1(a, b, z, n)
 %
 % INPUTS
-%  a   - parameter a (real scalar),
-%  b   - parameter b (real scalar),
-%  z   - complex argument (scalar, vector or array),
-%  n   - number of the Gauss-Laguerre nodes and weights on (0,Inf). If
-%        empty, default value is n = 64.
+%  a      - parameter a (real scalar),
+%  b      - parameter b (real scalar),
+%  z      - complex argument (scalar, vector or array),
+%  n      - number of the Gauss-Laguerre nodes and weights on (0,Inf). If
+%           empty, default value is n = 64.
+%
+% OUTPUTS
+%  f      - calculated 1F1(a,b,z) of the same dimension as z,
+%  method - indicator of the used method:
+%           -1 is the method used for special cases,
+%            0 is the method used for z == 0,
+%            1 is the method based on the series expansion,
+%            2 is the method based on the steepest descent integration,
+%            3 is the method based on the asymptotic expansion,
+% loops   - indicator of the used number of recursive loops.
 %
 % EXAMPLE 1
 %  a = 10;
 %  b = 15;
 %  z = [0; 1; 10i; 50i; 10+50i; 100+50i];
-%  n = 50;
-%  [f,method] = Hypergeom1F1(a,b,z,n);
-%  disp([f method])
+%  n = 64;
+%  [f,method,loops] = Hypergeom1F1(a,b,z,n)
 %
 % EXAMPLE 2 (CF of Beta(1/2,1/2) distribution)
 %  a  = 1/2;
@@ -56,7 +65,7 @@ function [f, method] = Hypergeom1F1(a, b, z, n)
 %     proceedings, pp. 241-248. Springer.
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 29-Mar-2018 22:50:57
+% Ver.: 30-Mar-2018 13:12:09
 
 %% FUNCTION
 %  [f, method] = Hypergeom1F1(a, b, z, n)
@@ -79,6 +88,7 @@ z      = z(:);
 sz     = size(z);
 f      = NaN(sz);
 method = -ones(sz);
+loops  = zeros(sz);
 
 % 1F1(a,b,z) for special cases of the parameters a and b and any argument z
 if(b == 0 || b == -fix(abs(b)))
@@ -118,20 +128,23 @@ if ~done
         a      = b - a;
         z      = -z;
     end
-    % 1F1(a,b,0) = 1
-    idz0 = z==0;
-    if any(idz0)
-        f(idz0) = 1;
-        method(idz0) = 0;
+    im_z = imag(z);
+    re_z = real(z);
+    ind0 = z==0;
+    ind1 = (abs(z)<20+abs(b)) & ~ind0 | (a<0);
+    ind2 = (abs(z)>=20+abs(b)) & (abs(im_z)>=abs(re_z)) & (a>0) & (b>a);
+    ind3 = (~ind0 & ~ind1 & ~ind2);
+    % If z == 0 set 1F1(a,b,0) = 1
+    if any(ind0)
+        f(ind0) = 1;
+        method(ind0) = 0;        
     end
-    % 1F1(a,b,z) for small z or negative a
-    % abs(z) < 10 & z><0 | a < 0
-    idz1 = (abs(z) < 10) & ~idz0 | (a < 0);
-    if any(idz1)
+    % 1F1(a,b,z) for small z or negative a: abs(z)<20+abs(b) & z><0 OR a<0
+    if any(ind1)
         chg = 1;
         crg = 1;
         chw = 0;
-        zz  = z(idz1);
+        zz  = z(ind1);
         for  j = 1:500
             crg = crg .* (a+j-1) ./ (j * (b + j - 1)) .* zz;
             chg = chg + crg;
@@ -140,19 +153,17 @@ if ~done
             end
             chw = chg;
         end
-        f(idz1) = chg;
-        method(idz1) = 1;
+        method(ind1) = 1;
+        loops(ind1)  = j;
+        f(ind1)      = chg;
     end
     % 1F1(a,b,z) for large abs(imag(z)) by steepest descent integration
-    % abs(z) >= 10 & abs(im_z) >= abs(re_z) & a > 0 & b > a
-    im_z = imag(z);
-    re_z = real(z);
-    idz2 = (abs(z) >= 10) & (abs(im_z) >= abs(re_z)) & (a > 0) & (b > a);
-    if any(idz2)
+    % abs(z)>=20+abs(b) & abs(im_z)>=abs(re_z) & a>0 & b>a
+    if any(ind2)
         [x,w] = GaussLaguerre(n);
         gba   = gammaln(b) - (gammaln(a) + gammaln(b - a));
-        rez   = re_z(idz2);
-        imz   = im_z(idz2);
+        rez   = re_z(ind2);
+        imz   = im_z(ind2);
         ewa   = 1 ./ imz;
         ewb   = exp(imz * 1i) ./ imz;
         a1    = a - 1;
@@ -166,13 +177,13 @@ if ~done
             r1   = r1 + w(j) * exp(gba + aux1);
             r2   = r2 + w(j) * exp(gba + aux2);
         end
-        f(idz2)  = (ewa .* r1 - ewb .* r2) * 1i;
-        method(idz2) = 2;
+        method(ind2) = 2;
+        loops(ind2)  = j;
+        f(ind2)      = (ewa .* r1 - ewb .* r2) * 1i;
     end
     % 1F1(a,b,z) for otherwise large z by asymptotic expansion
-    idz3 = (~idz0 & ~idz1 & ~idz2);
-    if any(idz3)
-        zz  = z(idz3);
+    if any(ind3)
+        zz  = z(ind3);
         g1  = gamma(a);
         g2  = gamma(b);
         ba  = b - a;
@@ -202,15 +213,15 @@ if ~done
         chg1 = (g2 / g3) * zz.^(-a) .* cfac .* cs1;
         chg2 = (g2 / g1) .* exp(zz) .* zz.^(a-b) .* cs2;
         chg  = chg1 + chg2;
-        f(idz3) = chg;
-        method(idz3) = 3;
+        method(ind3) = 3;
+        loops(ind3)  = j;
+        f(ind3)      = chg;
     end
 end
 
 if transf
     f = exp(-z) .* f;
 end
-
 f      = reshape(f,szz);
 method = reshape(method,szz);
 end
