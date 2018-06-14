@@ -187,11 +187,8 @@ sigma  = Pars(2);
 
 % CF of the fitted tail GP distribution 
 pdfGP  = @(x) gppdf(x,xi,sigma);
-A      = 0;
-B      = 10000;
-method = 'bv';
-nPts   = 250;
-cfGP   = @(t) cf_PDF(t,pdfGP,A,B,method,nPts) .* exp(1i*t*theta);
+method = 'fit';
+cfGP   = @(t) cfX_PDF(t,pdfGP,method) .* exp(1i*t*theta);
 
 % CF of the mixture severity distribution
 XL     = Severity(Severity <= theta);
@@ -212,8 +209,8 @@ loss   = linspace(0,2500,201)';
 
 % Options
 clear options
-options.N = 2^12;
-options.SixSigmaRule = 10;
+options.N = 2^15;
+options.SixSigmaRule = 15;
 options.isCompound = true;
 
 % Numerical inversion of CF by cf2DistGP
