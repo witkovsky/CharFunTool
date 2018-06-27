@@ -115,7 +115,11 @@ t     = t(:);
 cf    = 0;
 
 for k = 1:length(n)
-    cf = cf + p(k) * cfX(t/n(k)).^n(k);
+    if n(k)~=0
+        cf = cf + p(k) * cfX(t/n(k)).^n(k);
+    else
+        cf = cf + p(k);
+    end
 end
 
 cf = reshape(cf,szt);
