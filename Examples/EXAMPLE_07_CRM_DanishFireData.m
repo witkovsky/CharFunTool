@@ -176,38 +176,40 @@ disp(result)
 load('DanishFireData.mat')
 
 % Set the threshold parameter theta
-p     = 0.95;
-theta = quantile(Severity,p);
+p      = 0.95;
+theta  = quantile(Severity,p);
 
 % Fit the GP (Generalized Pareto) distribution
-GPfit = paretotails(Severity,0,p);
-Pars  = GPfit.UpperParameters;
-xi    = Pars(1);
-sigma = Pars(2);
+GPfit  = paretotails(Severity,0,p);
+Pars   = GPfit.UpperParameters;
+xi     = Pars(1);
+sigma  = Pars(2);
 
 % CF of the fitted tail GP distribution 
-pdfGP = @(x) gppdf(x,xi,sigma);
-cfGP  = @(t) cfX_PDF(t,pdfGP) .* exp(1i*t*theta);
+pdfGP  = @(x) gppdf(x,xi,sigma);
+method = 'fit';
+cfGP   = @(t) cfX_PDF(t,pdfGP,method) .* exp(1i*t*theta);
 
 % CF of the mixture severity distribution
-XL    = Severity(Severity <= theta);
-%cfXL  = @(t) cfE_Empirical(t,XL) .* cfS_Gaussian(t*0.2);
-cfXL  = @(t) cfE_Empirical(t,XL);
-cfX   = @(t) p * cfXL(t) + (1-p) * cfGP(t);
+XL     = Severity(Severity <= theta);
+% Smoothed empirical CF
+% cfXL  = @(t) cfE_Empirical(t,XL) .* cfS_Gaussian(t*0.2);
+cfXL   = @(t) cfE_Empirical(t,XL);
+cfX    = @(t) p * cfXL(t) + (1-p) * cfGP(t);
 
 % Empirical CF of the frequency distribution
-cfN   = @(t) cfE_Empirical(t,Frequency);
+cfN    = @(t) cfE_Empirical(t,Frequency);
 
 % Compound CF of the aggregate loss distribution
-cf    = @(t) cfN(-1i*log(cfX(t)));
+cf     = @(t) cfN(-1i*log(cfX(t)));
 
 % Parameters
-prob = [0.9 0.99 0.999];
-loss = linspace(0,2500,201)';
+prob   = [0.9 0.99 0.999];
+loss   = linspace(0,2500,201)';
 
 % Options
 clear options
-options.N = 2^16;
+options.N = 2^15;
 options.SixSigmaRule = 15;
 options.isCompound = true;
 
