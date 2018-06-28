@@ -1,13 +1,16 @@
 function cf = cf_RandomMean(t,cfX,n,p)
 %% cf_RandomMean
-%  Characteristic function of a RANDOM MEAN of N i.i.d. random variables X,
-%  specified by the characteristic function cfX, where the random number N
-%  is specified by the probability distribution (n is vector of possible
-%  values and p is vector of its probabilities).
+%  Characteristic function of the RANDOM MEAN (RM) Y = 1/N Sum_(k=1)^N X_k  
+%  of N (random number) i.i.d. random variables X_k, with their common
+%  distribution specified by the characteristic function cfX. Probability
+%  distribution of the random number N is given by its PMF, here specified
+%  by the K-dimensional vector n (the vector of possible observed values of
+%  N, say n = (n_1,...,n_K)) and by the vector p of its probabilities, say
+%  p = (p_1,...,p_K), such that sum_{k=1}^K p_k = 1.
 %
-%  Distribution of RANDOM MEAN is specified as a mixture of the convolved
-%  distributions of X_n = X/n +...+ X/n. That is, its CF is given by
-%   cf(t) = sum_{n=1}^n_max  p_n * cfX(t/n)^n   
+%  Probability distribution of the RANDOM MEAN is specified as a mixture of
+%  n-times convolved distributions of X. That is, its CF of Y is given by
+%   cf(t) = sum_{k=1}^K  p_k * cfX(t/n_k)^n_k.
 %  
 % SEE ALSO: CHRISTOPH, MONAKHOV and ULYANOV (2018).
 %
@@ -25,47 +28,59 @@ function cf = cf_RandomMean(t,cfX,n,p)
 %           specified by n. If empty, default value is p = 1/length(n) for
 %           all n.
 % 
-% REMARK:
-%  If n is scalar (and p = 1), we get CF of the regular (non-random) mean
-%  of n iid RVs. 
+% REMARKS:
+%  - If n is scalar (and p = 1), we get CF of the regular (non-random) mean
+%    of n iid RVs. 
+%  - The algorithm allows to consider also the situation when one of the
+%    possible observed values of N is 0, i.e. with n_1 = 0 with p_1 > 0. By
+%    definition we set cfX(t/n_1)^n_1 = 1 if n_1 = 0. That is, proportion
+%    p_1 of the distribution is concentrated at 0.   
+%  - Notice that CF of the RANDOM SUM, Y = Sum_(k=1)^N X_k, is specified by
+%    cf(t) = sum_{k=1}^K  p_k * cfX(t)^n_k. If CF of the discrete random
+%    variable N is known as cfN(t), this can be simplified to the following
+%    expression: cf(t) = cfN(-1i*log(cfX(t)). For more details see the
+%    implementation of algorithms for computing CFs of the discrete
+%    distributions.
 %
 % EXAMPLE1 (CF of RANDOM MEAN of N chi-squared RVs, N~Bino(10,0.5))
-%  df   = 1;
-%  cfX  = @(t) cf_ChiSquare(t,df);
-%  N    = 10;
-%  pr   = 0.5;
-%  n    = 0:N;
-%  p    = binopdf(n,N,pr);
-%  cf   = @(t) cf_RandomMean(t,cfX,n,p);
-%  t = linspace(-20,20,501);
+%  df    = 1;
+%  cfX    = @(t) cf_ChiSquare(t,df);
+%  nBino  = 10;
+%  pBino  = 0.5;
+%  n      = 0:nBino;
+%  p      = binopdf(n,nBino,pBino);
+%  cf     = @(t) cf_RandomMean(t,cfX,n,p);
+%  t      = linspace(-20,20,501);
 %  figure; plot(t,real(cf(t)),t,imag(cf(t))),grid
 %  title('CF of the RANDOM MEAN of chi-squared RVs with N~Bino(10,0.5)')
 %
 % EXAMPLE2 (PDF/CDF/QF of RANDOM MEAN of N chi-squared RVs, N~Bino(10,0.5))
-%  df   = 1;
-%  cfX  = @(t) cf_ChiSquare(t,df);
-%  N    = 10;
-%  pr   = 0.5;
-%  n    = 0:N;
-%  p    = binopdf(n,N,pr);
-%  cf   = @(t) cf_RandomMean(t,cfX,n,p);
-%  x    = linspace(0,5)';
-%  prob = [0.9 0.95 0.99];
+%  df     = 1;
+%  cfX    = @(t) cf_ChiSquare(t,df);
+%  nBino  = 10;
+%  pBino  = 0.5;
+%  n      = 0:nBino;
+%  p      = binopdf(n,nBino,pBino);
+%  cf     = @(t) cf_RandomMean(t,cfX,n,p);
+%  x      = linspace(0,5)';
+%  prob   = [0.9 0.95 0.99];
 %  options.xMin = 0;
 %  options.isCompound = true;
 %  result = cf2DistGP(cf,x,prob,options)
 %
-% EXAMPLE2 (Continued)
-% % PDF/CDF/QF of the standardized RANDOM MEAN Z = sqrt(m)*(X-E(X))/STD(X)
-%  EX   = result.xMean;
-%  STDX = result.xStd;
-%  m    = N*pr;
-%  cfZ  = @(t) cf(t) .* exp(-1i*t*EX);
-%  cfZ  = @(t) cfZ(sqrt(m)*t/STDX);
-%  resultZ = cf2DistGP(cfZ,[],prob)
+% EXAMPLE3 (PDF/CDF/QF of standardized Z = sqrt(E(N))*sum((X-E(X))/STD(X)))
+%  df     = 1;
+%  cfX    = @(t) cf_ChiSquare(t/sqrt(2*df),df) .* exp(-1i*t/sqrt(2));
+%  nBino  = 10;
+%  pBino  = 0.5;
+%  n      = 0:nBino;
+%  p      = binopdf(n,nBino,pBino);
+%  EN     = nBino * pBino;
+%  cf     = @(t) cf_RandomMean(sqrt(EN)*t,cfX,n,p);
+%  result = cf2DistGP(cf,[],prob)
 %
-% EXAMPLE3 (See also CHRISTOPH, MONAKHOV and ULYANOV (2018))
-% % PDF/CDF/QF of the RANDOM MEAN of N chi-squared RVs
+% EXAMPLE4 (PDF/CDF/QF of the RANDOM MEAN of N chi-squared RVs)
+%  % See also CHRISTOPH, MONAKHOV and ULYANOV (2018)
 %  df   = 1;
 %  cfX  = @(t) cf_ChiSquare(t,df);
 %  P    = @(k,s,n) (k./(s+k)).^n - ((k-1)./(s+k-1)).^n;
@@ -91,7 +106,7 @@ function cf = cf_RandomMean(t,cfX,n,p)
 %     http://www.math.sci.hiroshima-u.ac.jp/stat/TR/TR17/TR17-15.pdf   
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 7-Jun-2018 16:14:36
+% Ver.: 28-Jun-2018 13:43:36
 
 %% ALGORITHM
 %cf = cf_RandomMean(t,cfX,n,p)
@@ -115,7 +130,11 @@ t     = t(:);
 cf    = 0;
 
 for k = 1:length(n)
-    cf = cf + p(k) * cfX(t/n(k)).^n(k);
+    if n(k)~=0
+        cf = cf + p(k) * cfX(t/n(k)).^n(k);
+    else
+        cf = cf + p(k);
+    end
 end
 
 cf = reshape(cf,szt);
