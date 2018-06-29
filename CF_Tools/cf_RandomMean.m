@@ -9,10 +9,9 @@ function cf = cf_RandomMean(t,cfX,n,p)
 %  p = (p_1,...,p_K), such that sum_{k=1}^K p_k = 1.
 %
 %  Probability distribution of the RANDOM MEAN is specified as a mixture of
-%  n-times convolved distributions of X. That is, its CF of Y is given by
+%  n-times convolved distributions of X/n. That is, its CF of Y is given by
 %   cf(t) = sum_{k=1}^K  p_k * cfX(t/n_k)^n_k.
-%  
-% SEE ALSO: CHRISTOPH, MONAKHOV and ULYANOV (2018).
+%  For more details see also CHRISTOPH, MONAKHOV and ULYANOV (2018).
 %
 % SYNTAX:
 %  cf = cf_RandomMean(t,cfX,n)
@@ -64,11 +63,10 @@ function cf = cf_RandomMean(t,cfX,n,p)
 %  cf     = @(t) cf_RandomMean(t,cfX,n,p);
 %  x      = linspace(0,5)';
 %  prob   = [0.9 0.95 0.99];
-%  options.xMin = 0;
 %  options.isCompound = true;
 %  result = cf2DistGP(cf,x,prob,options)
 %
-% EXAMPLE3 (PDF/CDF/QF of standardized Z = sqrt(E(N))*sum((X-E(X))/STD(X)))
+% EXAMPLE3 (PDF/CDF/QF of Z = sqrt(E(N))*RandomMean((X-E(X))/STD(X)))
 %  df     = 1;
 %  cfX    = @(t) cf_ChiSquare(t/sqrt(2*df),df) .* exp(-1i*t/sqrt(2));
 %  nBino  = 10;
@@ -94,7 +92,6 @@ function cf = cf_RandomMean(t,cfX,n,p)
 %  cf   = @(t) cf_RandomMean(t,cfX,n,p);
 %  x    = linspace(0,3,2^10)';
 %  prob = [0.9 0.95 0.99];
-%  options.xMin = 0;
 %  options.isCompound = true;
 %  result = cf2DistGP(cf,x,prob,options)
 %
@@ -104,9 +101,11 @@ function cf = cf_RandomMean(t,cfX,n,p)
 %     Random Size Samples. Preprint March 2018. 
 %     DOI:10.13140/RG.2.2.28836.17281.  
 %     http://www.math.sci.hiroshima-u.ac.jp/stat/TR/TR17/TR17-15.pdf   
+%
+% SEE ALSO: cf_RandomSum
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 28-Jun-2018 13:43:36
+% Ver.: 29-Jun-2018 10:16:08
 
 %% ALGORITHM
 %cf = cf_RandomMean(t,cfX,n,p)
