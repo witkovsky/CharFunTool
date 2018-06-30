@@ -86,6 +86,7 @@ beta(beta <= 0) = NaN;
 %% EVALUATE THE CHARACTERISTIC FUNCTION: cfX_LogLogistic(t,alpha,beta)
 
 pdfFun = @(x)(beta./alpha) .* (x./alpha).^(beta-1) ./ (1 + (x./alpha).^beta).^2;
-cf = cfX_PDF(t,pdfFun,tol);
+method = 'fit';
+cf = cfX_PDF(t,pdfFun,method,tol);
 
 end

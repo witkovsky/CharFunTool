@@ -94,7 +94,8 @@ xi(xi <= 0) = NaN;
 pdfFun = @(x)(1./sigma) .* (1 + (xi./sigma) .* x).^(-(1./xi)-1);
 sz = size(t);
 t  = t(:);
-cf = exp(1i*t*theta) .* cfX_PDF(t,pdfFun,tol);
+method = 'fit'; 
+cf = exp(1i*t*theta) .* cfX_PDF(t,pdfFun,method,tol);
 cf = reshape(cf,sz);
 cf(t==0) = 1;
 
