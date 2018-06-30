@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.apptool" plugin-version="1.0">
-  <configuration build-checksum="3873749718" file="C:\Users\Viktor\Documents\GitHub\CharFunTool\Applications\APPL_RiskModeling\CRMTool\CRMTool.prj" location="C:\Users\Viktor\Documents\GitHub\CharFunTool\Applications\APPL_RiskModeling\CRMTool" name="CRMTool" target="target.mlapps" target-name="Package App">
+  <configuration build-checksum="1687826034" file="C:\Users\Viktor\Documents\GitHub\CharFunTool\Applications\APPL_RiskModeling\CRMTool\CRMTool.prj" location="C:\Users\Viktor\Documents\GitHub\CharFunTool\Applications\APPL_RiskModeling\CRMTool" name="CRMTool" target="target.mlapps" target-name="Package App">
     <param.appname>CRMTool</param.appname>
     <param.authnamewatermark>Viktor Witkovsky</param.authnamewatermark>
     <param.email>witkovsky@gmail.com</param.email>

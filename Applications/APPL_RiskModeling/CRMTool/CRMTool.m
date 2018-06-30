@@ -902,10 +902,10 @@ classdef CRMTool < matlab.apps.AppBase
                 'The inversion algorithms are based on using simple trapezoidal rule           ';
                 'for computing the integrals defined by the Gil-Pelaez formulae.               ';
                 '                                                                              ';
-                'CRMTool: Aggregate Loss Distribution Calculator                               ';
-                'Version: 2.0. (this version of CRMTool is part of CharFunTool)                ';
-                'Date:    30-Jun-2018 11:40:35                                                 ';
-                'Copyright (c) Viktor Witkovsky, Bratislava (witkovsky@gmail.com)              ';
+                'CRMTool:   Aggregate Loss Distribution Calculator                             ';
+                'Version:   2.0. (this version of CRMTool is part of CharFunTool)              ';
+                'Date:      30-Jun-2018 11:40:35                                               ';
+                'Copyright: (c) 2018 Viktor Witkovsky, Bratislava (witkovsky@gmail.com)        ';
                 '                                                                              ';
                 'All rights reserved.                                                          ';
                 '                                                                              ';
