@@ -135,7 +135,7 @@ classdef CRMTool < matlab.apps.AppBase
                     app.Label_3.Text = '';
                     app.cfXParameter1 = str2double(app.Parameter1EditField.Value);
                     % lambda = app.cfXParameter1
-                    app.cfX = @(t) cfX_Exponential(t,app.cfXParameter1);
+                    app.cfX = @(t) cf_Exponential(t,app.cfXParameter1);
                 case app.SeverityDropDown.Items{2}
                     if isempty(app.Parameter1EditField.Value)
                         app.Parameter1EditField.Value = '3';
@@ -160,7 +160,7 @@ classdef CRMTool < matlab.apps.AppBase
                     app.cfXParameter2 = str2double(app.Parameter2EditField.Value);
                     % DF1 = app.cfXParameter1
                     % DF2 = app.cfXParameter2
-                    app.cfX = @(t) cfX_FisherSnedecorF(t,app.cfXParameter1,app.cfXParameter2);
+                    app.cfX = @(t) cf_FisherSnedecor(t,app.cfXParameter1,app.cfXParameter2);
                 case app.SeverityDropDown.Items{3}
                     if isempty(app.Parameter1EditField.Value)
                         app.Parameter1EditField.Value = '2';
@@ -185,7 +185,7 @@ classdef CRMTool < matlab.apps.AppBase
                     app.cfXParameter2 = str2double(app.Parameter2EditField.Value);
                     % alpha = app.cfXParameter1
                     % beta = app.cfXParameter2
-                    app.cfX = @(t) cfX_Gamma(t,app.cfXParameter1,app.cfXParameter2);
+                    app.cfX = @(t) cf_Gamma(t,app.cfXParameter1,app.cfXParameter2);
                 case app.SeverityDropDown.Items{4}
                     if isempty(app.Parameter1EditField.Value)
                         app.Parameter1EditField.Value = '1';
@@ -235,7 +235,7 @@ classdef CRMTool < matlab.apps.AppBase
                     app.Label_3.Text = '';
                     app.cfXParameter1 = str2double(app.Parameter1EditField.Value);
                     % DF = app.cfXParameter1
-                    app.cfX = @(t) cfX_ChiSquared(t,app.cfXParameter1);
+                    app.cfX = @(t) cf_ChiSquare(t,app.cfXParameter1);
                 case app.SeverityDropDown.Items{6}
                     if isempty(app.Parameter1EditField.Value)
                         app.Parameter1EditField.Value = '2';
@@ -260,7 +260,7 @@ classdef CRMTool < matlab.apps.AppBase
                     app.cfXParameter2 = str2double(app.Parameter2EditField.Value);
                     % alpha = app.cfXParameter1
                     % beta = app.cfXParameter2
-                    app.cfX = @(t) cfX_InverseGamma(t,app.cfXParameter1,app.cfXParameter2);
+                    app.cfX = @(t) cf_InverseGamma(t,app.cfXParameter1,app.cfXParameter2);
                 case app.SeverityDropDown.Items{7}
                     if isempty(app.Parameter1EditField.Value)
                         app.Parameter1EditField.Value = '1';

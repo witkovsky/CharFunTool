@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.apptool" plugin-version="1.0">
-  <configuration build-checksum="1687826034" file="C:\Users\Viktor\Documents\GitHub\CharFunTool\Applications\APPL_RiskModeling\CRMTool\CRMTool.prj" location="C:\Users\Viktor\Documents\GitHub\CharFunTool\Applications\APPL_RiskModeling\CRMTool" name="CRMTool" target="target.mlapps" target-name="Package App">
+  <configuration build-checksum="1218375966" file="C:\Users\Viktor\Documents\GitHub\CharFunTool\Applications\APPL_RiskModeling\CRMTool\CRMTool.prj" location="C:\Users\Viktor\Documents\GitHub\CharFunTool\Applications\APPL_RiskModeling\CRMTool" name="CRMTool" target="target.mlapps" target-name="Package App">
     <param.appname>CRMTool</param.appname>
     <param.authnamewatermark>Viktor Witkovsky</param.authnamewatermark>
     <param.email>witkovsky@gmail.com</param.email>
@@ -39,7 +39,9 @@ CRMTool is a part of the CF TOOLBOX (The Characteristic Functions Toolbox) which
     </fileset.main>
     <fileset.depfun>
       <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\CF_InvAlgorithms\cf2DistGP.m</file>
+      <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\CF_Repository\cf_ChiSquare.m</file>
       <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\CF_Repository\cf_Exponential.m</file>
+      <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\CF_Repository\cf_FisherSnedecor.m</file>
       <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\CF_Repository\cf_Gamma.m</file>
       <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\CF_Repository\cf_InverseGamma.m</file>
       <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\CF_Repository\cfE_Empirical.m</file>
@@ -53,10 +55,7 @@ CRMTool is a part of the CF TOOLBOX (The Characteristic Functions Toolbox) which
       <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\CF_Repository\cfN_PolyaEggenberger.m</file>
       <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\CF_Repository\cfN_Quinkert.m</file>
       <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\CF_Repository\cfN_Waring.m</file>
-      <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\CF_Repository\cfX_Exponential.m</file>
-      <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\CF_Repository\cfX_Gamma.m</file>
       <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\CF_Repository\cfX_GeneralizedPareto.m</file>
-      <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\CF_Repository\cfX_InverseGamma.m</file>
       <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\CF_Repository\cfX_LogLogistic.m</file>
       <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\CF_Repository\cfX_LogNormal.m</file>
       <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\CF_Repository\cfX_Pareto.m</file>
