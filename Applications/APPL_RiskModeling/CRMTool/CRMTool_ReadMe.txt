@@ -16,7 +16,7 @@ probability density function (PDF) and the cumulative distribution
 function (CDF).   
 
 EDITING of the CRMTool:
-The functionality of CRMTool can be easily edited and changed by sing the 
+The functionality of CRMTool can be easily edited and changed by using the 
 MATLAB appdesiner. For that, rename the 'CRMTool.m' file as 'CRMTool.mlapp'
 and edit it by running the command 'appdesigner CRMTool'. 
 
