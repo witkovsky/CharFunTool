@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.apptool" plugin-version="1.0">
-  <configuration build-checksum="666324868" file="C:\Users\Viktor\Documents\GitHub\CharFunTool\Applications\APPL_RiskModeling\CRMTool\CRMTool.prj" location="C:\Users\Viktor\Documents\GitHub\CharFunTool\Applications\APPL_RiskModeling\CRMTool" name="CRMTool" target="target.mlapps" target-name="Package App">
+  <configuration build-checksum="3873749718" file="C:\Users\Viktor\Documents\GitHub\CharFunTool\Applications\APPL_RiskModeling\CRMTool\CRMTool.prj" location="C:\Users\Viktor\Documents\GitHub\CharFunTool\Applications\APPL_RiskModeling\CRMTool" name="CRMTool" target="target.mlapps" target-name="Package App">
     <param.appname>CRMTool</param.appname>
     <param.authnamewatermark>Viktor Witkovsky</param.authnamewatermark>
     <param.email>witkovsky@gmail.com</param.email>
@@ -35,7 +35,7 @@ CRMTool is a part of the CF TOOLBOX (The Characteristic Functions Toolbox) which
       <param.output />
     </unset>
     <fileset.main>
-      <file>${PROJECT_ROOT}\CRMTool.mlapp</file>
+      <file>${PROJECT_ROOT}\CRMTool.m</file>
     </fileset.main>
     <fileset.depfun>
       <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\CF_InvAlgorithms\cf2DistGP.m</file>
