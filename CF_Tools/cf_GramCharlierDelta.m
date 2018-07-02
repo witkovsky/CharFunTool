@@ -1,7 +1,7 @@
-function cf = cf_GramCharlier(t,kappa,kappaRef,cfRef,options)
-%% cf_GramCharlier evaluates the characteristic function (CF) of the 
-%  approximate probability distribution specified by its moments
-%  (cumulants) based on the generalized Gram-Charlier expansion (Type A
+function cf = cf_GramCharlierDelta(t,delta,cfRef)
+%% cf_GramCharlierDelta evaluates the characteristic function (CF) of the 
+%  approximate probability distribution specified by its cumulant
+%  differences, based on the generalized Gram-Charlier expansion (Type A 
 %  series expansion).
 %
 %  The usual form of the Gram-Charlier expansion is an expansion about a
@@ -12,64 +12,44 @@ function cf = cf_GramCharlier(t,kappa,kappaRef,cfRef,options)
 %  explicitly obtained from the given cumulants and or moments. For more
 %  details see Berberan-Santos (2007) and notes in the REMARK.
 %
-%  In particular, let kappa denote the vector of cumulants (consisting of a
-%  limited number of first few cumulants) of the specified distribution of
-%  interest, i.e. kappa = (kappa_1,...,kappa_nMax) for n = 1,...,nMax. Let
-%  cfRef(t) is the characteristic function of the reference distribution
-%  (e.g. standard normal distribution), and further, let kappaRef is a
-%  vector of its cumulants (of the same size and order as is the vector
-%  kappa), i.e. kappaRef = (kappaRef_1,...,kappaRef_nMax) for n =
-%  1,...,nMax. 
-%  Then, the characteristic function of the (approximate) distribution
-%  specified by the cumulants kappa is
-%   cf(t) = exp(sum_{n=0}^Inf (delta_n*(1i*t)^n/n!)) * cfRef(t),
+%  Characteristic function of the (approximate) distribution specified by
+%  the cumulant differences delta_n = kappa_n - kappaRef_n for n =
+%  1,...,nMax is 
+%   cf(t) = exp(sum_{n=0}^nMax (delta_n*(1i*t)^n/n!)) * cfRef(t),
 %  or alternatively
 %   cf(t) = (sum_{n=0}^Inf (alpha_n*(1i*t)^n/n!)) * cfRef(t),
-%  where the cumulant differences delta_n = (kappa_n - kappaRef_n) and the
-%  coeficients alpha_n, for n = 1,...,nMax, are uniquely derived from the
-%  cumulant differences delta_n. For specification of the coefficient, see
-%  the REMARKS section below.
+%  where delta_n = (kappa_n - kappaRef_n) and the coeficients alpha_n, for
+%  n = 1,...,nMax, are uniquely derived from the cumulant differences
+%  delta_n. For specification of the coefficient, see the REMARKS section
+%  below. 
 %
 % SYNTAX
-%  cf = cf_GramCharlier(t,kappa)
-%  cf = cf_GramCharlier(t,kappa,kappaRef,cfRef,options)
+%  cf = cf_GramCharlierDelta(t,delta)
+%  cf = cf_GramCharlierDelta(t,delta,cfRef)
 %
 % INPUTS:
 %  t        - vector or array of real values, where the CF is evaluated.
-%  kappa    - vector of cumulants or moments of the specified distribution
-%             of interest (this should be specified by the options). By
-%             default kappa is assumed to be a vector of cumulants kappa_n
-%             for n = 1,...,nMax.
-%  kappaRef - vector of cumulants or moments of the reference distribution
-%             (this should be specified by the options). By default
-%             kappaRef is assumed to be vector of cumulants kappaRef_n for
-%             n = 1,...,nMax. If empty, kappaRef = [0,1,0,...,0]', i.e. a
-%             vector of cumulants of the standard normal N(0,1)
-%             distribution. CHECK that the stated cumulants kappaRef are
-%             cumulants of the specified reference characteristic function
-%             cfRef(t) (MUST BE!).
+%  delta    - vector of cumulant differences delta_n between the specified
+%             distribution of interest and the reference distribution. 
 %  cfRef    - function handle of the reference characteristic function. If
 %             empty, default value the reference characteristic function is
-%             the standard normal distribution, cfRef(t)=
-%             @(t)cfS_Gaussian(t).
-%  options  - structure with the following default parameters:
-%             options.isMoment = false.
-%
+%             the standard normal distribution, i.e. cfRef(t) = @(t)
+%             cfS_Gaussian(t).
 % WIKIPEDIA:
 %  https://en.wikipedia.org/wiki/Edgeworth_series
 %
-% EXAMPLE1 (CF of the approaximate distribution given with kappa=[0 1 0 1])
-%  kappa = [0 1 0 1];
-%  cf    = @(t) cf_GramCharlier(t,kappa);
-%  t     = linspace(-10,10,501);
+% EXAMPLE1 (CF of the approaximate distribution given with delta=[0 0 0 1])
+%  delta  = [0 0 1 -1];
+%  cf  = @(t) cf_GramCharlierDelta(t,delta);
+%  t   = linspace(-10,10,501);
 %  plot(t, real(cf(t)),t,imag(cf(t)));
 %  xlabel('t')
 %  ylabel('CF')
 %  title('CF of the distribution specified by the cummulants')
 %
 % EXAMPLE2 (PDF/CDF/QF of the distribution specified with kappa=[0 1 0 1])
-%  kappa  = [0 1 0 1];
-%  cf     = @(t) cf_GramCharlier(t,kappa);
+%  delta  = [0 0 1 -1];
+%  cf  = @(t) cf_GramCharlierDelta(t,delta);
 %  x      = linspace(-5,5,201);
 %  prob   = [0.9 0.95 0.99];
 %  clear options
@@ -78,32 +58,38 @@ function cf = cf_GramCharlier(t,kappa,kappaRef,cfRef,options)
 %  result = cf2DistGP(cf,x,prob,options)
 %
 % EXAMPLE3 (PDF/CDF/QF of the approaximate distribution)
-%  kappa  = [0 1 1 1 1 1];
-%  cf     = @(t) cf_GramCharlier(t,kappa);
-%  x      = linspace(-5,5,201);
+%  delta  = [0 0 5 1 1 1 -1 -1];
+%  sigma  = 2;
+%  cfRef  = @(t) cfS_Gaussian(t*sigma);
+%  cf     = @(t) cf_GramCharlierDelta(t,delta,cfRef);
+%  x      = linspace(-10,10,201);
 %  prob   = [0.9 0.95 0.99];
 %  clear options
 %  options.N = 2^12;
 %  options.SixSigmaRule = 10;
 %  result = cf2DistGP(cf,x,prob,options)
 %
-% EXAMPLE4 (APPROX PDF/CDF/QF of W = sqrt(n)*(mean(X)-mu)/sigma, n = 10)
-%  n        = 10;
-%  N        = 1000;
-%  X        = randn(N,1).^2; % DATA
-%  muX      = 1;
-%  sigmaX   = sqrt(2);
-%  Z        = (X-muX)/sigmaX;
-%  momentW  = [0 1 mean(Z.^3)/n^(1/2) mean(Z.^4)/n mean(Z.^5)/n^(3/2)...
-%              mean(Z.^6)/n^2 ];
-%  momentW0 = [0 1 0 0 0 0];
-%  cfRef    = @(t) cfS_Gaussian(t);
+% EXAMPLE4 ((CF of the approaximate distribution)
+%  delta  = [0 0 5 1 1 1 -1 -1];
+%  df     = 20;
+%  cfRef  = @(t) cfX_ChiSquare(t,df);
+%  cf     = @(t) cf_GramCharlierDelta(t,delta,cfRef);
+%  t      = linspace(-1,1,501);
+%  plot(t, real(cf(t)),t,imag(cf(t)));
+%  xlabel('t')
+%  ylabel('CF')
+%  title('CF of the distribution specified by the cummulants and cfRef')
+%
+% EXAMPLE5 (PDF/CDF/QF of the approaximate distribution)
+%  delta  = [0 0 5 1 1 1 -1 -1];
+%  df     = 20;
+%  cfRef  = @(t) cfX_ChiSquare(t,df);
+%  cf     = @(t) cf_GramCharlierDelta(t,delta,cfRef);
+%  x      = linspace(0,50,201);
+%  prob   = [0.9 0.95 0.99];
 %  clear options
-%  options.isMoment = true;
-%  cf      = @(t) cf_GramCharlier(t,momentW,momentW0,cfRef,options);
-%  x       = linspace(-5,5,201);
-%  prob    = [0.9 0.95 0.99];
 %  options.N = 2^12;
+%  options.SixSigmaRule = 10;
 %  result = cf2DistGP(cf,x,prob,options)
 %
 % REMARKS:
@@ -198,73 +184,29 @@ function cf = cf_GramCharlier(t,kappa,kappaRef,cfRef,options)
 % Ver.: 03-Jul-2018 00:41:32
 
 %% ALGORITHM
-%cf = cf_GramCharlier(t,kappa,kappaRef,cfRef,options)
+%cf = cf_GramCharlierDelta(t,delta,cfRef)
 
 %% CHECK THE INPUT PARAMETERS
-narginchk(2, 5);
-if nargin < 5, options = []; end
-if nargin < 4, cfRef = []; end
-if nargin < 3, kappaRef = []; end
+narginchk(2, 3);
+if nargin < 3, cfRef = []; end
 
-kappa   = kappa(:);
-nMax = length(kappa);
-
-if ~isfield(options, 'isMoment')
-    options.isMoment = false;
-end
-
-if isempty(kappaRef)
-    kappaRef = zeros(nMax,1);
-    kappaRef(2) = 1;
-    if isempty(cfRef)
+if isempty(cfRef)
         cfRef = @(t) cfS_Gaussian(t);
-    else
-        warning('CHECK the correspondence of cumulants and the reference CF!')
-    end
 end
-
-if ~isempty(kappaRef) && isempty(cfRef)
-    kappaRef   = kappaRef(:);
-    mu    = kappaRef(1);
-    sigma = sqrt(kappaRef(2));
-    kappaRef(3:end) = 0;
-    cfRef = @(t) cfS_Gaussian(sigma*t).*exp(1i*t*mu);
-end
-
-if options.isMoment
-    moment      = kappa;
-    momentRef   = kappaRef;
-    kappa       = zeros(nMax,1);
-    kappaRef    = kappa;
-    kappa(1)    = moment(1);
-    kappaRef(1) = momentRef(1);
-    for n = 1:nMax-1
-        aux  = 0;
-        aux0 = 0;
-        for p = 0:n-1
-            c = nchoosek(n,p) ;
-            aux  = aux + c * moment(n-p) * kappa(p+1);
-            aux0 = aux + c * momentRef(n-p) * kappaRef(p+1);
-        end
-        kappa(n+1)    = moment(n+1)  - aux;
-        kappaRef(n+1) = momentRef(n+1) - aux0;
-    end
-end
-
-% Set the cummulant differences and the coefficients an
+   
+% Set the coefficients alpha_n for n = 0,1,2,...
+nMax     = length(delta);
 alpha    = zeros(nMax+1,1);
-delta    = zeros(nMax+1,1);
-delta(1) = 1;
-delta(2:end) = kappa - kappaRef;
+delta        = [1;delta(:)];
 alpha(1) = delta(1);
 alpha(2) = delta(2);
 for n = 1:(nMax-1)
-    auxa = 0;
+    aux = 0;
     for p = 0:n
         c = nchoosek(n,p) ;
-        auxa  = auxa + c * alpha((n-p)+1) * delta((p+1)+1);
+        aux  = aux + c * alpha((n-p)+1) * delta((p+1)+1);
     end
-    alpha((n+1)+1)  = auxa;
+    alpha((n+1)+1)  = aux;
 end
 
 %% Characteristic function
