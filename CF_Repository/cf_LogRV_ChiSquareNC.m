@@ -16,8 +16,13 @@ function cf = cf_LogRV_ChiSquareNC(t,df,delta,coef,niid,tol)
 %         = exp(-delta/2) sum_{j=1}^Inf (delta/2)^j/j! *
 %           * cf_LogRV_ChiSquare(df+2*j) 
 %  where cf_LogRV_ChiSquare(df+j) are the CFs of central log-transformed
-%  ChiSquare RVs with df+j degrees of freedom. Hence,the characteristic
-%  function of Y  = coef(1)*Y1 + ... + coef(N)*YN 
+%  ChiSquare RVs with df+j degrees of freedom. 
+%  Alternatively, 
+%   cf(t) = cf_LogRV_ChiSquareNC(t,df,delta) = 
+%         = 2^(1i*t) * gamma(df/2 + 1i*t) / gamma(df/2) .* ...
+%           * 1F1(-1i*t;df/2;-delta/2),
+%  where 1F1(a;b;z) is hypergeometric function. 
+%  Hence,the characteristic function of Y  = coef(1)*Y1 + ... + coef(N)*YN
 %  is  cf_Y(t) =  cf_Y1(coef(1)*t) * ... * cf_YN(coef(N)*t), where cf_Yi(t)
 %  is evaluated with the parameters df_i and delta_i.
 %
