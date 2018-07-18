@@ -62,9 +62,14 @@ else
 end
 
 p = length(x);
+n = length(a);
 f = 1;
 for i = 1:p
-    f = f .* Hypergeom1F1(a,b,x(i));
+    fun = ones(n,1);
+    for j = 1:n
+        fun(j) = Hypergeom1F1(a(j),b(j),x(i));
+    end
+    f = f .* fun;
 end
 
 f    = reshape(f, sz);
