@@ -72,7 +72,7 @@ function cf = cf_LogRV_WilksLambdaNC(t,p,n,q,delta,coef,MAX)
 %   t  = linspace(-10,10,201);
 %   cf = cf_LogRV_WilksLambdaNC(t,p,n,q,delta);
 %   figure; plot(t,real(cf),t,imag(cf)); grid on;
-%   title('CF of log of noncentral Wilks Lambda RV')
+%   title('CF of log of non-central Wilks Lambda RV')
 %
 % EXAMPLE 2:
 % % CF of a weighted linear combination of minus log Wilks Lambda RVs 
@@ -91,10 +91,10 @@ function cf = cf_LogRV_WilksLambdaNC(t,p,n,q,delta,coef,MAX)
 %   p      = 10;
 %   n      = 30;
 %   q      = 5;
-%   X      = [1 2 3 10 30];
+%   delta  = [1 2 3 10 30];
 %   coef   = -1;
 %   cf0    = @(t) cf_LogRV_WilksLambdaNC(t,p,n,q,[],coef);
-%   cf     = @(t) cf_LogRV_WilksLambdaNC(t,p,n,q,X,coef);
+%   cf     = @(t) cf_LogRV_WilksLambdaNC(t,p,n,q,delta,coef);
 %   prob   = [0.9 0.95 0.99];
 %   clear options
 %   options.xMin = 0;
@@ -113,6 +113,31 @@ function cf = cf_LogRV_WilksLambdaNC(t,p,n,q,delta,coef,MAX)
 %   ylabel('PDF')
 %   title('PDFs of -log(\Lambda) under null and alternative hypothesis')
 %
+% EXAMPLE 4: (Compare exact vs. simulated non-central Wilk's distribution)
+%   p = 10;             % p - length of the sample vectors (dimensionality)
+%   n = 30;             % n - sample size / degrees of freedon
+%   q = 5;              % q - degrees of freedom due to hypothesis model
+%   N = 10000;          % N - number of simulation samples
+%   M = rand(p,q);      % M - the (true) mean (p x q)-matrix
+%   delta = eig(M*M');  % delta - the eigenvalues of non-centrality matrix
+%   L = zeros(N,1);
+%   for i = 1:N
+%     X = randn(p,n);
+%     E = X*X';
+%     Y = randn(p,q) + M;
+%     H = Y*Y';
+%     L(i) = -log(det((E+H)\E));
+%   end
+%   % Exact and the empirical CDF of -log(L)
+%   cf = @(t) cf_LogRV_WilksLambdaNC(t,p,n,q,delta,-1);
+%   clear options
+%   options.xMin = 0;
+%   options.SixSigmaRule = 6;
+%   prob = [0.9 0.95 0.99];
+%   result = cf2DistGP(cf,[],prob,options);
+%   hold on; ecdf(L); hold off
+%   title('Exact vs. empirical CDF of the non-central distribution')
+%
 % REMARK:
 %  Computing CF of the LOG-TRANSFORMED NON-CENTARL WILK's LAMBDA random
 %  variable depends on computing the generalized hypergeometric function of
@@ -130,6 +155,8 @@ function cf = cf_LogRV_WilksLambdaNC(t,p,n,q,delta,coef,MAX)
 %   1F1(a;b;X) ~ 1F1(a;b;x(1)) * ... * 1F1(a;b;x(p)),
 %  where 1F1(a;b;x(1)) is the scalar value confluent hypergeometric
 %  function 1F1(a,b,x(i)) with [x(1),...,x(p)] = eig(X). 
+%
+% SEE ALSO: cf_LogRV_WilksLambda, Hypergeom1F1Mat, Hypergeom1F1MatApprox
 %
 %  By default (or if MAX is set to value MAX = 0), cf_LogRV_WilksLambdaNC
 %  uses this alternative method for computing 1F1(a;b;X).
