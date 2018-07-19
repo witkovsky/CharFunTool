@@ -1,28 +1,39 @@
 function f = Hypergeom1F1MatApprox(a,b,X)
-%Hypergeom1F1MatApprox Computes the Laplace approximation of the confluent
-%  hypergeometric function 1F1(a,b,X) of a (p x p)-matrix argument, defined
+%Hypergeom1F1MatApprox Computes the approximation of the confluent
+%  hypergeometric function 1F1(a,b,X) of a matrix argument, defined
 %  for the complex parameters a and b, with Re(a) > (p-1)/2 and  Re(b-a) >
-%  (p-1)/2, and a REAL symmetric matrix argument X. 
+%  (p-1)/2, and a REAL symmetric (p x p)-matrix argument X.
 %
 %  In fact, 1F1(a,b,X) depends only on the eigenvalues of X, so X could be
 %  specified as a (p x p)-diagonal matrix or a p-dimensional vector of
-%  eigenvalues of the original matrix X. 
+%  eigenvalues of the original matrix X, say x.
+%
+%  Based on heuristic arguments (not formally proved yet), the value of the
+%  confluent hypergeometric function 1F1(a,b,X) of a matrix argument is
+%  calculated as  
+%   1F1(a;b;X) ~ 1F1(a;b;x(1)) * ... * 1F1(a;b;x(p)),
+%  where 1F1(a;b;x(1)) is the scalar value confluent hypergeometric
+%  function 1F1(a,b,x(i)) with [x(1),...,x(p)] = eig(X). 
+%
+%  Here the confluent hypergeometric function 1F1(a;b;z) is evaluated for
+%  the vector parameters a and b and the scalar argument z by using the
+%  simple (4-step) series expansion. 
 %
 % SYNTAX:
 %  f = Hypergeom1F1MatApprox(a,b,X)
 %
 % INPUTS:
 %  a      - complex vector of parameters of the hypergeometric function
-%           1F1^alpha(a;b;X),  
+%           1F1(a;b;X),
 %  b      - complex vector of parameters  of the hypergeometric function
-%           1F1^alpha(a;b;X), 
+%           1F1(a;b;X),
 %  X      - real symmetric (p x p)-matrix argument (alternatively can be
 %           specified as a (p x p)-diagonal matrix or a p-vector of the
-%           eigenvalues of X).
+%           eigenvalues of X), i.e. x = eig(X).
 %
 % OUTPUT:
-%  f     - Laplace approximation of the confluent hypergeometric function
-%          1F1(a;b;X), calibrated such that 1F1(a;b;0) = 1.  
+%  f     - (Approximate) value of the confluent hypergeometric function
+%           1F1(a;b;X), of a matrix argument X. 
 %
 % EXAMPLE 1:
 %  a = 3;
@@ -30,33 +41,22 @@ function f = Hypergeom1F1MatApprox(a,b,X)
 %  X = [1,2];
 %  f = Hypergeom1F1MatApprox(a,b,X)
 %
-% REFERENCES:
-% [1] Butler RW, Wood AT. Laplace approximations for hypergeometric
-%     functions with matrix argument. The Annals of Statistics.
-%     2002;30(4):1155-77.
-% [2] Butler RW, Wood AT. Approximation of power in multivariate analysis.
-%     Statistics and Computing. 2005 Oct 1;15(4):281-7. 
-%
-% NOTICE OF CAUTION:
-%  This is an experimental version of the algorithm for computing the
-%  hypergeometric function in matrix argument, which could lead to 
-%  false results! If possible, we suggest to use the exact methods for
-%  evaluation of the hypergeometric function (as e.g. the truncated series
-%  expansion in HypergeompFqMat). This approximate algorithm is useful in
-%  situations when HypergeompFqMat did not converge or is too slow.
-%  The possible problems include:
-%  (1) Computed value is uses pricipal branch of complex functions, such as
-%      log or sqrt. This could lead to wrong values of the calculated
-%      characteristic function in specific regions (typically the presented
-%      results differ from the correct values by its sign).
-%  (2) The approximate hypergeometric is calibrated such that its value at
-%      0 is equal to one. However, such calibration typically  brings
-%      biased values for large arguments. Consequently, the calculated
-%      characteristic functions are typically shrinked, thus leading to
-%      biased distributions.
+% EXAMPLE 2:
+% % PDF/CDF of minus log Wilks Lambda RV (p=10, n=30, q=5) from its CF
+% % Here, cf_LogRV_WilksLambdaNC id based on using Hypergeom1F1MatApprox
+%   p      = 10;
+%   n      = 30;
+%   q      = 5;
+%   Delta  = [1 2 3 10 30]; % nonzero eigenvalues of non-centrality matrix
+%   coef   = -1;
+%   cf     = @(t) cf_LogRV_WilksLambdaNC(t,p,n,q,Delta,coef);
+%   prob   = [0.9 0.95 0.99];
+%   clear options
+%   options.xMin = 0;
+%   result  = cf2DistGP(cf,[],prob,options)
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 24-Oct-2017 22:15:55
+% Ver.: 19-Jul-2018 16:11:57
 
 %% FUNCTION CALL
 %  f = Hypergeom1F1MatApprox(a,b,X)
@@ -83,25 +83,107 @@ else
 end
 
 p = length(x);
-f = p*(b-(p+1)/4) .* log(b);
-y = zeros(length(a),p);
+f = 1;
 for i = 1:p
-    D = (x(i)-b).^2 + 4*a.*x(i);
-    sqrtD = sqrt(D);
-    y = 2*a ./ (b - x(i) + sqrtD);
-    f = f +  a.*log(y./a) + (b-a).*log((1-y)./(b-a)) + x(i)*y;
-    y(:,i) = y;
+     f = f .* Hypergeom1F1SeriesExp(a,b,x(i));
 end
 
-R = 1;
-for i = 1:p
-    for j = i:p
-        R = R .* ( y(:,i).*y(:,j)./a + (1-y(:,i)).*(1-y(:,j))./(b-a) );
+f    = reshape(f, sz);
+end
+%% Function Hypergeom1F1SeriesExp
+function [f,isConv,loops,n,tol] = Hypergeom1F1SeriesExp(a, b, x, n, tol)
+%Hypergeom1F1SeriesExp Computes the confluent hypergeometric function
+%  1F1(a;b;z) also known as the Kummer's function M(a,b,z), for the
+%  vector parameters a and b and the scalar argument z by using the simple
+%  (4-step) series expansion.
+%
+%  For more details on confluent hypergeometric function 1F1(a;b;z) or the
+%  Kummer's (confluent hypergeometric) function M(a, b, z) see WIKIPEDIA:
+%  https://en.wikipedia.org/wiki/Confluent_hypergeometric_function.
+%
+% SYNTAX
+%   f = Hypergeom1F1SeriesExp(a, b, x, n)
+%   [f,isConv,loops,n,tol] = Hypergeom1F1SeriesExp(a, b, x, n, tol)
+%
+% INPUTS
+%  a      - vector parameter a,
+%  b      - vector parameter b,
+%  x      - scalar argument x,
+%  n      - maximum number of terms used in the series expansion. If empty,
+%           default value of n = 500,
+%  tol    - tolerance for stopping rule. If empty, default value f tol =
+%           1e-14.
+%
+% OUTPUTS
+%  f      - calculated 1F1(a,b,x) of the same dimension as a snd b,
+%  isConv - flag indicator for convergence of the series, isConv = true if
+%           loops < n
+%  loops  - total number of terms used in the series expansion,
+%  n      - used maximum number of terms in the series expansion,
+%  tol    - used tolerance for stopping rule.
+%
+% EXAMPLE 1
+%  t = linspace(-20,20,101);
+%  a = 1i*t;
+%  b = 2 - 3i*t;
+%  x = 3.14;
+%  f = Hypergeom1F1SeriesExp(a, b, x)
+
+% Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 19-Jul-2018 15:15:51
+
+%% FUNCTION
+%  [f,isConv,loops,n,tol] = Hypergeom1F1SeriesExp(a, b, x, n, tol)
+
+%% CHECK THE INPUT PARAMETERS
+
+narginchk(3, 5);
+
+if nargin < 4, n   = []; end
+if nargin < 5, tol = []; end
+
+if isempty(n)
+    n = 500;
+end
+
+if isempty(tol)
+    tol = 1e-14;
+end
+
+sza = size(a);
+szb = size(b);
+
+if prod(sza) >= prod(szb)
+    sz = sza;
+else
+    sz = szb;
+end
+
+[errorcode,a,b] = distchck(2,a(:),b(:));
+if errorcode > 0
+    error(message('InputSizeMismatch'));
+end
+
+f  = 1;
+r1 = 1;
+for j  = 1 : 4 : n
+    r1 = r1 .* (a + j - 1) ./ ( j * ( b + j - 1)) * x;
+    r2 = r1 .* (a + j) ./ ( (j + 1) * ( b + j)) * x;
+    r3 = r2 .* (a + j + 1) ./ ( (j + 2) * ( b + j + 1)) * x;
+    r4 = r3 .* (a + j + 2) ./ ( (j + 3) * ( b + j + 2)) * x;
+    rg = r1 + r2 + r3 + r4;
+    f  = f + rg;
+    if( max(abs( rg ./ f )) < tol )
+        break;
     end
+    r1 = r4;
 end
 
-logR = log(R);
-logF = f - logR/2;
-f    = reshape( exp(logF), sz);
+loops = j;
+isConv = false;
+if loops < n
+    isConv = true;
+end
 
+f = reshape(f,sz);
 end
