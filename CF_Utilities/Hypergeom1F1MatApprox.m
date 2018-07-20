@@ -47,7 +47,7 @@ function f = Hypergeom1F1MatApprox(a,b,X)
 %   p      = 10;
 %   n      = 30;
 %   q      = 5;
-%   Delta  = [1 2 3 10 30]; % nonzero eigenvalues of non-centrality matrix
+%   Delta  = [1 2 3 10 50]; % nonzero eigenvalues of non-centrality matrix
 %   coef   = -1;
 %   cf     = @(t) cf_LogRV_WilksLambdaNC(t,p,n,q,Delta,coef);
 %   prob   = [0.9 0.95 0.99];
@@ -62,6 +62,7 @@ function f = Hypergeom1F1MatApprox(a,b,X)
 %  f = Hypergeom1F1MatApprox(a,b,X)
 
 %% CHECK THE INPUT PARAMETERS
+
 sza = size(a);
 szb = size(b);
 sz = [max([sza(1),szb(1)]),max([sza(2),szb(2)])];
@@ -85,10 +86,10 @@ end
 p = length(x);
 f = 1;
 for i = 1:p
-     f = f .* Hypergeom1F1SeriesExp(a,b,x(i));
+    f = f .* Hypergeom1F1SeriesExp(a,b,x(i));
 end
 
-f    = reshape(f, sz);
+f = reshape(f, sz);
 end
 %% Function Hypergeom1F1SeriesExp
 function [f,isConv,loops,n,tol] = Hypergeom1F1SeriesExp(a, b, x, n, tol)
