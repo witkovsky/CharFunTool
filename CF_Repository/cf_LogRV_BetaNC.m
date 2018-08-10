@@ -7,9 +7,9 @@ function cf = cf_LogRV_BetaNC(t,alpha,beta,delta,coef,niid,tol,type)
 %
 %  The noncentral beta distribution has two types. The Type I is the
 %  distribution  of the random variable B1 = X1/(X1+X2), X1 ~
-%  Gamma(alpha,gamma,delta) and X2 ~ Gamma(beta,gamma). The Type II noncentral
-%  beta distribution is the distribution of the ratio random variable B2 =
-%  X1/(X1+X2), where X1 ~ Gamma(alpha,gamma) and  X2 ~
+%  Gamma(alpha,gamma,delta) and X2 ~ Gamma(beta,gamma). The Type II
+%  noncentral beta distribution is the distribution of the ratio random
+%  variable B2 = X1/(X1+X2), where X1 ~ Gamma(alpha,gamma) and  X2 ~
 %  Gamma(beta,gamma,delta). 
 %
 %  That is, cf_LogRV_BetaNC evaluates the characteristic function cf(t) of
@@ -46,7 +46,9 @@ function cf = cf_LogRV_BetaNC(t,alpha,beta,delta,coef,niid,tol,type)
 %   cf(t) = cf_LogRV_BetaNC(t,alpha,beta,delta) =
 %         =   Gamma(alpha+1i*t)/Gamma(alpha) * ...
 %           * Gamma(alpha+beta)/Gamma(alpha+beta+1i*t) * ...
-%           * 1F1(1i*t;1i*t+(alpha+beta);-delta/2),
+%           * 1F1(1i*t;1i*t+(alpha+beta);-delta/2)
+%         = cf_LogRV_Beta(t,alpha,beta) * ...
+%           * 1F1(1i*t;1i*t+(alpha+beta);-delta/2)
 %  where 1F1(a;b;z) is hypergeometric function.
 %
 %  Hence,the characteristic function of Y  = coef(1)*Y1 + ... + coef(N)*YN
@@ -72,8 +74,10 @@ function cf = cf_LogRV_BetaNC(t,alpha,beta,delta,coef,niid,tol,type)
 %          sum of niid iid random variables Y, where each Y = sum_{i=1}^N
 %          coef(i) * log(X_i) is independently and identically distributed
 %          random variable. If empty, default value is niid = 1.
-% tol    - tolerance factor for selecting the Poisson weights, i.e. such
+%  tol   - tolerance factor for selecting the Poisson weights, i.e. such
 %          that PoissProb > tol. If empty, default value is tol = 1e-12.
+%  type  - indicator of the type of the noncentral distribution (Type I = 1
+%          or Type II = 2). If empty, default value is type = 1.
 %
 % WIKIPEDIA:
 %   https://en.wikipedia.org/wiki/Noncentral_beta_distribution
