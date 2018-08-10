@@ -20,7 +20,7 @@ function cf = cf_LogRV_ChiSquareNC(t,df,delta,coef,niid,tol)
 %  Alternatively, 
 %   cf(t) = cf_LogRV_ChiSquareNC(t,df,delta) = 
 %         = 2^(1i*t) * gamma(df/2 + 1i*t) / gamma(df/2) .* ...
-%           * 1F1(-1i*t;df/2;-delta/2),
+%           * 1F1(df/2-1i*t;df/2;-delta/2),
 %  where 1F1(a;b;z) is hypergeometric function. 
 %  Hence,the characteristic function of Y  = coef(1)*Y1 + ... + coef(N)*YN
 %  is  cf_Y(t) =  cf_Y1(coef(1)*t) * ... * cf_YN(coef(N)*t), where cf_Yi(t)

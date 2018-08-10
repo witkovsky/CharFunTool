@@ -17,11 +17,7 @@ function cf = cf_LogRV_FisherSnedecor(t,df1,df2,coef,niid)
 %  the r-th moment of X, E(X^r) by using (1i*t) instead of r. In
 %  particular, the characteristic function of Y = log(X) is defined by  
 %   cf_Y(t) = (df2/df1)^(1i*t) .* gamma(df1/2 + 1i*t) / gamma(df1/2) .* ...
-%             gamma(df2/2 - 1i*t) / gamma(df2/2) .* ...
-%             1F1(-1i*t;df1/2;-lambda/2),
-%  where 1F1(a;b;z) is the hypergeometric function confluent hypergeometric
-%  function, also known as the Kummer function M(a,b,z).
-%
+%             gamma(df2/2 - 1i*t) / gamma(df2/2).
 %  Hence,the characteristic function of Y  = coef(1)*Y1 + ... + coef(N)*YN
 %  is  cf_Y(t) =  cf_Y1(coef(1)*t) * ... * cf_YN(coef(N)*t), where cf_Yi(t)
 %  is evaluated with the parameters df1(i), df2(i), and lambda(i).
@@ -71,8 +67,8 @@ function cf = cf_LogRV_FisherSnedecor(t,df1,df2,coef,niid)
 %   result = cf2DistGP(cf,[],prob,options);
 %   disp(result)
 
-% (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 02-Jun-2017 12:08:24
+% (c) Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 10-Aug-2018 15:46:49
 
 %% ALGORITHM
 % cf = cf_LogRV_FisherSnedecor(t,df1,df2,coef,niid)
