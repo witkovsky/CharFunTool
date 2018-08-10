@@ -46,7 +46,9 @@ function cf = cf_LogRV_BetaNC(t,alpha,beta,delta,coef,niid,tol,type)
 %   cf(t) = cf_LogRV_BetaNC(t,alpha,beta,delta) =
 %         =   Gamma(alpha+1i*t)/Gamma(alpha) * ...
 %           * Gamma(alpha+beta)/Gamma(alpha+beta+1i*t) * ...
-%           * 1F1(1i*t;1i*t+(alpha+beta);-delta/2),
+%           * 1F1(1i*t;1i*t+(alpha+beta);-delta/2)
+%         = cf_LogRV_Beta(t,alpha,beta) * ...
+%           * 1F1(1i*t;1i*t+(alpha+beta);-delta/2)
 %  where 1F1(a;b;z) is hypergeometric function.
 %
 %  Hence,the characteristic function of Y  = coef(1)*Y1 + ... + coef(N)*YN

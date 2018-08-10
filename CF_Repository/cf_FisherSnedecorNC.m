@@ -10,7 +10,13 @@ function cf = cf_FisherSnedecorNC(t,df1,df2,delta,coef,niid,tol)
 %  degrees  of freedom, and the noncentrality parameters delta_i >0, for i
 %  = 1,...,N.  
 %
-%  The characteristic function of X ~ F(df1,df2,delta) is Poisson
+%  Random variable X has non-central F distribution with df1 and df2
+%  degrees of freedom and the non-centrality parameter delta if X =
+%  (X1/df1)/(X2/df2) where X1 ~ ChiSquare(df1,delta), i.e. with non-central
+%  chi-square distribution, and X2 ~ ChiSquare(df2) is independent random
+%  variable with central chi-square distriobution.
+%
+%  The characteristic function of X ~ F(df1,df2,delta) is Poisson  
 %  mixture of the CFs of the scaled central F RVs of the form
 %   cf(t) = cf_FisherSnedecorNC(t,df1,df2,delta) = 
 %         = exp(-delta/2) sum_{j=1}^Inf (delta/2)^j/j! *
@@ -76,7 +82,7 @@ function cf = cf_FisherSnedecorNC(t,df1,df2,delta,coef,niid,tol)
 %   result = cf2DistGP(cf,[],[],options)
 
 % (c) 2018 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 07-Feb-2018 13:53:40
+% Ver.: 10-Aug-2018 16:04:30
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 7);

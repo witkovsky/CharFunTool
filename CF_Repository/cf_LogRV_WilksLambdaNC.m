@@ -21,8 +21,8 @@ function cf = cf_LogRV_WilksLambdaNC(t,p,n,q,delta,coef,MAX)
 %  The non-central distribution of MINUS LOG-TRANSFORMED WILK's LAMBDA
 %  STATISTIC, say L ~ Lambda(p,n,q,delta), with L in (0,1), is specified by
 %  its characteristic function   
-%  cf_{-log(L)}(t) = cf_LogRV_Beta(-t,n/2,q/2,-delta/2)
-%          * ... * cf_LogRV_Beta(-t,(n+1-p)/2,q/2,-delta/2)
+%  cf_{-log(L)}(t) = cf_LogRV_Beta(-t,n/2,q/2)
+%          * ... * cf_LogRV_Beta(-t,(n+1-p)/2,q/2)
 %          * Hypergeom1F1Mat(-i*t,-i*t+(n+q)/2,-delta/2),
 %  i.e. the characteristic function of the non-central distribution differs
 %  from the central distribution by a factor specified by the confluent
@@ -65,13 +65,18 @@ function cf = cf_LogRV_WilksLambdaNC(t,p,n,q,delta,coef,MAX)
 %
 % EXAMPLE 1:
 % % CF of log of noncentral Wilks Lambda RV distribution Lambda(p,n,q,delta)
-%   p  = 5;
-%   n  = 10; % d.f. of within SS&P
-%   q  = 3;  % d.f. of between SS&P
+%   p    = 5;
+%   n    = 10; % d.f. of within SS&P
+%   q    = 3;  % d.f. of between SS&P
 %   delta = sort(rand(1,p));
-%   t  = linspace(-10,10,201);
-%   cf = cf_LogRV_WilksLambdaNC(t,p,n,q,delta);
-%   figure; plot(t,real(cf),t,imag(cf)); grid on;
+%   coef = 1;
+%   t    = linspace(-10,10,201);
+%   MAX  = 0;
+%   cf1  = cf_LogRV_WilksLambdaNC(t,p,n,q,delta,coef,MAX);
+%   figure; plot(t,real(cf1),t,imag(cf1)); grid on; hold on;
+%   MAX  = 20;
+%   cf2  = cf_LogRV_WilksLambdaNC(t,p,n,q,delta,coef,MAX);
+%   plot(t,real(cf2),t,imag(cf2)); hold off;
 %   title('CF of log of non-central Wilks Lambda RV')
 %
 % EXAMPLE 2:
@@ -145,18 +150,20 @@ function cf = cf_LogRV_WilksLambdaNC(t,p,n,q,delta,coef,MAX)
 %  cf_LogRV_WilksLambdaNC uses modified implementation for computing the
 %  truncated hypergeometric function, see the algorithm HypergeompFqMat.m,
 %  as originaly suggested in Koev and Edelman (2006). The truncation of the
-%  hypergeometric series is controled by the parameter MAX. Here, the
-%  default value is MAX = 20. If necessary, the parameter MAX should be set
-%  to larger value.
-%
-%  As and alternative, based on heuristic arguments (not formally proved),
-%  the value of the confluent hypergeometric function 1F1(a,b,X) of a
-%  matrix argument is calculated (approximately) as  
-%   1F1(a;b;X) ~ 1F1(a;b;x(1)) * ... * 1F1(a;b;x(p)),
+%  hypergeometric series is controled by the parameter MAX (start with MAX
+%  = 20). If necessary, the parameter MAX should be set to sufficiently
+%  large value but this can be numerically intractable. 
+%  If MAX = 0 (now it is the default value), the algorithm uses the fast
+%  (approximate) method for computing the confluent hypergeometric function
+%  1F1(a;b;X), see Hypergeom1F1MatApprox, otherwise the algorithm uses the
+%  algorithm Hypergeom1F1Mat based on computing the truncated expansion
+%  series of 1F1(a;b;X) with MAX number of partitions.
+%  The approximate alternative method (if MAX = 0) is based on heuristic
+%  arguments (not formally proven), and the value of the confluent
+%  hypergeometric function 1F1(a,b,X) of a matrix argument is calculated
+%  (approximately) as 1F1(a;b;X) ~ 1F1(a;b;x(1)) * ... * 1F1(a;b;x(p)),
 %  where 1F1(a;b;x(1)) is the scalar value confluent hypergeometric
 %  function 1F1(a,b,x(i)) with [x(1),...,x(p)] = eig(X). 
-%
-% SEE ALSO: cf_LogRV_WilksLambda, Hypergeom1F1Mat, Hypergeom1F1MatApprox
 %
 %  By default (or if MAX is set to value MAX = 0), cf_LogRV_WilksLambdaNC
 %  uses this alternative method for computing 1F1(a;b;X).
@@ -168,9 +175,11 @@ function cf = cf_LogRV_WilksLambdaNC(t,p,n,q,delta,coef,MAX)
 % [2] Witkovský, V., 2018. Exact distribution of selected multivariate test
 %     criteria by numerical inversion of their characteristic functions. 
 %     arXiv preprint arXiv:1801.02248.
+%
+% SEE ALSO: cf_LogRV_WilksLambda, Hypergeom1F1Mat, Hypergeom1F1MatApprox
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 19-Jul-2018 17:23:23
+% Ver.: 10-Aug-2018 15:46:49
 
 %% ALGORITHM
 % function cf = cf_LogRV_WilksLambdaNC(t,p,n,q,delta,coef,MAX)

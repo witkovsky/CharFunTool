@@ -12,14 +12,21 @@ function cf = cf_LogRV_FisherSnedecorNC(t,df1,df2,delta,coef,niid,tol)
 %
 %  The characteristic function of Y = log(X) with X ~ F(df1,df2,delta) is
 %  Poisson mixture of the CFs of the shifted log-transformed central F RVs
-%  of the form 
+%  of the form  
 %   cf(t) = cf_LogRV_FisherSnedecorNC(t,df1,df2,delta) = 
 %         = exp(-delta/2) sum_{j=1}^Inf (delta/2)^j/j! .*
 %           exp(1i*t*(df1+2*j)/df1) .* 
 %           cf_LogRV_FisherSnedecor(t,df1+2*j,df2) 
-%  where cf_LogRV_FisherSnedecor(t,df1,df2) are the CFs of central
-%  log-transformed F RVs with parameters df1 and df2. Hence,the
-%  characteristic function of Y  = coef(1)*Y1 + ... + coef(N)*YN 
+%  where cf_LogRV_FisherSnedecor(t,df1,df2) denotes CF of log-transformed
+%  centrally distributed F RVs with parameters df1 and df2. For more
+%  details on  the non-central F distribution see cf_FisherSnedecorNC. 
+%  Alternatively, 
+%   cf(t) = (df2/df1)^(1i*t) .* gamma(df1/2 + 1i*t) / gamma(df1/2) .* ...
+%           gamma(df2/2 - 1i*t) / gamma(df2/2) .* ...
+%           1F1(-1i*t;df1/2;-delta/2),
+%  where 1F1(a;b;z) is the confluent hypergeometric function, also known as
+%  the Kummer function M(a,b,z). 
+%  Hence,the characteristic function of Y  = coef(1)*Y1 + ... + coef(N)*YN 
 %  is  cf_Y(t) =  cf_Y1(coef(1)*t) * ... * cf_YN(coef(N)*t), where cf_Yi(t)
 %  is evaluated with the parameters df1_i, df2_i, and delta_i.
 %
@@ -78,9 +85,11 @@ function cf = cf_LogRV_FisherSnedecorNC(t,df1,df2,delta,coef,niid,tol)
 %   clear options;
 %   options.N  = 2^12;
 %   result = cf2DistGP(cf,[],[],options)
+%
+% SEE ALSO: cf_FisherSnedecorNC
 
-% (c) 2018 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 07-Feb-2018 13:53:40
+% (c) Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 10-Aug-2018 15:46:49
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 7);
