@@ -35,26 +35,56 @@ function cf = cf_Gumbel(t,mu,beta,coef,niid)
 %      Gumbel distribution (with mu = 0 and beta = 1). 
 %
 % WIKIPEDIA: 
-%   https://en.wikipedia.org/wiki/Gumbel_distribution.
+%  https://en.wikipedia.org/wiki/Gumbel_distribution.
+%  For more details see also Marques, Coelho, De Carvalho (2015).
 %
 % EXAMPLE 1:
-% % CF of the Gumbel RV
-%   mu   = 1;
-%   beta = 2;
-%   t    = linspace(-10,10,201);
+% % CF of the the linear combination of Gumbel RVs
+%   mu   = [2 3];
+%   beta = [5 6];
+%   coef = [1 1];
+%   t    = linspace(-1,1,201);
 %   cf   = cf_Gumbel(t,mu,beta);
 %   figure; plot(t,real(cf),t,imag(cf));grid on
 %   title('Characteristic function of the Gumbel RVs')
 %
-% EXAMPLE 2:
-% % PDF/CDF of the linear combination of Gumbel RV from its CF by cf2DistGP
-%   mu   = [0 2 -1];
-%   beta = [1 2 1];
-%   coef = [1 2 3];
+% EXAMPLE 2 (Scenario I in Marques etal (2015)):
+% % PDF/CDF of the linear combination of Gumbel RVs 
+%   mu   = [2 3];
+%   beta = [5 6];
+%   coef = [1 1];
+%   prob = [0.80, 0.85, 0.90, 0.925, 0.95, 0.975, 0.99, 0.995, 0.999];
 %   cf   = @(t) cf_Gumbel(t,mu,beta,coef);
 %   clear options
-%   options.N = 2^10;
-%   result = cf2DistGP(cf,[],[],options);
+%   options.N = 2^12;
+%   result = cf2DistGP(cf,[],prob,options);
+%
+% EXAMPLE 3 (Scenario II in Marques etal (2015)):
+% % PDF/CDF of the linear combination of Gumbel RVs 
+%   mu   = [-4 -1 2 3];
+%   beta = [0.1 0.2 0.3 0.4];
+%   coef = [1 2 3 4];
+%   prob = [0.80, 0.85, 0.90, 0.925, 0.95, 0.975, 0.99, 0.995, 0.999];
+%   cf   = @(t) cf_Gumbel(t,mu,beta,coef);
+%   clear options
+%   options.N = 2^12;
+%   result = cf2DistGP(cf,[],prob,options);
+%
+% EXAMPLE 4 (Scenario III in Marques etal (2015)):
+% % PDF/CDF of the linear combination of Gumbel RVs 
+%   mu   = [-10 10 20 30 40];
+%   beta = [1 2 3 4 5];
+%   coef = [1/2 1 3/4 5 1];
+%   prob = [0.80, 0.85, 0.90, 0.925, 0.95, 0.975, 0.99, 0.995, 0.999];
+%   cf   = @(t) cf_Gumbel(t,mu,beta,coef);
+%   clear options
+%   options.N = 2^12;
+%   result = cf2DistGP(cf,[],prob,options);
+%
+% REFERENCES:
+%  [1] Marques, F.J., Coelho, C.A., De Carvalho, M. (2015). On the
+%      distribution of linear combinations of independent Gumbel random
+%      variables. Statistics and Computing, 25(3), pp.683-701.   
 
 % (c) 2018 Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 13-Aug-2018 16:57:55
