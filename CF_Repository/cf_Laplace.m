@@ -34,7 +34,7 @@ function cf = cf_Laplace(t,mu,beta,coef,niid)
 %  https://en.wikipedia.org/wiki/Laplace_distribution.
 %
 % EXAMPLE 1:
-% % CF of the the linear combination of Laplace RVs
+% % CF of the Laplace RV
 %   mu   = 0;
 %   beta = 1;
 %   t    = linspace(-10,10,201);
@@ -43,7 +43,7 @@ function cf = cf_Laplace(t,mu,beta,coef,niid)
 %   title('Characteristic function of the Laplace RVs')
 %
 % EXAMPLE 2:
-% % PDF/CDF of the linear combination of Laplace RVs 
+% % PDF/CDF of the Laplace RV
 %   mu   = 0;
 %   beta = 1;
 %   x    = linspace(-5,5,101);
