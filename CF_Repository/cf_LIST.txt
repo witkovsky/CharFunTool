@@ -46,6 +46,7 @@ CFs of symmetric probability distributions:
 cfS_Arcsine
 cfS_Beta
 cfS_Gaussian
+cfS_Laplace
 cfS_Rectangular
 cfS_Student
 cfS_Trapezoidal
