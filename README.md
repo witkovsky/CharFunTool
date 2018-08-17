@@ -7,7 +7,7 @@ For current status of the MATLAB toolbox see the CharFunTool development availab
 
 For the R version (not an identical clone) of the toolbox see the CharFun package development available at
 
-- https://github.com/Simkova/CharFun
+- https://github.com/gajdosandrej/CharFunToolR
 
 About
 =====

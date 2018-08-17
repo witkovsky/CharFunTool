@@ -2,12 +2,16 @@ CFs of general probability distributions:
 
 cf_ArcsineSymmetric
 cf_Beta
+cf_BetaNC
 cf_BetaSymmetric
 cf_ChiSquare
 cf_Exponential
 cf_FisherSnedecor
+cf_FisherSnedecorNC
 cf_Gamma
+cf_Gumbel
 cf_InverseGamma
+cf_Laplace
 cf_Normal
 cf_RectangularSymmetric
 cf_Stable
@@ -21,13 +25,16 @@ CFs of circular probability distributions:
 
 cf_vonMises
 
-
 CFs of log-transformed random variables:
 
 cf_LogRV_Beta
+cf_LogRV_BetaNC
 cf_LogRV_ChiSquare
+cf_LogRV_ChiSquareNC
 cf_LogRV_FisherSnedecor
+cf_LogRV_FisherSnedecorNC
 cf_LogRV_Gamma
+cf_LogRV_GammaNC
 cf_LogRV_InverseGamma
 cf_LogRV_MeansRatio
 cf_LogRV_MeansRatioW
@@ -39,6 +46,7 @@ CFs of symmetric probability distributions:
 cfS_Arcsine
 cfS_Beta
 cfS_Gaussian
+cfS_Laplace
 cfS_Rectangular
 cfS_Student
 cfS_Trapezoidal
