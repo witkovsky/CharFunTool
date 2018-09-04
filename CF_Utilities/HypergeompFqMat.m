@@ -59,10 +59,9 @@ function [s,ss] = HypergeompFqMat(a,b,x,y,alpha,MAX,lam)
 %   n     = 5;  % elsewhere it is denoted as q (d.f. of between SS&P)
 %   X     = [0 0 0.1 1 20];
 %   coef  = -1;
-%   niid  = [];
 %   MAX   = 25;
 %   t     = linspace(-10,10,201);
-%   cf    = cf_LogRV_WilksLambdaNC(t,p,m,n,X,coef,niid,MAX);
+%   cf    = cf_LogRV_WilksLambdaNC(t,p,m,n,X,coef,MAX);
 %   figure; plot(t,real(cf),t,imag(cf)); grid on;
 %   title('CF of log of noncentral Wilks Lambda RV')
 %
@@ -72,11 +71,10 @@ function [s,ss] = HypergeompFqMat(a,b,x,y,alpha,MAX,lam)
 %   m     = 30;
 %   n     = 5;
 %   X     = [0 0 0.1 1 20];
-%   niid  = [];
 %   MAX   = 30;
 %   coef  = -1;
-%   cf0   = @(t) cf_LogRV_WilksLambdaNC(t,p,m,n,[],coef,niid,MAX);
-%   cf    = @(t) cf_LogRV_WilksLambdaNC(t,p,m,n,X,coef,niid,MAX);
+%   cf0   = @(t) cf_LogRV_WilksLambdaNC(t,p,m,n,[],coef,MAX);
+%   cf    = @(t) cf_LogRV_WilksLambdaNC(t,p,m,n,X,coef,MAX);
 %   prob  = [0.9 0.95 0.99];
 %   clear options
 %   options.xMin = 0;
@@ -94,6 +92,30 @@ function [s,ss] = HypergeompFqMat(a,b,x,y,alpha,MAX,lam)
 %   xlabel('x')
 %   ylabel('PDF')
 %   title('PDFs of -log(\Lambda) under null and alternative hypothesis')
+%
+% EXAMPLE 4: (!!!LONG CALCULATION of Hypergeom2F1Mat!!!)
+% % Non-null distribution of log-transformed T statistic, W = -log(T)
+% % Test statistic for testing equality of 2 covariance matrices
+%   p   = 5;         % p   - length of the sample vectors (dimensionality)
+%   n1  = 15;        % n1  - sample size from the first normal poulation
+%   n2  = 20;        % n1  - sample size from the second normal poulation
+%   nu1 = n1 - 1;    % nu1 - degrees of freedom
+%   nu2 = n2 - 1;    % nu1 - degrees of freedom
+%   nu  = nu1 + nu2; % nu1 - degrees of freedom
+%   % delta - eigenvalues of the non-centrality matrix Delta
+%   delta = [1.1, 1.325, 1.55, 1.775, 2.0]';
+%   % Create the characteristic function of null distribution
+%   c    = GammaMultiLog(nu/2,p)-GammaMultiLog(nu1/2,p)-GammaMultiLog(nu2/2,p);
+%   cfH0 = @(t) exp(c + GammaMultiLog((1-1i*t)*nu1/2,p) + ...
+%       GammaMultiLog((1-1i*t)*nu2/2,p) - GammaMultiLog((1-1i*t)*nu/2,p));
+%   % Create the characteristic function of non-null distribution
+%   MAX  = 50;
+%   cfHA = @(t) cfH0(t(:)) .* prod(delta).^(-nu1/2) .* ...
+%       Hypergeom2F1Mat(nu/2,(1-1i*t)*nu1/2,(1-1i*t)*nu/2,1-1./delta,MAX);
+%   % Evaluate PDF/CDF and selected quantiles of W = -log(T)
+%   x   = linspace(50,90);
+%   prob = [0.9 0.95 0.975 0.99 0.999];
+%   result = cf2DistGP(cfHA,x,prob);
 %
 % AUTHOR/CREDITS:
 %  Copyright (c) 2004 Plamen Koev.
