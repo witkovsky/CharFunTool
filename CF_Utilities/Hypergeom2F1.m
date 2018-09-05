@@ -40,7 +40,7 @@ function f = Hypergeom2F1(a,b,c,z)
 %% CHECK THE INPUT PARAMETERS
 narginchk(4, 4);
 
-[errorcode,a,b,c] = distchck(2,a(:),b(:),c(:));
+[errorcode,a,b,c] = distchck(3,a(:),b(:),c(:));
 if errorcode > 0
     error(message('InputSizeMismatch'));
 end
