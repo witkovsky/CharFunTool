@@ -22,7 +22,7 @@ function [f, method, loops] = Hypergeom1F1(a, b, z, n)
 %   [f, method, loops] = Hypergeom1F1(a, b, z, n)
 %
 % INPUTS
-%  a      - parameter a (real scalar),
+%  z      - parameter a (real scalar),
 %  b      - parameter b (real scalar),
 %  z      - complex argument (scalar, vector or array),
 %  n      - number of the Gauss-Laguerre nodes and weights on (0,Inf). If

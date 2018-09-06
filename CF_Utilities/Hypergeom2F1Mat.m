@@ -9,7 +9,7 @@ function f = Hypergeom2F1Mat(a,b,c,X,MAX)
 %  (2009). 
 %
 % SYNTAX:
-%  [s,ss] = Hypergeom2F1Mat(a,b,c,X,MAX)
+%  f = Hypergeom2F1Mat(a,b,c,X,MAX)
 %
 % INPUTS:
 %  a      - complex vector of parameters of the hypergeometric function
@@ -46,12 +46,36 @@ function f = Hypergeom2F1Mat(a,b,c,X,MAX)
 %     2002;30(4):1155-77.
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 25-Oct-2017 14:56:37
+% Ver.: 22-Aug-2018 12:23:08
 
 %% FUNCTION CALL
+% f = Hypergeom2F1Mat(a,b,c,X,MAX)
+
+%% CHECK THE INPUT PARAMETERS
 if nargin < 5
     MAX = 20; 
 end
+
+sza = size(a);
+szb = size(b);
+szc = size(c);
+
+[errorcode,a,b,c] = distchck(3,a(:),b(:),c(:));
+if errorcode > 0
+    error(message('InputSizeMismatch'));
+end
+
+
+
+%% ALGORITHM
 f = HypergeompFqMat([a,b],c,X,[],2,MAX);
 
+if max(sza)>1
+    f = reshape(f,sza);
+    return
+elseif max(szb)>1
+    f = reshape(f,szb);
+    return
+elseif max(szc)>1
+    f = reshape(f,szc);
 end

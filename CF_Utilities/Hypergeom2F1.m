@@ -6,11 +6,19 @@ function f = Hypergeom2F1(a,b,c,z)
 % SYNTAX
 %   f = Hypergeom2F1(a,b,c,z)
 %
-% EXAMPLE1
+% EXAMPLE 1
 %  a = 3;
 %  b = 2.5;
 %  c = 1.5;
 %  z = 1i*(0:0.05:1)';
+%  f =  Hypergeom2F1(a,b,c,z)
+%
+% EXAMPLE 2
+%  t = 1i*linspace(-5,5,11)';
+%  a = 3*t;
+%  b = 2.5*t;
+%  c = 1.5*t;
+%  z = 0.75;
 %  f =  Hypergeom2F1(a,b,c,z)
 %
 % NOTE:  
@@ -24,24 +32,37 @@ function f = Hypergeom2F1(a,b,c,z)
 %  Barrowes (barrowes@alum.mit.edu) 
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 24-Jul-2017 10:06:48
+% Ver.: 18-Aug-2018 18:32:27
 
 %% FUNCTION CALL
 %  f = Hypergeom2F1(a,b,c,z)
 
 %% CHECK THE INPUT PARAMETERS
-sz = size(z);
+narginchk(4, 4);
 
-if max(sz) > 1
-    z = z(:);
-    n = length(z);
-    f = zeros(n,1);
-    for i=1:n
+[errorcode,a,b,c] = distchck(3,a(:),b(:),c(:));
+if errorcode > 0
+    error(message('InputSizeMismatch'));
+end
+na = length(a);
+
+sz = size(z);
+z  = z(:);
+nz = length(z);
+
+if nz>=1 && na==1
+    f = zeros(nz,1);
+    for i=1:nz
         f(i) = hygfz(a,b,c,z(i));
     end
     f = reshape(f,sz);
+elseif nz==1 && na>1
+    f = zeros(na,1);
+    for i=1:na
+        f(i) = hygfz(a(i),b(i),c(i),z);
+    end
 else
-    f = hygfz(a,b,c,z);
+    error(message('InputSizeMismatch'));
 end
 end
 %% FUNCTION HYGFZ
