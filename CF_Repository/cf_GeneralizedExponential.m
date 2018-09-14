@@ -11,8 +11,11 @@ function cf = cf_GeneralizedExponential(t,alpha,lambda,mu,coef,niid)
 %   F(x;alpha,lambda,mu) = (1 - e^{-(x-mu)/lambda})^alpha 
 %  for x > mu, alpha > 0, lambda > 0, with the corresponding probability
 %  density function  
-%   f(x;alpha,lambda,mu) = (alpha/lambda)*(1-e^{-(x-mu)/lambda})^alpha ...
-%                          * e^{-(x-mu)/lambda}.
+%   f(x;alpha,lambda,mu) = (alpha/lambda) * ...
+%                          (1 - e^{-(x-mu)/lambda})^(alpha-1) * ...
+%                          e^{-(x-mu)/lambda}.
+%  In particular if X ? GE(alpha) = GE(alpha,1,0) then mu + lambda * X ?
+%  GE(alpha,lambda,mu). 
 %  The characteristic function of X ~  GE(alpha,lambda,mu) is given by
 %   cf_X(t) = exp(1i*t*mu) * gamma(alpha+1) * gamma(1 - 1i*t*lambda) ...
 %             / gamma(alpha - 1i*t*lambda +1)
@@ -76,7 +79,7 @@ function cf = cf_GeneralizedExponential(t,alpha,lambda,mu,coef,niid)
 %       Journal of Statistical Planning and Inference, 137(11), 3537-3547.
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 13-Sep-2018 09:46:47
+% Ver.: 14-Sep-2018 13:36:38
 
 %% ALGORITHM
 % cf = cf_GeneralizedExponential(t,alpha,lambda,mu,coef,niid)
