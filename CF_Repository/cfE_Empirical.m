@@ -10,8 +10,8 @@ function cf = cfE_Empirical(t,data,cfX)
 %  cfE_Empirical(t,data,cfX) evaluates the compound characteristic function
 %   cf(t) = cfE_Empirical(-1i*log(cfX(t)),data)
 %         = (1/N) * sum_{j=1}^N cfX(t)^data_j;
-% where cfX is function handle of the characteristic function cfX(t) of the
-% random variable X.   
+%  where cfX is function handle of the characteristic function cfX(t) of the
+%  random variable X.   
 %
 % SYNTAX
 %  cf = cfE_Empirical(t,data)
@@ -28,7 +28,7 @@ function cf = cfE_Empirical(t,data,cfX)
 % WIKIPEDIA: 
 %  https://en.wikipedia.org/wiki/Empirical_distribution_function.
 %
-% EXAMPLE1 (Empirical CF - a weighted mixture of independent Dirac variables)
+% EXAMPLE 1 (Empirical CF - a weighted mixture of independent Dirac variables)
 %  rng(101);
 %  n = 1000;
 %  data = [normrnd(5,0.2,3*n,1); trnd(3,n,1); chi2rnd(1,n,1)];
@@ -37,7 +37,7 @@ function cf = cfE_Empirical(t,data,cfX)
 %  figure; plot(t,real(cf),t,imag(cf)),grid
 %  title('Empirical CF - CF of the mixture of Dirac random variables')
 %
-% EXAMPLE2 (Convolution of the ECF and the Gaussian kernel)
+% EXAMPLE 2 (Convolution of the ECF and the Gaussian kernel)
 %  rng(101);
 %  n = 1000;
 %  data = [normrnd(5,0.2,3*n,1); trnd(3,n,1); chi2rnd(1,n,1)];
@@ -50,7 +50,7 @@ function cf = cfE_Empirical(t,data,cfX)
 %  title('Smoothed Empirical CF')
 %  result = cf2DistGP(cf)
 %
-% EXAMPLE3 (PDF/CDF of the compound Empirical-Empirical distribution)
+% EXAMPLE 3 (PDF/CDF of the compound Empirical-Empirical distribution)
 %  rng(101);
 %  lambda = 25; nN = 10; Ndata = poissrnd(lambda,1,nN);
 %  mu = 0.1; sigma = 2; nX = 1500; Xdata = lognrnd(mu,sigma,1,nX);
@@ -73,8 +73,8 @@ function cf = cfE_Empirical(t,data,cfX)
 %  characteristic function of frequency and severity. arXiv preprint
 %  arXiv:1701.08299.   
 
-% (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 23-Jun-2017 10:00:49
+% (c) Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 15-Sep-2018 12:56:00
 %% ALGORITHM
 %cf = cfE_Empirical(t,data,cfX);
 
@@ -84,40 +84,8 @@ if nargin < 2, data = []; end
 if nargin < 3, cfX = []; end
 
 %%
-if isempty(data)
-    data = 1;
-end
 
-weights = 1 / length(data);
-data    = data(:)';
-
-% Special treatment for mixtures with large number of variables
-szcoefs  = size(data);
-szcoefs  = szcoefs(1)*szcoefs(2);
-szt      = size(t);
-sz       = szt(1)*szt(2);
-szcLimit = ceil(1e3 / (sz/2^16));
-idc = 1:fix(szcoefs/szcLimit)+1;
-
-%% Characteristic function
-t     = t(:);
-idx0  = 1;
-cf    = 0;
-for j = 1:idc(end)
-    idx1 = min(idc(j)*szcLimit,szcoefs);
-    idx  = idx0:idx1;
-    idx0 = idx1+1;
-    if isempty(cfX)
-        aux  = exp(1i * t * data(idx));
-    else
-        aux  = bsxfun(@power,cfX(t),data(idx));
-    end      
-    if isscalar(weights)
-        cf   = cf + sum(weights*aux,2);
-    else
-        cf   = cf + sum(bsxfun(@times,aux,weights(idx)),2);
-    end
-end
-cf = reshape(cf,szt);
+weights = [];
+cf = cfE_DiracMixture(t,data,weights,cfX);
 
 end
