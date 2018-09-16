@@ -2,7 +2,7 @@ function cf = cfE_EmpiricalBootstrapped(t,data,randID,cfX)
 %% cfE_EmpiricalBootstrapped
 %  Characteristic function of the EMPIRICAL BOOTSTRAPPED distribution,
 %  based on the bootstrapped data, dataBoot = data(randID), where randID is
-%  a vector of pseudorandom integers between 1 and lemngth(data). 
+%  a vector of pseudorandom integers between 1 and length(data). 
 %
 %  That is, cf(t) = (1/N)*(cfD(dataBoot_1*t) +...+ cfD(dataBoot_N*t)),
 %  where cfD(t) represents the characteristic function of the DIRAC RV
@@ -67,9 +67,9 @@ function cf = cfE_EmpiricalBootstrapped(t,data,randID,cfX)
 %  rng(101);
 %  mu = 0; sigma = 1; n = 50; X = lognrnd(mu,sigma,n,1);
 %  mu = 2; sigma = 2; n = 20; Y = lognrnd(mu,sigma,n,1);
-%  R = zeros(nBoot,1);
-%  xCrit = 0;
 %  nBoot = 1000;
+%  xCrit = 0;
+%  R     = zeros(nBoot,1);
 %  for i = 1:nBoot
 %      cfX = @(t) cfE_EmpiricalBootstrapped(t,X);
 %      cfY = @(t) cfE_EmpiricalBootstrapped(t,Y);
