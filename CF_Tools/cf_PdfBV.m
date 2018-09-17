@@ -1,8 +1,15 @@
-function [cf,coefs,method] = cf_PDF(t,pdfFun,A,B,method,nPts)
-%cf_PDF Computes the characteristic function of the continuos
-%  distribution defined by its PDF function.
+function [cf,coefs] = cf_PdfBV(t,pdfFun,A,B,nPts)
+%cf_PdfBV 
+%  Computes the characteristic function of the continuos distribution from
+%  its probability density function (PDF) by using the BAKHVALOV-VASILEVA
+%  method for computing the Fourier Integral over the interval (A,B).
+%  pdfFun is function handle for computing the PDF at arbitrary x in (A,B).
 %
-%  cf_PDF is evaluated from the standard integral representation of the
+%  Here, the interval (A,B) denotes the support of the distribution or
+%  the given truncation points with A < B. In the current version, A and B
+%  must be finite. 
+%
+%  cf_PdfBV is evaluated from the standard integral representation of the
 %  characteristic function of the continuous distribution defined by its
 %  PDF (here represented by the function handle pdfFun), i.e.
 %    CF(t) = Integral_A^B exp(i*t*x) * pdfFun(x) dx,
@@ -16,31 +23,26 @@ function [cf,coefs,method] = cf_PDF(t,pdfFun,A,B,method,nPts)
 %  be finite. 
 %
 % REMARK:
-%  cf_PDF is suggested for situations when the PDF can be well approximated
+%  cf_PdfBV is suggested for situations when the PDF can be well approximated
 %  by the nth order polynomial over known (given) support interval [A,B],
 %  as e.g. the uniform distribution PDF = 1 over [0,1].
 %  Otherwise the computed result could be misleading!
 %
 % SYNTAX:
-%  [cf,coefs,method] = cf_PDF(t,pdfFun,A,B,method,nPts)
+%  [cf,coefs] = cf_PdfBV(t,pdfFun,A,B,nPts)
 %
 % INPUTS:
 %  t      - real vector, where the characteristic function CF(t) will
 %           be evaluated.
 %  pdfFun - function handle used as the PDF function with the argument x.
-%  A      - finite minimum value of the distribution support. If the true
-%           minimum is -Inf, than A should be set as a reasonable finite
-%           approximation of the minimum value of the support. Default
-%           value is A = -100.
-%  B      - finite maximum value of the distribution support. If the true
-%           maximum is Inf, than B should be set as a reasonable finite
-%           approximation of the maximum value of the support. Default
-%           value is B = 100.
-%  method - select method for computing the required Fourier Integral.
-%           Currently, there are two possible algorithms: (i)the
-%           BAKHVALOV-VASILEVA method (method = 'bv') and (ii) the
-%           PATTERSON method (method = 'pat'). Deafault value is  method =
-%           'pat'. 
+%  A      - finite minimum value of the distribution support or the lower
+%           truncation point. If the true minimum is -Inf, than A should be
+%           set as a reasonable finite approximation of the minimum value
+%           of the support. Default value is A = -100.
+%  B      - finite maximum value of the distribution support or the upper
+%           truncation point. If the true maximum is Inf, than B should be
+%           set as a reasonable finite approximation of the maximum value
+%           of the support. Default value is B = 100.
 %  nPts   - Order of Legendre polynomial approximation. Default value is
 %           nPts = 100.
 %
@@ -50,70 +52,79 @@ function [cf,coefs,method] = cf_PDF(t,pdfFun,A,B,method,nPts)
 %  coefs  - vector of the polynomial expansion coefficiens of the PDF.
 %           This allows to check the quality of the polynomial
 %           approaximation over the interval [A,B].
-%  method - selected method for computing the required Fourier Integral.
 %
-% EXAMPLE1 (CF of the Uniform distribution on the interval [0,1])
-%  pdfFun = @(x) 1;
+% EXAMPLE 1 (CF of the Uniform distribution on the interval [0,1])
+%  pdfFun = @(x) ones(size(x));
 %  A = 0;
 %  B = 1;
-%  method = 'bv';
-%  nPts   = 1;
+%  nPts = 1;
 %  t  = linspace(-50,50,2^10+1)';
-%  cf = cf_PDF(t,pdfFun,A,B,method,nPts);
+%  cf = cf_PdfBV(t,pdfFun,A,B,nPts);
 %  plot(t,real(cf),t,imag(cf));grid
 %  title('Characteristic function of the Uniform distribution')
 %
-% EXAMPLE2 (CF of the Normal distribution on the interval [-8,8])
-%  % !!PDF cannot be approximated by the 20th degree Legendre expansion!
+% EXAMPLE 2 (CF of the truncated Normal distribution on the interval [0,5])
 %  pdfFun = @(x) exp(-x.^2/2)/sqrt(2*pi);
-%  A = -8;
-%  B = 8;
-%  method = 'bv';
-%  nPts   = 20;
-%  t  = linspace(-10,10,2^10+1)';
-%  [cf,coefs] = cf_PDF(t,pdfFun,A,B,method,nPts);
+%  A = 0;
+%  B = 5;
+%  nPts = 30;
+%  t  = linspace(-20,20,2^10+1)';
+%  [cf,coefs] = cf_PdfBV(t,pdfFun,A,B,nPts);
 %  plot(coefs,'o-');grid
 %  title('Expansion coefficients')
 %  figure
 %  plot(t,real(cf),t,imag(cf));grid
-%  title('Characteristic function of the Normal distribution')
+%  title('Characteristic function of the truncated Normal distribution')
 %
-% EXAMPLE3 (CF of the Exponential distribution with lambda = 1)
+% EXAMPLE 3 (PDF/CDF of the truncated Normal distribution)
+%  pdfFun = @(x) exp(-x.^2/2)/sqrt(2*pi);
+%  A = -2;
+%  B = 5;
+%  t  = linspace(-20,20,2^10+1)';
+%  cf = @(t) cf_PdfBV(t,pdfFun,A,B);
+%  x  = linspace(-2,5);
+%  prob = [0.9, 0.95 0.99];
+%  clear options
+%  options.xMin = -2;
+%  options.xMax = 5;
+%  figure
+%  result = cf2DistGP(cf,x,prob,options)
+%
+% EXAMPLE 4 (CF of the truncated Exponential distribution with lambda = 1)
 %  pdfFun = @(x) exp(-x);
 %  A = 0;
-%  B = 100;
-%  method = 'patterson';
+%  B = 15;
 %  nPts   = 25;
 %  t  = linspace(-20,20,2^10+1)';
-%  [cf,coefs] = cf_PDF(t,pdfFun,A,B,method,nPts);
+%  [cf,coefs] = cf_PdfBV(t,pdfFun,A,B,nPts);
 %  plot(coefs,'o-');grid
 %  title('Expansion coefficients')
 %  figure
 %  plot(t,real(cf),t,imag(cf));grid
-%  title('Characteristic function of the Exponential distribution')
+%  title('Characteristic function of the truncated Exponential distribution')
 %
-% EXAMPLE4 (CF of the LogNormal distribution with mu = 0, sigma = 1)
+% EXAMPLE 5 (CF of the LogNormal distribution with mu = 0, sigma = 1)
 %  mu     = 0;
 %  sigma  = 1;
 %  pdfFun = @(x) exp(-0.5*((log(x)-mu)./sigma).^2)./(x.*sqrt(2*pi).*sigma);
 %  A = 1e-8;
 %  B = 100;
 %  t  = linspace(-20,20,2^10+1)';
-%  [cf,coefs] = cf_PDF(t,pdfFun,A,B);
+%  [cf,coefs] = cf_PdfBV(t,pdfFun,A,B);
 %  plot(coefs,'o-');grid
 %  title('Expansion coefficients')
 %  figure
 %  plot(t,real(cf),t,imag(cf));grid
 %  title('Characteristic function of the LogNormal distribution')
 %
-% EXAMPLE5 (CF of the Weibull distribution with a = 1.5, and large b > 1)
+% EXAMPLE 6 (CF of the Weibull distribution with a = 1.5, and large b > 1)
 %  a      = 1.5;
 %  b      = 3.5;
 %  pdfFun = @(x) (x./a).^(b-1) .* exp(-((x./a).^b)) .* b ./ a;
 %  A = 1e-8;
 %  B = 100;
 %  t  = linspace(-10,10,2^10+1)';
-%  [cf,coefs] = cf_PDF(t,pdfFun,A,B);
+%  [cf,coefs] = cf_PdfBV(t,pdfFun,A,B);
 %  plot(coefs,'o-');grid
 %  title('Expansion coefficients')
 %  figure
@@ -133,15 +144,14 @@ function [cf,coefs,method] = cf_PDF(t,pdfFun,A,B,method,nPts)
 %     and Applied Mathematics, 1999, 112(1): 55-69.
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 8-Sep-2017 15:27:01
+% Ver.: 17-Sep-2018 18:04:33
 
 %% ALGORITHM CALL
-%[cf,coefs,method] = cf_PDF(t,pdfFun,A,B,method,nPts)
+%[cf,coefs] = cf_PdfBV(t,pdfFun,A,B,nPts)
 
 %% CHECK THE INPUT PARAMETERS
-narginchk(1, 6);
-if nargin < 6, nPts = []; end
-if nargin < 5, method = []; end
+narginchk(1, 5);
+if nargin < 5, nPts = []; end
 if nargin < 4, B = []; end
 if nargin < 3, A = []; end
 if nargin < 2, pdfFun = []; end
@@ -150,9 +160,6 @@ if isempty(nPts)
     nPts = 100;
 end
 
-if isempty(method)
-    method = 'patterson';
-end
 
 if isempty(pdfFun)
     pdfFun = @(x) exp(-x.^2/2)/sqrt(2*pi);
@@ -168,13 +175,15 @@ end
 
 %% ALGORITHM
 
-switch lower(method)
-    case {'patterson','pat','p'}
-        [cf,coefs] = FourierIntegral_P(t,pdfFun,A,B,nPts);
-    case {'bakhvalov-vasileva','bv','b'}
-        [cf,coefs] = FourierIntegral_BV(t,pdfFun,A,B,nPts);
-    otherwise
-        [cf,coefs] = FourierIntegral_P(t,pdfFun,A,B,nPts);
+[cf,coefs] = FourierIntegral_BV(t,pdfFun,A,B,nPts);
+
+pr = (abs(FourierIntegral_BV(-1e-8,pdfFun,A,B,nPts)) + ...
+    abs(FourierIntegral_BV(1e-8,pdfFun,A,B,nPts)))/2;
+
+if pr < 1
+    cf = cf / pr;
 end
+
 cf(t==0) = 1;
+
 end
