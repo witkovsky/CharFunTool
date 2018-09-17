@@ -1,10 +1,10 @@
 function cf = cf_ArcsineSymmetric(t,coef,niid)
-%% cfS_ArcsineSymmetric
+%% cf_ArcsineSymmetric
 %  Characteristic function of a linear combination (resp. convolution) of
 %  independent zero-mean symmetric ARCSINE random variables defined on the
 %  interval (-1,1).
 %
-%  That is, cfS_ArcsineSymmetric evaluates the characteristic function
+%  That is, cf_ArcsineSymmetric evaluates the characteristic function
 %  cf(t) of  Y = sum_{i=1}^N coef_i * X_i, where X_i ~ ArcsineSymmetric are
 %  independent RVs defined on (-1,1), for all i = 1,...,N.
 %
