@@ -194,8 +194,8 @@ function cf = cf_GramCharlier(t,kappa,kappaRef,cfRef,options)
 %     function in terms of another PDF: A generalized Gram-Charlier
 %     expansion. Journal of Mathematical Chemistry, 42(3), pp.585-594.
 
-% (c) 2018 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 03-Jul-2018 00:41:32
+% (c) Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 18-Sep-2018 11:56:47
 
 %% ALGORITHM
 %cf = cf_GramCharlier(t,kappa,kappaRef,cfRef,options)
