@@ -47,7 +47,7 @@ function cf = cf_GramCharlierDelta(t,delta,cfRef)
 %  ylabel('CF')
 %  title('CF of the distribution specified by the cummulants')
 %
-% EXAMPLE2 (PDF/CDF/QF of the distribution specified with kappa=[0 1 0 1])
+% EXAMPLE2 (PDF/CDF/QF of the distribution specified with delta)
 %  delta  = [0 0 1 -1];
 %  cf  = @(t) cf_GramCharlierDelta(t,delta);
 %  x      = linspace(-5,5,201);
@@ -57,7 +57,7 @@ function cf = cf_GramCharlierDelta(t,delta,cfRef)
 %  options.SixSigmaRule = 10;
 %  result = cf2DistGP(cf,x,prob,options)
 %
-% EXAMPLE3 (PDF/CDF/QF of the approaximate distribution)
+% EXAMPLE3 (PDF/CDF/QF of the approaximate distribution specified by delta)
 %  delta  = [0 0 5 1 1 1 -1 -1];
 %  sigma  = 2;
 %  cfRef  = @(t) cfS_Gaussian(t*sigma);
@@ -69,7 +69,7 @@ function cf = cf_GramCharlierDelta(t,delta,cfRef)
 %  options.SixSigmaRule = 10;
 %  result = cf2DistGP(cf,x,prob,options)
 %
-% EXAMPLE4 ((CF of the approaximate distribution)
+% EXAMPLE4 ((CF of the approaximate distribution with ChiSquare reference)
 %  delta  = [0 0 5 1 1 1 -1 -1];
 %  df     = 20;
 %  cfRef  = @(t) cfX_ChiSquare(t,df);
@@ -80,7 +80,7 @@ function cf = cf_GramCharlierDelta(t,delta,cfRef)
 %  ylabel('CF')
 %  title('CF of the distribution specified by the cummulants and cfRef')
 %
-% EXAMPLE5 (PDF/CDF/QF of the approaximate distribution)
+% EXAMPLE5 (PDF/CDF/QF of the approaximate distribution with ChiSquare ref)
 %  delta  = [0 0 5 1 1 1 -1 -1];
 %  df     = 20;
 %  cfRef  = @(t) cfX_ChiSquare(t,df);
@@ -180,8 +180,8 @@ function cf = cf_GramCharlierDelta(t,delta,cfRef)
 %     function in terms of another PDF: A generalized Gram-Charlier
 %     expansion. Journal of Mathematical Chemistry, 42(3), pp.585-594.
 
-% (c) 2018 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 03-Jul-2018 00:41:32
+% (c) Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 18-Sep-2018 11:56:47
 
 %% ALGORITHM
 %cf = cf_GramCharlierDelta(t,delta,cfRef)
