@@ -9,6 +9,7 @@ cf_Exponential
 cf_FisherSnedecor
 cf_FisherSnedecorNC
 cf_Gamma
+cf_GeneralizedExponential
 cf_Gumbel
 cf_InverseGamma
 cf_Laplace
@@ -20,6 +21,7 @@ cf_TrapezoidalSymmetric
 cf_TriangularSymmetric
 cf_TSPSymmetric
 cf_Weibull
+cf_WignerSemicircle
 
 CFs of circular probability distributions:
 
@@ -52,6 +54,7 @@ cfS_Student
 cfS_Trapezoidal
 cfS_Triangular
 cfS_TSP
+cfS_Wigner
 
 CFs of non-negative probability distributions:
 
@@ -64,7 +67,6 @@ cfX_InverseGamma
 cfX_LogLogistic
 cfX_LogNormal
 cfX_Pareto
-cfX_PDF
 cfX_PearsonV
 cfX_PearsonVI
 cfX_Weibull
@@ -86,4 +88,5 @@ CFs of mixture and empirical probability distributions:
 
 cfE_DiracMixture
 cfE_Empirical
+cfE_EmpiricalBootstrapped
 cfE_EmpiricalOgive
