@@ -68,7 +68,7 @@ end
 
 
 %% ALGORITHM
-f = HypergeompFqMat([a,b],c,X,[],2,MAX);
+f = HypergeompFqMat([a,b],c,X,[],2,MAX,[]);
 
 if max(sza)>1
     f = reshape(f,sza);

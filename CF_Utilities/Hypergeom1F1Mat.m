@@ -51,6 +51,6 @@ if nargin < 4
     MAX = 20; 
 end
 
-f = HypergeompFqMat(a,b,X,[],2,MAX);
+f = HypergeompFqMat(a,b,X,[],2,MAX,[]);
 
 end
