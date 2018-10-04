@@ -4,7 +4,7 @@ function cf = cf_MaxwellBoltzmann(t,scale,coef,niid)
 %  independent Maxwell-Boltzmann distributed random variables.     
 %  
 %  The Maxwell-Boltzmann distribution is a continuous probability
-%  distribution for positive-valued rvariables. It is a chi
+%  distribution for positive-valued random variables. It is a chi
 %  distribution in three degrees of freedom.
 %
 %  cf_MaxwellBoltzmann evaluates the characteristic function cf(t) of Y =
