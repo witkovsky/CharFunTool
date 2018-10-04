@@ -4,6 +4,7 @@ cf_ArcsineSymmetric
 cf_Beta
 cf_BetaNC
 cf_BetaSymmetric
+cf_Chi
 cf_ChiSquare
 cf_Exponential
 cf_FisherSnedecor
@@ -13,7 +14,9 @@ cf_GeneralizedExponential
 cf_Gumbel
 cf_InverseGamma
 cf_Laplace
+cf_MaxwellBoltzmann
 cf_Normal
+cf_Rayleigh
 cf_RectangularSymmetric
 cf_Stable
 cf_Student
