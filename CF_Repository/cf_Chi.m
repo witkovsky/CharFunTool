@@ -145,6 +145,7 @@ for i = 1:n
                 (1i*const*t*coef(i)));
 end
 cf   = reshape(cf,szt);
+cf(t==0) = 1;
 
 if ~isempty(niid)
     if isscalar(niid)

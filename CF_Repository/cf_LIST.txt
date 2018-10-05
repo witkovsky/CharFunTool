@@ -17,6 +17,8 @@ cf_InverseGamma
 cf_Laplace
 cf_MaxwellBoltzmann
 cf_MaxwellBoltzmannNC
+cf_Nakagami
+cf_NakagamiNC
 cf_Normal
 cf_Rayleigh
 cf_RayleighNC
