@@ -1,13 +1,11 @@
 function f = Hypergeom1F1a(a,b,x)
 %Hypergeom1F1a 
 %  Computes the confluent hypergeometric function 1F1(a,b,x), also known as
-%  the Kummer function M(a,b,x), for the real parameters a and b (here
-%  assumed to be scalars), and the real argument x (could be scalar, vector
-%  or array).
+%  the Kummer function M(a,b,x), for the real parameters a and b (scalars
+%  or vectors/arrays of the same size), and the real argument x (could be
+%  scalar or vector or array).
 %
-%  This is an alternative algorithm to the more general algorithm
-%  Hypergeom1F1, which can bemore precise and effective for the real 
-%  argument x. 
+%  This is an alternative (working) version of the algorithm.
 % 
 %  The algorithm Hypergeom1F1a is based on a Fortran program in S. Zhang &
 %  J. Jin "Computation of Special Functions" (Wiley, 1996).
@@ -20,10 +18,11 @@ function f = Hypergeom1F1a(a,b,x)
 %    f = Hypergeom1F1a(a,b,x)
 %
 %  EXAMPLE 1 
+%  t  = linspace(-20,20,201)';
 %  a  = 1;
 %  b  = 3/2;
-%  t  = linspace(-20,20,201)';
-%  f  =  Hypergeom1F1a(a,b,-t.^2);
+%  x  = -t.^2;
+%  f  =  Hypergeom1F1a(a,b,x);
 %  figure; plot(t,f)
 %  title('Hypergeometric function 1F1(1,3/2,-t^2)')
 %  xlabel('t')
@@ -35,20 +34,33 @@ function f = Hypergeom1F1a(a,b,x)
 %  HypergeompFqSeries, HypergeomU
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 04-Oct-2018 13:23:46
+% Ver.: 05-Oct-2018 15:55:35
 
 %% FUNCTION
 %  f = Hypergeom1F1a(a,b,x)
 
-%% CHECK THE INPUT PARAMETERS
-sz = size(x);
+%% SET THE COMMON SIZE of the parameters
+sza = size(a);
+szb = size(b);
+szx = size(x);
+sz  = szx;
+if prod(szx) < prod(sza)
+    sz = sza;
+elseif prod(szx) < prod(szb)
+    sz = szb;
+end
+
+[errorcode,a,b,x] = distchck(3,a(:),b(:),x(:));
+if errorcode > 0
+    error(message('InputSizeMismatch'));
+end
 
 if max(sz) > 1
     x = x(:);
     n = length(x);
     f = zeros(n,1);
     for i=1:n
-        f(i) = cchg(a,b,x(i));
+        f(i) = cchg(a(i),b(i),x(i));
     end
     f = reshape(f,sz);
 else
