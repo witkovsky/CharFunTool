@@ -5,10 +5,10 @@ function cf = cf_ChiNC(t,df,delta,coef,niid,tol)
 %  distributions ChiNC(df_i,delta_i), with df_i > 0 degrees of freedom and
 %  the noncentrality parameters delta_i >= 0, for all i = 1,...,N.
 %
-%  cf_ChiNC evaluates the characteristic function cf(t) of Y =
-%  coef_i*log(X_1) +...+ coef_N*log(X_N), where X_i ~ ChiNC(df_i,delta_i)
-%  are inedependent RVs, with df_i >0 degrees of freedom and the
-%  non-centrality parameters delta_i > 0, for i = 1,...,N.
+%  cf_ChiNC evaluates the characteristic function cf(t) of Y = coef_i*X_1 +
+%  ... + coef_N*X_N, where X_i ~ ChiNC(df_i,delta_i) are inedependent chi
+%  distributed RVs, with df_i >0 degrees of freedom and the non-centrality
+%  parameters delta_i > 0, for i = 1,...,N.
 %
 %  The characteristic function of X ~ ChiNC(df,delta) is Poisson mixture
 %  (with the intensity parameter lambda = delta^2) of CFs of the central
