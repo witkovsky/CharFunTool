@@ -16,9 +16,12 @@ cf_Gumbel
 cf_InverseGamma
 cf_Laplace
 cf_MaxwellBoltzmann
+cf_MaxwellBoltzmannNC
 cf_Normal
 cf_Rayleigh
+cf_RayleighNC
 cf_RectangularSymmetric
+cf_Rice
 cf_Stable
 cf_Student
 cf_TrapezoidalSymmetric
