@@ -5,6 +5,7 @@ cf_Beta
 cf_BetaNC
 cf_BetaSymmetric
 cf_Chi
+cf_ChiNC
 cf_ChiSquare
 cf_Exponential
 cf_FisherSnedecor
