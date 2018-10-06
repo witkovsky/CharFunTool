@@ -150,8 +150,17 @@ if errorcode > 0
 end
 
 %% CF OF THE LINEAR COMBINATION OF THE NON-CENTRAL RAYLEIGH RVs
-%  Here, we assume delta = sqrt(sum(mu_i^2/sigma_i^2))
-%  Alternatively, if delta = sqrt(sum(mu_i^2)), set delta = delta./sigma;
+
+%  REMARK
+%  Notice that there are two possibilities how to set the noncentrality
+%  parameter delta:
+%  1. Here, by default we assume that delta = sqrt(sum(mu_i^2/sigma_i^2)),
+%     which is normalized with respect to the scale parameter sigma.
+%  2. Alternatively, we can assume that delta represents fixed distance
+%     from the origin, which does not depend on the scale parameter sigma,
+%     i.e. delta = sqrt(sum(mu_i^2)). In this case use delta./sigma as the
+%     non-centrality parameter input:
+%     cf = cf_MaxwellBoltzmannNC(t,sigma,delta./sigma,coef,niid)
 
 df   = 2;
 coef = sigma.*coef;
