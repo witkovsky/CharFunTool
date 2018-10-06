@@ -1,4 +1,4 @@
-function cf = cf_Rayleigh(t,scale,coef,niid)
+function cf = cf_Rayleigh(t,sigma,coef,niid)
 %cf_Rayleigh 
 %  Characteristic function of a linear combination (resp. convolution) of
 %  independent Rayleigh random variables.     
@@ -8,24 +8,24 @@ function cf = cf_Rayleigh(t,scale,coef,niid)
 %  degrees of freedom.
 %
 %  cf_Rayleigh evaluates the characteristic function cf(t) of Y =
-%  sum_{i=1}^N coef_i * X_i, where X_i ~ Rayleigh(scale_i) are inedependent
-%  Rayleigh RVs with the scale parameters scale_i > 0, for i  = 1,...,N.
+%  sum_{i=1}^N coef_i * X_i, where X_i ~ Rayleigh(sigma_i) are inedependent
+%  Rayleigh RVs with the scale parameters sigma_i > 0, for i  = 1,...,N.
 %
-%  The characteristic function of X ~ Rayleigh(scale) is defined by
-%   cf_Rayleigh(t) = cf_Chi(scale*t,df=2), 
+%  The characteristic function of X ~ Rayleigh(sigma) is defined by
+%   cf_Rayleigh(t) = cf_Chi(sigma*t,df=2), 
 %  where cf_Chi(t,df) denotes the characteristic function of the Chi
 %  distribution with df degrees of freedom. Hence, the characteristic
 %  function of Y is 
-%   cf(t) = Prod ( cf_Rayleigh(t,scale_i) )
+%   cf(t) = Prod ( cf_Rayleigh(t,sigma_i) )
 %
 % SYNTAX:
-%  cf = cf_Rayleigh(t,scale,coef,niid)
+%  cf = cf_Rayleigh(t,sigma,coef,niid)
 % 
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
-%  scale - vector of the scale parameters of the Rayleigh random
-%          variables.  If scale is scalar, it is assumed that all scale
-%          parameters are equal. If empty, default value is scale = 1. 
+%  sigma - vector of the scale parameters of the Rayleigh random
+%          variables.  If sigma is scalar, it is assumed that all scale
+%          parameters are equal. If empty, default value is sigma = 1. 
 %  coef  - vector of the coefficients of the linear combination of the
 %          Rayleigh random variables. If coef is scalar, it is assumed
 %          that all coefficients are equal. If empty, default value is
@@ -53,27 +53,27 @@ function cf = cf_Rayleigh(t,scale,coef,niid)
 %  number is Rayleigh-distributed.
 %
 % EXAMPLE 1:
-% % CF of the distribution of Rayleigh RV with scale = 3
-%   scale = 3;
+% % CF of the distribution of Rayleigh RV with sigma = 3
+%   sigma = 3;
 %   t     = linspace(-5,5,501);
-%   cf    = cf_Rayleigh(t,scale);
+%   cf    = cf_Rayleigh(t,sigma);
 %   figure; plot(t,real(cf),t,imag(cf));grid on
-%   title('Characteristic function of the Rayleigh RV with scale = 3')
+%   title('Characteristic function of the Rayleigh RV with sigma = 3')
 %
 % EXAMPLE 2: 
 % % CF of a linear combination of independent Rayleigh RVs
-%   scale = [1 2 3 4 5];
+%   sigma = [1 2 3 4 5];
 %   coef  = [1 1 1 1 1];
 %   t     = linspace(-1,1,501);
-%   cf    = cf_Rayleigh(t,scale,coef);
+%   cf    = cf_Rayleigh(t,sigma,coef);
 %   figure; plot(t,real(cf),t,imag(cf));grid on
 %   title('CF of a linear combination of independent Rayleigh RVs')
 %
 % EXAMPLE 3:
 % % PDF/CDF of a linear combination of independent Rayleigh RVs
-%   scale = [1 2 3 4 5];
+%   sigma = [1 2 3 4 5];
 %   coef  = [1 1 1 1 1];
-%   cf    = @(t) cf_Rayleigh(t,scale,coef);
+%   cf    = @(t) cf_Rayleigh(t,sigma,coef);
 %   clear options
 %   options.N = 2^10;
 %   options.xMin = 0;
@@ -87,30 +87,30 @@ function cf = cf_Rayleigh(t,scale,coef,niid)
 % Ver.: 04-Oct-2018 13:47:29
 
 %% ALGORITHM
-%  cf = cf_Rayleigh(t,scale,coef,niid)
+%  cf = cf_Rayleigh(t,sigma,coef,niid)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 4);
 if nargin < 4, niid  = []; end
 if nargin < 3, coef  = []; end
-if nargin < 2, scale = []; end
+if nargin < 2, sigma = []; end
 
-if isempty(scale)
-    scale = 1;
+if isempty(sigma)
+    sigma = 1;
 end
 
 if isempty(coef) 
     coef = 1;
 end
 
-% Check/set equal dimensions for the vectors coef and scale 
-[errorcode,coef,scale] = distchck(2,coef(:),scale(:));
+% Check/set equal dimensions for the vectors coef and sigma 
+[errorcode,coef,sigma] = distchck(2,coef(:),sigma(:));
 if errorcode > 0
         error(message('InputSizeMismatch'));
 end
 
 % CF of the linear combination of the Rayleigh RVs (expressed by using Chi)
 df = 2;
-cf = cf_Chi(t,df,scale.*coef,niid);
+cf = cf_Chi(t,df,sigma.*coef,niid);
 
 end
