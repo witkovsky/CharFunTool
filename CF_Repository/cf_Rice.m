@@ -1,43 +1,46 @@
-function cf = cf_Rice(t,scale,delta,coef,niid)
+function cf = cf_Rice(t,shift,sigma,coef,niid)
 %cf_Rice 
 %  Characteristic function of a linear combination (resp. convolution) of
 %  independent non-central Rice distributed random variables, with the
-%  scale parameters scale_i > 0, and the non-centrality parameters delta_i
-%  >= 0, for i  = 1,...,N.
+%  location (non-centrality) parameters shift_i >= 0, and the scale
+%  parameters sigma_i > 0, for i  = 1,...,N. 
 %  
 %  The non-central Rice distribution is a continuous probability
 %  distribution for positive-valued random variables. It is a special case
-%  of the non-central chi distribution in three degrees of freedom. The
+%  of the non-central chi distribution with three degrees of freedom. The
 %  Rice distribution is also known as the non-central distribution Rayleigh
 %  distribution.
 %
-%  cf_Rice evaluates the characteristic function cf(t) of Y =
-%  sum_{i=1}^N coef_i * X_i, where X_i~ RiceNC(scale_i,delta_i) are
-%  inedependent non-central Rice distributed RVs with the scale
-%  parameters scale_i > 0,  and the non-centrality parameters delta_i >= 0,
-%  for i  = 1,...,N.
+%  cf_Rice evaluates the characteristic function cf(t) of Y = sum_{i=1}^N
+%  coef_i * X_i, where X_i~ RiceNC(shift_i,sigma_i) are inedependent
+%  non-central Rice distributed RVs with the location (non-centrality)
+%  parameters shift_i >= 0, and the scale parameters sigma_i > 0, for i  =
+%  1,...,N.
 %
-%  The characteristic function of X ~ RiceNC(scale,delta) is defined by
-%   cf_Rice(t) = cf_ChiNC(scale*t,df=2,delta/scale), 
+%  The characteristic function of X ~ RiceNC(shift,sigma) is defined by
+%   cf_Rice(t) = cf_ChiNC(sigma*t,df=2,delta=shift/sigma), 
 %  where by cf_ChiNC(t,df,delta) we denote the characteristic function of
 %  the noncentral chi distribution with df degrees of freedom and the
 %  non-centrality parameter delta. Hence, the characteristic function of Y
 %  is  
-%   cf(t) = Prod ( cf_Rice(t,scale_i,delta_i) )
+%   cf(t) = Prod ( cf_Rice(t,shift_i,sigma_i) )
 %
 % SYNTAX:
-%  cf = cf_Rice(t,scale,delta,coef,niid)
+%  cf = cf_Rice(t,shift,sigma,coef,niid)
 % 
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
-%  scale - vector of the scale parameters of the Rice distributed
-%          random variables.  If scale is scalar, it is assumed that all
-%          scale parameters are equal. If empty, default value is scale =
-%          1.
-%  delta - vector of the non-centrality parameters delta >= 0. If empty,
-%          default value is delta = 0. Notice that the noncentrality
-%          parameter delta can be interpreted as a square root of the sum
-%          of squared means, delta = sqrt(sum_{i=1}^df mu_i^2).
+%  sigma - vector of the scale parameters of the Rice distributed
+%          random variables, sigma > 0.  If sigma is scalar, it is assumed
+%          that all scale parameters are equal. If empty, default value is
+%          sigma = 1.
+%  shift - vector of the location parameters, shift >= 0. If empty, default
+%          value is shift = 0. Notice that each component of the parameter
+%          shift can be interpreted as a distance from the origin, i.e. as
+%          a square root of the sum of squared means, shift_i =
+%          sqrt(mu_{i,1}^2 + mu_{i,2}^2), of the associated generating
+%          input variables X_i = sqrt(Z_{i,1}^2 + Z_{i,2}^2), where Z_{i,j}
+%          ~ N(mu_{i,j},sigma_{i,j}^2), j = 1,2.
 %  coef  - vector of the coefficients of the linear combination of the
 %          Rice distributed random variables. If coef is scalar, it is
 %          assumed that all coefficients are equal. If empty, default value
@@ -52,19 +55,19 @@ function cf = cf_Rice(t,scale,delta,coef,niid)
 %  https://en.wikipedia.org/wiki/Rice_distribution   
 %
 % EXAMPLE 1:
-% % CF of the distribution of Rice RV with scale = 3
-%   scale = 1;
-%   delta = 5;
+% % CF of the distribution of Rice RV with sigma = 3
+%   sigma = 1;
+%   shift = 5;
 %   t     = linspace(-5,5,501);
-%   cf    = cf_Rice(t,scale,delta);
+%   cf    = cf_Rice(t,shift,sigma);
 %   figure; plot(t,real(cf),t,imag(cf));grid on
 %   title('CF of the non-central Rice RV')
 %
 % EXAMPLE 2:
-% % PDF/CDF of the distribution of Rice RV with scale = 3
-%   scale = 1;
-%   delta = 5;
-%   cf    = @(t) cf_Rice(t,scale,delta);
+% % PDF/CDF of the distribution of Rice RV with sigma = 3
+%   sigma = 1;
+%   shift = 5;
+%   cf    = @(t) cf_Rice(t,shift,sigma);
 %   clear options
 %   options.N = 2^10;
 %   options.xMin = 0;
@@ -74,20 +77,20 @@ function cf = cf_Rice(t,scale,delta,coef,niid)
 %
 % EXAMPLE 3: 
 % % CF of a linear combination of independent Rice RVs
-%   scale = [1 2 3];
-%   delta = [1 1 1];
+%   sigma = [1 2 3];
+%   shift = [1 1 1];
 %   coef  = [1 1 1];
 %   t     = linspace(-2,2,501);
-%   cf    = cf_Rice(t,scale,delta,coef);
+%   cf    = cf_Rice(t,shift,sigma,coef);
 %   figure; plot(t,real(cf),t,imag(cf));grid on
 %   title('CF of a linear combination of independent Rice RVs')
 %
 % EXAMPLE 4:
 % % PDF/CDF of a linear combination of independent Rice RVs
-%   scale = [1 2 3];
-%   delta = [1 1 1];
+%   sigma = [1 2 3];
+%   shift = [1 1 1];
 %   coef  = [1 1 1];
-%   cf    = @(t) cf_Rice(t,scale,delta,coef);
+%   cf    = @(t) cf_Rice(t,shift,sigma,coef);
 %   clear options
 %   options.N = 2^10;
 %   options.xMin = 0;
@@ -98,19 +101,20 @@ function cf = cf_Rice(t,scale,delta,coef,niid)
 % See also: cf_ChiNC, cf_RayleighNC
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 5-Oct-2018 17:08:51
+% Ver.: 06-Oct-2018 10:21:50
 
 %% ALGORITHM
 %  cf_Rice is an alias name for cf_RayleighNC
-%  cf = cf_RayleighNC(t,scale,delta,coef,niid);
+%  cf = cf_RayleighNC(t,shift,sigma,coef,niid);
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 5);
 if nargin < 5, niid  = []; end
 if nargin < 4, coef  = []; end
-if nargin < 3, delta = []; end
-if nargin < 2, scale = []; end
+if nargin < 3, sigma = []; end
+if nargin < 2, shift = []; end
 
-cf = cf_RayleighNC(t,scale,delta,coef,niid);
+delta = shift./sigma;
+cf = cf_RayleighNC(t,sigma,delta,coef,niid);
 
 end

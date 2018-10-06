@@ -1,8 +1,8 @@
-function cf = cf_RayleighNC(t,scale,delta,coef,niid)
+function cf = cf_RayleighNC(t,sigma,delta,coef,niid)
 %cf_RayleighNC 
 %  Characteristic function of a linear combination (resp. convolution) of
 %  independent non-central Rayleigh distributed random variables, with the
-%  scale parameters scale_i > 0, and the non-centrality parameters delta_i
+%  scale parameters sigma_i > 0, and the non-centrality parameters delta_i
 %  >= 0, for i  = 1,...,N.
 %  
 %  The non-central Rayleigh distribution is a continuous probability
@@ -12,32 +12,35 @@ function cf = cf_RayleighNC(t,scale,delta,coef,niid)
 %  distribution or Rician distribution or Ricean distribution.
 %
 %  cf_RayleighNC evaluates the characteristic function cf(t) of Y =
-%  sum_{i=1}^N coef_i * X_i, where X_i~ RayleighNC(scale_i,delta_i) are
+%  sum_{i=1}^N coef_i * X_i, where X_i~ RayleighNC(sigma_i,delta_i) are
 %  inedependent non-central Rayleigh distributed RVs with the scale
-%  parameters scale_i > 0,  and the non-centrality parameters delta_i >= 0,
+%  parameters sigma_i > 0,  and the non-centrality parameters delta_i >= 0,
 %  for i  = 1,...,N.
 %
-%  The characteristic function of X ~ RayleighNC(scale,delta) is defined by
-%   cf_RayleighNC(t) = cf_ChiNC(scale*t,df=2,delta/scale), 
+%  The characteristic function of X ~ RayleighNC(sigma,delta) is defined by
+%   cf_RayleighNC(t) = cf_ChiNC(sigma*t,df=2,delta/sigma), 
 %  where by cf_ChiNC(t,df,delta) we denote the characteristic function of
 %  the noncentral chi distribution with df degrees of freedom and the
 %  non-centrality parameter delta. Hence, the characteristic function of Y
 %  is  
-%   cf(t) = Prod ( cf_RayleighNC(t,scale_i,delta_i) )
+%   cf(t) = Prod ( cf_RayleighNC(t,sigma_i,delta_i) )
 %
 % SYNTAX:
-%  cf = cf_RayleighNC(t,scale,delta,coef,niid)
+%  cf = cf_RayleighNC(t,sigma,delta,coef,niid)
 % 
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
-%  scale - vector of the scale parameters of the Rayleigh distributed
-%          random variables.  If scale is scalar, it is assumed that all
-%          scale parameters are equal. If empty, default value is scale =
+%  sigma - vector of the scale parameters of the Rayleigh distributed
+%          random variables.  If sigma is scalar, it is assumed that all
+%          scale parameters are equal. If empty, default value is sigma =
 %          1.
 %  delta - vector of the non-centrality parameters delta >= 0. If empty,
-%          default value is delta = 0. Notice that the noncentrality
-%          parameter delta can be interpreted as a square root of the sum
-%          of squared means, delta = sqrt(sum_{i=1}^df mu_i^2).
+%          default value is delta = 0.  Notice that each component of the
+%          non-centrality parameter delta can be interpreted as a square
+%          root of the sum of squared standardized means, delta_i =
+%          sqrt((mu_{i,1}/sigma_{i,1})^2 + (mu_{i,2}/sigma_{i,2})^2), of
+%          the associated generating input variables X_i = sqrt(Z_{i,1}^2 +
+%          Z_{i,2}^2), where Z_{i,j} ~ N(mu_{i,j},sigma_{i,j}^2), j = 1,2.
 %  coef  - vector of the coefficients of the linear combination of the
 %          Rayleigh distributed random variables. If coef is scalar, it is
 %          assumed that all coefficients are equal. If empty, default value
@@ -52,24 +55,24 @@ function cf = cf_RayleighNC(t,scale,delta,coef,niid)
 %  https://en.wikipedia.org/wiki/Rice_distribution
 %
 % NOTES 
-%  Mathematically, the Rayleigh distribution with scale = 1 is the
+%  Mathematically, the Rayleigh distribution with sigma = 1 is the
 %  chi distribution with two degrees of freedom (the components of the
 %  velocity vector in Euclidean space).     
 %
 % EXAMPLE 1:
-% % CF of the distribution of Rayleigh RV with scale = 3
-%   scale = 1;
+% % CF of the distribution of Rayleigh RV with sigma = 3
+%   sigma = 1;
 %   delta = 5;
 %   t     = linspace(-5,5,501);
-%   cf    = cf_RayleighNC(t,scale,delta);
+%   cf    = cf_RayleighNC(t,sigma,delta);
 %   figure; plot(t,real(cf),t,imag(cf));grid on
 %   title('CF of the non-central Rayleigh RV')
 %
 % EXAMPLE 2:
-% % PDF/CDF of the distribution of Rayleigh RV with scale = 3
-%   scale = 1;
+% % PDF/CDF of the distribution of Rayleigh RV with sigma = 3
+%   sigma = 1;
 %   delta = 5;
-%   cf    = @(t) cf_RayleighNC(t,scale,delta);
+%   cf    = @(t) cf_RayleighNC(t,sigma,delta);
 %   clear options
 %   options.N = 2^10;
 %   options.xMin = 0;
@@ -79,20 +82,20 @@ function cf = cf_RayleighNC(t,scale,delta,coef,niid)
 %
 % EXAMPLE 3: 
 % % CF of a linear combination of independent Rayleigh RVs
-%   scale = [1 2 3];
+%   sigma = [1 2 3];
 %   delta = [1 1 1];
 %   coef  = [1 1 1];
 %   t     = linspace(-2,2,501);
-%   cf    = cf_RayleighNC(t,scale,delta,coef);
+%   cf    = cf_RayleighNC(t,sigma,delta,coef);
 %   figure; plot(t,real(cf),t,imag(cf));grid on
 %   title('CF of a linear combination of independent Rayleigh RVs')
 %
 % EXAMPLE 4:
 % % PDF/CDF of a linear combination of independent Rayleigh RVs
-%   scale = [1 2 3];
+%   sigma = [1 2 3];
 %   delta = [1 1 1];
 %   coef  = [1 1 1];
-%   cf    = @(t) cf_RayleighNC(t,scale,delta,coef);
+%   cf    = @(t) cf_RayleighNC(t,sigma,delta,coef);
 %   clear options
 %   options.N = 2^10;
 %   options.xMin = 0;
@@ -100,23 +103,36 @@ function cf = cf_RayleighNC(t,scale,delta,coef,niid)
 %   prob = [0.9 0.95 0.975 0.99];
 %   result = cf2DistGP(cf,x,prob,options);
 %
-% See also: cf_ChiNC, cf_Rayleigh
+% EXAMPLE 5:
+% % PDF/CDF of a linear combination of independent Rayleigh RVs
+%   sigma = [1 2 3];
+%   delta = [1 1 1]./sigma;
+%   coef  = [1 1 1];
+%   cf    = @(t) cf_RayleighNC(t,sigma,delta,coef);
+%   clear options
+%   options.N = 2^10;
+%   options.xMin = 0;
+%   x = linspace(0,20,201);
+%   prob = [0.9 0.95 0.975 0.99];
+%   result = cf2DistGP(cf,x,prob,options);
+%
+% See also: cf_ChiNC, cf_Rayleigh, cf_Rice
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 5-Oct-2018 17:08:51
+% Ver.: 06-Oct-2018 10:21:50
 
 %% ALGORITHM
-%  cf = cf_RayleighNC(t,scale,delta,coef,niid)
+%  cf = cf_RayleighNC(t,sigma,delta,coef,niid)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 5);
 if nargin < 5, niid  = []; end
 if nargin < 4, coef  = []; end
 if nargin < 3, delta = []; end
-if nargin < 2, scale = []; end
+if nargin < 2, sigma = []; end
 
-if isempty(scale)
-    scale = 1;
+if isempty(sigma)
+    sigma = 1;
 end
 
 if isempty(delta)
@@ -127,14 +143,18 @@ if isempty(coef)
     coef = 1;
 end
 
-% Check/set equal dimensions for the vectors coef and scale 
-[errorcode,coef,scale,delta] = distchck(3,coef(:),scale(:),delta(:));
+% Check/set equal dimensions for the vectors coef and sigma 
+[errorcode,coef,sigma,delta] = distchck(3,coef(:),sigma(:),delta(:));
 if errorcode > 0
         error(message('InputSizeMismatch'));
 end
 
-% CF of the linear combination of the Rayleigh RVs (by using Chi)
-df = 2;
-cf = cf_ChiNC(t,df,delta./scale,scale.*coef,niid);
+%% CF OF THE LINEAR COMBINATION OF THE NON-CENTRAL RAYLEIGH RVs
+%  Here, we assume delta = sqrt(sum(mu_i^2/sigma_i^2))
+%  Alternatively, if delta = sqrt(sum(mu_i^2)), set delta = delta./sigma;
+
+df   = 2;
+coef = sigma.*coef;
+cf   = cf_ChiNC(t,df,delta,coef,niid);
 
 end
