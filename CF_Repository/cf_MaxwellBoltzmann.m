@@ -1,4 +1,4 @@
-function cf = cf_MaxwellBoltzmann(t,scale,coef,niid)
+function cf = cf_MaxwellBoltzmann(t,sigma,coef,niid)
 %cf_MaxwellBoltzmann 
 %  Characteristic function of a linear combination (resp. convolution) of
 %  independent Maxwell-Boltzmann distributed random variables.     
@@ -8,26 +8,26 @@ function cf = cf_MaxwellBoltzmann(t,scale,coef,niid)
 %  distribution in three degrees of freedom.
 %
 %  cf_MaxwellBoltzmann evaluates the characteristic function cf(t) of Y =
-%  sum_{i=1}^N coef_i * X_i, where X_i ~ MaxwellBoltzmann(scale_i) are
+%  sum_{i=1}^N coef_i * X_i, where X_i ~ MaxwellBoltzmann(sigma_i) are
 %  inedependent Maxwell-Boltzmann distributed RVs with the scale parameters
-%  scale_i > 0, for i  = 1,...,N.
+%  sigma_i > 0, for i  = 1,...,N.
 %
-%  The characteristic function of X ~ MaxwellBoltzmann(scale) is defined by
-%   cf_MaxwellBoltzmann(t) = cf_Chi(scale*t,df=3), 
+%  The characteristic function of X ~ MaxwellBoltzmann(sigma) is defined by
+%   cf_MaxwellBoltzmann(t) = cf_Chi(sigma*t,df=3), 
 %  where cf_Chi(t,df) denotes the characteristic function of the Chi
 %  distribution with df degrees of freedom. Hence, the characteristic
 %  function of Y is 
-%   cf(t) = Prod ( cf_MaxwellBoltzmann(t,scale_i) )
+%   cf(t) = Prod ( cf_MaxwellBoltzmann(t,sigma_i) )
 %
 % SYNTAX:
-%  cf = cf_MaxwellBoltzmann(t,scale,coef,niid)
+%  cf = cf_MaxwellBoltzmann(t,sigma,coef,niid)
 % 
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
-%  scale - vector of the scale parameters of the Maxwell-Boltzmann
-%          distributed random variables.  If scale is scalar, it is assumed
+%  sigma - vector of the scale parameters of the Maxwell-Boltzmann
+%          distributed random variables. If sigma is scalar, it is assumed
 %          that all scale parameters are equal. If empty, default value is
-%          scale = 1.
+%          sigma = 1.
 %  coef  - vector of the coefficients of the linear combination of the
 %          Maxwell-Boltzmann distributed random variables. If coef is
 %          scalar, it is assumed that all coefficients are equal. If empty,
@@ -54,27 +54,27 @@ function cf = cf_MaxwellBoltzmann(t,scale,coef,niid)
 %  temperature and particle mass).       
 %
 % EXAMPLE 1:
-% % CF of the distribution of Maxwell-Boltzmann RV with scale = 3
-%   scale = 3;
+% % CF of the distribution of Maxwell-Boltzmann RV with sigma = 3
+%   sigma = 3;
 %   t     = linspace(-3,3,501);
-%   cf    = cf_MaxwellBoltzmann(t,scale);
+%   cf    = cf_MaxwellBoltzmann(t,sigma);
 %   figure; plot(t,real(cf),t,imag(cf));grid on
-%   title('CF of the Maxwell-Boltzmann RV with scale = 3')
+%   title('CF of the Maxwell-Boltzmann RV with sigma = 3')
 %
 % EXAMPLE 2: 
 % % CF of a linear combination of independent Maxwell-Boltzmann RVs
-%   scale = [1 2 3];
+%   sigma = [1 2 3];
 %   coef  = [1 1 1];
 %   t     = linspace(-2,2,501);
-%   cf    = cf_MaxwellBoltzmann(t,scale,coef);
+%   cf    = cf_MaxwellBoltzmann(t,sigma,coef);
 %   figure; plot(t,real(cf),t,imag(cf));grid on
 %   title('CF of a linear combination of independent Maxwell-Boltzmann RVs')
 %
 % EXAMPLE 3:
 % % PDF/CDF of a linear combination of independent Maxwell-Boltzmann RVs
-%   scale = [1 2 3];
+%   sigma = [1 2 3];
 %   coef  = [1 1 1];
-%   cf    = @(t) cf_MaxwellBoltzmann(t,scale,coef);
+%   cf    = @(t) cf_MaxwellBoltzmann(t,sigma,coef);
 %   clear options
 %   options.N = 2^10;
 %   options.xMin = 0;
@@ -88,30 +88,30 @@ function cf = cf_MaxwellBoltzmann(t,scale,coef,niid)
 % Ver.: 04-Oct-2018 13:47:29
 
 %% ALGORITHM
-%  cf = cf_MaxwellBoltzmann(t,scale,coef,niid)
+%  cf = cf_MaxwellBoltzmann(t,sigma,coef,niid)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 4);
 if nargin < 4, niid  = []; end
 if nargin < 3, coef  = []; end
-if nargin < 2, scale = []; end
+if nargin < 2, sigma = []; end
 
-if isempty(scale)
-    scale = 1;
+if isempty(sigma)
+    sigma = 1;
 end
 
 if isempty(coef) 
     coef = 1;
 end
 
-% Check/set equal dimensions for the vectors coef and scale 
-[errorcode,coef,scale] = distchck(2,coef(:),scale(:));
+% Check/set equal dimensions for the vectors coef and sigma 
+[errorcode,coef,sigma] = distchck(2,coef(:),sigma(:));
 if errorcode > 0
         error(message('InputSizeMismatch'));
 end
 
 % CF of the linear combination of the Maxwell-Boltzmann RVs (by using Chi)
 df = 3;
-cf = cf_Chi(t,df,scale.*coef,niid);
+cf = cf_Chi(t,df,sigma.*coef,niid);
 
 end
