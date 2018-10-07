@@ -17,10 +17,10 @@ function cf = cf_LogRV_RayleighNC(t,sigma,delta,coef,niid,tol)
 %
 %  The characteristic function of log(X) with X ~ RayleighNC(sigma,delta)
 %  is 
-%   cf_LogRV_RayleighNC(t) = cf_LogRV_ChiNC(sigma*t,delta,df=2) ...
-%                          * exp(1i*t*log(sigma))
+%   cf_LogRV_RayleighNC(t) =  exp(1i*t*log(sigma)) ...
+%                             * cf_LogRV_ChiNC(t,df,delta)
 %  where cf_LogRV_ChiNC(t,df,delta) denotes the characteristic function of
-%  the log-transformed non-central Chi distribution with df degrees of
+%  the log-transformed non-central Chi distribution with df=2 degrees of
 %  freedom and the noncentrality parameter delta.
 %  
 %  Hence, the characteristic function of Y is 
@@ -58,7 +58,7 @@ function cf = cf_LogRV_RayleighNC(t,sigma,delta,coef,niid,tol)
 % % CF of the log-transformed non-central Rayleigh RV
 %   sigma = 1;
 %   delta = 5;
-%   t     = linspace(-5,5,501);
+%   t     = linspace(-20,20,501);
 %   cf    = cf_LogRV_RayleighNC(t,sigma,delta);
 %   figure; plot(t,real(cf),t,imag(cf));grid on
 %   title('CF of the log-transformed non-central Rayleigh RV')
@@ -70,7 +70,7 @@ function cf = cf_LogRV_RayleighNC(t,sigma,delta,coef,niid,tol)
 %   cf    = @(t) cf_LogRV_RayleighNC(t,sigma,delta);
 %   clear options
 %   options.N = 2^10;
-%   x = linspace(-3,4,201);
+%   x = linspace(0.5,2.5,201);
 %   prob = [0.9 0.95 0.975 0.99];
 %   result = cf2DistGP(cf,x,prob,options);
 %
@@ -79,7 +79,7 @@ function cf = cf_LogRV_RayleighNC(t,sigma,delta,coef,niid,tol)
 %   sigma = [1 2 3];
 %   delta = [1 1 1];
 %   coef  = [1 1 1];
-%   t     = linspace(-1.5,1.5,501);
+%   t     = linspace(-5,5,501);
 %   cf    = cf_LogRV_RayleighNC(t,sigma,delta,coef);
 %   figure; plot(t,real(cf),t,imag(cf));grid on
 %   title('CF of a linear combination of independent Rayleigh RVs')
@@ -92,7 +92,7 @@ function cf = cf_LogRV_RayleighNC(t,sigma,delta,coef,niid,tol)
 %   cf    = @(t) cf_LogRV_RayleighNC(t,sigma,delta,coef);
 %   clear options
 %   options.N = 2^10;
-%   x = linspace(-15,20,201);
+%   x = linspace(-3,7,201);
 %   prob = [0.9 0.95 0.975 0.99];
 %   result = cf2DistGP(cf,x,prob,options);
 %
@@ -138,7 +138,6 @@ end
 % RVs (expressed by using cf_LogRV_ChiNC)
 df    = 2;
 shift = sum(coef.*log(sigma));
-cf    = exp(1i*t*shift) .* ... 
-        cf_LogRV_ChiSquareNC(t,df,delta,sigma.*coef,niid,tol);
+cf    = exp(1i*t*shift) .* cf_LogRV_ChiNC(t,df,delta,coef,niid,tol);
     
 end
