@@ -16,7 +16,7 @@ function cf = cf_Rayleigh(t,sigma,coef,niid)
 %  where cf_Chi(t,df) denotes the characteristic function of the Chi
 %  distribution with df degrees of freedom. Hence, the characteristic
 %  function of Y is 
-%   cf(t) = Prod ( cf_Rayleigh(t,sigma_i) )
+%   cf(t) = Prod ( cf_Rayleigh(coef_i*t,sigma_i) )
 %
 % SYNTAX:
 %  cf = cf_Rayleigh(t,sigma,coef,niid)
