@@ -27,7 +27,7 @@ function cf = cf_LogRV_RayleighNC(t,sigma,delta,coef,niid,tol)
 %   cf(t) = Prod ( cf_LogRV_RayleighNC(coef_i*t,sigma_i,delta_i) )
 %
 % SYNTAX:
-%  cf = cf_LogRV_RayleighNC(t,sigma,delta,coef,niid)
+%  cf = cf_LogRV_RayleighNC(t,sigma,delta,coef,niid,tol)
 % 
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -96,13 +96,13 @@ function cf = cf_LogRV_RayleighNC(t,sigma,delta,coef,niid,tol)
 %   prob = [0.9 0.95 0.975 0.99];
 %   result = cf2DistGP(cf,x,prob,options);
 %
-% SEE ALSO: cf_LogRV_ChiNC, cf_LogRV_Rayleigh
+% SEE ALSO: cf_LogRV_ChiNC, cf_LogRV_Rayleigh, cf_LogRV_MaxwellBoltzmannNC
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 07-Oct-2018 18:36:25
 
 %% ALGORITHM
-%  cf = cf_LogRV_RayleighNC(t,sigma,delta,coef,niid)
+%  cf = cf_LogRV_RayleighNC(t,sigma,delta,coef,niid,tol)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 6);

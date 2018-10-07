@@ -10,7 +10,7 @@ function cf = cf_LogRV_MaxwellBoltzmann(t,sigma,coef,niid)
 %
 %  cf_LogRV_MaxwellBoltzmann evaluates the characteristic function cf(t) of
 %  Y = sum_{i=1}^N coef_i * log(X_i), where X_i ~ MaxwellBoltzmann(sigma_i)
-%  are inedependent Maxwell-Boltzmann distributed RVs with the scale
+%  are inedependent non-central Maxwell-Boltzmann distributed RVs with the scale
 %  parameters sigma_i > 0, for i  = 1,...,N.
 %
 %  The characteristic function of log(X) with X ~ MaxwellBoltzmann(sigma)
@@ -73,7 +73,7 @@ function cf = cf_LogRV_MaxwellBoltzmann(t,sigma,coef,niid)
 %   prob = [0.9 0.95 0.975 0.99];
 %   result = cf2DistGP(cf,x,prob,options);
 %
-% See also: cf_MaxwellBoltzmann, cf_LogRV_Chi, cf_LogRV_Rayleigh 
+% SEE ALSO: cf_MaxwellBoltzmann, cf_LogRV_Chi, cf_LogRV_Rayleigh 
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 07-Oct-2018 19:10:00

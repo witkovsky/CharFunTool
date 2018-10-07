@@ -1,4 +1,4 @@
-function cf = cf_MaxwellBoltzmannNC(t,scale,delta,coef,niid)
+function cf = cf_MaxwellBoltzmannNC(t,scale,delta,coef,niid,tol)
 %cf_MaxwellBoltzmannNC 
 %  Characteristic function of a linear combination (resp. convolution) of
 %  independent non-central Maxwell-Boltzmann distributed random variables,
@@ -26,7 +26,7 @@ function cf = cf_MaxwellBoltzmannNC(t,scale,delta,coef,niid)
 %   cf(t) = Prod ( cf_MaxwellBoltzmannNC(t,scale_i,delta_i) )
 %
 % SYNTAX:
-%  cf = cf_MaxwellBoltzmannNC(t,scale,delta,coef,niid)
+%  cf = cf_MaxwellBoltzmannNC(t,scale,delta,coef,niid,tol)
 % 
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -45,7 +45,9 @@ function cf = cf_MaxwellBoltzmannNC(t,scale,delta,coef,niid)
 %  niid  - scalar convolution coeficient niid, such that Z = Y + ... + Y is
 %          sum of niid iid random variables Y, where each Y = sum_{i=1}^N
 %          coef(i) * log(X_i) is independently and identically distributed
-%          random variable. If empty, default value is niid = 1.   
+%          random variable. If empty, default value is niid = 1.
+%  tol   - tolerance factor for selecting the Poisson weights, i.e. such
+%          that PoissProb > tol. If empty, default value is tol = 1e-12.
 %
 % WIKIPEDIA:
 %  https://en.wikipedia.org/wiki/Noncentral_chi_distribution
@@ -106,10 +108,11 @@ function cf = cf_MaxwellBoltzmannNC(t,scale,delta,coef,niid)
 % Ver.: 5-Oct-2018 17:08:51
 
 %% ALGORITHM
-%  cf = cf_MaxwellBoltzmannNC(t,scale,delta,coef,niid)
+%  cf = cf_MaxwellBoltzmannNC(t,scale,delta,coef,niid,tol)
 
 %% CHECK THE INPUT PARAMETERS
-narginchk(1, 5);
+narginchk(1, 6);
+if nargin < 6, tol   = []; end
 if nargin < 5, niid  = []; end
 if nargin < 4, coef  = []; end
 if nargin < 3, delta = []; end
@@ -135,6 +138,6 @@ end
 
 % CF of the linear combination of the Maxwell-Boltzmann RVs (by using Chi)
 df = 3;
-cf = cf_ChiNC(t,df,delta./scale,scale.*coef,niid);
+cf = cf_ChiNC(t,df,delta./scale,scale.*coef,niid,tol);
 
 end
