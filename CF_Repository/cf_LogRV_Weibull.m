@@ -44,7 +44,7 @@ function cf = cf_LogRV_Weibull(t,alpha,beta,coef,niid)
 %
 % REMARK:
 %  The probability density function of a Weibull random variable is
-%    pdf(x) = beta/alpha * (x/alpha)^{k-1} * exp(-(x/alpha)^k),
+%    pdf(x) = beta/alpha * (x/alpha)^{beta-1} * exp(-(x/alpha)^beta),
 %  for x >=0, where beta > 0 is the shape parameter and alpha > 0 is the
 %  scale parameter of the distribution. The characteristic function of
 %  log(X) is given by  
@@ -52,23 +52,21 @@ function cf = cf_LogRV_Weibull(t,alpha,beta,coef,niid)
 % 
 % EXAMPLE 1:
 % % CF of a linear combination of independent log-transformed Weibull RVs
-%   coef   = [1 2 3 4 5];
-%   coef   = -coef/sum(coef);
+%   coef   = [1 2 3];
 %   alpha  = 5/2;
 %   beta   = 3/2;
-%   t      = linspace(-20,20,1001);
+%   t      = linspace(-2,2,1001);
 %   cf     = cf_LogRV_Weibull(t,alpha,beta,coef);
 %   figure; plot(t,real(cf),t,imag(cf)); grid on;
 %   title('CF of a combination of independent log-transformed Weibull RVs')
 %
 % EXAMPLE 2:
 % % PDF/CDF of a linear combination of independent log-Gamma RVs
-%   coef   = [1 2 3 4 5];
-%   coef   = -coef/sum(coef);
+%   coef   = [1 2 3];
 %   alpha  = 5/2;
 %   beta   = 3/2;
 %   cf     = @(t) cf_LogRV_Weibull(t,alpha,beta,coef);
-%   x      = linspace(2,6);
+%   x      = linspace(-10,15);
 %   prob   = [.9,.95,.99];
 %   clear options
 %   options.SixSigmaRule = 8;
@@ -89,21 +87,15 @@ if nargin < 3, beta = []; end
 if nargin < 2, alpha = []; end
 
 %%
-if isempty(beta) && ~isempty(alpha)
-    beta = 1;
-elseif isempty(beta) && ~isempty(coef)
+if isempty(beta)
     beta = 1;
 end
 
-if isempty(alpha) && ~isempty(coef)
-    alpha = 1;
-elseif isempty(alpha) && ~isempty(beta)
+if isempty(alpha) 
     alpha = 1;
 end
 
-if isempty(coef) && ~isempty(beta)
-    coef = 1;
-elseif isempty(coef) && ~isempty(alpha)
+if isempty(coef) 
     coef = 1;
 end
 
@@ -120,9 +112,7 @@ end
 %% Characteristic function of linear combination 
 szt = size(t);
 t   = t(:);
-aux = 1i*t*coef./beta;
-aux = GammaLog(1-aux) + 1i*t*log(alpha);
-cf  = prod(exp(aux),2);
+cf  = prod(exp(GammaLog(1+1i*t*(coef./beta)) + 1i*t*(coef.*log(alpha))),2);
 cf  = reshape(cf,szt);
 cf(t==0) = 1;
 

@@ -56,6 +56,7 @@ cf_LogRV_MeansRatio
 cf_LogRV_MeansRatioW
 cf_LogRV_Rayleigh
 cf_LogRV_RayleighNC
+cf_LogRV_Rice
 cf_LogRV_Weibull
 cf_LogRV_WilksLambda
 cf_LogRV_WilksLambdaNC
