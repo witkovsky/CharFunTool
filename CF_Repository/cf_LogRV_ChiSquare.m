@@ -30,9 +30,9 @@ function cf = cf_LogRV_ChiSquare(t,df,coef,niid)
 %          variables.  If df is scalar, it is assumed that all degrees of
 %          freedom are equal. If empty, default value is df = 1. 
 %  coef  - vector of the coefficients of the linear combination of the
-%          logGamma random variables. If coef is scalar, it is assumed
-%          that all coefficients are equal. If empty, default value is
-%          coef = 1.
+%          log-transformed chi-square random variables. If coef is scalar,
+%          it is assumed that all coefficients are equal. If empty, default
+%          value is coef = 1.
 %  niid  - scalar convolution coeficient niid, such that Z = Y + ... + Y is
 %          sum of niid iid random variables Y, where each Y = sum_{i=1}^N
 %          coef(i) * log(X_i) is independently and identically distributed
@@ -46,7 +46,7 @@ function cf = cf_LogRV_ChiSquare(t,df,coef,niid)
 %   coef   = [1 2 3 4 5];
 %   weight = coef/sum(coef);
 %   df     = [1 2 3 4 5];
-%   t      = linspace(-20,20,1001);
+%   t      = linspace(-10,10,501);
 %   cf     = cf_LogRV_ChiSquare(t,df,weight);
 %   figure; plot(t,real(cf),t,imag(cf)); grid on;
 %   title('CF of a linear combination of minus log-ChiSquare RVs')
@@ -57,14 +57,15 @@ function cf = cf_LogRV_ChiSquare(t,df,coef,niid)
 %   weight = coef/sum(coef);
 %   df     = [1 2 3 4 5];
 %   cf     = @(t) cf_LogRV_ChiSquare(t,df,weight);
+%   x      = linspace(1,6);
+%   prob   = [0.9 0.95 0.99];
 %   clear options
 %   options.N = 2^12;
-%   prob = [0.9 0.95 0.99];
-%   result = cf2DistGP(cf,[],prob,options);
+%   result = cf2DistGP(cf,x,prob,options);
 %   disp(result)
 
-% (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 02-Jun-2017 12:08:24
+% (c) Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 07-Oct-2018 15:44:23
 
 %% ALGORITHM
 % cf = cf_LogRV_ChiSquare(t,df,coef,niid)

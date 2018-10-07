@@ -40,6 +40,9 @@ CFs of log-transformed random variables:
 
 cf_LogRV_Beta
 cf_LogRV_BetaNC
+cf_LogRV_Exponential
+cf_LogRV_Chi
+cf_LogRV_ChiNC
 cf_LogRV_ChiSquare
 cf_LogRV_ChiSquareNC
 cf_LogRV_FisherSnedecor
@@ -47,8 +50,11 @@ cf_LogRV_FisherSnedecorNC
 cf_LogRV_Gamma
 cf_LogRV_GammaNC
 cf_LogRV_InverseGamma
+cf_LogRV_MaxwellBoltzmann
 cf_LogRV_MeansRatio
 cf_LogRV_MeansRatioW
+cf_LogRV_Rayleigh
+cf_LogRV_RayleighNC
 cf_LogRV_Weibull
 cf_LogRV_WilksLambda
 cf_LogRV_WilksLambdaNC
@@ -68,6 +74,7 @@ cfS_Wigner
 
 CFs of non-negative probability distributions:
 
+cfX_Chi
 cfX_ChiSquare
 cfX_Exponential
 cfX_FisherSnedecor

@@ -4,8 +4,8 @@ function cf = cf_MaxwellBoltzmann(t,sigma,coef,niid)
 %  independent Maxwell-Boltzmann distributed random variables.     
 %  
 %  The Maxwell-Boltzmann distribution is a continuous probability
-%  distribution for positive-valued random variables. It is a chi
-%  distribution in three degrees of freedom.
+%  distribution for positive-valued random variables. It is a scaledd chi
+%  distribution with three degrees of freedom.
 %
 %  cf_MaxwellBoltzmann evaluates the characteristic function cf(t) of Y =
 %  sum_{i=1}^N coef_i * X_i, where X_i ~ MaxwellBoltzmann(sigma_i) are
@@ -17,7 +17,7 @@ function cf = cf_MaxwellBoltzmann(t,sigma,coef,niid)
 %  where cf_Chi(t,df) denotes the characteristic function of the Chi
 %  distribution with df degrees of freedom. Hence, the characteristic
 %  function of Y is 
-%   cf(t) = Prod ( cf_MaxwellBoltzmann(t,sigma_i) )
+%   cf(t) = Prod ( cf_MaxwellBoltzmann(coef_i*t,sigma_i) )
 %
 % SYNTAX:
 %  cf = cf_MaxwellBoltzmann(t,sigma,coef,niid)
@@ -25,7 +25,7 @@ function cf = cf_MaxwellBoltzmann(t,sigma,coef,niid)
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
 %  sigma - vector of the scale parameters of the Maxwell-Boltzmann
-%          distributed random variables. If sigma is scalar, it is assumed
+%          distributed random variables.  If sigma is scalar, it is assumed
 %          that all scale parameters are equal. If empty, default value is
 %          sigma = 1.
 %  coef  - vector of the coefficients of the linear combination of the
@@ -49,7 +49,7 @@ function cf = cf_MaxwellBoltzmann(t,sigma,coef,niid)
 %  momentum with each other or with their thermal environment.
 %  Mathematically, the Maxwell–Boltzmann distribution is the chi
 %  distribution with three degrees of freedom (the components of the
-%  velocity vector in Euclidean space), with a scale parameter measuring
+%  velocity vector in Euclidean space), with a sigma parameter measuring
 %  speeds in units proportional to the square root of T/m (the ratio of
 %  temperature and particle mass).       
 %

@@ -1,8 +1,8 @@
-function cf = cf_MaxwellBoltzmannNC(t,sigma,delta,coef,niid)
+function cf = cf_MaxwellBoltzmannNC(t,scale,delta,coef,niid,tol)
 %cf_MaxwellBoltzmannNC 
 %  Characteristic function of a linear combination (resp. convolution) of
 %  independent non-central Maxwell-Boltzmann distributed random variables,
-%  with the scale parameters sigma_i > 0, and the non-centrality parameters
+%  with the scale parameters scale_i > 0, and the non-centrality parameters
 %  delta_i >= 0, for i  = 1,...,N.      
 %  
 %  The non-central Maxwell-Boltzmann distribution is a continuous
@@ -11,37 +11,33 @@ function cf = cf_MaxwellBoltzmannNC(t,sigma,delta,coef,niid)
 %  freedom.  
 %
 %  cf_MaxwellBoltzmannNC evaluates the characteristic function cf(t) of Y =
-%  sum_{i=1}^N coef_i * X_i, where X_i~ MaxwellBoltzmannNC(sigma_i,delta_i)
+%  sum_{i=1}^N coef_i * X_i, where X_i~ MaxwellBoltzmannNC(scale_i,delta_i)
 %  are inedependent non-central Maxwell-Boltzmann distributed RVs with the
-%  scale parameters sigma_i > 0,  and the non-centrality parameters
+%  scale parameters scale_i > 0,  and the non-centrality parameters
 %  delta_i >= 0, for i  = 1,...,N.      
 %
-%  The characteristic function of X ~ MaxwellBoltzmannNC(sigma,delta) is
+%  The characteristic function of X ~ MaxwellBoltzmannNC(scale,delta) is
 %  defined by 
-%   cf_MaxwellBoltzmannNC(t) = cf_ChiNC(sigma*t,df=3,delta/sigma), 
+%   cf_MaxwellBoltzmannNC(t) = cf_ChiNC(scale*t,df=3,delta/scale), 
 %  where by cf_ChiNC(t,df,delta) we denote the characteristic function of
 %  the noncentral chi distribution with df degrees of freedom and the
 %  non-centrality parameter delta. Hence, the characteristic function of Y
 %  is  
-%   cf(t) = Prod ( cf_MaxwellBoltzmannNC(t,sigma_i,delta_i) )
+%   cf(t) = Prod ( cf_MaxwellBoltzmannNC(t,scale_i,delta_i) )
 %
 % SYNTAX:
-%  cf = cf_MaxwellBoltzmannNC(t,sigma,delta,coef,niid)
+%  cf = cf_MaxwellBoltzmannNC(t,scale,delta,coef,niid,tol)
 % 
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
-%  sigma - vector of the scale parameters of the Maxwell-Boltzmann
-%          distributed random variables.  If sigma is scalar, it is assumed
+%  scale - vector of the scale parameters of the Maxwell-Boltzmann
+%          distributed random variables.  If scale is scalar, it is assumed
 %          that all scale parameters are equal. If empty, default value is
-%          sigma = 1.
+%          scale = 1.
 %  delta - vector of the non-centrality parameters delta >= 0. If empty,
-%          default value is delta = 0.  Notice that each component of the
-%          non-centrality parameter delta can be interpreted as a square
-%          root of the sum of squared standardized means, delta_i =
-%          sqrt((mu_{i,1}/sigma_{i,1})^2 + (mu_{i,2}/sigma_{i,2})^2 +
-%          (mu_{i,3}/sigma_{i,3})^2), of the associated generating input
-%          variables X_i = sqrt(Z_{i,1}^2 + Z_{i,2}^2 + Z_{i,3}^2), where
-%          Z_{i,j} ~ N(mu_{i,j},sigma_{i,j}^2), j = 1,2,3.
+%          default value is delta = 0. Notice that the noncentrality
+%          parameter delta can be interpreted as a square root of the sum
+%          of squared means, delta = sqrt(sum_{i=1}^df mu_i^2).
 %  coef  - vector of the coefficients of the linear combination of the
 %          Maxwell-Boltzmann distributed random variables. If coef is
 %          scalar, it is assumed that all coefficients are equal. If empty,
@@ -49,31 +45,33 @@ function cf = cf_MaxwellBoltzmannNC(t,sigma,delta,coef,niid)
 %  niid  - scalar convolution coeficient niid, such that Z = Y + ... + Y is
 %          sum of niid iid random variables Y, where each Y = sum_{i=1}^N
 %          coef(i) * log(X_i) is independently and identically distributed
-%          random variable. If empty, default value is niid = 1.   
+%          random variable. If empty, default value is niid = 1.
+%  tol   - tolerance factor for selecting the Poisson weights, i.e. such
+%          that PoissProb > tol. If empty, default value is tol = 1e-12.
 %
 % WIKIPEDIA:
 %  https://en.wikipedia.org/wiki/Noncentral_chi_distribution
 %  https://en.wikipedia.org/wiki/Maxwell%E2%80%93Boltzmann_distribution
 %
 % NOTES (from Wikipedia)
-%  Mathematically, the Maxwell–Boltzmann distribution with sigma = 1 is the
+%  Mathematically, the Maxwell–Boltzmann distribution with scale = 1 is the
 %  chi distribution with three degrees of freedom (the components of the
 %  velocity vector in Euclidean space).     
 %
 % EXAMPLE 1:
-% % CF of the distribution of Maxwell-Boltzmann RV with sigma = 3
-%   sigma = 1;
+% % CF of the distribution of Maxwell-Boltzmann RV with scale = 3
+%   scale = 1;
 %   delta = 5;
 %   t     = linspace(-5,5,501);
-%   cf    = cf_MaxwellBoltzmannNC(t,sigma,delta);
+%   cf    = cf_MaxwellBoltzmannNC(t,scale,delta);
 %   figure; plot(t,real(cf),t,imag(cf));grid on
 %   title('CF of the non-central Maxwell-Boltzmann RV')
 %
 % EXAMPLE 2:
-% % PDF/CDF of the distribution of Maxwell-Boltzmann RV with sigma = 3
-%   sigma = 1;
+% % PDF/CDF of the distribution of Maxwell-Boltzmann RV with scale = 3
+%   scale = 1;
 %   delta = 5;
-%   cf    = @(t) cf_MaxwellBoltzmannNC(t,sigma,delta);
+%   cf    = @(t) cf_MaxwellBoltzmannNC(t,scale,delta);
 %   clear options
 %   options.N = 2^10;
 %   options.xMin = 0;
@@ -83,24 +81,24 @@ function cf = cf_MaxwellBoltzmannNC(t,sigma,delta,coef,niid)
 %
 % EXAMPLE 3: 
 % % CF of a linear combination of independent Maxwell-Boltzmann RVs
-%   sigma = [1 2 3];
+%   scale = [1 2 3];
 %   delta = [1 1 1];
 %   coef  = [1 1 1];
 %   t     = linspace(-2,2,501);
-%   cf    = cf_MaxwellBoltzmannNC(t,sigma,delta,coef);
+%   cf    = cf_MaxwellBoltzmannNC(t,scale,delta,coef);
 %   figure; plot(t,real(cf),t,imag(cf));grid on
 %   title('CF of a linear combination of independent Maxwell-Boltzmann RVs')
 %
 % EXAMPLE 4:
 % % PDF/CDF of a linear combination of independent Maxwell-Boltzmann RVs
-%   sigma = [1 2 3];
+%   scale = [1 2 3];
 %   delta = [1 1 1];
 %   coef  = [1 1 1];
-%   cf    = @(t) cf_MaxwellBoltzmannNC(t,sigma,delta,coef);
+%   cf    = @(t) cf_MaxwellBoltzmannNC(t,scale,delta,coef);
 %   clear options
 %   options.N = 2^10;
 %   options.xMin = 0;
-%   x = linspace(0,25,201);
+%   x = linspace(0,20,201);
 %   prob = [0.9 0.95 0.975 0.99];
 %   result = cf2DistGP(cf,x,prob,options);
 %
@@ -110,17 +108,18 @@ function cf = cf_MaxwellBoltzmannNC(t,sigma,delta,coef,niid)
 % Ver.: 5-Oct-2018 17:08:51
 
 %% ALGORITHM
-%  cf = cf_MaxwellBoltzmannNC(t,sigma,delta,coef,niid)
+%  cf = cf_MaxwellBoltzmannNC(t,scale,delta,coef,niid,tol)
 
 %% CHECK THE INPUT PARAMETERS
-narginchk(1, 5);
+narginchk(1, 6);
+if nargin < 6, tol   = []; end
 if nargin < 5, niid  = []; end
 if nargin < 4, coef  = []; end
 if nargin < 3, delta = []; end
-if nargin < 2, sigma = []; end
+if nargin < 2, scale = []; end
 
-if isempty(sigma)
-    sigma = 1;
+if isempty(scale)
+    scale = 1;
 end
 
 if isempty(delta)
@@ -131,28 +130,14 @@ if isempty(coef)
     coef = 1;
 end
 
-% Check/set equal dimensions for the vectors coef and sigma 
-[errorcode,coef,sigma,delta] = distchck(3,coef(:),sigma(:),delta(:));
+% Check/set equal dimensions for the vectors coef and scale 
+[errorcode,coef,scale,delta] = distchck(3,coef(:),scale(:),delta(:));
 if errorcode > 0
         error(message('InputSizeMismatch'));
 end
 
-%% CF OF THE LINEAR COMBINATION OF THE NON-CENTRAL MAXWELL-BOLTZMANN RVs
-
-%  REMARK
-%  Notice that there are two possibilities how to set the noncentrality
-%  parameter delta:
-%  1. Here, by default we assume that delta = sqrt(sum(mu_i^2/sigma_i^2)),
-%     which is normalized with respect to the scale parameter sigma.
-%  2. Alternatively, we can assume that delta represents fixed distance
-%     from the origin, which does not depend on the scale parameter sigma,
-%     i.e. delta = sqrt(sum(mu_i^2)). In this case use delta./sigma as the
-%     non-centrality parameter input:
-%     cf = cf_MaxwellBoltzmannNC(t,sigma,delta./sigma,coef,niid)
-
-df   = 3;
-coef = sigma.*coef;
-cf   = cf_ChiNC(t,df,delta,coef,niid);
-
+% CF of the linear combination of the Maxwell-Boltzmann RVs (by using Chi)
+df = 3;
+cf = cf_ChiNC(t,df,delta./scale,scale.*coef,niid,tol);
 
 end

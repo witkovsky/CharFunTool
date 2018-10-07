@@ -1,4 +1,4 @@
-function cf = cf_RayleighNC(t,sigma,delta,coef,niid)
+function cf = cf_RayleighNC(t,sigma,delta,coef,niid,tol)
 %cf_RayleighNC 
 %  Characteristic function of a linear combination (resp. convolution) of
 %  independent non-central Rayleigh distributed random variables, with the
@@ -26,7 +26,7 @@ function cf = cf_RayleighNC(t,sigma,delta,coef,niid)
 %   cf(t) = Prod ( cf_RayleighNC(t,sigma_i,delta_i) )
 %
 % SYNTAX:
-%  cf = cf_RayleighNC(t,sigma,delta,coef,niid)
+%  cf = cf_RayleighNC(t,sigma,delta,coef,niid,tol)
 % 
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -48,7 +48,9 @@ function cf = cf_RayleighNC(t,sigma,delta,coef,niid)
 %  niid  - scalar convolution coeficient niid, such that Z = Y + ... + Y is
 %          sum of niid iid random variables Y, where each Y = sum_{i=1}^N
 %          coef(i) * log(X_i) is independently and identically distributed
-%          random variable. If empty, default value is niid = 1.   
+%          random variable. If empty, default value is niid = 1.
+%  tol   - tolerance factor for selecting the Poisson weights, i.e. such
+%          that PoissProb > tol. If empty, default value is tol = 1e-12.
 %
 % WIKIPEDIA:
 %  https://en.wikipedia.org/wiki/Noncentral_chi_distribution
@@ -122,10 +124,11 @@ function cf = cf_RayleighNC(t,sigma,delta,coef,niid)
 % Ver.: 06-Oct-2018 10:21:50
 
 %% ALGORITHM
-%  cf = cf_RayleighNC(t,sigma,delta,coef,niid)
+%  cf = cf_RayleighNC(t,sigma,delta,coef,niid,tol)
 
 %% CHECK THE INPUT PARAMETERS
-narginchk(1, 5);
+narginchk(1, 6);
+if nargin < 6, tol   = []; end
 if nargin < 5, niid  = []; end
 if nargin < 4, coef  = []; end
 if nargin < 3, delta = []; end
@@ -150,20 +153,11 @@ if errorcode > 0
 end
 
 %% CF OF THE LINEAR COMBINATION OF THE NON-CENTRAL RAYLEIGH RVs
-
-%  REMARK
-%  Notice that there are two possibilities how to set the noncentrality
-%  parameter delta:
-%  1. Here, by default we assume that delta = sqrt(sum(mu_i^2/sigma_i^2)),
-%     which is normalized with respect to the scale parameter sigma.
-%  2. Alternatively, we can assume that delta represents fixed distance
-%     from the origin, which does not depend on the scale parameter sigma,
-%     i.e. delta = sqrt(sum(mu_i^2)). In this case use delta./sigma as the
-%     non-centrality parameter input:
-%     cf = cf_MaxwellBoltzmannNC(t,sigma,delta./sigma,coef,niid)
+%  Here, we assume delta = sqrt(sum(mu_i^2/sigma_i^2))
+%  Alternatively, if delta = sqrt(sum(mu_i^2)), set delta = delta./sigma;
 
 df   = 2;
 coef = sigma.*coef;
-cf   = cf_ChiNC(t,df,delta,coef,niid);
+cf   = cf_ChiNC(t,df,delta,coef,niid,tol);
 
 end
