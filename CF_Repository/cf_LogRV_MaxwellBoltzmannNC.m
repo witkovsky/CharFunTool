@@ -17,11 +17,11 @@ function cf = cf_LogRV_MaxwellBoltzmannNC(t,sigma,delta,coef,niid,tol)
 %
 %  The characteristic function of log(X) with X ~ MaxwellBoltzmannNC(sigma,
 %  delta) is 
-%   cf_LogRV_MaxwellBoltzmannNC(t) = cf_LogRV_ChiNC(sigma*t,delta,df=3) ...
-%                                 * exp(1i*t*log(sigma))
+%   cf_LogRV_MaxwellBoltzmannNC(t) = exp(1i*t*log(sigma)) ...
+%                                    * cf_LogRV_ChiNC(t,df,delta)                          
 %  where cf_LogRV_ChiNC(t,df,delta) denotes the characteristic function of
-%  the log-transformed non-central Chi distribution with df degrees of
-%  freedom and the non-centrality parameter delta.
+%  the log-transformed non-central Chi distribution, here with df = 3
+%  degrees of freedom and the non-centrality parameter delta.
 %
 %  Hence, the characteristic function of Y is 
 %   cf(t) = Prod ( cf_LogRV_MaxwellBoltzmannNC(coef_i*t,sigma_i,delta_i) )
@@ -58,7 +58,7 @@ function cf = cf_LogRV_MaxwellBoltzmannNC(t,sigma,delta,coef,niid,tol)
 % % CF of the log-transformed non-central Maxwell-Boltzmann RV
 %   sigma = 1;
 %   delta = 5;
-%   t     = linspace(-10,10,501);
+%   t     = linspace(-20,20,501);
 %   cf    = cf_LogRV_MaxwellBoltzmannNC(t,sigma,delta);
 %   figure; plot(t,real(cf),t,imag(cf));grid on
 %   title('CF of the log-transformed non-central Maxwell-Boltzmann RV')
@@ -70,7 +70,7 @@ function cf = cf_LogRV_MaxwellBoltzmannNC(t,sigma,delta,coef,niid,tol)
 %   cf    = @(t) cf_LogRV_MaxwellBoltzmannNC(t,sigma,delta);
 %   clear options
 %   options.N = 2^10;
-%   x = linspace(-2,4,201);
+%   x = linspace(0.5,2.5,201);
 %   prob = [0.9 0.95 0.975 0.99];
 %   result = cf2DistGP(cf,x,prob,options);
 %
@@ -79,7 +79,7 @@ function cf = cf_LogRV_MaxwellBoltzmannNC(t,sigma,delta,coef,niid,tol)
 %   sigma = [1 2 3];
 %   delta = [1 1 1];
 %   coef  = [1 1 1];
-%   t     = linspace(-2,2,501);
+%   t     = linspace(-5,5,501);
 %   cf    = cf_LogRV_MaxwellBoltzmannNC(t,sigma,delta,coef);
 %   figure; plot(t,real(cf),t,imag(cf));grid on
 %   title('CF of a combinantion of log-transformed non-central M-B RV')
@@ -92,7 +92,7 @@ function cf = cf_LogRV_MaxwellBoltzmannNC(t,sigma,delta,coef,niid,tol)
 %   cf    = @(t) cf_LogRV_MaxwellBoltzmannNC(t,sigma,delta,coef);
 %   clear options
 %   options.N = 2^10;
-%   x = linspace(-10,20,201);
+%   x = linspace(0,6,201);
 %   prob = [0.9 0.95 0.975 0.99];
 %   result = cf2DistGP(cf,x,prob,options);
 %
@@ -134,7 +134,6 @@ end
 % Maxwell-Boltzmann RVs (expressed by using cf_LogRV_ChiNC) 
 df    = 3;
 shift = sum(coef.*log(sigma));
-cf    = exp(1i*t*shift) .* ... 
-        cf_LogRV_ChiSquareNC(t,df,delta,sigma.*coef,niid,tol);
+cf    = exp(1i*t*shift) .* cf_LogRV_ChiNC(t,df,delta,coef,niid,tol);
 
 end
