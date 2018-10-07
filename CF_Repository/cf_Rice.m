@@ -2,14 +2,15 @@ function cf = cf_Rice(t,shift,sigma,coef,niid)
 %cf_Rice 
 %  Characteristic function of a linear combination (resp. convolution) of
 %  independent non-central Rice distributed random variables, with the
-%  location (non-centrality) parameters shift_i >= 0, and the scale
-%  parameters sigma_i > 0, for i  = 1,...,N. 
+%  location (non-centrality) parameters shift_i >= 0 (which can be
+%  interpreted as the distance between the reference point and the center
+%  of the bivariate distribution), and the scale parameters sigma_i > 0,
+%  for i  = 1,...,N.
 %  
-%  The non-central Rice distribution is a continuous probability
-%  distribution for positive-valued random variables. It is a special case
-%  of the non-central chi distribution with three degrees of freedom. The
-%  Rice distribution is also known as the non-central distribution Rayleigh
-%  distribution.
+%  The Rice distribution is a continuous probability distribution for
+%  positive-valued random variables. It is a special case of the
+%  non-central chi distribution with two degrees of freedom. The Rice
+%  distribution is also related to the non-central Rayleigh distribution.
 %
 %  cf_Rice evaluates the characteristic function cf(t) of Y = sum_{i=1}^N
 %  coef_i * X_i, where X_i~ RiceNC(shift_i,sigma_i) are inedependent
@@ -52,7 +53,15 @@ function cf = cf_Rice(t,shift,sigma,coef,niid)
 %
 % WIKIPEDIA:
 %  https://en.wikipedia.org/wiki/Noncentral_chi_distribution
-%  https://en.wikipedia.org/wiki/Rice_distribution   
+%  https://en.wikipedia.org/wiki/Rice_distribution  
+%
+% REMARK:
+%  The probability density function of the Rice distribution with with the
+%  location parameter shift >= 0, and the scale parameter sigma > 0 is 
+%  pdf(x|shift,sigma) = x\sigma^2 * exp((-(x^2+shift^2)/(2*sigma^2)) ...
+%                       * besseli(0,(x*shift)/sigma^2),
+%  where besseli(0,z) is the modified Bessel function of the first kind
+%  with order zero. 
 %
 % EXAMPLE 1:
 % % CF of the distribution of Rice RV with sigma = 3
