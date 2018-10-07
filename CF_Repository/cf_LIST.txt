@@ -40,6 +40,7 @@ CFs of log-transformed random variables:
 
 cf_LogRV_Beta
 cf_LogRV_BetaNC
+cf_LogRV_Exponential
 cf_LogRV_ChiSquare
 cf_LogRV_ChiSquareNC
 cf_LogRV_FisherSnedecor
