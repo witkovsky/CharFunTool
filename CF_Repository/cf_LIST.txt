@@ -68,6 +68,7 @@ cfS_Wigner
 
 CFs of non-negative probability distributions:
 
+cfX_Chi
 cfX_ChiSquare
 cfX_Exponential
 cfX_FisherSnedecor
