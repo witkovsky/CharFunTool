@@ -99,9 +99,10 @@ if errorcode > 0
         error(message('InputSizeMismatch'));
 end
 
-% CF of the linear combination of the Rayleigh RVs (expressed by using Chi)
+% CF of the linear combination of the log-transformed Rayleigh RVs
+% (expressed by using cf_LogRV_Chi) 
 df    = 2;
 shift = sum(coef.*log(sigma));
-cf = exp(1i*t*shift) .* cf_LogRV_Chi(t,df,sigma.*coef,niid);
+cf    = exp(1i*t*shift) .* cf_LogRV_Chi(t,df,sigma.*coef,niid);
 
 end

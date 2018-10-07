@@ -1,4 +1,4 @@
-function cf = cf_LogRV_RayleighNC(t,sigma,delta,coef,niid)
+function cf = cf_LogRV_RayleighNC(t,sigma,delta,coef,niid,tol)
 %cf_LogRV_RayleighNC 
 %  Characteristic function of a linear combination (resp. convolution) of
 %  independent LOG-TRANSFORMED NON-CENTAL RAYLEIGH distributed random
@@ -46,7 +46,9 @@ function cf = cf_LogRV_RayleighNC(t,sigma,delta,coef,niid)
 %  niid  - scalar convolution coeficient niid, such that Z = Y + ... + Y is
 %          sum of niid iid random variables Y, where each Y = sum_{i=1}^N
 %          coef(i) * log(X_i) is independently and identically distributed
-%          random variable. If empty, default value is niid = 1.   
+%          random variable. If empty, default value is niid = 1.  
+%  tol   - tolerance factor for selecting the Poisson weights, i.e. such
+%          that PoissProb > tol. If empty, default value is tol = 1e-12.
 %
 % WIKIPEDIA:
 %  https://en.wikipedia.org/wiki/Rayleigh_distribution
@@ -68,8 +70,7 @@ function cf = cf_LogRV_RayleighNC(t,sigma,delta,coef,niid)
 %   cf    = @(t) cf_LogRV_RayleighNC(t,sigma,delta);
 %   clear options
 %   options.N = 2^10;
-%   options.xMin = 0;
-%   x = linspace(0,10,201);
+%   x = linspace(-3,4,201);
 %   prob = [0.9 0.95 0.975 0.99];
 %   result = cf2DistGP(cf,x,prob,options);
 %
@@ -78,7 +79,7 @@ function cf = cf_LogRV_RayleighNC(t,sigma,delta,coef,niid)
 %   sigma = [1 2 3];
 %   delta = [1 1 1];
 %   coef  = [1 1 1];
-%   t     = linspace(-2,2,501);
+%   t     = linspace(-1.5,1.5,501);
 %   cf    = cf_LogRV_RayleighNC(t,sigma,delta,coef);
 %   figure; plot(t,real(cf),t,imag(cf));grid on
 %   title('CF of a linear combination of independent Rayleigh RVs')
@@ -91,8 +92,7 @@ function cf = cf_LogRV_RayleighNC(t,sigma,delta,coef,niid)
 %   cf    = @(t) cf_LogRV_RayleighNC(t,sigma,delta,coef);
 %   clear options
 %   options.N = 2^10;
-%   options.xMin = 0;
-%   x = linspace(0,20,201);
+%   x = linspace(-15,20,201);
 %   prob = [0.9 0.95 0.975 0.99];
 %   result = cf2DistGP(cf,x,prob,options);
 %
@@ -105,7 +105,8 @@ function cf = cf_LogRV_RayleighNC(t,sigma,delta,coef,niid)
 %  cf = cf_LogRV_RayleighNC(t,sigma,delta,coef,niid)
 
 %% CHECK THE INPUT PARAMETERS
-narginchk(1, 5);
+narginchk(1, 6);
+if nargin < 6, tol = []; end
 if nargin < 5, niid  = []; end
 if nargin < 4, coef  = []; end
 if nargin < 3, delta = []; end
@@ -133,8 +134,11 @@ end
 %  Here, we assume delta = sqrt(sum(mu_i^2/sigma_i^2))
 %  Alternatively, if delta = sqrt(sum(mu_i^2)), set delta = delta./sigma;
 
-df   = 2;
-coef = sigma.*coef;
-cf   = cf_ChiNC(t,df,delta,coef,niid);
-
+% CF of the linear combination of the log-transformed non-central Rayleigh
+% RVs (expressed by using cf_LogRV_ChiNC)
+df    = 2;
+shift = sum(coef.*log(sigma));
+cf    = exp(1i*t*shift) .* ... 
+        cf_LogRV_ChiSquareNC(t,df,delta,sigma.*coef,niid,tol);
+    
 end
