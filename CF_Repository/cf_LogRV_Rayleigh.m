@@ -9,15 +9,16 @@ function cf = cf_LogRV_Rayleigh(t,sigma,coef,niid)
 %
 %  cf_LogRV_Rayleigh evaluates the characteristic function cf(t) of Y =
 %  sum_{i=1}^N coef_i * log(X_i), where X_i ~ Rayleigh(sigma_i) are
-%  inedependent Rayleigh RVs with the scale parameters sigma_i > 0, for i
+%  independent Rayleigh RVs with the scale parameters sigma_i > 0, for i
 %  = 1,...,N. 
 %
 %  The characteristic function of log(X) with X ~ Rayleigh(sigma) is
 %   cf_LogRV_Rayleigh(t) = cf_LogRV_Chi(sigma*t,df=2) ...
 %                          * exp(1i*t*log(sigma))
 %  where cf_LogRV_ChiNC(t,df) denotes the characteristic function of the
-%  log-transformed Chi distribution with df degrees of freedom. Hence, the
-%  characteristic function of Y is 
+%  log-transformed Chi distribution with df degrees of freedom. 
+%  
+%  Hence, the characteristic function of Y is 
 %   cf(t) = Prod ( cf_LogRV_Rayleigh(coef_i*t,sigma_i) )
 %
 % SYNTAX:
