@@ -55,6 +55,7 @@ cf_LogRV_MaxwellBoltzmannNC
 cf_LogRV_MeansRatio
 cf_LogRV_MeansRatioW
 cf_LogRV_Nakagami
+cf_LogRV_NakagamiNC 
 cf_LogRV_Rayleigh
 cf_LogRV_RayleighNC
 cf_LogRV_Rice
