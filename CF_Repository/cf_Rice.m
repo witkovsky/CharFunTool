@@ -25,7 +25,7 @@ function cf = cf_Rice(t,distance,sigma,coef,niid,tol)
 %   cf(t) = Prod ( cf_Rice(coef_i*t,distance_i,sigma_i) )
 %
 % SYNTAX:
-%  cf = cf_Rice(t,distance,sigma,coef,niid)
+%  cf = cf_Rice(t,distance,sigma,coef,niid,tol)
 % 
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -114,7 +114,7 @@ function cf = cf_Rice(t,distance,sigma,coef,niid,tol)
 
 %% ALGORITHM
 %  cf_Rice is an alias name for cf_RayleighNC
-%  cf = cf_RayleighNC(t,distance,sigma,coef,niid);
+%  cf = cf_RayleighNC(t,distance,sigma,coef,niid,tol);
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 6);
