@@ -101,22 +101,11 @@ function cf = cf_ChiNC(t,df,delta,coef,niid,tol)
 %   prob = [0.9 0.95 0.99];
 %   result = cf2DistGP(cf,x,12,options)
 %
-% EXAMPLE 4:
-% % CDF/PDF of the Rice distribution with the specified distance delta
-% % between the reference point and center of the bivariate distribution
-%   df    = 2;
-%   delta = 4;
-%   cf = @(t) cf_ChiNC(t,df,delta);
-%   clear options;
-%   options.xMin = 0;
-%   x = linspace(0,8);
-%   prob = [0.9 0.95 0.99];
-%   result = cf2DistGP(cf,x,12,options)
-%
-% SEE ALSO:  cf_Chi
+% SEE ALSO:  cf_Chi, cf_LogRV_ChiNC, cf_LogRV_Rice, cf_LogRV_RayleighNC,
+% cf_LogRV_MaxwellBoltzmannNC 
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 05-Oct-2018 10:30:02
+% Ver.: 08-Oct-2018 11:57:58
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 6);

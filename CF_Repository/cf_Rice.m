@@ -113,8 +113,9 @@ function cf = cf_Rice(t,distance,sigma,coef,niid,tol)
 % Ver.: 07-Oct-2018 20:29:23
 
 %% ALGORITHM
-%  cf_Rice is an alias name for cf_RayleighNC
-%  cf = cf_RayleighNC(t,distance,sigma,coef,niid,tol);
+%  cf = cf_Rice(t,distance,sigma,coef,niid,tol)
+%  This is equivalent with the CF of non-central Rayleigh distribution
+%  cf = cf_RayleighNC(t,sigma,distance./sigma,coef,niid,tol);
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 6);
@@ -129,6 +130,4 @@ delta = distance./sigma;
 coef  = sigma.*coef;
 cf    = cf_ChiNC(t,df,delta,coef,niid,tol);
 
-% % This is equivalent with the CF of non-central Rayleigh distribution
-% cf = cf_RayleighNC(t,sigma,delta,coef,niid,tol);
 end
