@@ -48,7 +48,7 @@ function cf = cf_LogRV_MaxwellBoltzmann(t,sigma,coef,niid)
 % EXAMPLE 1:
 % % CF of the distribution of Maxwell-Boltzmann RV with sigma = 3
 %   sigma = 3;
-%   t     = linspace(-5,5,501);
+%   t     = linspace(-10,10,501);
 %   cf    = cf_LogRV_MaxwellBoltzmann(t,sigma);
 %   figure; plot(t,real(cf),t,imag(cf));grid on
 %   title('CF of the Maxwell-Boltzmann RV with sigma = 3')
@@ -57,7 +57,7 @@ function cf = cf_LogRV_MaxwellBoltzmann(t,sigma,coef,niid)
 % % CF of a linear combination of independent Maxwell-Boltzmann RVs
 %   sigma = [1 2 3];
 %   coef  = [1 1 1];
-%   t     = linspace(-3,3,501);
+%   t     = linspace(-5,5,501);
 %   cf    = cf_LogRV_MaxwellBoltzmann(t,sigma,coef);
 %   figure; plot(t,real(cf),t,imag(cf));grid on
 %   title('CF of a linear combination of independent Maxwell-Boltzmann RVs')
@@ -69,7 +69,7 @@ function cf = cf_LogRV_MaxwellBoltzmann(t,sigma,coef,niid)
 %   cf    = @(t) cf_LogRV_MaxwellBoltzmann(t,sigma,coef);
 %   clear options
 %   options.N = 2^10;
-%   x = linspace(-5,10,201);
+%   x = linspace(-2,6,201);
 %   prob = [0.9 0.95 0.975 0.99];
 %   result = cf2DistGP(cf,x,prob,options);
 %
@@ -105,6 +105,6 @@ end
 % (expressed by using cf_LogRV_Chi) 
 df    = 3;
 shift = sum(coef.*log(sigma));
-cf    = exp(1i*t*shift) .* cf_LogRV_Chi(t,df,sigma.*coef,niid);
+cf    = exp(1i*t*shift) .* cf_LogRV_Chi(t,df,coef,niid);
 
 end
