@@ -38,7 +38,8 @@ function cf = cf_LogRV_RayleighNC(t,sigma,delta,coef,niid,tol)
 %  delta - vector of the non-centrality parameters delta >= 0. If empty,
 %          default value is delta = 0. Notice that the noncentrality
 %          parameter delta can be interpreted as a square root of the sum
-%          of squared means, delta = sqrt(sum_{i=1}^2 mu_i^2).
+%          of standardized squared means, delta = sqrt(sum_{i=1}^2
+%          mu_i^2/sigma^2_i). 
 %  coef  - vector of the coefficients of the linear combination of the
 %          log-transformed non-central Rayleigh distributed random
 %          variables. If coef is scalar, it is assumed that all
@@ -99,7 +100,7 @@ function cf = cf_LogRV_RayleighNC(t,sigma,delta,coef,niid,tol)
 % SEE ALSO: cf_LogRV_ChiNC, cf_LogRV_Rayleigh, cf_LogRV_MaxwellBoltzmannNC
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 07-Oct-2018 18:36:25
+% Ver.: 08-Oct-2018 23:48:44
 
 %% ALGORITHM
 %  cf = cf_LogRV_RayleighNC(t,sigma,delta,coef,niid,tol)
@@ -130,7 +131,7 @@ if errorcode > 0
         error(message('InputSizeMismatch'));
 end
 
-%% CF OF THE LINEAR COMBINATION OF THE NON-CENTRAL RAYLEIGH RVs
+%% CF OF THE LINEAR COMBINATION OF LOG-TRANSFORMED NON-CENTRAL RAYLEIGH RVs
 %  Here, we assume delta = sqrt(sum(mu_i^2/sigma_i^2))
 %  Alternatively, if delta = sqrt(sum(mu_i^2)), set delta = delta./sigma;
 

@@ -37,7 +37,8 @@ function cf = cf_MaxwellBoltzmannNC(t,scale,delta,coef,niid,tol)
 %  delta - vector of the non-centrality parameters delta >= 0. If empty,
 %          default value is delta = 0. Notice that the noncentrality
 %          parameter delta can be interpreted as a square root of the sum
-%          of squared means, delta = sqrt(sum_{i=1}^df mu_i^2).
+%          of standardized squared means, delta = sqrt(sum_{i=1}^3
+%          mu_i^2/sigma^2_i). 
 %  coef  - vector of the coefficients of the linear combination of the
 %          Maxwell-Boltzmann distributed random variables. If coef is
 %          scalar, it is assumed that all coefficients are equal. If empty,
@@ -98,14 +99,14 @@ function cf = cf_MaxwellBoltzmannNC(t,scale,delta,coef,niid,tol)
 %   clear options
 %   options.N = 2^10;
 %   options.xMin = 0;
-%   x = linspace(0,20,201);
+%   x = linspace(0,25,201);
 %   prob = [0.9 0.95 0.975 0.99];
 %   result = cf2DistGP(cf,x,prob,options);
 %
-% See also: cf_ChiNC, cf_MaxwellBoltzmann 
+% SEE ALSO: cf_ChiNC, cf_MaxwellBoltzmann 
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 5-Oct-2018 17:08:51
+% Ver.: 08-Oct-2018 23:48:44
 
 %% ALGORITHM
 %  cf = cf_MaxwellBoltzmannNC(t,scale,delta,coef,niid,tol)
@@ -136,8 +137,11 @@ if errorcode > 0
         error(message('InputSizeMismatch'));
 end
 
-% CF of the linear combination of the Maxwell-Boltzmann RVs (by using Chi)
+%% CF OF THE NON-CENTRAL Maxwell-Boltzmann RVs (expressed by cf_ChiNC) 
+%  Here, we assume delta = sqrt(sum(mu_i^2/sigma_i^2))
+%  Alternatively, if delta = sqrt(sum(mu_i^2)), set delta = delta./sigma;
+
 df = 3;
-cf = cf_ChiNC(t,df,delta./scale,scale.*coef,niid,tol);
+cf = cf_ChiNC(t,df,delta,scale.*coef,niid,tol);
 
 end
