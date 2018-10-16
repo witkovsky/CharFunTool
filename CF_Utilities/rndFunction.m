@@ -1,12 +1,12 @@
-function rnd = rndFunction(dim,xOld,cdfOld)
-%rndFunction generates array of size dim of random numbers from the
+function rnd = RndFunction(dim,xOld,cdfOld)
+%RndFunction generates array of size dim of random numbers from the
 %   distribution specified by the CDF from the pre-calculated (known) 
 %   values of xOld, and cdfOld. The evaluation is based on computed
 %   quantiles (from the CDF by using the barycentric interpolation) at
 %   probabilities generated from the uniform distribution.
 %
 % SYNTAX:
-%   rnd = rndFunction(n,xOld,cdfOld)
+%   rnd = RndFunction(n,xOld,cdfOld)
 %
 % INPUT:
 %  dim     - size of the array of generated random numbers from the
@@ -25,10 +25,11 @@ function rnd = rndFunction(dim,xOld,cdfOld)
 %  cf      = @(t) exp(-t.^2/2);
 %  clear options
 %  options.isPlot = false;
+%  options.isInterp = true;
 %  result  = cf2DistGP(cf,[],[],options);
 %  xOld    = result.x;
 %  cdfOld  = result.cdf;
-%  rnd     = @(dim) rndFunction(dim,xOld,cdfOld);
+%  rnd     = @(dim) RndFunction(dim,xOld,cdfOld);
 %  dim = [10000,1];
 %  hist(rnd(dim),51);
 %
@@ -36,8 +37,9 @@ function rnd = rndFunction(dim,xOld,cdfOld)
 %  cf      = @(t) exp(-t.^2/2);
 %  clear options
 %  options.isPlot = false;
+%  options.isInterp = true;
 %  result  = cf2DistGP(cf,[],[],options);
-%  rnd     = @(dim) rndFunction(dim,result);
+%  rnd     = @(dim) RndFunction(dim,result);
 %  dim = [10000,1];
 %  hist(rnd(dim),51);
 
@@ -66,7 +68,7 @@ if isscalar(dim)
 end
 
 prob = rand(dim(1)*dim(2),1);
-rnd  = qfFunction(prob,xOld,cdfOld);
+rnd  = QfFunction(prob,xOld,cdfOld);
 rnd  = reshape(rnd,dim);
 
 end

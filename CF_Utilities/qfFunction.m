@@ -1,11 +1,11 @@
-function qf = qfFunction(prob,xOld,cdfOld)
-%qfFunction evaluates the interpolant for the quantile function (QF) at new
+function qf = QfFunction(prob,xOld,cdfOld)
+%QfFunction evaluates the interpolant for the quantile function (QF) at new
 %  specified values of prob, calculated from the pre-calculated (known)
 %  values of xOld, and cdfOld. The evaluation is based on the barycentric
 %  interpolation.  
 %
 % SYNTAX:
-%  qf = qfFunction(prob,xOld,cdfOld)
+%  qf = QfFunction(prob,xOld,cdfOld)
 %
 % INPUT:
 %  prob    - vector of probabilities from (0,1) where the QF is evaluated, 
@@ -21,10 +21,11 @@ function qf = qfFunction(prob,xOld,cdfOld)
 %  cf     = @(t) exp(-t.^2/2);
 %  clear options
 %  options.isPlot = false;
+%  options.isInterp = true;
 %  result = cf2DistGP(cf,[],[],options);
 %  xOld   = result.x;
 %  cdfOld  = result.cdf;
-%  qf     = @(prob) qfFunction(prob,xOld,cdfOld);
+%  qf     = @(prob) QfFunction(prob,xOld,cdfOld);
 %  prob   = linspace(0,1,1001)';
 %  plot(prob,qf(prob))
 %
@@ -32,8 +33,9 @@ function qf = qfFunction(prob,xOld,cdfOld)
 %  cf     = @(t) exp(-t.^2/2);
 %  clear options
 %  options.isPlot = false;
+%  options.isInterp = true;
 %  result = cf2DistGP(cf,[],[],options);
-%  qf     = @(prob) qfFunction(prob,result);
+%  qf     = @(prob) QfFunction(prob,result);
 %  prob   = linspace(0,1,1001)';
 %  plot(prob,qf(prob))
 

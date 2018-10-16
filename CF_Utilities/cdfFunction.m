@@ -1,10 +1,10 @@
-function cdf = cdfFunction(xNew,xOld,cdfOld)
-%cdfFunction evaluates the interpolant for the CDF at new specified values
+function cdf = CdfFunction(xNew,xOld,cdfOld)
+%CdfFunction evaluates the interpolant for the CDF at new specified values
 %  of x, calculated from the pre-calculated (known) values of xOld, and
 %  cdfOld. The evaluation is based on the barycentric interpolation. 
 %
 % SYNTAX:
-%  cdf = cdfFunction(xNew,xOld,cdfOld)
+%  cdf = CdfFunction(xNew,xOld,cdfOld)
 %
 % INPUT:
 %  xNew    - vector of x-values where the CDF is evaluated, 
@@ -20,10 +20,11 @@ function cdf = cdfFunction(xNew,xOld,cdfOld)
 %  cf     = @(t) exp(-t.^2/2);
 %  clear options
 %  options.isPlot = false;
+%  options.isInterp = true;
 %  result = cf2DistGP(cf,[],[],options);
 %  xOld   = result.x;
 %  cdfOld = result.cdf;
-%  cdf = @(x) cdfFunction(x,xOld,cdfOld);
+%  cdf = @(x) CdfFunction(x,xOld,cdfOld);
 %  x = linspace(-10,10,1001)';
 %  plot(x,cdf(x))
 %
@@ -31,8 +32,9 @@ function cdf = cdfFunction(xNew,xOld,cdfOld)
 %  cf     = @(t) exp(-t.^2/2);
 %  clear options
 %  options.isPlot = false;
+%  options.isInterp = true;
 %  result = cf2DistGP(cf,[],[],options);
-%  cdf = @(x) cdfFunction(x,result);
+%  cdf = @(x) CdfFunction(x,result);
 %  x = linspace(-10,10,1001)';
 %  plot(x,cdf(x))
 

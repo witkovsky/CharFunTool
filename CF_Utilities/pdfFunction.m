@@ -1,10 +1,10 @@
-function pdf = pdfFunction(xNew,xOld,pdfOld)
-%pdfFunction evaluates the interpolant for the PDF at new specified values
+function pdf = PdfFunction(xNew,xOld,pdfOld)
+%PdfFunction evaluates the interpolant for the PDF at new specified values
 %  of x, calculated from the pre-calculated (known) values of xOld, and
 %  pdfOld. The evaluation is based on the barycentric interpolation. 
 %
 % SYNTAX:
-%  pdf = pdfFunction(xNew,xOld,pdfOld)
+%  pdf = PdfFunction(xNew,xOld,pdfOld)
 %
 % INPUT:
 %  xNew    - vector of x-values where the PDF is evaluated, 
@@ -20,10 +20,11 @@ function pdf = pdfFunction(xNew,xOld,pdfOld)
 %  cf     = @(t) exp(-t.^2/2);
 %  clear options
 %  options.isPlot = false;
+%  options.isInterp = true;
 %  result = cf2DistGP(cf,[],[],options);
 %  xOld   = result.x;
 %  pdfOld = result.pdf;
-%  pdf = @(x) pdfFunction(x,xOld,pdfOld);
+%  pdf = @(x) PdfFunction(x,xOld,pdfOld);
 %  x = linspace(-10,10,1001)';
 %  plot(x,pdf(x))
 %
@@ -31,8 +32,9 @@ function pdf = pdfFunction(xNew,xOld,pdfOld)
 %  cf     = @(t) exp(-t.^2/2);
 %  clear options
 %  options.isPlot = false;
+%  options.isInterp = true;
 %  result = cf2DistGP(cf,[],[],options);
-%  pdf = @(x) pdfFunction(x,result);
+%  pdf = @(x) PdfFunction(x,result);
 %  x = linspace(-10,10,1001)';
 %  plot(x,pdf(x))
 
