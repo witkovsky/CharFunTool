@@ -348,7 +348,10 @@ end
 %% ALGORITHM
 % Default values if x = [];
 if isempty(x)
+    xempty = true;
     x = linspace(xMax,xMin,options.xN);
+else
+    xempty = false;
 end
 
 if options.isInterp
@@ -461,6 +464,11 @@ if options.isInterp
         CDF  = @(xnew)CdfFunction(xnew,x(id),cdf(id));
         QF   = @(prob)QfFunction(prob,x(id),cdf(id));
         RND  = @(dim)RndFunction(dim,x(id),cdf(id));
+        if ~xempty
+            x   = x0;
+            cdf = CDF(x);
+            pdf = PDF(x);
+        end
     catch
         warning('VW:CharFunTool:cf2Dist01', ...
             'Problem using the interpolant function');
@@ -471,11 +479,6 @@ if options.isInterp
     end
 end
 
-if ~isempty(x0)
-    x   = x0;
-    cdf = CDF(x);
-    pdf = PDF(x);
-end
 
 % Reset the correct value for compound PDF at 0
 if options.isCompound
