@@ -87,7 +87,7 @@ function [result,cdf,pdf,qf] = cf2DistBV(cf,x,prob,options)
 %  options.isInterp   = true;
 %  result = cf2DistBV(cf,x,prob,options)
 %  PDF = result.PDF
-%  CDF = result.PDF
+%  CDF = result.CDF
 %  QF  = result.QF
 %  RND = result.RND
 %
