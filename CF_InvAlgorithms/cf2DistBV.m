@@ -72,7 +72,7 @@ function [result,cdf,pdf,qf] = cf2DistBV(cf,x,prob,options)
 %  x = linspace(0,5,101);
 %  prob = [0.9 0.95 0.99];
 %  clear options
-%  options.isCompound = 1;
+%  options.isCompound = true;
 %  result = cf2DistBV(cf,x,prob,options)
 %
 % EXAMPLE3 (PDF/CDF of the compound Poisson-Exponential distribution)
@@ -86,6 +86,10 @@ function [result,cdf,pdf,qf] = cf2DistBV(cf,x,prob,options)
 %  options.isCompound = true;
 %  options.isInterp   = true;
 %  result = cf2DistBV(cf,x,prob,options)
+%  PDF = result.PDF
+%  CDF = result.PDF
+%  QF  = result.QF
+%  RND = result.RND
 %
 % REFERENCES:
 % [1] BAKHVALOV, N.S., VASILEVA, L.G. Evaluation of the integrals of
@@ -117,7 +121,7 @@ function [result,cdf,pdf,qf] = cf2DistBV(cf,x,prob,options)
 %     2017, arXiv:1701.08299.
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 22-Sep-2017 11:11:11
+% Ver.: 16-Oct-2018 15:15:15
 
 %% ALGORITHM
 %[result,cdf,pdf,qf] = cf2DistBV(cf,x,prob,options);
@@ -396,17 +400,17 @@ end
 if options.isInterp
     try
         id   = isfinite(pdf);
-        pdfIntegrandction = @(xNew) max(0, ...
-            InterpBarycentric(x(id),pdf(id),xNew));
-        PDF  = @(x) pdfIntegrandction(x);
+%         pdfFunction = @(xNew) max(0, ...
+%             InterpBarycentric(x(id),pdf(id),xNew));
+        PDF  = @(xnew) pdfFunction(xnew,x(id),pdf(id));
         id   = isfinite(cdf);
-        cdfIntegrandction = @(xNew) max(0,min(1, ...
-            InterpBarycentric(x(id),cdf(id),xNew)));
-        CDF  = @(x) cdfIntegrandction(x);
-        qfFunction = @(prob) InterpBarycentric(cdf(id),x(id),prob);
-        QF   = @(prob) qfFunction(prob);
-        rndFunction = @(n) qfFunction(rand(n,1));
-        RND  = @(n) rndFunction(n);
+%         cdfFunction = @(xNew) max(0,min(1, ...
+%             InterpBarycentric(x(id),cdf(id),xNew)));
+        CDF  = @(xnew) cdfFunction(xnew,x(id),cdf(id));
+%         qfFunction = @(prob) InterpBarycentric(cdf(id),x(id),prob);
+        QF   = @(prob) qfFunction(prob,x(id),cdf(id));
+%         rndFunction = @(n) qfFunction(rand(n,1));
+        RND  = @(dim) rndFunction(dim,x(id),cdf(id));
     catch
         warning('VW:CharFunTool:cf2DistBV', ...
             'Problem using the interpolant function');
