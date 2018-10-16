@@ -9,7 +9,7 @@ function pdf = PdfFunction(xNew,xOld,pdfOld)
 % INPUT:
 %  xNew    - vector of x-values where the PDF is evaluated, 
 %  xOld    - vector of x-values where the values of CDF are known (have
-%            been pre-computed). Alternatively, if the thisr input
+%            been pre-computed). Alternatively, if the this input
 %            parameter is missing, it is assumed that the second parameter
 %            is the result structure from the cf2DistGP. 
 %  cdfOld  - vector of the known CDF values that have been pre-computed 
@@ -40,6 +40,9 @@ function pdf = PdfFunction(xNew,xOld,pdfOld)
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 16-Oct-2018 13:46:35
+
+%% ALGORITHM
+%  pdf = PdfFunction(xNew,xOld,pdfOld)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(2, 3);

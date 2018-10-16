@@ -10,7 +10,7 @@ function qf = QfFunction(prob,xOld,cdfOld)
 % INPUT:
 %  prob    - vector of probabilities from (0,1) where the QF is evaluated, 
 %  xOld    - vector of x-values where the values of CDF are known (have
-%            been pre-computed). Alternatively, if the thisr input
+%            been pre-computed). Alternatively, if the this input
 %            parameter is missing, it is assumed that the second parameter
 %            is the result structure from the cf2DistGP. 
 %  cdfOld  - vector of the known CDF values that have been pre-computed 
@@ -41,6 +41,9 @@ function qf = QfFunction(prob,xOld,cdfOld)
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 16-Oct-2018 13:46:35
+
+%% ALGORITHM
+%  qf = QfFunction(prob,xOld,cdfOld)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(2, 3);

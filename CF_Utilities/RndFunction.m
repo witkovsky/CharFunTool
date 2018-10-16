@@ -14,9 +14,9 @@ function rnd = RndFunction(dim,xOld,cdfOld)
 %            that have been pre-computed at xOld. If dim is scalar, size =
 %            [dim,1]. If empty size = [1,1].
 %  xOld    - vector of x-values where the values of CDF are known (have
-%            been pre-computed). Alternatively, if the thisr input
+%            been pre-computed). Alternatively, if the this input
 %            parameter is missing, it is assumed that the second parameter
-%            is the result structure from the cf2DistGP. 
+%            is the result structure from the cf2DistGP.
 %  cdfOld  - vector of the known CDF values that have been pre-computed 
 %            at xOld. If this parameter is missing, it is assumed that the
 %            second parameter is the result structure from the cf2DistGP.
@@ -45,6 +45,9 @@ function rnd = RndFunction(dim,xOld,cdfOld)
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 16-Oct-2018 13:46:35
+
+%% ALGORITHM
+%  rnd = RndFunction(dim,xOld,cdfOld)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(2, 3);

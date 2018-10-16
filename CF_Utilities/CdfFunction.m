@@ -9,7 +9,7 @@ function cdf = CdfFunction(xNew,xOld,cdfOld)
 % INPUT:
 %  xNew    - vector of x-values where the CDF is evaluated, 
 %  xOld    - vector of x-values where the values of CDF are known (have
-%            been pre-computed). Alternatively, if the thisr input
+%            been pre-computed). Alternatively, if the this input
 %            parameter is missing, it is assumed that the second parameter
 %            is the result structure from the cf2DistGP. 
 %  cdfOld  - vector of the known CDF values that have been pre-computed 
