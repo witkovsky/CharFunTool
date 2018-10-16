@@ -456,17 +456,11 @@ end
 if options.isInterp
     try
         id   = isfinite(pdf);
-%         pdfFunction = @(xNew) max(0, ...
-%             InterpBarycentric(x(id),pdf(id),xNew));
-        PDF  = @(xnew) pdfFunction(xnew,x(id),pdf(id));
+        PDF  = @(xnew)PdfFunction(xnew,x(id),pdf(id));
         id   = isfinite(cdf);
-%         cdfFunction = @(xNew) max(0,min(1, ...
-%             InterpBarycentric(x(id),cdf(id),xNew)));
-        CDF  = @(xnew) cdfFunction(xnew,x(id),cdf(id));
-%         qfFunction = @(prob) InterpBarycentric(cdf(id),x(id),prob);
-        QF   = @(prob) qfFunction(prob,x(id),cdf(id));
-%         rndFunction = @(n) qfFunction(rand(n,1));
-        RND  = @(dim) rndFunction(dim,x(id),cdf(id));
+        CDF  = @(xnew)CdfFunction(xnew,x(id),cdf(id));
+        QF   = @(prob)QfFunction(prob,x(id),cdf(id));
+        RND  = @(dim)RndFunction(dim,x(id),cdf(id));
     catch
         warning('VW:CharFunTool:cf2Dist01', ...
             'Problem using the interpolant function');
