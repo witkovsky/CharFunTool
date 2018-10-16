@@ -17,7 +17,7 @@ function cdf = CdfFunction(xNew,xOld,cdfOld)
 %            second parameter is the result structure from the cf2DistGP.
 %
 % EXAMPLE 1
-%  cf     = @(t) exp(-t.^2/2);
+%  cf = @(t) exp(-t.^2/2);
 %  clear options
 %  options.isPlot = false;
 %  options.isInterp = true;
@@ -29,7 +29,7 @@ function cdf = CdfFunction(xNew,xOld,cdfOld)
 %  plot(x,cdf(x))
 %
 % EXAMPLE 2
-%  cf     = @(t) exp(-t.^2/2);
+%  cf = @(t) exp(-t.^2/2);
 %  clear options
 %  options.isPlot = false;
 %  options.isInterp = true;
@@ -76,7 +76,7 @@ if any(id)
     cdf(id) = InterpBarycentric(xOld,cdfOld,xNew(id));
 end
 
-cdf     = max(0,min(1,cdf));
-cdf     = reshape(cdf,szx);
+cdf = max(0,min(1,cdf));
+cdf = reshape(cdf,szx);
 
 end

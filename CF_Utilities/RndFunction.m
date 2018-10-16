@@ -22,7 +22,8 @@ function rnd = RndFunction(dim,xOld,cdfOld)
 %            second parameter is the result structure from the cf2DistGP.
 %
 % EXAMPLE 1
-%  cf      = @(t) exp(-t.^2/2);
+%  rng(101)
+%  cf = @(t) exp(-t.^2/2);
 %  clear options
 %  options.isPlot = false;
 %  options.isInterp = true;
@@ -31,17 +32,18 @@ function rnd = RndFunction(dim,xOld,cdfOld)
 %  cdfOld  = result.cdf;
 %  rnd     = @(dim) RndFunction(dim,xOld,cdfOld);
 %  dim = [10000,1];
-%  hist(rnd(dim),51);
+%  hist(rnd(dim),100);
 %
 % EXAMPLE 2
-%  cf      = @(t) exp(-t.^2/2);
+%  rng(101)
+%  cf = @(t) exp(-t.^2/2);
 %  clear options
 %  options.isPlot = false;
 %  options.isInterp = true;
 %  result  = cf2DistGP(cf,[],[],options);
 %  rnd     = @(dim) RndFunction(dim,result);
 %  dim = [10000,1];
-%  hist(rnd(dim),51);
+%  hist(rnd(dim),100);
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 16-Oct-2018 13:46:35

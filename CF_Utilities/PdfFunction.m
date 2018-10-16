@@ -17,7 +17,7 @@ function pdf = PdfFunction(xNew,xOld,pdfOld)
 %            second parameter is the result structure from the cf2DistGP.
 %
 % EXAMPLE 1
-%  cf     = @(t) exp(-t.^2/2);
+%  cf = @(t) exp(-t.^2/2);
 %  clear options
 %  options.isPlot = false;
 %  options.isInterp = true;
@@ -29,7 +29,7 @@ function pdf = PdfFunction(xNew,xOld,pdfOld)
 %  plot(x,pdf(x))
 %
 % EXAMPLE 2
-%  cf     = @(t) exp(-t.^2/2);
+%  cf = @(t) exp(-t.^2/2);
 %  clear options
 %  options.isPlot = false;
 %  options.isInterp = true;
@@ -67,7 +67,7 @@ if any(id)
     pdf(id) = InterpBarycentric(xOld,pdfOld,xNew(id));
 end
 
-pdf     = max(0,pdf);
-pdf     = reshape(pdf,szx);
+pdf = max(0,pdf);
+pdf = reshape(pdf,szx);
 
 end

@@ -18,7 +18,7 @@ function qf = QfFunction(prob,xOld,cdfOld)
 %            second parameter is the result structure from the cf2DistGP.
 %
 % EXAMPLE 1
-%  cf     = @(t) exp(-t.^2/2);
+%  cf = @(t) exp(-t.^2/2);
 %  clear options
 %  options.isPlot = false;
 %  options.isInterp = true;
@@ -30,13 +30,13 @@ function qf = QfFunction(prob,xOld,cdfOld)
 %  plot(prob,qf(prob))
 %
 % EXAMPLE 2
-%  cf     = @(t) exp(-t.^2/2);
+%  cf = @(t) exp(-t.^2/2);
 %  clear options
 %  options.isPlot = false;
 %  options.isInterp = true;
 %  result = cf2DistGP(cf,[],[],options);
 %  qf     = @(prob) QfFunction(prob,result);
-%  prob   = linspace(0,1,1001)';
+%  prob   = linspace(eps,1-eps,1001)';
 %  plot(prob,qf(prob))
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
@@ -51,8 +51,8 @@ narginchk(2, 3);
 if nargin < 3
     if isstruct(xOld)
         result = xOld;
-        xOld   = result.x;
-        cdfOld = result.cdf;
+        xOld   = sort(result.x);
+        cdfOld = sort(result.cdf);
     else
         error('Missing Inputs')
     end
@@ -60,9 +60,9 @@ end
 
 szx     = size(prob);
 prob = prob(:);
-id0  = prob < min(cdfOld);
-id1  = prob > max(cdfOld);
-id   = prob >= min(cdfOld) & prob <= max(cdfOld);
+id0  = prob < cdfOld(2);
+id1  = prob > cdfOld(end-1);
+id   = prob >= cdfOld(2) & prob <= cdfOld(end-1);
 qf   = zeros(size(prob));
 
 if any(id0)
@@ -77,6 +77,6 @@ if any(id)
     qf(id) = InterpBarycentric(cdfOld,xOld,prob(id));   
 end
 
-qf     = reshape(qf,szx);
+qf = reshape(qf,szx);
 
 end
