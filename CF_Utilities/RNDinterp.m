@@ -75,7 +75,7 @@ if isscalar(dim)
 end
 
 prob = rand(dim(1)*dim(2),1);
-rnd  = QfFunction(prob,xGiven,cdfGiven);
+rnd  = QFinterp(prob,xGiven,cdfGiven);
 rnd  = reshape(rnd,dim);
 
 end
