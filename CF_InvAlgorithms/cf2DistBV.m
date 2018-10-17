@@ -121,7 +121,7 @@ function [result,cdf,pdf,qf] = cf2DistBV(cf,x,prob,options)
 %     2017, arXiv:1701.08299.
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 16-Oct-2018 15:15:15
+% Ver.: 17-Oct-2018 16:55:59
 
 %% ALGORITHM
 %[result,cdf,pdf,qf] = cf2DistBV(cf,x,prob,options);
@@ -401,26 +401,27 @@ else
 end
 
 if options.isInterp
+    id   = isfinite(pdf);
+    PDF  = @(xnew)PDFinterp(xnew,x(id),pdf(id));
+    id   = isfinite(cdf);
+    CDF  = @(xnew)CDFinterp(xnew,x(id),cdf(id));
+    QF   = @(prob)QFinterp(prob,x(id),cdf(id));
+    RND  = @(dim)RNDinterp(dim,x(id),cdf(id));
     try
-        id   = isfinite(pdf);
-        PDF  = @(xnew)PdfFunction(xnew,x(id),pdf(id));
-        id   = isfinite(cdf);
-        CDF  = @(xnew)CdfFunction(xnew,x(id),cdf(id));
-        QF   = @(prob)QfFunction(prob,x(id),cdf(id));
-        RND  = @(dim)RndFunction(dim,x(id),cdf(id));
-        if ~xempty
-            x   = x0;
-            cdf = CDF(x);
-            pdf = PDF(x);
-        end
-    catch
-        warning('VW:CharFunTool:cf2DistBV', ...
-            'Problem using the interpolant function');
-        PDF  = [];
-        CDF  = [];
-        QF   = [];
-        RND  = [];
+    if ~xempty
+        x   = x0;
+        cdf = CDF(x);
+        pdf = PDF(x);
     end
+    catch
+        warning('VW:CharFunTool:cf2DistGP', ...
+            'Problem using the interpolant function');
+    end
+else
+    PDF  = [];
+    CDF  = [];
+    QF   = [];
+    RND  = [];
 end
 
 % Reset the correct value for compound PDF at 0
