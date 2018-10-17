@@ -84,6 +84,23 @@ function cf = cf_LogRV_WilksLambda(t,p,n,q,coef,niid)
 %   disp(result)
 %
 % EXAMPLE 4:
+% % PDF/CDF of Wilks Lambda (p=5, n=10, q=3) from PDF of LOG-TRANSFORMED RV
+%   p    = 5;
+%   n    = 10;
+%   q    = 3;
+%   cf   = @(t) cf_LogRV_WilksLambda(t,p,n,q);
+%   clear options
+%   options.isPlot = 0;
+%   options.xMax = 0;
+%   result = cf2DistGP(cf,[],[],options);
+%   [x,pdf] = LogPDF2PDF(result);
+%   figure; plot(x,pdf)
+%   title('PDF of the Wilks Lambda (p=5, n=10, q=3)')
+%   [x,cdf] = LogCDF2CDF(result);
+%   figure; plot(x,cdf)
+%   title('CDF of the Wilks Lambda (p=5, n=10, q=3)')
+%
+% EXAMPLE 5:
 % % Compare the exact distribution with the Bartlett's approximation
 % % The Bartlett's approximation (see e.g. Wikipedia) is given by:
 % % ((p-q+1)/2 - n)*log(Lambda(p,n,q)) ~ chi^2_{q*p}
@@ -112,7 +129,7 @@ function cf = cf_LogRV_WilksLambda(t,p,n,q,coef,niid)
 %     arXiv preprint arXiv:1801.02248.
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 19-Jul-2018 17:23:23
+% Ver.: 17-Oct-2018 18:14:11
 
 %% ALGORITHM
 % cf = cf_LogRV_WilksLambda(t,p,n,q,coef,niid)
