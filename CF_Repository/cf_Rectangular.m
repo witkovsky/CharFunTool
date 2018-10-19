@@ -5,11 +5,11 @@ function cf = cf_Rectangular(t,a,b,coef,niid)
 %  the interval (a,b).  
 %
 %  That is, cf_Rectangular evaluates the characteristic function
-%  cf(t) of  Y = sum_{i=1}^N coef_i * X_i, where X_i ~ RectangularSymmetric
-%  are independent uniformly distributed RVs defined on (-1,1), for all i =
-%  1,...,N. 
+%  cf(t) of  Y = sum_{i=1}^N coef_i * X_i, where X_i ~ R(a_i,b_i) are
+%  independent uniformly distributed RVs defined on (a_i,b_i), for all i =
+%  1,...,N.  
 %
-%  The characteristic function of X ~ R(a,b) is defined by
+%  The characteristic function of RECTANGULAR RV X ~ R(a,b) is defined by
 %   cf(t) = cf_Rectangular(t,a,b) = (exp(1i*t*b) -exp(1i*t*a))/(1i*t*(b-a))
 %
 % SYNTAX
@@ -19,12 +19,12 @@ function cf = cf_Rectangular(t,a,b,coef,niid)
 %  t     - vector or array of real values, where the CF is evaluated.
 %  a     - vector of the parameters a (lower bounds of the interval). If
 %          empty, default value is a = 0.  
-%  b     - vector of the parameters b (upper bounds of the interval). If
-%          empty, default value is b = 1.  
+%  b     - vector of the parameters b (upper bounds of the interval). Here,
+%          it is assumed that a < b. If empty, default value is b = 1.  
 %  coef  - vector of the coefficients of the linear combination of the
-%          Beta distributed random variables. If coef is scalar, it is
-%          assumed that all coefficients are equal. If empty, default value
-%          is coef = 1.
+%          RECTANGULAR distributed random variables. If coef is scalar, it
+%          is assumed that all coefficients are equal. If empty, default
+%          value is coef = 1.
 %  niid  - scalar convolution coeficient niid, such that Z = Y + ... + Y is
 %          sum of niid iid random variables Y, where each Y = sum_{i=1}^N
 %          coef(i) * log(X_i) is independently and identically distributed
@@ -32,6 +32,9 @@ function cf = cf_Rectangular(t,a,b,coef,niid)
 %
 % WIKIPEDIA: 
 %  https://en.wikipedia.org/wiki/Uniform_distribution_(continuous)
+%
+% WOLFRAM MATH WORLD: 
+%  http://mathworld.wolfram.com/UniformDistribution.html
 %
 % EXAMPLE 1:
 % % CF of the Rectangular distribution on (0,1)
