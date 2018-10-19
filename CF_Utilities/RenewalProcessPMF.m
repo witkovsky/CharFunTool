@@ -94,9 +94,14 @@ function [pmf,n,tMin,tMax,cdfFun,pmfFun] = RenewalProcessPMF(t,cf,nMin,nMax,tol)
 %  cf      = @(u)cf_Gamma(u,alpha,beta);
 %  nMin    = 0;
 %  nMax    = 70;
-%  [pmf,n] = RenewalProcessPMF([],cf,nMin,nMax);
-%  plot(n,pmf(1),'o--',n,pmf(5),'o--',n,pmf(10),'o--',n,pmf(15),'o--')
-%  title('Renewal process with gamma holding times t=[1,5,10,15]') 
+%  ltxt    = cell(1,8);
+%  [pmf,n,tMin,tMax] = RenewalProcessPMF([],cf,nMin,nMax);
+%  figure;hold on
+%  for t = tMin:floor(tMax)
+%      plot(n,pmf(t),'o--');
+%  end
+%  legend;
+%  title('Renewal process PMF(t) with Gamma(2,3) holding times t = 0:1:18')
 %  xlabel('n')
 %  ylabel('probability')
 
@@ -141,7 +146,7 @@ options.isInterp = true;
 
 tMin = inf;
 tMax = 0;
-if nargout > 2
+if nargout > 3
     tprob = tol;
 else
     tprob = [];
@@ -151,14 +156,17 @@ for k = nMin:nMax
     id = id + 1;
     if k == 0
         cdfFun(id) = {@(xnew) 1};
-    else
+    elseif k == nMax
         result = cf2DistGP(@(t)cf(t).^k,[],tprob,options);
         cdfFun(id) = {result.CDF};
-        tMinNew = result.xMin;
         tMaxNew = result.qf;
+        tMax = max(tMax,tMaxNew);
+    else
+        result = cf2DistGP(@(t)cf(t).^k,[],[],options);
+        cdfFun(id) = {result.CDF};
+        tMinNew = result.xMin;
         options.xMin = tMinNew;
         tMin = min(tMin,tMinNew);
-        tMax = max(tMax,tMaxNew);
     end
 end
 cdfFun(N+1) = {@(xnew) 0};
