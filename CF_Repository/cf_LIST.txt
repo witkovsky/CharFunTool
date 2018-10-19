@@ -22,6 +22,7 @@ cf_NakagamiNC
 cf_Normal
 cf_Rayleigh
 cf_RayleighNC
+cf_Rectangular
 cf_RectangularSymmetric
 cf_Rice
 cf_Stable
