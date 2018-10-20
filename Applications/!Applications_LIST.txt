@@ -1,3 +1,7 @@
+APPLICATIONS  General:
+
+RenewalProcessPMF
+
 APPLICATIONS in Multivariate Analysis:
 
 LRT01_Independence
@@ -9,5 +13,5 @@ LRT05_Sphericity
 APPLICATIONS in Risk Modeling:
 
 CRMTool
-RenewalProcessPMF
+
 
