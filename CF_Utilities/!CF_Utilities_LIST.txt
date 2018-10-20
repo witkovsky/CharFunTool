@@ -1,0 +1,56 @@
+GAMMA Functions:
+
+GammaLog
+GammaMulti
+GammaMultiLog
+GammaZX
+
+INTEGRAL Functions:
+
+CFGLSeries
+CFGLSeriesFourierIntegral
+FourierIntegral_BV
+FourierIntegral_P
+ChebFourierIntegral
+ChebPoints
+ChebPoly
+LegendrePoints
+LegendreSeries
+LegendreSeriesFourierIntegral
+
+INTERPOLANT Functions:
+
+InterpBarycentric
+CDFinterp
+PDFinterp
+QFinterp
+RNDinterp
+
+OPTIMIZATION Functions:
+
+FindRoots
+NumDiff
+
+SPECIAL Functions:
+
+Hypergeom1F1
+Hypergeom1F1a
+Hypergeom1F1Mat
+Hypergeom1F1MatApprox
+Hypergeom2F1
+Hypergeom2F1Mat
+Hypergeom2F1MatApprox
+HypergeompFqMat
+HypergeompFqSeries
+HypergeomU
+Dawson
+FoxWrightPsi
+
+TRANSFORMATION Functions:
+
+LogCDF2CDF
+LogPDF2PDF
+
+OTHER UTILITY Functions:
+
+-

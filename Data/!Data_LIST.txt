@@ -1,0 +1,12 @@
+CHARFUNTOOL DATA SETS
+
+DANISH FIRE DATA:
+
+DanishFireData.mat
+DanishFireData.txt
+DanishFireData_multivariate.txt
+DanishFireData_univariate.txt
+FrequencyData.txt
+GroupBins.txt
+GroupFrequencies.txt
+SeverityData.txt
