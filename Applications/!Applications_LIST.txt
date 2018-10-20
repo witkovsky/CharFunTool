@@ -1,0 +1,13 @@
+APPLICATIONS in Multivariate Analysis:
+
+LRT01_Independence
+LRT02_EqualityMeans
+LRT03_EqualityCovariances
+LRT04_EqualityPopulations
+LRT05_Sphericity
+
+APPLICATIONS in Risk Modeling:
+
+CRMTool
+RenewalProcessPMF
+
