@@ -13,20 +13,22 @@ function y = SqrtZX(z)
 %  y = SqrtZX(z)
 % 
 % INPUTS:
-%  z     - vector or array of complex values, where the SQRT is evaluated.
+%  z  - vector of subsequent complex values, where the SQRT is evaluated. 
 %
 % EXAMPLE 1
 %  % CF of the asymptotic Anderson-Darling test statistic
-%  t = linspace(-50,50,1000);
-%  f = -SqrtZX((-2i*pi*t)./cos((pi/2).*SqrtZX(1+8i*t)));
-%  figure;plot(t,real(f),t,imag(f));grid
+%  t   = linspace(-50,50,1000);
+%  Sgn = -1;
+%  cf  = @(t) Sgn*SqrtZX((-2i*pi*t)./cos((pi/2).*SqrtZX(1+8i*t)));
+%  figure;plot(t,real(cf(t)),t,imag(cf(t)));grid
 %  title('CF of the asymptotic Anderson-Darling test statistic')
 %
 % EXAMPLE 2
 %  % CF of the asymptotic Cramer-von Mises test statistic
-%  t = linspace(-100,100,1000);
-%  f = -SqrtZX(sqrt(2i*t)./sin(SqrtZX(2i*t)));
-%  figure;plot(t,real(f),t,imag(f));grid
+%  t   = linspace(-200,200,1000);
+%  Sgn = 1;
+%  cf  = @(t) Sgn*SqrtZX(sqrt(2i*t)./sin(SqrtZX(2i*t)));
+%  figure;plot(t,real(cf(t)),t,imag(cf(t)));grid
 %  title('CF of the asymptotic Cramer-von Mises test statistic')
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
@@ -36,8 +38,8 @@ function y = SqrtZX(z)
 %  y = SqrtZX(z)
 
 %%
-sz = size(z);
-z  = z(:);
-y  = reshape(sqrt(abs(z)).*exp(0.5i*unwrap(angle(z))),sz);
+dim  = size(z);
+z    = z(:);
+y    = reshape(sqrt(abs(z)).*exp(0.5i*unwrap(angle(z))),dim);
 
 end
