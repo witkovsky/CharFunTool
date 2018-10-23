@@ -33,7 +33,7 @@ function y = SqrtZX(z)
 % Ver.: 23-Oct-2018 20:52:43
 
 %% ALGORITHM
-%  cf = y = SqrtZX(z)
+%  y = SqrtZX(z)
 
 %%
 sz = size(z);
