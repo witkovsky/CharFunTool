@@ -80,6 +80,7 @@ cfS_Wigner
 
 CFs of non-negative probability distributions:
 
+cfX_Bartlett
 cfX_Chi
 cfX_ChiSquare
 cfX_Exponential
