@@ -149,13 +149,6 @@ function [result,cdf,pdf,qf] = cf2DistFFT(cf,x,prob,options)
 % [4] WITKOVSKY V. (2016). Numerical inversion of a characteristic
 %     function: An alternative tool to form the probability distribution of
 %     output quantity in linear measurement models. Acta IMEKO, 5(3), 32-44.
-% [5] WITKOVSKY V., WIMMER G., DUBY T. (2016). Computing the aggregate loss
-%     distribution based on numerical inversion of the compound empirical
-%     characteristic function of frequency and severity. Preprint submitted
-%     to Insurance: Mathematics and Economics.
-% [6] DUBY T., WIMMER G., WITKOVSKY V.(2016). MATLAB toolbox CRM for
-%     computing distributions of collective risk models. Preprint submitted
-%     to Journal of Statistical Software.
 %
 % SEE ALSO: cf2Dist, cf2DistGP, cf2DistGPT, cf2DistGPA, cf2DistFFT,
 %           cf2DistBV, cf2CDF, cf2PDF, cf2QF 

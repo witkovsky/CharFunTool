@@ -72,11 +72,7 @@ function [qf,result] = cf2QF(cf,prob,options)
 % [5] Sidi, A., 2011. A user-friendly extrapolation method for computing
 %     infinite range integrals of products of oscillatory functions. IMA
 %     Journal of Numerical Analysis, 32(2), pp.602-631.
-% [6] Sidi, A., 2017. Acceleration of Convergence of Some Infinite
-%     Sequences $\boldsymbol {\{A_n\}} $ Whose Asymptotic Expansions
-%     Involve Fractional Powers of $\boldsymbol {n} $. arXiv preprint
-%     arXiv:1703.06495.
-% [7] WITKOVSKY V. (2016). Numerical inversion of a characteristic
+% [6] WITKOVSKY V. (2016). Numerical inversion of a characteristic
 %     function: An alternative tool to form the probability distribution of
 %     output quantity in linear measurement models. Acta IMEKO, 5(3),
 %     32-44.

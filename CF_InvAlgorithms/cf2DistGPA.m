@@ -72,7 +72,6 @@ function [result,cdf,pdf,qf] = cf2DistGPA(cf,x,prob,options)
 %
 % EXAMPLE2 (Calculate CDF/PDF of a linear combination of chi-squared RVs)
 %  df   = [1 2 3];
-%  coef = [1 1 1];
 %  cf   = @(t) cf_ChiSquare(t,df) ;
 %  x    = linspace(0,40,101)';
 %  prob = [0.9 0.95 0.99 0.999];
@@ -102,6 +101,8 @@ function [result,cdf,pdf,qf] = cf2DistGPA(cf,x,prob,options)
 %  clear options
 %  options.isCompound = true;
 %  options.isInterp = true;
+%  options.tolFindRoots = 1e-16;
+%  options.maxiterFindRoots = 25;
 %  result = cf2DistGPA(cf,x,prob,options)
 %  PDF = result.PDF
 %  CDF = result.CDF
@@ -122,11 +123,7 @@ function [result,cdf,pdf,qf] = cf2DistGPA(cf,x,prob,options)
 % [5] Sidi, A., 2011. A user-friendly extrapolation method for computing
 %     infinite range integrals of products of oscillatory functions. IMA
 %     Journal of Numerical Analysis, 32(2), pp.602-631.
-% [6] Sidi, A., 2017. Acceleration of Convergence of Some Infinite
-%     Sequences $\boldsymbol {\{A_n\}} $ Whose Asymptotic Expansions
-%     Involve Fractional Powers of $\boldsymbol {n} $. arXiv preprint
-%     arXiv:1703.06495.
-% [7] WITKOVSKY V. (2016). Numerical inversion of a characteristic
+% [6] WITKOVSKY V. (2016). Numerical inversion of a characteristic
 %     function: An alternative tool to form the probability distribution of
 %     output quantity in linear measurement models. Acta IMEKO, 5(3),
 %     32-44.
