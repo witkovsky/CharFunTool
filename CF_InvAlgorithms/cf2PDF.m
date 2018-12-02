@@ -36,9 +36,13 @@ function [pdf,result] = cf2PDF(cf,x,options)
 %                                      % integration
 %             options.tolFindRoots     % tolerance for the root-finding
 %                                      % procedure. Default value is
-%                                      % options.tolFindRoots = 1e-16.
+%                                      % options.tolFindRoots = 1e-32.
 %                                      % Alternatively, set lower levels up
 %                                      % to options.tolFindRoots = 1e-321.
+%             options.maxiterFindRoots % maximum number of iterations the
+%                                      % root-finding procedure. Default
+%                                      % value is options.maxiterFindRoots
+%                                      % = 100. 
 %             options.nPoly            % order of the chebyshev polynomials
 %                                      % used for the root-finding
 %                                      % procedure. Default value is
@@ -133,7 +137,11 @@ if ~isfield(options, 'tol')
 end
 
 if ~isfield(options, 'tolFindRoots')
-    options.tolFindRoots = 1e-16;
+    options.tolFindRoots = 1e-32;
+end
+
+if ~isfield(options, 'maxiterFindRoots')
+    options.maxiterFindRoots = 100;
 end
 
 if ~isfield(options, 'verbose')
@@ -154,46 +162,52 @@ for id = 1:nx
     div  = max(0.5,abs(xid));
     A    = (pi/2)/div;
     B    = pi*options.nPeriods/div;
-    try
-        [roots,warnings] = FindRoots(fPDF,A,B,options.nPoly, ...
-            isPlot,options.tolFindRoots);
-    catch
+    if options.isAccelerated
+        try
+            [roots,warnings] = FindRoots(fPDF,A,B,options.nPoly, ...
+                isPlot,options.tolFindRoots,options.maxiterFindRoots);
+        catch
+            roots = [];
+            warnings = 1;
+        end
+        if isempty(roots)
+            R1 = A;
+        elseif numel(roots) == 1
+            R1 = roots(1);
+        else
+            if options.firstRootID < numel(roots)
+                R1 = roots(options.firstRootID);
+                Intervals = [roots(options.firstRootID:end-1)'; ...
+                    roots(options.firstRootID+1:end)'];
+            else
+                R1 = roots(1);
+                Intervals = [roots(1:end-1)';roots(2:end)'];
+            end
+        end
+        nRoots = length(roots);
+    else
         roots = [];
+        nRoots = length(roots);
         warnings = 1;
     end
-    if isempty(roots)
-        R1 = A;
-    elseif numel(roots) == 1
-        R1 = roots(1);
-    else
-        if options.firstRootID < numel(roots)
-            R1 = roots(options.firstRootID);
-            Intervals = [roots(options.firstRootID:end-1)'; ...
-                roots(options.firstRootID+1:end)'];
-        else
-            R1 = roots(1);
-            Intervals = [roots(1:end-1)';roots(2:end)'];
-        end
-    end
-    nRoots = length(roots);
-    ERR1 = options.tol;
-    INT1 = integral(fPDF,0,R1,'RelTol',0,'AbsTol',ERR1);
     if options.isAccelerated  && warnings == 0 && nRoots > 10
+        isAcceleration = true;
+        ERR1 = options.tol;
+        INT1 = integral(fPDF,0,R1,'RelTol',0,'AbsTol',ERR1);
         [~,ERR2,~,Q] = IntegralGK(fPDF,Intervals,division,isPlot);
         INT  = INT1 + AcceleratedSum(sign(Q(1))*abs(Q));
-        isAcceleration = true;
+        ERR = ERR1 + ERR2;
     else
-        ERR2 = options.tol;
-        INT  = INT1 + integral(fPDF,R1,B,'RelTol',0,'AbsTol',ERR2);
         isAcceleration = false;
+        ERR = options.tol;
+        INT = integral(fPDF,0,B,'RelTol',0,'AbsTol',ERR);
     end
     pdf(id)   = max(eps(0),INT/pi);
-    error(id) = ERR1 + ERR2;
+    error(id) = ERR;
 end
 pdf    = reshape(max(0,pdf),szx);
 x      = reshape(x,szx);
 error  = reshape(error,szx);
-% Stop the clock
 tictoc = toc;
 
 %% RESULTS

@@ -40,9 +40,13 @@ function [result,cdf,pdf,qf] = cf2DistGPA(cf,x,prob,options)
 %                                      % integration
 %             options.tolFindRoots     % tolerance for root-finding
 %                                      % procedure. Default value is
-%                                      % options.tolFindRoots = 1e-16.
+%                                      % options.tolFindRoots = 1e-32.
 %                                      % Alternatively, set lower levels up
 %                                      % to options.tolFindRoots = 1e-321.
+%             options.maxiterFindRoots % maximum number of iterations the
+%                                      % root-finding procedure. Default
+%                                      % value is options.maxiterFindRoots
+%                                      % = 100. 
 %             options.isPlot = true    % plot the graphs of PDF/CDF
 %             options.isAccelerated = true % indicator of activated
 %                                      % acceleration algorithm
@@ -236,7 +240,11 @@ if ~isfield(options, 'tol')
 end
 
 if ~isfield(options, 'tolFindRoots')
-    options.tolFindRoots = 1e-16;
+    options.tolFindRoots = 1e-32;
+end
+
+if ~isfield(options, 'maxiterFindRoots')
+    options.maxiterFindRoots = 100;
 end
 
 if ~isfield(options, 'verbose')

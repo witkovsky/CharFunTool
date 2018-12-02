@@ -1,4 +1,4 @@
-function [roots,warning,err] = FindRoots(fun,A,B,n,isplot,tol)
+function [roots,warning,err] = FindRoots(fun,A,B,n,isplot,tol,maxiter)
 %FINDROOTS estimates the real roots (zeros) of a real (oscillatory)
 % function FUN on the interval [A,B], by using adaptive nth-order (n=2^k)
 % Chebyshev polynomial approximation of the function FUN.
@@ -70,7 +70,8 @@ function [roots,warning,err] = FindRoots(fun,A,B,n,isplot,tol)
 %  [roots,warning,err] = FindRoots(fun,A,B,n,isplot)
 
 %% CHECK THE INPUT PARAMETERS
-narginchk(1, 6);
+narginchk(1, 7);
+if nargin < 7, maxiter = []; end
 if nargin < 6, tol = []; end
 if nargin < 5, isplot = []; end
 if nargin < 4, n = []; end
@@ -78,6 +79,10 @@ if nargin < 3, B = []; end
 if nargin < 2, A = []; end
 
 %% SET THE DEFAULT VALUES (input parameters)
+
+if isempty(maxiter)
+    maxiter = 100;
+end
 
 if isempty(tol)
     tol = 1e-16;
@@ -113,7 +118,9 @@ end
 
 roots = [];
 warning = 0;
-while true
+iter = 0;
+while iter < maxiter
+    iter = iter +1;
     [r,interval,err,isWarning] = rootFinder(cgl,M,fun,interval,n,tol);
     roots = cat(1,roots,r);
     if isempty(interval)
@@ -123,6 +130,11 @@ while true
     end
     warning = warning + isWarning;
 end
+
+if iter == maxiter
+    warning = warning + 1;
+end
+
 roots = unique(roots);
 
 %% Plot the function together with the roots
