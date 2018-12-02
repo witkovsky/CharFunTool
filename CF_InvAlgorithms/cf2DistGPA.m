@@ -34,13 +34,27 @@ function [result,cdf,pdf,qf] = cf2DistGPA(cf,x,prob,options)
 %             options.xStd = []        % set the STD value of X
 %             options.SixSigmaRule = 6 % set the rule for automatic
 %                                      % computation of the domain of X
-%             options.tolDiff = 1e-4   % tol for numerical differentiation
+%             options.tolDiff = 1e-4   % tolerance for numerical
+%                                      % differentiation 
+%             options.tol = 1e-10      % tolerance for numerical
+%                                      % integration
+%             options.tolFindRoots     % tolerance for root-finding
+%                                      % procedure. Default value is
+%                                      % options.tolFindRoots = 1e-16.
+%                                      % Alternatively, set lower levels up
+%                                      % to options.tolFindRoots = 1e-321.
 %             options.isPlot = true    % plot the graphs of PDF/CDF
+%             options.isAccelerated = true % indicator of activated
+%                                      % acceleration algorithm
 %             options.nPeriods = 25    % the upper integration limit: UPPER
 %                                      % = nPeriods * pi / x. The the basic
 %                                      % integration interval [0,UPPER] is
 %                                      % devided into two subintervals 
 %                                      % [0 A] and [A UPPER]. 
+%             options.nPoly            % order of the chebyshev polynomials
+%                                      % used for the root-finding
+%                                      % procedure. Default value is
+%                                      % options.nPoly = 2^5.
 %
 % OUTPUT:
 %  result   - structure with CDF/PDF/QF and further details,
@@ -113,7 +127,8 @@ function [result,cdf,pdf,qf] = cf2DistGPA(cf,x,prob,options)
 %     output quantity in linear measurement models. Acta IMEKO, 5(3),
 %     32-44.
 %
-% SEE ALSO: cf2CDF, cf2PDF, cf2QF
+% SEE ALSO: cf2Dist, cf2DistGP, cf2DistGPT, cf2DistGPA, cf2DistFFT,
+%           cf2DistBV, cf2CDF, cf2PDF, cf2QF
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 02-Dec-2018 13:36:33
@@ -218,6 +233,10 @@ end
 
 if ~isfield(options, 'tol')
     options.tol = 1e-10;
+end
+
+if ~isfield(options, 'tolFindRoots')
+    options.tolFindRoots = 1e-16;
 end
 
 if ~isfield(options, 'verbose')

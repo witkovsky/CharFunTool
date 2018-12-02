@@ -1,4 +1,4 @@
-function [roots,warning,err] = FindRoots(fun,A,B,n,isplot)
+function [roots,warning,err] = FindRoots(fun,A,B,n,isplot,tol)
 %FINDROOTS estimates the real roots (zeros) of a real (oscillatory)
 % function FUN on the interval [A,B], by using adaptive nth-order (n=2^k)
 % Chebyshev polynomial approximation of the function FUN.
@@ -10,6 +10,7 @@ function [roots,warning,err] = FindRoots(fun,A,B,n,isplot)
 % SYNTAX:
 % roots = FindRoots(fun,A,B)
 % roots = FindRoots(fun,A,B,n,isplot)
+% [roots,warning,err] = FindRoots(fun,A,B,n,isplot,tol)
 %
 % INPUTS:
 %  fun    - function handle, e.g. fun = @(x)sin(x)
@@ -22,6 +23,8 @@ function [roots,warning,err] = FindRoots(fun,A,B,n,isplot)
 %           roots of fun over the interval [A,B].
 %  isplot - logical flag. If isplot = true, FindRoots plots the graph of
 %           the function together with depicted locations of its roots.
+%  tol    - tolerance for stoping the rootFinder. If empty, default value
+%           is tol = 1e-16.
 %
 % EXAMPLE 1:
 % fun = @(t) sin(t.^3 + t.^2 + t)
@@ -67,13 +70,19 @@ function [roots,warning,err] = FindRoots(fun,A,B,n,isplot)
 %  [roots,warning,err] = FindRoots(fun,A,B,n,isplot)
 
 %% CHECK THE INPUT PARAMETERS
-narginchk(1, 5);
+narginchk(1, 6);
+if nargin < 6, tol = []; end
 if nargin < 5, isplot = []; end
 if nargin < 4, n = []; end
 if nargin < 3, B = []; end
 if nargin < 2, A = []; end
 
 %% SET THE DEFAULT VALUES (input parameters)
+
+if isempty(tol)
+    tol = 1e-16;
+end
+
 if isempty(isplot)
     isplot = true;
 end
@@ -105,7 +114,7 @@ end
 roots = [];
 warning = 0;
 while true
-    [r,interval,err,isWarning] = rootFinder(cgl,M,fun,interval,n);
+    [r,interval,err,isWarning] = rootFinder(cgl,M,fun,interval,n,tol);
     roots = cat(1,roots,r);
     if isempty(interval)
         break
@@ -179,7 +188,7 @@ else
 end
 end % End of function evalCheb
 %%
-function [roots,intervals,err,isWarning] = rootFinder(cgl,M,fun,intervals,n)
+function [roots,intervals,err,isWarning] = rootFinder(cgl,M,fun,intervals,n,tol)
 %ROOTFINDER estimates the roots of fun over intervals by using nth order
 % Chebyshev polynomial approximation of fun
 %
@@ -201,7 +210,7 @@ for i = 1:nint
     x = cgl*range + shift;
     f = fun(x);
     ExpansionCoeff = f * M;    
-    if abs(ExpansionCoeff(n+1)) < 1000*eps(0)
+    if abs(ExpansionCoeff(n+1)) < tol
         isWarning = 1;
         % warning('The leading expansion coefficient vanishes');        
     else

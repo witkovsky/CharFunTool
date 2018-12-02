@@ -119,6 +119,9 @@ function [result,cdf,pdf,qf] = cf2DistBV(cf,x,prob,options)
 %     distribution based on numerical inversion of the compound empirical
 %     characteristic function of frequency and severity. ArXiv preprint,
 %     2017, arXiv:1701.08299.
+%
+% SEE ALSO: cf2Dist, cf2DistGP, cf2DistGPT, cf2DistGPA, cf2DistFFT,
+%           cf2DistBV, cf2CDF, cf2PDF, cf2QF
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 17-Oct-2018 16:55:59

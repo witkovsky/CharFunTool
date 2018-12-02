@@ -23,7 +23,16 @@ function [qf,result] = cf2QF(cf,prob,options)
 % INPUT:
 %  cf       - function handle of the characteristic function
 %  prob     - vector of probabilities where the QF is computed
-%  options  - structure as in cf2CDF_GilPelaez/cf2PDF_GilPelaez
+%  options  - structure with the following parameters:
+%             maxiter : indicator of maximum number of Newtob-Raphson
+%             iterations. Default value is options.maxiter = 1000.
+%             crit : value of the criterion limit for stopping rule.
+%             Default value is options.crit = 1e-12.
+%             verbose : indicator for producing result with a more detailed
+%             output. Default value is options.verbose = false.
+%             isPlot : logical indicator for plotting the integrand
+%             function and calculation of their zeros. Default value is
+%             options.isPlot = false.
 %
 % OUTPUT:
 %  qf       - vector of the quantile values evaluated at prob.
@@ -72,7 +81,8 @@ function [qf,result] = cf2QF(cf,prob,options)
 %     output quantity in linear measurement models. Acta IMEKO, 5(3),
 %     32-44.
 %
-% SEE ALSO: cf2DistGPA, cf2CDF, cf2PDF
+% SEE ALSO: cf2Dist, cf2DistGP, cf2DistGPT, cf2DistGPA, cf2DistFFT,
+%           cf2DistBV, cf2CDF, cf2PDF, cf2QF
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 02-Dec-2018 13:36:33

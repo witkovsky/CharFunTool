@@ -156,6 +156,9 @@ function [result,cdf,pdf,qf] = cf2DistFFT(cf,x,prob,options)
 % [6] DUBY T., WIMMER G., WITKOVSKY V.(2016). MATLAB toolbox CRM for
 %     computing distributions of collective risk models. Preprint submitted
 %     to Journal of Statistical Software.
+%
+% SEE ALSO: cf2Dist, cf2DistGP, cf2DistGPT, cf2DistGPA, cf2DistFFT,
+%           cf2DistBV, cf2CDF, cf2PDF, cf2QF 
 
 % (c) 2016 Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 15-Nov-2016 13:36:26

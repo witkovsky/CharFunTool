@@ -24,12 +24,25 @@ function [pdf,result] = cf2PDF(cf,x,options)
 %  cf       - function handle of the characteristic function
 %  x        - vector of x values where the PDF is computed
 %  options  - structure with the following parameters:
-%  nPeriods - the upper integration limit: UPPER = nPeriods * pi / x.
-%             The the basic integration interval [0,UPPER] is devided
+%             isAccelerated : indicator of activated acceleration
+%             algorithm. 
+%             nPeriods : the upper integration limit: UPPER = nPeriods * pi
+%             / x. The the basic integration interval [0,UPPER] is devided
 %             into two subintervals [0 A] and [A UPPER].
-%  isPlot   - logical indicator for plotting the integrand function and
-%             calculation of their zeros, default value is options.isPlot
-%             = false.
+%             isPlot : logical indicator for plotting the integrand
+%             function and calculation of their zeros, default value is
+%             options.isPlot = false.
+%             options.tol = 1e-10      % tolerance for numerical
+%                                      % integration
+%             options.tolFindRoots     % tolerance for the root-finding
+%                                      % procedure. Default value is
+%                                      % options.tolFindRoots = 1e-16.
+%                                      % Alternatively, set lower levels up
+%                                      % to options.tolFindRoots = 1e-321.
+%             options.nPoly            % order of the chebyshev polynomials
+%                                      % used for the root-finding
+%                                      % procedure. Default value is
+%                                      % options.nPoly = 2^5.
 % OUTPUT:
 %  pdf      - vector of PDF values evaluated at x.
 %  result   - structure with PDF  further details:
@@ -79,7 +92,8 @@ function [pdf,result] = cf2PDF(cf,x,options)
 %     output quantity in linear measurement models. Acta IMEKO, 5(3),
 %     32-44.
 %
-% SEE ALSO: cf2DistGPA, cf2CDF, cf2QF
+% SEE ALSO: cf2Dist, cf2DistGP, cf2DistGPT, cf2DistGPA, cf2DistFFT,
+%           cf2DistBV, cf2CDF, cf2PDF, cf2QF
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 02-Dec-2018 13:36:33
@@ -118,6 +132,10 @@ if ~isfield(options, 'tol')
     options.tol = 1e-10;
 end
 
+if ~isfield(options, 'tolFindRoots')
+    options.tolFindRoots = 1e-16;
+end
+
 if ~isfield(options, 'verbose')
     options.verbose = false;
 end
@@ -137,7 +155,8 @@ for id = 1:nx
     A    = (pi/2)/div;
     B    = pi*options.nPeriods/div;
     try
-        [roots,warnings] = FindRoots(fPDF,A,B,options.nPoly,isPlot);
+        [roots,warnings] = FindRoots(fPDF,A,B,options.nPoly, ...
+            isPlot,options.tolFindRoots);
     catch
         roots = [];
         warnings = 1;
