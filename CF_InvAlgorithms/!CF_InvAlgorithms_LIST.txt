@@ -3,6 +3,7 @@ INVERSION ALGORITHM Functions:
 cf2DistBV
 cf2DistFFT
 cf2DistGP
+cf2DistGPA
 
 OTHER INVERSION ALGORITHM Functions:
 cf2CDF

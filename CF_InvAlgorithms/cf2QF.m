@@ -49,35 +49,33 @@ function [qf,result] = cf2QF(cf,prob,options)
 %  prob = [0.9 0.95 0.99];
 %  [qf,result] = cf2QF(cf,prob)
 %
-% REFERENCES
+% REFERENCES:
 % [1] Gil-Pelaez, J., 1951. Note on the inversion theorem. Biometrika,
-%     38(3-4), pp.481-482.  
+%     38(3-4), pp.481-482.
 % [2] Imhof, J.: Computing the distribution of quadratic forms in normal
 %     variables. Biometrika 48, 419–426 (1961).
 % [3] Cohen, H., Villegas, F.R. and Zagier, D., 2000. Convergence
 %     acceleration of alternating series. Experimental mathematics, 9(1),
-%     pp.3-12. 
-% [4] Sidi, A., 2011. A user-friendly extrapolation method for computing
+%     pp.3-12.
+% [4] Weniger, E.J., 1989. Nonlinear sequence transformations for the
+%     acceleration of convergence and the summation of divergent series.
+%     Computer Physics Reports, 10(5-6), pp.189-371. 
+% [5] Sidi, A., 2011. A user-friendly extrapolation method for computing
 %     infinite range integrals of products of oscillatory functions. IMA
-%     Journal of Numerical Analysis, 32(2), pp.602-631.  
-% [5] Sidi, A., 2017. Acceleration of Convergence of Some Infinite
+%     Journal of Numerical Analysis, 32(2), pp.602-631.
+% [6] Sidi, A., 2017. Acceleration of Convergence of Some Infinite
 %     Sequences $\boldsymbol {\{A_n\}} $ Whose Asymptotic Expansions
-%     Involve Fractional Powers of $\boldsymbol {n} $. arXiv preprint 
-%     arXiv:1703.06495.   
-% [6] WITKOVSKY V. (2016). Numerical inversion of a characteristic
+%     Involve Fractional Powers of $\boldsymbol {n} $. arXiv preprint
+%     arXiv:1703.06495.
+% [7] WITKOVSKY V. (2016). Numerical inversion of a characteristic
 %     function: An alternative tool to form the probability distribution of
 %     output quantity in linear measurement models. Acta IMEKO, 5(3),
-%     32-44. 
+%     32-44.
 %
-% REMARKS:
-%  This version of cf2CDF was optimized for computing CDF of the
-%  linear combination of independent chi-squared random variables.
-%  cf2CDF is a general purpose algorithm, suitable for numerical
-%  inversion of other well defined characteristic functions (with carefully
-%  tuned option parameters).
+% SEE ALSO: cf2DistGPA, cf2CDF, cf2PDF
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 30-Nov-2018 11:14:06
+% Ver.: 02-Dec-2018 13:36:33
 
 %% CHECK/SET THE INPUT PARAMETERS
 StartTime = cputime;
@@ -93,38 +91,39 @@ if ~isfield(options, 'qf0')
 end
 
 if ~isfield(options, 'crit')
-    options.crit = 1e-14;
+    options.crit = 1e-12;
 end
 
 if ~isfield(options, 'maxiter')
     options.maxiter = 1000;
 end
 
+if ~isfield(options, 'isPlot')
+    options.isPlot = false;
+end
+
 options.isPlot = false;
 
 %% ALGORITHM
-szp  = size(prob);
-prob = prob(:);
-
+szp       = size(prob);
+prob      = prob(:);
 maxiter   = options.maxiter;
 crit      = options.crit;
 qf        = options.qf0;
 criterion = true;
 count     = 0;
 while criterion
-    count  = count + 1;
-    CDFqf  = cf2CDF(cf,qf,options);
-    PDFqf  = cf2PDF(cf,qf,options);
+    count = count + 1;
+    CDFqf = cf2CDF(cf,qf,options);
+    PDFqf = cf2PDF(cf,qf,options);
     correction  = (CDFqf - prob) ./ PDFqf;
     qf = qf - correction;
     criterion = any(abs(correction) > crit * abs(qf)) ...
         && max(abs(correction)) > crit && count < maxiter;
 end
-
-qf    = reshape(qf,szp);
-prob  = reshape(prob,szp); 
-% Stop the clock
-tictoc = cputime - StartTime;
+qf       = reshape(qf,szp);
+prob     = reshape(prob,szp); 
+tictoc   = cputime - StartTime;
 
 %% RESULTS
 result.quantile = qf;
@@ -138,4 +137,3 @@ result.options = options;
 result.tictoc = tictoc;
 
 end
-%%

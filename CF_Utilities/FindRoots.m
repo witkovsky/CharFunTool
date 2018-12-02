@@ -200,11 +200,10 @@ for i = 1:nint
     shift = (intervals(1,i) + intervals(2,i))/2;
     x = cgl*range + shift;
     f = fun(x);
-    ExpansionCoeff = f * M;
-    
+    ExpansionCoeff = f * M;    
     if abs(ExpansionCoeff(n+1)) < 1000*eps(0)
         isWarning = 1;
-        warning('The leading expansion coefficient vanishes');        
+        % warning('The leading expansion coefficient vanishes');        
     else
         ExpansionCoeff = ExpansionCoeff/(-2*ExpansionCoeff(n+1));
         H      = diag(ones(n-1, 1)/2, 1) + diag(ones(n-1, 1)/2, -1);
