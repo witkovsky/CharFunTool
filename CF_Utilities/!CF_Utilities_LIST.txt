@@ -7,6 +7,7 @@ GammaZX
 
 INTEGRAL Functions:
 
+AcceleratedSum
 CFGLSeries
 CFGLSeriesFourierIntegral
 FourierIntegral_BV
@@ -14,6 +15,7 @@ FourierIntegral_P
 ChebFourierIntegral
 ChebPoints
 ChebPoly
+IntegralGK
 LegendrePoints
 LegendreSeries
 LegendreSeriesFourierIntegral
