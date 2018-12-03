@@ -210,8 +210,8 @@ tictoc = toc;
 if nargout > 1
     result.PDF = pdf;
     result.x = x;
-    result.Error = error;
     if options.verbose
+        result.ErrBound = error;
         result.ERR_xLast = ERR;
         result.warnings_xLast = warnings;
         result.isAcceleration_xLast = isAcceleration;
