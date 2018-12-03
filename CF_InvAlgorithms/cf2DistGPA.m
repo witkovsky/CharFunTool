@@ -10,7 +10,7 @@ function [result,cdf,pdf,qf] = cf2DistGPA(cf,x,prob,options)
 %  fast root-finding algorithm) and subsequent application of the
 %  convergence acceleration techniques for computing the limit of the
 %  resulted alternating series, for more details see, e.g., Cohen et al.
-%  (2000), Sidi (2011), Sidi (2017).
+%  (2000), Sidi (2011).
 %
 % SYNTAX:
 %  result = cf2DistGPA(cf,x)
