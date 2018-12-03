@@ -96,7 +96,7 @@ function [pdf,result] = cf2PDF(cf,x,options)
 %           cf2DistBV, cf2CDF, cf2PDF, cf2QF
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 02-Dec-2018 13:36:33
+% Ver.: 03-Dec-2018 23:00:20
 
 %% CHECK/SET THE INPUT PARAMETERS
 tic;
@@ -210,13 +210,12 @@ tictoc = toc;
 if nargout > 1
     result.PDF = pdf;
     result.x = x;
+    result.Error = error;
     if options.verbose
-        result.Error = error;
-        result.ERR1_xLast = ERR1;
-        result.ERR2_xLast = ERR2;
+        result.ERR_xLast = ERR;
         result.warnings_xLast = warnings;
         result.isAcceleration_xLast = isAcceleration;
-        result.fun_xLast = fun;
+        result.fun_xLast = fPDF;
     end
     result.cf = cf;
     result.funPDF = fPDF;

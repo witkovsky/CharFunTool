@@ -81,7 +81,7 @@ function [qf,result] = cf2QF(cf,prob,options)
 %           cf2DistBV, cf2CDF, cf2PDF, cf2QF
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 02-Dec-2018 13:36:33
+% Ver.: 03-Dec-2018 23:00:20
 
 %% CHECK/SET THE INPUT PARAMETERS
 StartTime = cputime;

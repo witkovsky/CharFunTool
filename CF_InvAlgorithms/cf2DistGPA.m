@@ -132,7 +132,7 @@ function [result,cdf,pdf,qf] = cf2DistGPA(cf,x,prob,options)
 %           cf2DistBV, cf2CDF, cf2PDF, cf2QF
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 02-Dec-2018 13:36:33
+% Ver.: 03-Dec-2018 23:00:20
 
 %% ALGORITHM
 %[result,cdf,pdf,qf] = cf2DistGPA(cf,x,prob,options);
@@ -267,6 +267,10 @@ if isempty(xMean)
         xMean = (8*cftIm(1)/5 - 2*cftIm(2)/5 + 8*cftIm(3)/105 ...
             - 2*cftIm(4)/280) / tolDiff;
     end
+end
+
+if isfinite(xMean)
+    options.xMean = xMean;
 end
 
 if isempty(xStd)

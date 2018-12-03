@@ -96,7 +96,7 @@ function [cdf,result] = cf2CDF(cf,x,options)
 %           cf2DistBV, cf2CDF, cf2PDF, cf2QF
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 02-Dec-2018 13:36:33
+% Ver.: 03-Dec-2018 23:00:20
 
 %% CHECK/SET THE INPUT PARAMETERS
 tic;
@@ -144,6 +144,10 @@ if ~isfield(options, 'verbose')
     options.verbose = false;
 end
 
+if ~isfield(options, 'xMean')
+    options.xMean = [];
+end
+
 %% ALGORITHM
 szx      = size(x);
 x        = x(:);
@@ -152,9 +156,10 @@ cdf      = zeros(nx,1);
 error    = zeros(nx,1);
 isPlot   = options.isPlot;
 division = options.division;
+xMean    = options.xMean;
 for id = 1:nx
     xid  = x(id);
-    fCDF = @(t) funCDF(t,cf,xid);
+    fCDF = @(t) funCDF(t,cf,xid,xMean);
     div  = max(0.5,abs(xid));
     A    = (pi/2)/div;
     B    = pi*options.nPeriods/div;
@@ -210,10 +215,9 @@ tictoc = toc;
 if nargout > 1
     result.CDF = cdf;
     result.x = x;
+    result.Error = error;
     if options.verbose
-        result.Error = error;
-        result.ERR1_xLast = ERR1;
-        result.ERR2_xLast = ERR2;
+        result.ERR_xLast = ERR;
         result.warnings_xLast = warnings;
         result.isAcceleration_xLast = isAcceleration;
         result.fun_xLast = fCDF;
@@ -226,12 +230,16 @@ end
 
 end
 %% Function funCDF
-function fun = funCDF(t,cf,x)
+function fun = funCDF(t,cf,x,xMean)
 %funCDF  Auxiliary function. Evaluates the integrand function for CDF
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 30-Nov-2018 11:14:06
 
 fun = imag(cf(t).*exp(-1i*t*x))./t;
+
+if ~isempty(xMean)
+    fun(t==0) = xMean - x;
+end
 
 end
