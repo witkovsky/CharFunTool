@@ -7,7 +7,7 @@ function [qf,result] = cf2QF(cf,prob,options)
 %  by a fast root-finding algorithm) and subsequent application of the
 %  convergence acceleration techniques for computing the limit of the
 %  resulted alternating series, for more details see e.g. Cohen et al.
-%  (2000), Sidi (2011), Sidi (2017.)
+%  (2000), Sidi (2011).
 %
 % NOTE
 %  The algorithms cf2CDF/cf2PDF/cf2Qf are suggested as alternative to the
