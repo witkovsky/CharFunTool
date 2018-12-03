@@ -224,6 +224,7 @@ if nargout > 1
     end
     result.cf = cf;
     result.funCDF  = fCDF;
+    result.roots = roots;
     result.options = options;
     result.tictoc  = tictoc;
 end
