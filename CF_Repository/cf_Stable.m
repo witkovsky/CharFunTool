@@ -62,15 +62,15 @@ function cf = cf_Stable(t,alpha,mu,sigma,coef,niid)
 %   sigma = [1 1 1 1 6]/10;
 %   coef  = 1/5;
 %   cf    = @(t) cf_Stable(t,alpha,mu,sigma,coef);
-%   x     = linspace(-2,2,201);
+%   x     = linspace(-2,2,101);
 %   prob  = [0.9 0.95 0.99]; 
 %   clear options
-%   options.N = 2^12;
-%   options.SixSigmaRule = 3;
-%   result = cf2DistGP(cf,x,prob,options)
+%   options.xMean = mu;
+%   algorithm = 'cf2DistGPA';
+%   result = cf2Dist(cf,x,prob,options,algorithm)
 
 % (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 24-Jun-2017 18:25:56
+% Ver.: 03-Dec-2018 23:29:33
 
 %% ALGORITHM
 %cf = cf_Stable(t,alpha,mu,sigma,coef,niid);
