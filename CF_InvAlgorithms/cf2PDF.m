@@ -216,6 +216,7 @@ if nargout > 1
         result.warnings_xLast = warnings;
         result.isAcceleration_xLast = isAcceleration;
         result.fun_xLast = fPDF;
+        result.roots_xLast = roots;
     end
     result.cf = cf;
     result.funPDF = fPDF;
