@@ -221,10 +221,10 @@ if nargout > 1
         result.warnings_xLast = warnings;
         result.isAcceleration_xLast = isAcceleration;
         result.fun_xLast = fCDF;
+        result.roots_xLast = roots;
     end
     result.cf = cf;
     result.funCDF  = fCDF;
-    result.roots = roots;
     result.options = options;
     result.tictoc  = tictoc;
 end
