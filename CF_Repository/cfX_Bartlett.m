@@ -3,12 +3,11 @@ function cf = cfX_Bartlett(t,df)
 %  Characteristic function of the exact null distribution of the BARTLETT's
 %  test statistic for testing hypothesis about homogeneity of variances
 %  of k normal populations, specified by the vector of the degrees of
-%  freedom df = [df_1,...,df_k].   
-%  
-% NOTICE
-%  cfX_Bartlett does not allow to compute CF of a linear combinantion of
-%  independent RV. 
+%  freedom df = [df_1,...,df_k].  
 %
+%  REMARK
+%  cfX_Bartlett is an alias name for the algorithm cfTest_Bartlett
+%  
 %  The characteristic function of the the exact null distribution of the
 %  BARTLETT's test statistic is given by 
 %  cf(t) = exp(1i*t*C/B).*
@@ -46,6 +45,43 @@ function cf = cfX_Bartlett(t,df)
 %   result = cf2DistGP(cf,x,prob,options);
 %   disp(result)
 %
+% EXAMPLE 3:
+% % Quantiles of Bartlett distribution computed by the algorithm cf2DistGPA
+%   k     = 5;
+%   df    = [1 2 3 4 5 6 7 8 9 19 29 49 99];
+%   prob  = [0.9 0.95 0.99];
+%   Table = zeros(13,3);
+%   clear options
+%   options.isPlot = false;
+%   for i = 1:13
+%       disp(['df = ',num2str(df(i))])
+%       nu = df(i)*ones(k,1);
+%       cf = @(t) cfX_Bartlett(t,nu);
+%       [~,~,~,qf] = cf2DistGPA(cf,[],prob,options);
+%       disp(qf(:)')
+%       Table(i,:) = qf;
+%   end
+%   disp(Table)
+%
+% EXAMPLE 4:
+% % Quantiles of Bartlett distribution computed by the algorithm cf2QF
+%   k     = 5;
+%   df    = [1 2 3 4 5 6 7 8 9 19 29 49 99];
+%   prob  = [0.9 0.95 0.99];
+%   Table = zeros(13,3);
+%   clear options
+%   options.crit = 1e-10;
+%   options.maxiter = 10;
+%   for i = 1:13
+%       disp(['df = ',num2str(df(i))])
+%       nu = df(i)*ones(k,1);
+%       cf = @(t) cfX_Bartlett(t,nu);
+%       qf = cf2QF(cf,prob,options);
+%       disp(qf(:)')
+%       Table(i,:) = qf;
+%   end
+%   disp(Table)
+%
 % REFERENCES
 %  Glaser, R. E. (1976a). The ratio of the geometric mean to the arithmetic
 %  mean for a random sample from a gamma distribution. Journal of the
@@ -61,30 +97,9 @@ function cf = cfX_Bartlett(t,df)
 %  422-426.   
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 25-Nov-2018 22:50:14
+% Ver.: 08-Dec-2018 18:31:30
 
 %% ALGORITHM
-% cf = cfX_Bartlett(t,df)
-
-%% CHECK THE INPUT PARAMETERS
-narginchk(2, 2);
-
-%% Characteristic function of the Bartlett's null distribution
-szt = size(t);
-t   = t(:);
-df  = df(:);
-k   = length(df);
-D   = sum(df);
-W   = df/D;
-C   = D*log(k*prod(W.^W));
-B   = 1 + (1/(3*(k-1))) * (sum(1./df)-1/D);
-
-cf  = GammaLog(D/2);
-cf  = cf + (1i*t*C/B) - log(k)*(1i*t*D/B) - GammaLog(D/2-1i*t*D/B);
-for j = 1:k
-    cf = cf + GammaLog(df(j)/2-1i*t*df(j)/B) - GammaLog(df(j)/2);
-end
-cf  = reshape(exp(cf),szt);
-cf(t==0) = 1;
+cf = cfTest_Bartlett(t,df);
 
 end
