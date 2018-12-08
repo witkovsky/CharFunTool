@@ -78,6 +78,10 @@ cfS_Triangular
 cfS_TSP
 cfS_Wigner
 
+CFs of test statistics probability distributions:
+
+cfTest_Bartlett
+
 CFs of non-negative probability distributions:
 
 cfX_Bartlett
