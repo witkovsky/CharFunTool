@@ -3,7 +3,7 @@ function cf = cfTest_CompoundSymmetry(t,n,p,type)
 %  Characteristic function of the exact null distribution of the
 %  multivariate analysis (MVA) test statistic for testing the shape of the
 %  unknown covariance matrix Sigma of p-dimensional normal distribution.
-%  Here it is assumed that under null hypothests the covariance matric has
+%  Here it is assumed that under null hypothesis the covariance matric has
 %  the compound symmetry structure, i.e. Sigma = sigma^2*((1-rho)*I+rho*J),
 %  where I is the p-dimensional identity matrix and J is pxp matrix of
 %  ones. For more details see Anderson (2003), Marques and Coelho (2011),
