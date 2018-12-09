@@ -2,8 +2,8 @@ function cf = cfTest_Independence(t,n,p,q,type)
 %% cfTest_Independence 
 %  Characteristic function of the exact null distribution of the
 %  multivariate analysis (MVA) test statistic for testing independence q
-%  normal populations (q>1). For more details see Anderson (2003) and/or
-%  Marques and Coelho (2011).
+%  normal populations. For more details see Anderson (2003) and/or Marques
+%  and Coelho (2011).
 %
 %  In particular, here we consider minus log-transformed LRT statistic
 %  (Likelihood Ratio Test) or alternatively the minus log-transformed
@@ -21,7 +21,19 @@ function cf = cfTest_Independence(t,n,p,q,type)
 %  where Lambda = det(S)/prod(det(S_k)) with S is MLE of Sigma, and S_k are
 %  MLEs of Sigma_k, for k = 1,...,q, based on n samples from the compound
 %  vector X = [X_1,...,X_q]. Here we assume that n > p = sum(p_k).
-% 
+%
+%  Hence, the exact characteristic function of the null distribution of
+%  minus log-transformed LRT statistic Lambda, say W = -log(LRT) is
+%  given by 
+%   cf = @(t) cf_LogRV_Beta(-(n/2)*t, (n-qk-j)/2, qk/2),
+%  where qk = [qk_1,...,qk_q] with qk_k = p_{k+1} + ... + p_m, and j =
+%  [j_1,...,j_m] with j_k = 1:p_k.
+%  Similarly, the exact characteristic function of the null distribution of
+%  minus log-transformed modified LRT statistic, say W = -log(MLRT) is
+%   cf = @(t) cf_LogRV_Beta(-t, (n-qk-j)/2, qk/2),
+%  where qk = [qk_1,...,qk_m] with qk_k = p_{k+1} + ... + p_m, and j =
+%  [j_1,...,j_m] with j_k = 1:p_k.
+%
 % SYNTAX
 %   cf = cfTest_Independence(t,n,p,q,type)
 %
@@ -32,7 +44,7 @@ function cf = cfTest_Independence(t,n,p,q,type)
 %  p    - q-dimensional vector of dimensions of the vectors X_1,...,X_q.
 %         If p is scalar value, then the algorithm assumes equal dimension
 %         p for all q vectors X_1,...,X_q.
-%  q    - number of populations, q>1. If p is vector with dimension >= 2,
+%  q    - number of populations, q > 1. If p is vector with dimension >= 2,
 %         then q must be equal to the value q = length(p). If empty or
 %         missing, the default value of q is q = length(p) (p is vector)
 %         or q = 2 (p is scalar).
