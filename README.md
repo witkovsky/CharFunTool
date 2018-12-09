@@ -89,7 +89,7 @@ We recommend taking a look at the Examples collection and the detailed helps of 
   clear options                           % clear/set the options structure
   options.xMin = 0;                       % set the known minimal value (e.g. for non-negative distribution) 
   
-  result = cf2DistGPT(cf,x,prob,options)  % Invert the CF to get the CDF/PDF/Qf and other results by using cf2DistGPT
+  result = cf2DistGPT(cf,x,prob,options)  % Invert the CF to get the CDF/PDF/Qf and other results
 ```
 License
 =======
