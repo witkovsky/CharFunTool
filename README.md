@@ -76,7 +76,7 @@ We recommend taking a look at the Examples collection and the detailed helps of 
 ```
 * Alternatively, by using the included characteristic function `cfTest_EqualityCovariances` and the inversion algorithm `cf2DistGPT` (based on the Gil-Pelaez inversion formula and the simple trapezoidal quadrature rule) evaluate the exact null-distribution (PDF/CDF and the selected quantiles) of the negative log-transformed Likelihood Ratio Test (LRT) statistic for testing the hypothesis on equality of covariance matrices in q normal p-dimensional populations, based on random samples of size n (n > p for each population). 
 
-* In particular, for testing the null hypothesis H0: Sigma_1 = ... = Sigma_q we consider the log-transformed LRT statistic W = -log(LRT), where LRT = q^(pq) prod_{k=1}^q det(S_k) / prod(S)^q)^(n/2) with S_k = 1/n sum_{j=1}^n (X_{kj}-X_k)(X_{kj}-X_k)' being the MLE of the covariance matrices Sigma_k and S = S_1 + ... + S_q. Then the null distribution of W = -log(LRT) can be estimated by 
+* In particular, for testing the null hypothesis H0: Sigma_1 = ... = Sigma_q we consider the log-transformed LRT statistic W = -log(LRT), where LRT = ( q^(pq) prod_{k=1}^q det(S_k) / prod(S)^q )^(n/2) with S_k being the MLE of the matrices Sigma_k and S = S_1 + ... + S_q. Then the null distribution of W = -log(LRT) can be estimated by 
 ```
   q    = 3;                               % number of independent normal populations (q >= 2)
   p    = 5;                               % dimension of each normal population (p >= 1)
