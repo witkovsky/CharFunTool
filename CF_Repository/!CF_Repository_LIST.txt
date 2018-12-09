@@ -81,6 +81,7 @@ cfS_Wigner
 CFs of test statistics probability distributions:
 
 cfTest_Bartlett
+cfTest_CompoundSymmetry
 cfTest_EqualityCovariances
 cfTest_EqualityMeans
 cfTest_EqualityPopulations
