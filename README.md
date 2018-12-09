@@ -73,7 +73,19 @@ For a more advanced distribution, based on the theory of Gaussian Processes, typ
 
  result = cf2DistGP(cf,x,prob,options)    % Invert the CF to get the CDF and PDF 
 ```
-
+Alternatively, evaluate the exact null-distribution (PDF/CDF and/or the selected quantiles) of the negative log-transformed Likelihood Ratio Test (LRT) for testing equality of covariance matrices in q normal p-dimensional populations, based on random samples of size n (n > p for each population):
+```
+  n    = 10;                              % sample size for each population
+  p    = 5;                               % dimension of each normal population
+  q    = 3;                               % numer of independent normal populations
+  type = 'standard';                      % type of considered LRT statistic ('standard' or 'modified')
+  % CF of the null-distribution of the negative log-transformed LRT statistic
+  cf   = @(t) cfTest_EqualityCovariances(t,n,p,q,type);   
+  x    = linspace(0,50,201);              % x values where the PDF/CDF is evaluated
+  prob = [0.9 0.95 0.99];                 % probabilities for which the quantiles are calculated  
+  options.xMin = 0;                       % set the know minimal value of the distribution 
+  result = cf2DistGP(cf,x,prob,options)   % Invert the CF to get the CDF/PDF/Qf and other results
+```
 License
 =======
 
