@@ -53,7 +53,7 @@ function cf = cfTest_Bartlett(t,df)
 %   for i = 1:13
 %       disp(['df = ',num2str(df(i))])
 %       nu = df(i)*ones(k,1);
-%       cf = @(t) cfX_Bartlett(t,nu);
+%       cf = @(t) cfTest_Bartlett(t,nu);
 %       [~,~,~,qf] = cf2DistGPA(cf,[],prob,options);
 %       disp(qf(:)')
 %       Table(i,:) = qf;
@@ -72,7 +72,7 @@ function cf = cfTest_Bartlett(t,df)
 %   for i = 1:13
 %       disp(['df = ',num2str(df(i))])
 %       nu = df(i)*ones(k,1);
-%       cf = @(t) cfX_Bartlett(t,nu);
+%       cf = @(t) cfTest_Bartlett(t,nu);
 %       qf = cf2QF(cf,prob,options);
 %       disp(qf(:)')
 %       Table(i,:) = qf;
@@ -94,7 +94,7 @@ function cf = cfTest_Bartlett(t,df)
 %  422-426.   
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 08-Dec-2018 18:31:30
+% Ver.: 09-Dec-2018 09:42:32
 
 %% ALGORITHM
 % cf = cfTest_Bartlett(t,df)
