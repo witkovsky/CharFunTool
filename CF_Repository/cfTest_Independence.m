@@ -160,7 +160,7 @@ else
     end
 end
 
-%% Characteristic function of the Bartlett's null distribution
+%% Characteristic function of the null distribution
 csp = cumsum(p);
 if n <= csp(q)
 error('Sample size n is too small')
