@@ -50,12 +50,12 @@ Getting started
 
 We recommend taking a look at the Examples collection and the detailed helps of the included characteristic functions and the inversion algorithms. 
 
-To get a taste of what computing with CharFunTool is like, try to invert the characteristic function (CF) of a standard Gaussian distribution. For that, simply type
+* To get a taste of what computing with CharFunTool is like, try to invert the characteristic function (CF) of a standard Gaussian distribution. For that, simply type
 ```
  cf = @(t) exp(-t.^2/2);                  % the standard normal (Gaussian) distribution characteristic function
  result = cf2DistGP(cf)                   % Invert the CF to get the CDF and PDF   
 ```
-For a more advanced distribution, based on the theory of Gaussian Processes, type 
+* For a more advanced distribution, based on the theory of Gaussian Processes, type 
 ```
  df     = 1;
  cfChi2 = @(t) (1-2i*t).^(-df/2);         % CF of the chi-squared distribution
@@ -74,7 +74,7 @@ For a more advanced distribution, based on the theory of Gaussian Processes, typ
 
  result = cf2DistGP(cf,x,prob,options)    % Invert the CF to get the CDF and PDF 
 ```
-Alternatively, by using the included characteristic function cfTest_EqualityCovariances, evaluate the exact null-distribution (PDF/CDF and the selected quantiles) of the negative log-transformed Likelihood Ratio Test (LRT) statistic for testing equality of covariance matrices in q normal p-dimensional populations, based on random samples of size n (n > p for each population):
+* Alternatively, by using the included characteristic function cfTest_EqualityCovariances, evaluate the exact null-distribution (PDF/CDF and the selected quantiles) of the negative log-transformed Likelihood Ratio Test (LRT) statistic for testing equality of covariance matrices in q normal p-dimensional populations, based on random samples of size n (n > p for each population):
 ```
   n    = 10;                              % sample size for each population
   p    = 5;                               % dimension of each normal population
