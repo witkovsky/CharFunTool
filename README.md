@@ -87,7 +87,7 @@ Alternatively, evaluate the exact null-distribution (PDF/CDF and the selected qu
   x    = linspace(0,50,201);              % x values where the PDF/CDF is evaluated
   prob = [0.9 0.95 0.99];                 % probabilities for which the quantiles are calculated
   clear options                           % clear/set the options structure
-  options.xMin = 0;                       % set the know minimal value of the distribution (e.g. non-negative distribution) 
+  options.xMin = 0;                       % set the known minimal value (e.g. for non-negative distribution) 
   
   result = cf2DistGP(cf,x,prob,options)   % Invert the CF to get the CDF/PDF/Qf and other results
 ```
