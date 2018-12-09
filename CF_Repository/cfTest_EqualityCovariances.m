@@ -1,9 +1,9 @@
 function cf = cfTest_EqualityCovariances(t,n,p,q,type)
 %% cfTest_EqualityCovariances 
 %  Characteristic function of the exact null distribution of the
-%  multivariate analysis (MVA) test statistic for testing the null
-%  hypothesis  of equality of covariance matrices of q normal populations
-%  (q>1).  
+%  multivariate analysis (MVA) test statistic for testing equality of
+%  covariance matrices of q normal p-dimensional populations (q>1). For
+%  more details see Anderson (2003) and/or Marques and Coelho (2011). 
 %
 %  In particular, here we consider minus log-transformed LRT statistic
 %  (Likelihood Ratio Test) or alternatively the minus log-transformed
@@ -19,8 +19,9 @@ function cf = cfTest_EqualityCovariances(t,n,p,q,type)
 %    LRT = Lambda^(n/2) = (q^{p*q} * prod(det(S_k)) / (det(S))^q)^(n/2),
 %  and the modified LRT is defined as
 %    MLRT = Lambda = q^{p*q} * prod(det(S_k)) / (det(S))^q,
-%  where S_k are MLEs of Sigma_k, for k = 1,...,q, and S = S_1 + ... + S_q,
-%  based on n samples from each of the the q p-dimensional populations.  
+%  where Lambda = q^{p*q} * prod(det(S_k)) / (det(S))^q where S_k are MLEs
+%  of Sigma_k, for k = 1,...,q, and S = S_1 + ... + S_q, based on n samples
+%  from each of the the q p-dimensional populations.   
 %
 %  Under null hypothesis, distribution of the LRT statistic is
 %    LRT ~  prod_{k=1}^q prod_{j=1}^{p} (B_{jk})^{n/2}, 
@@ -32,8 +33,8 @@ function cf = cfTest_EqualityCovariances(t,n,p,q,type)
 %
 % INPUTS
 %  t    - vector or array of real values, where the CF is evaluated.
-%  n    - number of samples from each of the q p-dimensional populatins. It
-%         is assumed that n > p. 
+%  n    - number of samples from each of the q p-dimensional populations.
+%         It is assumed that n > p. 
 %  p    - dimension of each of the q populations. It is assumed that each
 %         population has the same (equal) dimension p.
 %  q    - number of populations, q>1. If empty or missing, the default
@@ -88,26 +89,6 @@ function cf = cfTest_EqualityCovariances(t,n,p,q,type)
 %   prob = [0.9 0.95 0.99];
 %   options.xMin = 0;
 %   result = cf2DistGP(cf,x,prob,options)
-%
-% EXAMPLE 5:
-% % Quantiles of the null distribution computed by the algorithm cf2QF
-%   n    = [10 11 12 13 14 15 20 30 50 100];
-%   p    = 5;
-%   q    = 3;
-%   type = 'standard';
-%   prob  = [0.9 0.95 0.99];
-%   Table = zeros(10,3);
-%   clear options
-%   options.crit = 1e-10;
-%   options.maxiter = 10;
-%   for i = 1:10
-%       disp(['n = ',num2str(n(i))])
-%       cf   = @(t) cfTest_EqualityCovariances(t,n(i),p,q,type);
-%       qf = cf2QF(cf,prob,options);
-%       disp(qf(:)')
-%       Table(i,:) = qf;
-%   end
-%   disp(Table)
 %
 % REFERENCES
 %   [1] ANDERSON, Theodore Wilbur. An Introduction to Multivariate
