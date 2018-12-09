@@ -83,6 +83,7 @@ We recommend taking a look at the Examples collection and the detailed helps of 
   type = 'standard';                      % type of considered LRT statistic ('standard' or 'modified')
   
   % CF of the null-distribution of the negative log-transformed LRT statistic
+  % for testing the null hypothesis H0: Sigma_1 = ... = Sigma_q
   cf   = @(t) cfTest_EqualityCovariances(t,n,p,q,type);   
   
   x    = linspace(0,50,201);              % x values where the PDF/CDF is to be evaluated
