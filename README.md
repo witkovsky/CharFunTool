@@ -74,7 +74,7 @@ We recommend taking a look at the Examples collection and the detailed helps of 
 
  result = cf2DistGP(cf,x,prob,options)    % Invert the CF to get the CDF and PDF 
 ```
-* Alternatively, by using the included characteristic function `cfTest_EqualityCovariances`, evaluate the exact null-distribution (PDF/CDF and the selected quantiles) of the negative log-transformed Likelihood Ratio Test (LRT) statistic for testing equality of covariance matrices in q normal p-dimensional populations, based on random samples of size n (n > p for each population):
+* Alternatively, by using the included characteristic function `cfTest_EqualityCovariances` and the inversion algorithm `cf2DistGPT` based on the Gil-Pelaez inversion formula and the trapezoidal quadrature rule, evaluate the exact null-distribution (PDF/CDF and the selected quantiles) of the negative log-transformed Likelihood Ratio Test (LRT) statistic for testing equality of covariance matrices in q normal p-dimensional populations, based on random samples of size n (n > p for each population):
 ```
   n    = 10;                              % sample size for each population
   p    = 5;                               % dimension of each normal population
@@ -89,7 +89,7 @@ We recommend taking a look at the Examples collection and the detailed helps of 
   clear options                           % clear/set the options structure
   options.xMin = 0;                       % set the known minimal value (e.g. for non-negative distribution) 
   
-  result = cf2DistGP(cf,x,prob,options)   % Invert the CF to get the CDF/PDF/Qf and other results
+  result = cf2DistGPT(cf,x,prob,options)   % Invert the CF to get the CDF/PDF/Qf and other results
 ```
 License
 =======
