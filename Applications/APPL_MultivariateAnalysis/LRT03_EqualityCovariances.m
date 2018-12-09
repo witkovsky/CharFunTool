@@ -44,10 +44,10 @@ function [pval,result] = LRT03_EqualityCovariances(W,n,p,q,options)
 %  options - option structure, for more details see cf2DistGP. Moreover,
 %            x    - set vector of values where PDF/CDF is evaluated
 %            prob - set vector of probabilities for the quantiles.
-%            coef - set arbitrary multiplicator of the argument t of
-%            the characteristic function. If empty, default value is -n/2
-%            (standard value for minus log-transform of LRT). Possible
-%            alternative is e.g. coef = -1, leading to W = -(2/n)*log(LRT).
+%            type - specifies the type of the LRT test statistic: type =
+%            'standard' with W = -(n/2)*log(Lambda), or type = 'modified'
+%            with W = -log(Lambda). If type is empty or missing, default
+%            value is type  = 'modified'.
 %
 % EXAMPLE: (LRT for testing hypothesis on equality of covariances)
 % % Null distribution of the minus log-transformed LRT statistic
@@ -56,7 +56,8 @@ function [pval,result] = LRT03_EqualityCovariances(W,n,p,q,options)
 % q = 5;            % number of populations 
 % W = [];           % observed value of W = -log(Lambda)
 % clear options;
-% % options.coef = -1;
+% options.type = 'standard';
+% % options.type = 'modified';
 % options.prob = [0.9 0.95 0.99];
 % [pval,result] = LRT03_EqualityCovariances(W,n,p,q,options)
 %
@@ -71,8 +72,8 @@ function [pval,result] = LRT03_EqualityCovariances(W,n,p,q,options)
 %       criteria by numerical inversion of their characteristic functions.
 %       arXiv preprint arXiv:1801.02248, 2018.   
 
-% (c) 2018 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 20-Jan-2018 12:43:15
+% (c) Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 09-Dec-2018 15:34:58
 
 %% ALGORITHM
 % [pval,result] = LRT03_EqualityCovariances(W,n,p,q,options)
@@ -98,50 +99,29 @@ if ~isfield(options, 'xMin')
     options.xMin = 0;
 end
 
+if ~isfield(options, 'type')
+    options.type = [];
+end
+
+type = options.type;
 %% 
-if n <= p 
-error('Sample size n is too small')
+
+if isempty(type)
+    type = 'standard';
 end
 
+cf = @(t) cfTest_EqualityCovariances(t,n,p,q,type);
 
-% CHARACTERISTIC FUNCTION CF
-alpha = zeros(p*q,1);
-beta  = zeros(p*q,1);
-ind   = 0;
-for k = 1:q
-    for j = 1:p
-        ind = ind +1;
-        alpha(ind) = (n - j) / 2;
-        beta(ind)  = (j*(q-1) + 2*k - 1 - q) / (2*q);       
-    end
-end
-
-% For k=j=1 the coefficient beta=0, hence the term log(Beta(alpha,beta))=0. 
-alpha = alpha(2:end);
-beta  = beta(2:end);
-
-% CHARACTERISTIC FUNCTION CF
-coef = options.coef;
-if isempty(coef)
-    coef = -n/2;  % Set this option for using with W = -log(LRT)
-    % coef = -1;  % Set this options for using normalized -log(LRT^(2/n))
-end
-cf = @(t)cf_LogRV_Beta(t,alpha,beta,coef);
-
-% Evaluate the p-value and PDF/CDF/QF of the log-transformed LRT statistic
+% Evaluate p-value or PDF/CDF/QF
 if ~isempty(W)
     % P-VALUE
     options.isPlot = false;
     result = cf2DistGP(cf,W,[],options);
     pval   = 1-result.cdf;
 else
-    % DISTRIBUTION of Lambda PDF/CDF
+    % PDF/CDF/QF otf the test statistic
     pval   = [];
     result = cf2DistGP(cf,options.x,options.prob,options);
 end
-
-% Save the parameters of the used beta distributions
-result.alpha = alpha;
-result.beta  = beta;
 
 end
