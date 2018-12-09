@@ -4,40 +4,46 @@ function [pval,result] = LRT04_EqualityPopulations(W,n,p,q,options)
 %  of q (q>1) p-dimensional normal populations, and/or its null
 %  distribution CF/PDF/CDF. 
 %
-%  This is based on BALANCED samples of size n for each population! 
-%  This is an EXPERIMENTAL version. Correctness should be checked again!
-%
-%  In particular, let X_k ~ N_p(mu_k,Sigma_k), for k = 1,...,q. We want to
-%  test the hypothesis that the q normal populations are equally
-%  distributed. That is, we want to test that the 
-%  mean vectors mu_k are equal for all k = 1,...,q, as well as the
-%  covariance matrices Sigma_k are equal for all k = 1,...,q. Then, the
-%  null hypothesis is given as  
+%  Let X_k ~ N_p(mu_k,Sigma_k), for k = 1,...,q. We want to test the
+%  hypothesis that the q normal populations are equally distributed. That
+%  is, we want to test that the mean vectors mu_k are equal for all k =
+%  1,...,q, as well as the covariance matrices Sigma_k are equal for all k
+%  = 1,...,q. Then, the null hypothesis is given as
 %    H0: mu_1 = ... = mu_q & Sigma_1 = ... = Sigma_k.
 %  Here, the null hypothesis H0 and the LRT statistic can be decomposed:
-%    Lambda = Lambda_Means * Lambda_Covariances
-%  where (first) Lambda_Covariances represents the LRT for testing equality of
+%    LRT = LRT_Means * LRT_Covariances
+%  where (first) LRT_Covariances represents the LRT for testing equality of
 %  covariance matrices of given q normal populations, and (second)
-%  Lambda_Means represents (conditionally) the LRT for testing equality of
+%  LRT_Means represents (conditionally) the LRT for testing equality of
 %  means of given q normal populations.    
 %
-%  Under null hypothesis, distributions of Lambda_Covariances and
-%  Lambda_Means are independent, and the distribution of the test statistic
-%  Lambda is  
-%    Lambda ~  Lambda_Means * Lambda_Covariances, 
-%           ~  (prod_{k=1}^q prod_{j=1}^{p} (B_{jk})^{n/2}) 
-%              * (prod_{j=1}^{p} (B_j)^{n*q/2})
-%  where the B_{jk} and B_j are mutually independent beta distributed
+%  Under null hypothesis, distributions of LRT_Covariances and LRT_Means
+%  are independent, and the distribution of the compound LRT statistic is
+%    LRT =  Lambda^(n/2) = LRT_Means * LRT_Covariances, 
+%        = (prod_{k=1}^q prod_{j=1}^{p} (B_{jk})^(n/2)) 
+%           * (prod_{j=1}^{p} (B_j)^(q*n/2))
+%  and the modified LRT is defined as
+%    MLRT = Lambda = MLRT_Means * MLRT_Covariances
+%         = (prod_{k=1}^q prod_{j=1}^{p} B_{jk}) 
+%           * (prod_{j=1}^{p} (B_j)^q)
+%  where Lambda = (prod_{k=1}^q prod_{j=1}^p B_{jk})*(prod_{j=1}^{p} B_j^q)
+%  where  B_{jk} and B_j are mutually independent beta distributed  
 %  random variables. Here we assume that n is equal sample size for each
 %  sample, k = 1,...,q, n > p.  
 %
 %  Hence, the exact characteristic function of the null distribution of
-%  minus log-transformed LRT statistic Lambda, say W = -log(Lambda) is
+%  minus log-transformed LRT statistic Lambda, say W = -log(LRT) is
 %  given by 
 %    cf = @(t) cf_LogRV_Beta(-(n/2)*t, (n-j)/2, (j*(q-1)+2*k-1-q)/(2*q)) 
 %           .* cf_LogRV_Beta(-(n*q/2)*t, ((n-1)*q-i+1)/2, (q-1)/2),
 %  where i = [1, 2, ..., p]', k = [1*o,...,q*o] with p-dimensional vector
 %  of ones o = [1,...,1]  and j = [j_1,...,j_q] with j_k = 1:p. 
+%  Similarly, the exact characteristic function of the null distribution of
+%  minus log-transformed modified LRT statistic, say W = -log(MLRT) is
+%    cf = @(t) cf_LogRV_Beta(-t, (n-j)/2, (j*(q-1)+2*k-1-q)/(2*q)) 
+%           .* cf_LogRV_Beta(-q*t, ((n-1)*q-i+1)/2, (q-1)/2),
+%  where i = [1, 2, ..., p]', k = [1*o,...,q*o] with p-dimensional vector
+%  of ones o = [1,...,1]  and j = [j_1,...,j_q] with j_k = 1:p.
 %
 % SYNTAX:
 %  pval = LRT04_EqualityPopulations(W,n,p,q,options)
@@ -54,10 +60,10 @@ function [pval,result] = LRT04_EqualityPopulations(W,n,p,q,options)
 %  options - option structure, for more details see cf2DistGP. Moreover,
 %            x    - set vector of values where PDF/CDF is evaluated
 %            prob - set vector of probabilities for the quantiles.
-%            coef - set arbitrary multiplicator of the argument t of
-%            the characteristic function. If empty, default value is -n/2
-%            (standard value for minus log-transform of LRT). Possible
-%            alternative is e.g. coef = -1, leading to W = -(2/n)*log(LRT).
+%            type - specifies the type of the LRT test statistic: type =
+%            'standard' with W = -(n/2)*log(Lambda), or type = 'modified'
+%            with W = -log(Lambda). If type is empty or missing, default
+%            value is type  = 'modified'.
 %
 % EXAMPLE: (LRT for testing hypothesis on equality of populations)
 % % Null distribution of the minus log-transformed LRT statistic
@@ -66,7 +72,8 @@ function [pval,result] = LRT04_EqualityPopulations(W,n,p,q,options)
 % q = 5;            % number of populations 
 % W = [];           % observed value of W = -log(Lambda)
 % clear options;
-% % options.coef = -1;
+% options.type = 'standard';
+% % options.type = 'modified';
 % options.prob = [0.9 0.95 0.99];
 % [pval,result] = LRT04_EqualityPopulations(W,n,p,q,options)
 %
@@ -81,8 +88,8 @@ function [pval,result] = LRT04_EqualityPopulations(W,n,p,q,options)
 %       criteria by numerical inversion of their characteristic functions.
 %       arXiv preprint arXiv:1801.02248, 2018.   
 
-% (c) 2018 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 20-Jan-2018 12:43:15
+% (c) Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 09-Dec-2018 15:34:58
 
 %% ALGORITHM
 % [pval,result] = LRT04_EqualityPopulations(W,n,p,q,options)
@@ -108,45 +115,29 @@ if ~isfield(options, 'xMin')
     options.xMin = 0;
 end
 
+if ~isfield(options, 'type')
+    options.type = [];
+end
+
+type = options.type;
+
 %% 
-if n <= p 
-error('Sample size n is too small')
+if isempty(type)
+    type = 'standard';
 end
 
-ind   = (1:p)';
-alpha = zeros(p*(q+1),1);
-beta  = zeros(p*(q+1),1);
-coef  = zeros(p*(q+1),1); 
-% Parameters of Beta distributions used for LRT_Means
-alpha(1:p) = ((n-1)*q-ind+1)/2;
-beta(1:p)  = (q-1)/2;
-coef(1:p)  = -n*q/2;        % CHECK THIS!!! 
-% Parameters of Beta distributions used for LRT_Covariances
-coef(p+(1:p*q)) = -n/2;     % CHECK THIS!!! 
-ind    = p;
-for k  = 1:q
-    for j = 1:p
-        ind = ind +1;
-        alpha(ind) = (n - j) / 2;
-        beta(ind)  = (j*(q-1) + 2*k - 1 - q) / (2*q);
-    end
-end
-cf    = @(t)cf_LogRV_Beta(t,alpha,beta,coef);
+cf = @(t) cfTest_EqualityPopulations(t,n,p,q,type);
 
-% Evaluate the p-value and PDF/CDF/QF of the log-transformed LRT statistic
+% Evaluate p-value or PDF/CDF/QF
 if ~isempty(W)
     % P-VALUE
     options.isPlot = false;
     result = cf2DistGP(cf,W,[],options);
     pval   = 1-result.cdf;
 else
-    % DISTRIBUTION of Lambda PDF/CDF
+    % PDF/CDF/QF otf the test statistic
     pval   = [];
     result = cf2DistGP(cf,options.x,options.prob,options);
 end
-
-% Save the parameters of the used beta distributions
-result.alpha = alpha;
-result.beta  = beta;
 
 end
