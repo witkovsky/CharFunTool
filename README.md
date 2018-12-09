@@ -84,7 +84,7 @@ We recommend taking a look at the Examples collection and the detailed helps of 
   % CF of the null-distribution of the negative log-transformed LRT statistic
   cf   = @(t) cfTest_EqualityCovariances(t,n,p,q,type);   
   
-  x    = linspace(0,50,201);              % x values where the PDF/CDF is evaluated
+  x    = linspace(0,50,201);              % x values where the PDF/CDF is to be evaluated
   prob = [0.9 0.95 0.99];                 % probabilities for which the quantiles are calculated
   clear options                           % clear/set the options structure
   options.xMin = 0;                       % set the known minimal value (e.g. for non-negative distribution) 
