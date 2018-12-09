@@ -27,6 +27,18 @@ function cf = cfTest_EqualityCovariances(t,n,p,q,type)
 %    LRT ~  prod_{k=1}^q prod_{j=1}^{p} (B_{jk})^{n/2}, 
 %  with B_{jk} ~ Beta((n-j)/2,(j*(q-1)+2*k-1-q)/2), and we set B_{11} = 1
 %  for j=k=1. Here we assume that n > p.
+%
+%  Hence, the exact characteristic function of the null distribution of
+%  minus log-transformed LRT statistic Lambda, say W = -log(LRT) is
+%  given by 
+%   cf = @(t) cf_LogRV_Beta(-(n/2)*t, (n-j)/2, (j*(q-1)+2*k-1-q)/(2*q)),
+%  where k = [1*o,...,q*o] with p-dimensional vector of ones o = [1,...,1]
+%  and j = [j_1,...,j_q] with j_k = 1:p. 
+%  Similarly, the exact characteristic function of the null distribution of
+%  minus log-transformed modified LRT statistic, say W = -log(MLRT) is
+%   cf = @(t) cf_LogRV_Beta(-t, (n-j)/2, (j*(q-1)+2*k-1-q)/(2*q)),
+%  where k = [1*o,...,q*o] with p-dimensional vector of ones o = [1,...,1]
+%  and j = [j_1,...,j_q] with j_k = 1:p. 
 % 
 % SYNTAX
 %   cf = cfTest_EqualityCovariances(t,n,p,q,type)
