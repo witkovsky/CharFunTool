@@ -81,6 +81,9 @@ cfS_Wigner
 CFs of test statistics probability distributions:
 
 cfTest_Bartlett
+cfTest_EqualityCovariances
+cfTest_EqualityMeans
+cfTest_Independence
 
 CFs of non-negative probability distributions:
 
