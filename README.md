@@ -12,10 +12,9 @@ For the R version (not an identical clone) of the toolbox see the CharFun packag
 About
 =====
 
-The Characteristic Functions Toolbox (CharFunTool) consists of a set of algorithms for evaluating selected characteristic functions
-and algorithms for numerical inversion of the combined and/or compound characteristic functions, used to evaluate the cumulative distribution function (CDF), the probability density function (PDF), and/or the quantile function (QF).
+The Characteristic Functions Toolbox (CharFunTool) consists of a set of algorithms for evaluating selected characteristic functions and algorithms for numerical inversion of the combined and/or compound characteristic functions, used to evaluate the cumulative distribution function (CDF), the probability density function (PDF), and/or the quantile function (QF).
                                                                               
-The toolbox comprises different inversion algorithms, including those based on simple trapezoidal quadrature rule for computing the integrals defined by the Gil-Pelaez formulae, and/or based on using the FFT algorithm for computing the Fourier transform integrals.
+The toolbox comprises different inversion algorithms, including those based on the Gil-Pelaez inversion formulae in combination with the simple trapezoidal quadrature rule or other more advanced quadratures and acceleration methods used for computing the required integrals of highly oscillatory functions, and/or by using the FFT algorithm for computing the Fourier transform integrals.
                                                                        
 Installation and requirements
 =============================
