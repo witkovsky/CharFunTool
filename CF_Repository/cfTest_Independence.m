@@ -26,13 +26,15 @@ function cf = cfTest_Independence(t,n,p,q,type)
 %
 % INPUTS
 %  t    - vector or array of real values, where the CF is evaluated.
-%  n    - number of samples from the compound vector X = [X_1,...,X_q]
+%  n    - number of samples from the compound vector X = [X_1,...,X_q]. It
+%         is assumed that n > length(X).
 %  p    - q-dimensional vector of dimensions of the vectors X_1,...,X_q.
-%         If p is scalar value, then the algorithm assumes equal
-%         dimension p for all q vectors X_1,...,X_q.
-%  q    - number of populations. If p is vector of dimensions, then q
-%         must be equal to the value q = length(p). The default value is
-%         q = length(p) (If p is vector) or q = 2 (if p is scalar).
+%         If p is scalar value, then the algorithm assumes equal dimension
+%         p for all q vectors X_1,...,X_q.
+%  q    - number of populations, q>1. If p is vector with dimension >= 2,
+%         then q must be equal to the value q = length(p). If empty or
+%         missing, the default value of q is q = length(p) (p is vector)
+%         or q = 2 (p is scalar).
 %  type - specifies the type of the LRT test statistic: type = 'standard'
 %         with W = -(n/2)*log(Lambda), or type = 'modified' with W =
 %         -log(Lambda). If type is empty or missing, default value is type
@@ -62,7 +64,7 @@ function cf = cfTest_Independence(t,n,p,q,type)
 %
 % EXAMPLE 3:
 % % CF of the log-transformed modified LRT statistic for independence
-%   t  = linspace(-1,1,201);
+%   t  = linspace(-5,5,201);
 %   n  = 20;
 %   p  = 5;
 %   q  = 3;
@@ -160,20 +162,19 @@ end
 
 %% Characteristic function of the Bartlett's null distribution
 csp = cumsum(p);
-N   = csp(q-1);
-
-if n <= N 
+if n <= csp(q)
 error('Sample size n is too small')
 end
 
-alpha = zeros(N,1);
-beta  = zeros(N,1);
+alpha = zeros(csp(q-1),1);
+beta  = zeros(csp(q-1),1);
 ind   = 0;
 for k = 1:(q-1)
+    qk = csp(q)-csp(k);
     for j = 1:p(k)
         ind = ind +1;
-        alpha(ind) = (n - csp(k) - j) / 2;
-        beta(ind)  = csp(k) / 2;       
+        alpha(ind) = (n - qk - j) / 2;
+        beta(ind)  = qk / 2;
     end
 end
 
