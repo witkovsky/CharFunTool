@@ -83,10 +83,11 @@ Alternatively, evaluate the exact null-distribution (PDF/CDF and the selected qu
   
   % CF of the null-distribution of the negative log-transformed LRT statistic
   cf   = @(t) cfTest_EqualityCovariances(t,n,p,q,type);   
-    x    = linspace(0,50,201);              % x values where the PDF/CDF is evaluated
+  
+  x    = linspace(0,50,201);              % x values where the PDF/CDF is evaluated
   prob = [0.9 0.95 0.99];                 % probabilities for which the quantiles are calculated
-  clear options
-  options.xMin = 0;                       % set the know minimal value of the distribution 
+  clear options                           % clear/set the options structure
+  options.xMin = 0;                       % set the know minimal value of the distribution (here the distribution is non-negative) 
   
   result = cf2DistGP(cf,x,prob,options)   % Invert the CF to get the CDF/PDF/Qf and other results
 ```
