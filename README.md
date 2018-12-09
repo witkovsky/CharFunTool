@@ -48,7 +48,7 @@ To use CharFunTool in MATLAB, you will need to add the `CharFunTool` directory t
 Getting started
 ===============
 
-We recommend taking a look at the Examples collection. 
+We recommend taking a look at the he Examples collection and the detailed help of the included characteristic functions and the inversion algorithms. 
 
 To get a taste of what computing with CharFunTool is like, try to invert the characteristic function (CF) of a standard Gaussian distribution. For that, simply type
 ```
