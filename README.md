@@ -76,7 +76,7 @@ We recommend taking a look at the Examples collection and the detailed helps of 
 ```
 * Alternatively, by using the included characteristic function `cfTest_EqualityCovariances` and the inversion algorithm `cf2DistGPT` (based on the Gil-Pelaez inversion formula and the simple trapezoidal quadrature rule) evaluate the exact null-distribution (PDF/CDF and the selected quantiles) of the negative log-transformed Likelihood Ratio Test (LRT) statistic for testing equality of covariance matrices in q normal p-dimensional populations, based on random samples of size n (n > p for each population):
 ```
-  n    = 10;                              % sample size for each population
+  n    = 10;                              % sample size for each normal population
   p    = 5;                               % dimension of each normal population
   q    = 3;                               % numer of independent normal populations
   type = 'standard';                      % type of considered LRT statistic ('standard' or 'modified')
