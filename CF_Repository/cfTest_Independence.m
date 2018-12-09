@@ -1,8 +1,9 @@
 function cf = cfTest_Independence(t,n,p,q,type)
 %% cfTest_Independence 
 %  Characteristic function of the exact null distribution of the
-%  multivariate analysis (MVA) test statistic for testing the null
-%  hypothesis of independence q normal populations (q>1). 
+%  multivariate analysis (MVA) test statistic for testing independence q
+%  normal populations (q>1). For more details see Anderson (2003) and/or
+%  Marques and Coelho (2011).
 %
 %  In particular, here we consider minus log-transformed LRT statistic
 %  (Likelihood Ratio Test) or alternatively the minus log-transformed
@@ -19,7 +20,7 @@ function cf = cfTest_Independence(t,n,p,q,type)
 %    MLRT = Lambda = det(S)/prod(det(S_k)),
 %  where Lambda = det(S)/prod(det(S_k)) with S is MLE of Sigma, and S_k are
 %  MLEs of Sigma_k, for k = 1,...,q, based on n samples from the compound
-%  vector X = [X_1,...,X_q]. 
+%  vector X = [X_1,...,X_q]. Here we assume that n > p = sum(p_k).
 % 
 % SYNTAX
 %   cf = cfTest_Independence(t,n,p,q,type)
@@ -95,26 +96,6 @@ function cf = cfTest_Independence(t,n,p,q,type)
 %   prob = [0.9 0.95 0.99];
 %   options.xMin = 0;
 %   result = cf2DistGP(cf,x,prob,options)
-%
-% EXAMPLE 6:
-% % Quantiles of the null distribution computed by the algorithm cf2QF
-%   n    = [16 17 18 19 20 30 50 100];
-%   p    = 5;
-%   q    = 3;
-%   type = 'standard';
-%   prob  = [0.9 0.95 0.99];
-%   Table = zeros(8,3);
-%   clear options
-%   options.crit = 1e-10;
-%   options.maxiter = 10;
-%   for i = 1:8
-%       disp(['n = ',num2str(n(i))])
-%       cf   = @(t) cfTest_Independence(t,n(i),p,q,type);
-%       qf = cf2QF(cf,prob,options);
-%       disp(qf(:)')
-%       Table(i,:) = qf;
-%   end
-%   disp(Table)
 %
 % REFERENCES
 %   [1] ANDERSON, Theodore Wilbur. An Introduction to Multivariate
