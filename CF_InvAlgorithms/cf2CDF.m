@@ -24,29 +24,29 @@ function [cdf,result] = cf2CDF(cf,x,options)
 %  cf       - function handle of the characteristic function
 %  x        - vector of x values where the CDF is computed
 %  options  - structure with the following parameters:
-%             isAccelerated : indicator of activated acceleration
-%             algorithm. 
-%             nPeriods : the upper integration limit: UPPER = nPeriods * pi
-%             / x. The the basic integration interval [0,UPPER] is devided
-%             into two subintervals [0 A] and [A UPPER].
-%             isPlot : logical indicator for plotting the integrand
-%             function and calculation of their zeros, default value is
-%             options.isPlot = false.
-%             options.tol = 1e-10      % tolerance for numerical
+%             options.isAccelerated    % indicator of the activated
+%                                      % acceleration. 
+%             options.nPeriods = 25    % the upper integration limit: UPPER
+%                                      % = nPeriods * pi / x. The the basic
+%                                      % integration interval [0,UPPER] is
+%                                      % devided into two subintervals [0 A]
+%                                      % and [A UPPER], where A is first
+%                                      % zero of the integrand function.  
+%             options.isPlot = false   % logical indicator for plotting the
+%                                      % integrand function and calculation
+%                                      % of their zeros.
+%             options.tol = 1e-10      % absolute tolerance for numerical
 %                                      % integration
 %             options.tolFindRoots     % tolerance for the root-finding
 %                                      % procedure. Default value is
 %                                      % options.tolFindRoots = 1e-32.
 %                                      % Alternatively, set lower levels up
 %                                      % to options.tolFindRoots = 1e-321.
-%             options.maxiterFindRoots % maximum number of iterations the
-%                                      % root-finding procedure. Default
-%                                      % value is options.maxiterFindRoots
-%                                      % = 100. 
-%             options.nPoly            % order of the chebyshev polynomials
+%             options.maxiterFindRoots % maximum number of iterations for
+%                           = 100      % the root-finding procedure. 
+%             options.nPoly = 2^5      % order of the chebyshev polynomials
 %                                      % used for the root-finding
-%                                      % procedure. Default value is
-%                                      % options.nPoly = 2^5.
+%                                      % procedure. 
 % OUTPUT:
 %  cdf      - vector of CDF values evaluated at x.
 %  result   - structure with further details on computing the CDF.
@@ -96,7 +96,7 @@ function [cdf,result] = cf2CDF(cf,x,options)
 %           cf2DistBV, cf2CDF, cf2PDF, cf2QF
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 03-Dec-2018 23:00:20
+% Ver.: 19-Dec-2018 21:59:07
 
 %% CHECK/SET THE INPUT PARAMETERS
 tic;
@@ -201,7 +201,7 @@ for id = 1:nx
     else
         isAcceleration = false;
         ERR = options.tol;
-        INT = integral(fCDF,0,B,'RelTol',0,'AbsTol',ERR);
+        INT = integral(fCDF,0,Inf,'RelTol',0,'AbsTol',ERR);
     end
     cdf(id)   = 1/2 - INT/pi;
     error(id) = ERR;
