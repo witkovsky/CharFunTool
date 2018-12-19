@@ -24,15 +24,35 @@ function [qf,result] = cf2QF(cf,prob,options)
 %  cf       - function handle of the characteristic function
 %  prob     - vector of probabilities where the QF is computed
 %  options  - structure with the following parameters:
-%             maxiter : indicator of maximum number of Newtob-Raphson
-%             iterations. Default value is options.maxiter = 1000.
-%             crit : value of the criterion limit for stopping rule.
-%             Default value is options.crit = 1e-12.
-%             verbose : indicator for producing result with a more detailed
-%             output. Default value is options.verbose = false.
-%             isPlot : logical indicator for plotting the integrand
-%             function and calculation of their zeros. Default value is
-%             options.isPlot = false.
+%             options.isAccelerated    % indicator of the activated
+%                                      % acceleration. 
+%             options.nPeriods = 25    % the upper integration limit: UPPER
+%                                      % = nPeriods * pi / x. The the basic
+%                                      % integration interval [0,UPPER] is
+%                                      % devided into two subintervals [0 A]
+%                                      % and [A UPPER], where A is first
+%                                      % zero of the integrand function.  
+%             options.isPlot = false   % logical indicator for plotting the
+%                                      % integrand function and calculation
+%                                      % of their zeros.
+%             options.tol = 1e-10      % absolute tolerance for numerical
+%                                      % integration
+%             options.tolFindRoots     % tolerance for the root-finding
+%                                      % procedure. Default value is
+%                                      % options.tolFindRoots = 1e-32.
+%                                      % Alternatively, set lower levels up
+%                                      % to options.tolFindRoots = 1e-321.
+%             options.maxiterFindRoots % maximum number of iterations for
+%                           = 100      % the root-finding procedure. 
+%             options.nPoly = 2^5      % order of the chebyshev polynomials
+%                                      % used for the root-finding
+%                                      % procedure. 
+%             options.maxiter = 1000   % indicator of the maximum number of
+%                                      % Newton-Raphson iterations. 
+%             options.crit = 1e-12     % value of the criterion limit for
+%                                      % stopping rule. 
+%             options.verbose = false  % indicator for producing result
+%                                      % with a more detailed output. 
 %
 % OUTPUT:
 %  qf       - vector of the quantile values evaluated at prob.
@@ -81,7 +101,7 @@ function [qf,result] = cf2QF(cf,prob,options)
 %           cf2DistBV, cf2CDF, cf2PDF, cf2QF
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 03-Dec-2018 23:00:20
+% Ver.: 19-Dec-2018 21:59:07
 
 %% CHECK/SET THE INPUT PARAMETERS
 StartTime = cputime;
