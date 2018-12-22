@@ -45,7 +45,7 @@ function [qf,result] = cf2QF_BTAV(cf,prob,options)
 %  prob = [0.9 0.95 0.99];
 %  [qf,result] = cf2QF_BTAV(cf,prob)
 %
-% EXAMPLE 4:
+% EXAMPLE 3:
 % % Quantiles of Bartlett distribution computed by the algorithm cf2QF_BTAV
 %     k     = 5;
 %     df    = [1 2 3 4 5 6 7 8 9 10];
@@ -79,7 +79,7 @@ function [qf,result] = cf2QF_BTAV(cf,prob,options)
 %     Engineering, 60(5), pp.979-993.
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 22-Dec-2018 12:37:57
+% Ver.: 22-Dec-2018 23:56:13
 
 %% CHECK/SET THE INPUT PARAMETERS
 StartTime = cputime;
