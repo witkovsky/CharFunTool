@@ -1,13 +1,13 @@
 function cf = cf_ChiSquare(t,df,ncp,coef,niid)
-%cf_ChiSquare 
+%cf_ChiSquare
 %  Characteristic function of a linear combination (resp.
 %  convolution) of independent (possibly non-central) CHI-SQUARE random
-%  variables.     
+%  variables.
 %
 %  That is, cf_ChiSquare evaluates the characteristic function cf(t)  of  Y =
 %  sum_{i=1}^N coef_i * X_i, where X_i ~ ChiSquare(df_i,ncp_i) are
 %  inedependent RVs, with df_i > 0 degrees of freedom the 'non-centrality'
-%  parameters ncp_i > 0, for i = 1,...,N. 
+%  parameters ncp_i > 0, for i = 1,...,N.
 %
 %  The characteristic function of Y is defined by
 %   cf(t) = Prod ( (1-2*i*t*coef(i))^(-df(i)/2)
@@ -15,7 +15,7 @@ function cf = cf_ChiSquare(t,df,ncp,coef,niid)
 %
 % SYNTAX:
 %  cf = cf_ChiSquare(t,df,ncp,coef,niid)
-% 
+%
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
 %  df    - vector of the degrees of freedom of the the chi-squared random
@@ -24,7 +24,7 @@ function cf = cf_ChiSquare(t,df,ncp,coef,niid)
 %  ncp   - vector of the non-centrality parameters of the the chi-squared
 %          random variables. If ncp is scalar, it is assumed that all
 %          non-centrality parameters are equal. If empty, default value is
-%          ncp = 0. 
+%          ncp = 0.
 %  coef  - vector of the coefficients of the linear combination of the
 %          chi-squared random variables. If coef is scalar, it is assumed
 %          that all coefficients are equal. If empty, default value is
@@ -32,7 +32,7 @@ function cf = cf_ChiSquare(t,df,ncp,coef,niid)
 %  niid  - scalar convolution coeficient niid, such that Z = Y + ... + Y is
 %          sum of niid iid random variables Y, where each Y = sum_{i=1}^N
 %          coef(i) * log(X_i) is independently and identically distributed
-%          random variable. If empty, default value is niid = 1.   
+%          random variable. If empty, default value is niid = 1.
 %
 % WIKIPEDIA:
 %  https://en.wikipedia.org/wiki/Chi-squared_distribution
@@ -48,7 +48,7 @@ function cf = cf_ChiSquare(t,df,ncp,coef,niid)
 %   figure; plot(t,real(cf),t,imag(cf));grid on
 %   title('Characteristic function of the \chi^2 RV with DF=1 and NCP=1')
 %
-% EXAMPLE 2: 
+% EXAMPLE 2:
 % % CF of a linear combination of K=100 independent ChiSquare RVs
 %   coef = 1./(((1:50) - 0.5)*pi).^2;
 %   figure; plot(coef,'.-')
@@ -84,30 +84,21 @@ function cf = cf_ChiSquare(t,df,ncp,coef,niid)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 5);
+
 if nargin < 5, niid = []; end
 if nargin < 4, coef = []; end
 if nargin < 3, ncp  = []; end
 if nargin < 2, df   = []; end
 
-if isempty(ncp) && ~isempty(df)
-    isNoncentral = false; ncp = 0;
-elseif isempty(ncp) && ~isempty(coef)
-    isNoncentral = false; ncp = 0;
-elseif ~any(ncp)
-    isNoncentral = false; ncp = 0;
-else
-    isNoncentral = true;
+if isempty(ncp)
+    ncp = 0;
 end
 
-if isempty(df) && ~isempty(coef)
-    df = 1;
-elseif isempty(df) && ~isempty(ncp)
+if isempty(df)
     df = 1;
 end
 
-if isempty(coef) && ~isempty(ncp)
-    coef = 1;
-elseif isempty(coef) && ~isempty(df)
+if isempty(coef)
     coef = 1;
 end
 
@@ -116,15 +107,19 @@ if isempty(niid)
 end
 
 %% Find the unique coefficients and their multiplicities
-if ~isempty(coef) && isscalar(df) && ~isNoncentral 
-    coef = sort(coef);
-    m    = length(coef);
-    [coef,idx] = unique(coef);
-    df = df * diff([idx;m+1]);
-end
+%     if ~isempty(coef) && isscalar(df) && ~isNoncentral
+%         coef = sort(coef);
+%         m    = length(coef);
+%         [coef,idx] = unique(coef);
+%         df = df * diff([idx;m+1]);
+%     end
 
 % Check/set equal dimensions for the vectors coef, df, and ncp
-[errorcode,coef,df,ncp] = distchck(3,coef(:)',df(:)',ncp(:)');
+if ncp~=0
+    [errorcode,coef,df,ncp] = distchck(3,coef(:)',df(:)',ncp(:)');
+else
+    [errorcode,coef,df] = distchck(2,coef(:)',df(:)');
+end
 if errorcode > 0
     error(message('InputSizeMismatch'));
 end
@@ -134,7 +129,7 @@ szt   = size(t);
 t     = t(:);
 cf    = 1;
 aux   = bsxfun(@times,t,coef);
-if isNoncentral
+if ncp~=0
     aux = bsxfun(@power,(1 -2i * aux),-df/2) .* ...
         exp(bsxfun(@times,aux,1i*ncp)./(1-2i*aux));
 else
