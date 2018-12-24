@@ -52,11 +52,9 @@ function [qf,result] = cf2QF_BTAV(cf,prob,options)
 %     prob  = [0.9 0.95 0.99];
 %     Table = zeros(10,3);
 %     for i = 1:10
-%         disp(['df = ',num2str(df(i))])
 %         nu = df(i)*ones(k,1);
 %         cf = @(t) cfTest_Bartlett(t,nu);
-%         qf = cf2QF_BTAV(cf,prob,options);
-%         disp(qf(:)')
+%         qf = cf2QF_BTAV(cf,prob);
 %         Table(i,:) = qf;
 %     end
 %     disp(Table)
@@ -118,9 +116,9 @@ criterion  = true;
 count      = 0;
 while criterion
     count  = count + 1;
-    [~,cdfFun,pdfFun] = fun_BTAV(t,qf,cf,[],M);
-    CDF  = (2*pi/n)*real(cdfFun(1,:)/2 + sum(cdfFun(2:n,:)));
-    PDF  = (2*pi/n)*real(pdfFun(1,:)/2 + sum(pdfFun(2:n,:)));
+    [~,cdfFun,pdfFun,s0] = fun_BTAV(t,qf,cf,[],M);
+    CDF  = (2*pi/n)*(cdfFun(1,:)/2 + nansum(real(cdfFun(2:n,:))));
+    PDF  = (2*pi/n)*(pdfFun(1,:)/2 + nansum(real(pdfFun(2:n,:))));
     correction  = (CDF - prob) ./ PDF;
     qf = qf - correction;
     criterion = any(abs(correction) > crit * abs(qf)) ...
@@ -142,13 +140,15 @@ result.lastTermCDF = abs(cdfFun(n,:));
 result.lastTermPDF = abs(pdfFun(n,:));
 result.cdfFun = cdfFun;
 result.pdfFun = pdfFun;
+result.s0 = s0;
+result.t = t;
 result.cf = cf;
 result.options = options;
 result.tictoc = tictoc;
 
 end
 %% function fun_BTAV
-function [fun,cdfFun,pdfFun] = fun_BTAV(phi,x,cf,funtype,M)
+function [fun,cdfFun,pdfFun,s0] = fun_BTAV(phi,x,cf,funtype,M)
 %fun_BTAV 
 %  Auxiliary function calculates the integrand function for computing the
 %  CDF/PDF of the NON-NEGATIVE DISTRIBUTION specified by its characteristic
