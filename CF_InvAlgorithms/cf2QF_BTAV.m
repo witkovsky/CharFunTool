@@ -10,10 +10,19 @@ function [qf,result] = cf2QF_BTAV(cf,prob,options)
 % 
 % SYNTAX:
 % [qf,result] = cf2QF_BTAV(cf,prob,options)
+%
 % INPUT:
 %  cf       - function handle of the characteristic function
 %  prob     - vector of probabilities where the QF is computed
 %  options  - structure with the following parameters:
+%             options.quadrature       % quadrature method. Default method
+%                  = 'trapezoidal'     % is quadrature = 'trapezoidal'.
+%                                      % Alternatively use quadrature =
+%                                      % 'matlab' (for the MATLAB built in
+%                                      % adaptive Gauss-Kronod quadrature) 
+%                                      % Gauss-Kronod integral. 
+%             options.tol = 1e-12      % absolute tolerance for the MATLAB
+%                                      % Gauss-Kronod integral. 
 %             options.crit = 1e-12     % value of the criterion limit for
 %                                      % stopping rule.
 %             options.nTerms = 50      % number of terms used in the
@@ -24,7 +33,7 @@ function [qf,result] = cf2QF_BTAV(cf,prob,options)
 %                                      % By default, the algorithm starts
 %                                      % from the mean of the distribution
 %                                      % estimated from the specified CF
-%             options.fun_BTAV = 10    % parameter M for the deformed
+%             options.Mpar_BTAV = 10   % parameter M for the deformed
 %                                      % Bromwich curve.
 %
 % OUTPUT:
@@ -84,6 +93,14 @@ StartTime = cputime;
 narginchk(2, 3);
 if nargin < 3, options = []; end
 
+if ~isfield(options, 'quadrature')
+    options.quadrature = 'trapezoidal';
+end
+
+if ~isfield(options, 'tol')
+    options.tol =1e-12;
+end
+
 if ~isfield(options, 'crit')
     options.crit = 1e-12;
 end
@@ -100,158 +117,41 @@ if ~isfield(options, 'qf0')
     options.qf0 = (cf(1e-4)-cf(-1e-4))/(2e-4*1i);
 end
 
-if ~isfield(options, 'fun_BTAV')
-    options.fun_BTAV = 10;
+if ~isfield(options, 'Mpar_BTAV')
+    options.Mpar_BTAV = 10;
 end
+
 %% ALGORITHM
 szp        = size(prob);
 prob       = prob(:)';
 maxiter    = options.maxiter;
 crit       = options.crit;
 qf         = options.qf0;
-n          = options.nTerms;
-M          = options.fun_BTAV;
-t          = linspace(0,pi,n+1)';
 criterion  = true;
 count      = 0;
 while criterion
-    count  = count + 1;
-    [~,cdfFun,pdfFun,s0] = fun_BTAV(t,qf,cf,[],M);
-    CDF  = (2*pi/n)*(cdfFun(1,:)/2 + nansum(real(cdfFun(2:n,:))));
-    PDF  = (2*pi/n)*(pdfFun(1,:)/2 + nansum(real(pdfFun(2:n,:))));
-    correction  = (CDF - prob) ./ PDF;
+    count      = count + 1;
+    [cdf,pdf]  = cf2CDFPDF_BTAV(cf,qf,options);
+    correction = (cdf - prob) ./ pdf;
     qf = qf - correction;
-    criterion = any(abs(correction) > crit * abs(qf)) ...
-        && max(abs(correction)) > crit && count < maxiter;
+    criterion = max(abs(cdf - prob)) > 30*eps && ...
+        max(abs(correction)) > crit && count < maxiter;
 end
 qf       = reshape(qf,szp);
 prob     = reshape(prob,szp);
 tictoc   = cputime - StartTime;
 
 %% RESULTS
+result.inversionMethod = 'Bromwich-Talbot-Abate-Valkó';
+result.quadratureMethod = options.quadrature;
 result.quantile = qf;
 result.prob = prob;
-result.CDF = CDF;
-result.PDF = PDF;
-result.nQuadratureTerms = n;
-result.iterationCount = count;
+result.cdf  = cdf;
+result.pdf  = pdf;
+result.nIterations = count;
 result.lastCorrection = correction;
-result.lastTermCDF = abs(cdfFun(n,:));
-result.lastTermPDF = abs(pdfFun(n,:));
-result.cdfFun = cdfFun;
-result.pdfFun = pdfFun;
-result.s0 = s0;
-result.t = t;
 result.cf = cf;
 result.options = options;
 result.tictoc = tictoc;
 
-end
-%% function fun_BTAV
-function [fun,cdfFun,pdfFun,s0] = fun_BTAV(phi,x,cf,funtype,M)
-%fun_BTAV 
-%  Auxiliary function calculates the integrand function for computing the
-%  CDF/PDF of the NON-NEGATIVE DISTRIBUTION specified by its characteristic
-%  function, by using the Bromwich-Talbot-Abate-Valko (BTAV) inversion
-%  method (originally suggested as numerical inversion for the Laplace
-%  transform function). In particular, the  Bromwich contour is properly
-%  deformed and the integrand functions are:
-%    pdfFun = exp(s0.*x) .* cf(1i*s0) .* s1;
-%    cdfFun = pdf ./ s0;
-%  where cf is an anonymous characteristic function of nonnegative
-%  distribution which is well defined for complex valued arguments, and
-%    s0 = const * phi .* (cot(phi)+1i) ./ x
-%    s1 = const * 1i * (1 + 1i*(phi + (phi.*cot(phi)-1).*cot(phi))) ./ x
-%  for -pi <= phi <= pi.
-%  Then the CDF/PDF can be numerically evaluated at specified values x by
-%  integrating the integrand functions over the interval (-pi,pi) - by
-%  using any quadrature rule (e.g. the simple trapezoidal or the more
-%  advanced adaptive Gauss-Kronod quadrature rule):
-%    CDF = real(integral(cdfFun,-pi,pi,'ArrayValued',true))
-%    PDF = real(integral(pdfFun,-pi,pi,'ArrayValued',true))
-%  For more details see Talbo (1979) and Abate & Valko (2004).
-%
-% SYNTAX:
-%  [fun,cdfFun,pdfFun] = fun_BTAV(phi,x,cf,funtype,M)
-%
-% EXAMPLE 1
-% % CDF/PDF of chi-square distribution with 1 degree of freedom, df = 1
-% % By using integral - Matlab adaptive Gauss-Kronod quadrature
-%  x      = [2.705543454095416 6.634896601021214 28.373987362798132];
-%  cf     = @(t)(1-2i*t).^(-1/2);
-%  cdfFun = @(phi) fun_BTAV(phi,x,cf,'cdf');
-%  pdfFun = @(phi) fun_BTAV(phi,x,cf,'pdf');
-%  CDF    = real(integral(cdfFun,-pi,pi,'ArrayValued',true));
-%  PDF    = real(integral(pdfFun,-pi,pi,'ArrayValued',true));
-%
-% EXAMPLE 2 
-% % CDF/PDF of chi-square distribution with 1 degree of freedom, df = 1
-% % By using simple trapezoidal quadrature
-%  x      = [2.705543454095416 6.634896601021214 28.373987362798132];
-%  cf     = @(t)(1-2i*t).^(-1/2);
-%  N      = 100;
-%  phi    = linspace(-pi,pi,N+1)';
-%  [~,cdfFun,pdfFun] = fun_BTAV(phi(2:end-1),x,cf);
-%  CDF    = (2*pi/N)*real(sum(cdfFun));
-%  PDF    = (2*pi/N)*real(sum(pdfFun));
-%
-% EXAMPLE 3 
-% % CDF/PDF of chi-square distribution with 1 degree of freedom, df = 1
-% % By using efficient trapezoidal quadrature on half interval
-%  x      = [2.705543454095416 6.634896601021214 28.373987362798132];
-%  cf     = @(t)(1-2i*t).^(-1/2);
-%  N      = 50;
-%  phi    = linspace(0,pi,N+1)';
-%  [~,cdfFun,pdfFun] = fun_BTAV(phi,x,cf);
-%  CDF    = (2*pi/N)*real(cdfFun(1,:)/2 + sum(cdfFun(2:end-1,:)));
-%  PDF    = (2*pi/N)*real(pdfFun(1,:)/2 + sum(pdfFun(2:end-1,:)));
-%
-% REFERENCES:
-% [1] Talbot, A., 1979. The accurate numerical inversion of Laplace
-%     transforms. IMA Journal of Applied Mathematics, 23(1), pp.97-120.
-% [2] Abate, J. and Valkó, P.P., 2004. Multi-precision Laplace transform
-%     inversion. International Journal for Numerical Methods in
-%     Engineering, 60(5), pp.979-993.
-
-% (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 22-Dec-2018 12:37:57
-
-%% ALGORITHM
-%[fun,cdfFun,pdfFun] = fun_BTAV(phi,x,cf,funtype,M)
-
-%% CHECK THE INPUT PARAMETERS
-narginchk(3, 5);
-
-if nargin < 5, M = []; end
-if nargin < 4, funtype = []; end
-
-if isempty(M)
-    M = 10;
-end
-
-if isempty(funtype)
-    funtype = 'cdf';
-end
-
-Mp  = 2*M/5;
-phi = phi(:);
-x   = x(:)';
-ct  = cot(phi);
-s0  = phi .* (ct+1i);
-s0(phi==0) = 1;
-s0  = Mp * s0 ./ x;
-s1  = 1 + 1i*(phi+(phi.*ct-1).*ct);
-s1(phi==0) = 1;
-s1  = s1 ./ x;
-
-const  = Mp/(2*pi);
-pdfFun = const * exp(s0.*x) .* cf(1i*s0) .* s1;
-cdfFun = pdfFun ./ s0;
-
-switch lower(funtype)
-    case 'cdf'
-        fun = cdfFun;
-    case 'pdf'
-        fun = pdfFun;
-end
 end
