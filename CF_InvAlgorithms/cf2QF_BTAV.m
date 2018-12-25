@@ -208,7 +208,8 @@ prob     = reshape(prob,szp);
 tictoc   = cputime - StartTime;
 
 %% RESULTS
-result.inversionMethod = 'Bromwich-Talbot-Abate-Valkó';
+result.Description      = 'Quantiles from the characteristic function CF';
+result.inversionMethod  = 'Bromwich-Talbot-Abate-Valkó';
 result.quadratureMethod = options.quadrature;
 result.quantile = qf;
 result.prob = prob;
