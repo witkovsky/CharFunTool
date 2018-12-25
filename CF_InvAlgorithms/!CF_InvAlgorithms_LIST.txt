@@ -1,6 +1,7 @@
 INVERSION ALGORITHM Functions:
 
 cf2Dist
+cf2DistBTAV
 cf2DistBV
 cf2DistFFT
 cf2DistGP
