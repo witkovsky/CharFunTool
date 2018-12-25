@@ -75,7 +75,7 @@ function [cdf,pdf,result] = cf2CDFPDF_BTAV(cf,x,options)
 %     Engineering, 60(5), pp.979-993.
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 24-Dec-2018 15:32:23
+% Ver.: 25-Dec-2018 12:42:35
 
 %% CHECK/SET THE INPUT PARAMETERS
 StartTime = cputime;
@@ -111,21 +111,21 @@ switch lower(quadrature)
     case 'matlab'
         tol = options.tol;
         M   = options.Mpar_BTAV;
-        cdf = real(integral(@(t) CdfPdfFun_BTAV(t,x,cf,'cdf',M), ...
-            -pi,pi,'ArrayValued',true,'RelTol',0,'AbsTol',tol));
-        pdf = real(integral(@(t) CdfPdfFun_BTAV(t,x,cf,'pdf',M), ...
-            -pi,pi,'ArrayValued',true,'RelTol',0,'AbsTol',tol));
+        cdf = integral(@(t) real(CdfPdfFun_BTAV(t,x,cf,'cdf',M)), ...
+            0,pi,'ArrayValued',true,'RelTol',0,'AbsTol',tol)/pi;
+        pdf = 2*integral(@(t) real(CdfPdfFun_BTAV(t,x,cf,'pdf',M)), ...
+            0,pi,'ArrayValued',true,'RelTol',0,'AbsTol',tol)/pi;
     case 'trapezoidal'
         n   = options.nTerms;
         M   = options.Mpar_BTAV;
         t   = linspace(0,pi,n+1)';
         [~,cdfFun,pdfFun] = CdfPdfFun_BTAV(t,x,cf,[],M);
-        cdf = (2*pi/n) * (cdfFun(1,:)/2 + nansum(real(cdfFun(2:n,:))));
-        pdf = (2*pi/n) * (pdfFun(1,:)/2 + nansum(real(pdfFun(2:n,:)))); 
+        cdf = (cdfFun(1,:)/2 + nansum(real(cdfFun(2:n,:))))/n;
+        pdf = (pdfFun(1,:)/2 + nansum(real(pdfFun(2:n,:))))/n; 
 end
 
-cdf(x==0) = 0;
-cdf    = reshape(max(0,min(1,cdf)),szx);
+cdf(isnan(cdf)) = 0;
+cdf    = reshape(cdf,szx);
 pdf    = reshape(max(0,pdf),szx);
 tictoc = cputime - StartTime;
 
