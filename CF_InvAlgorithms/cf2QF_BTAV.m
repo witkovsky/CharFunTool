@@ -54,19 +54,85 @@ function [qf,result] = cf2QF_BTAV(cf,prob,options)
 %  prob = [0.9 0.95 0.99];
 %  [qf,result] = cf2QF_BTAV(cf,prob)
 %
-% EXAMPLE 3:
+% EXAMPLE 3
 % % Quantiles of Bartlett distribution computed by the algorithm cf2QF_BTAV
-%     k     = 5;
-%     df    = [1 2 3 4 5 6 7 8 9 10];
-%     prob  = [0.9 0.95 0.99];
-%     Table = zeros(10,3);
-%     for i = 1:10
-%         nu = df(i)*ones(k,1);
-%         cf = @(t) cfTest_Bartlett(t,nu);
-%         qf = cf2QF_BTAV(cf,prob);
-%         Table(i,:) = qf;
-%     end
-%     disp(Table)
+%  k    = 5;
+%  df   = [1 2 3 4 5 6 7 8 9 10];
+%  cf = @(t) cfTest_Bartlett(t,nu);
+%  prob = [0.9 0.95 0.99];
+%  clear options
+%  options.quadrature = 'trapezoidal';
+%  [qf,result] = cf2QF_BTAV(cf,prob,options)
+%
+% EXAMPLE 4
+% % Quantiles of the exact null distribution / Sphericity of CovMatrix
+%  n  = 10;     % sample size for each population
+%  p  = 5;      % dimension of each of the q populations
+%  type = 'modified';
+%  cf = @(t) cfTest_Sphericity(t,n,p,type);
+%  prob = [0.9 0.95 0.99];
+%  clear options
+%  options.quadrature = 'trapezoidal';
+%  [qf,result] = cf2QF_BTAV(cf,prob,options)
+%
+% EXAMPLE 5
+% % Quantiles of the exact null distribution / Compound Symmetry CovMatrix
+%  n  = 10;     % sample size 
+%  p  = 5;      % dimension of the populations
+%  type = 'modified';
+%  cf = @(t) cfTest_CompoundSymmetry(t,n,p,type);
+%  prob = [0.9 0.95 0.99];
+%  clear options
+%  options.quadrature = 'trapezoidal';
+%  [qf,result] = cf2QF_BTAV(cf,prob,options)
+%
+% EXAMPLE 6
+% % Quantiles of the exact null distribution / Equality Covariance Matrices
+%  n  = 10;     % sample size for each population
+%  p  = 5;      % dimension of each of the q populations
+%  q  = 3;      % number of populations
+%  type = 'modified';
+%  cf = @(t) cfTest_EqualityCovariances(t,n,p,q,type);
+%  prob = [0.9 0.95 0.99];
+%  clear options
+%  options.quadrature = 'trapezoidal';
+%  [qf,result] = cf2QF_BTAV(cf,prob,options)
+%
+% EXAMPLE 7
+% % Quantiles of the exact null distribution / Equality of Means
+%  n  = 10;     % sample size for each population
+%  p  = 5;      % dimension of each of the q populations
+%  q  = 3;      % number of populations
+%  type = 'modified';
+%  cf = @(t) cfTest_EqualityMeans(t,n,p,q,type);
+%  prob = [0.9 0.95 0.99];
+%  clear options
+%  options.quadrature = 'trapezoidal';
+%  [qf,result] = cf2QF_BTAV(cf,prob,options)
+%
+% EXAMPLE 8
+% % Quantiles of the exact null distribution / Equality of Populations
+%  n  = 10;     % sample size for each population
+%  p  = 5;      % dimension of each of the q populations
+%  q  = 3;      % number of populations
+%  type = 'modified';
+%  cf = @(t) cfTest_EqualityPopulations(t,n,p,q,type);
+%  prob = [0.9 0.95 0.99];
+%  clear options
+%  options.quadrature = 'trapezoidal';
+%  [qf,result] = cf2QF_BTAV(cf,prob,options)
+%
+% EXAMPLE 9
+% % Quantiles of the exact null distribution / Test of Independence
+%  n  = 20;     % sample size of the compound vector X = [X_1,...,X_q]
+%  p  = 5;      % dimension of each of the q populations
+%  q  = 3;      % number of populations
+%  type = 'modified';
+%  cf = @(t) cfTest_Independence(t,n,p,q,type);
+%  prob = [0.9 0.95 0.99];
+%  clear options
+%  options.quadrature = 'trapezoidal';
+%  [qf,result] = cf2QF_BTAV(cf,prob,options)
 %
 % NOTE OF CAUTION
 %  The method was suggested for inverting proper Laplace tranform
@@ -86,7 +152,7 @@ function [qf,result] = cf2QF_BTAV(cf,prob,options)
 %     Engineering, 60(5), pp.979-993.
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 22-Dec-2018 23:56:13
+% Ver.: 25-Dec-2018 12:42:35
 
 %% CHECK/SET THE INPUT PARAMETERS
 StartTime = cputime;
