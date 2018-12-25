@@ -98,8 +98,8 @@ function [result,cdf,pdf,qf] = cf2DistGPA(cf,x,prob,options)
 %     output quantity in linear measurement models. Acta IMEKO, 5(3),
 %     32-44.
 %
-% SEE ALSO: cf2Dist, cf2DistGP, cf2DistGPT, cf2DistGPA, cf2DistFFT,
-%           cf2DistBV, cf2CDF, cf2PDF, cf2QF
+% SEE ALSO: cf2Dist, cf2DistGP, cf2DistGPT, cf2DistBTAV, cf2DistFFT,
+%           cf2DistBV, cf2CDF_GPA, cf2PDF_GPA, cf2QF_GPA
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 03-Dec-2018 23:00:20
