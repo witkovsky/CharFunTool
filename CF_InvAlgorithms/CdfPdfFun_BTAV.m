@@ -4,12 +4,13 @@ function [fun,cdfFun,pdfFun] = CdfPdfFun_BTAV(phi,x,cf,funtype,M)
 %  CDF/PDF of the NON-NEGATIVE DISTRIBUTION specified by its characteristic
 %  function, by using the Bromwich-Talbot-Abate-Valko (BTAV) inversion
 %  method (originally suggested as numerical inversion for the Laplace
-%  transform function). In particular, the  Bromwich contour is properly
-%  deformed and the integrand functions are:
-%    pdfFun = exp(s0.*x) .* cf(1i*s0) .* s1;
+%  transform function). In particular, the Bromwich contour is properly
+%  deformed and the integrand functions are given by
+%    pdfFun = const * exp(s0.*x) .* cf(1i*s0) .* s1;
 %    cdfFun = pdf ./ s0;
-%  where cf is an anonymous characteristic function of nonnegative
-%  distribution which is well defined for complex valued arguments, and
+%  where const = 2*M/5 (default value is M = 10), cf is an anonymous
+%  characteristic function of nonnegative distribution which is well
+%  defined for complex valued arguments, and 
 %    s0 = const * phi .* (cot(phi)+1i) ./ x
 %    s1 = const * 1i * (1 + 1i*(phi + (phi.*cot(phi)-1).*cot(phi))) ./ x
 %  for -pi <= phi <= pi.
@@ -17,8 +18,11 @@ function [fun,cdfFun,pdfFun] = CdfPdfFun_BTAV(phi,x,cf,funtype,M)
 %  integrating the integrand functions over the interval (-pi,pi) - by
 %  using any quadrature rule (e.g. the simple trapezoidal or the more
 %  advanced adaptive Gauss-Kronod quadrature rule):
-%    CDF = real(integral(cdfFun,-pi,pi,'ArrayValued',true))
-%    PDF = real(integral(pdfFun,-pi,pi,'ArrayValued',true))
+%    CDF = real(integral(cdfFun,-pi,pi,'ArrayValued',true))/(2*pi)
+%    PDF = real(integral(pdfFun,-pi,pi,'ArrayValued',true))/(2*pi)
+%  or alternatively
+%    CDF = integral(@(phi)real(cdfFun(phi)),0,pi,'ArrayValued',true))/(pi)
+%    PDF = integral(@(phi)real(pdfFun(phi)),0,pi,'ArrayValued',true))/(pi)
 %  For more details see Talbo (1979) and Abate & Valko (2004).
 %
 % SYNTAX:
@@ -31,8 +35,8 @@ function [fun,cdfFun,pdfFun] = CdfPdfFun_BTAV(phi,x,cf,funtype,M)
 %  cf     = @(t)(1-2i*t).^(-1/2);
 %  cdfFun = @(phi) CdfPdfFun_BTAV(phi,x,cf,'cdf');
 %  pdfFun = @(phi) CdfPdfFun_BTAV(phi,x,cf,'pdf');
-%  CDF    = real(integral(cdfFun,-pi,pi,'ArrayValued',true));
-%  PDF    = real(integral(pdfFun,-pi,pi,'ArrayValued',true));
+%  CDF    = real(integral(cdfFun,-pi,pi,'ArrayValued',true))/(2*pi);
+%  PDF    = real(integral(pdfFun,-pi,pi,'ArrayValued',true))/(2*pi);
 %
 % EXAMPLE 2 
 % % CDF/PDF of chi-square distribution with 1 degree of freedom, df = 1
@@ -42,8 +46,8 @@ function [fun,cdfFun,pdfFun] = CdfPdfFun_BTAV(phi,x,cf,funtype,M)
 %  N      = 100;
 %  phi    = linspace(-pi,pi,N+1)';
 %  [~,cdfFun,pdfFun] = CdfPdfFun_BTAV(phi(2:end-1),x,cf);
-%  CDF    = (2*pi/N)*real(sum(cdfFun));
-%  PDF    = (2*pi/N)*real(sum(pdfFun));
+%  CDF    = real(sum(cdfFun))/N;
+%  PDF    = real(sum(pdfFun))/N;
 %
 % EXAMPLE 3 
 % % CDF/PDF of chi-square distribution with 1 degree of freedom, df = 1
@@ -53,8 +57,8 @@ function [fun,cdfFun,pdfFun] = CdfPdfFun_BTAV(phi,x,cf,funtype,M)
 %  N      = 50;
 %  phi    = linspace(0,pi,N+1)';
 %  [~,cdfFun,pdfFun] = CdfPdfFun_BTAV(phi,x,cf);
-%  CDF    = (2*pi/N)*real(cdfFun(1,:)/2 + sum(cdfFun(2:end-1,:)));
-%  PDF    = (2*pi/N)*real(pdfFun(1,:)/2 + sum(pdfFun(2:end-1,:)));
+%  CDF    = (cdfFun(1,:)/2 + sum(real(cdfFun(2:end-1,:))))/N;
+%  PDF    = (pdfFun(1,:)/2 + sum(real(pdfFun(2:end-1,:))))/N;
 %
 % REFERENCES:
 % [1] Talbot, A., 1979. The accurate numerical inversion of Laplace
@@ -64,7 +68,7 @@ function [fun,cdfFun,pdfFun] = CdfPdfFun_BTAV(phi,x,cf,funtype,M)
 %     Engineering, 60(5), pp.979-993.
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 24-Dec-2018 15:32:23
+% Ver.: 25-Dec-2018 12:42:35
 
 %% ALGORITHM
 %[fun,cdfFun,pdfFun] = CdfPdfFun_BTAV(phi,x,cf,funtype,M)
@@ -83,20 +87,22 @@ if isempty(funtype)
     funtype = 'cdf';
 end
 
-Mp  = 2*M/5;
-phi = phi(:);
-x   = x(:)';
-ct  = cot(phi);
-s0  = phi .* (ct+1i);
+const = 2*M/5;
+phi   = phi(:);
+x     = x(:)';
+ct    = cot(phi);
+s0    = phi .* (ct+1i);
 s0(phi==0) = 1;
-s0  = Mp * s0 ./ x;
-s1  = 1 + 1i*(phi+(phi.*ct-1).*ct);
+s0    = const * s0 ./ x;
+s1    = 1 + 1i*(phi+(phi.*ct-1).*ct);
 s1(phi==0) = 1;
-s1  = s1 ./ x;
+s1    = s1 ./ x;
 
-const  = Mp/(2*pi);
 pdfFun = const * exp(s0.*x) .* cf(1i*s0) .* s1;
 cdfFun = pdfFun ./ s0;
+
+pdfFun(abs(phi)==pi) = 0;
+cdfFun(abs(phi)==pi) = 0;
 
 switch lower(funtype)
     case 'cdf'
