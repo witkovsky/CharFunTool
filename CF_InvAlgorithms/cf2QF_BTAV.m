@@ -58,7 +58,7 @@ function [qf,result] = cf2QF_BTAV(cf,prob,options)
 % % Quantiles of Bartlett distribution computed by the algorithm cf2QF_BTAV
 %  k    = 5;
 %  df   = [1 2 3 4 5 6 7 8 9 10];
-%  cf = @(t) cfTest_Bartlett(t,nu);
+%  cf = @(t) cfTest_Bartlett(t,df);
 %  prob = [0.9 0.95 0.99];
 %  clear options
 %  options.quadrature = 'trapezoidal';
@@ -197,7 +197,8 @@ criterion  = true;
 count      = 0;
 while criterion
     count      = count + 1;
-    [cdf,pdf]  = cf2CDFPDF_BTAV(cf,qf,options);
+    cdf = cf2CDF_BTAV(cf,qf,options);
+    pdf = cf2PDF_BTAV(cf,qf,options);
     correction = (cdf - prob) ./ pdf;
     qf = qf - correction;
     criterion = max(abs(cdf - prob)) > 30*eps && ...
@@ -208,17 +209,19 @@ prob     = reshape(prob,szp);
 tictoc   = cputime - StartTime;
 
 %% RESULTS
-result.Description      = 'Quantiles from the characteristic function CF';
-result.inversionMethod  = 'Bromwich-Talbot-Abate-Valkó';
-result.quadratureMethod = options.quadrature;
-result.quantile = qf;
-result.prob = prob;
-result.cdf  = cdf;
-result.pdf  = pdf;
-result.nIterations = count;
-result.lastCorrection = correction;
-result.cf = cf;
-result.options = options;
-result.tictoc = tictoc;
+if nargout > 1
+    result.Description      = 'Quantiles from the characteristic function CF';
+    result.inversionMethod  = 'Bromwich-Talbot-Abate-Valkó';
+    result.quadratureMethod = options.quadrature;
+    result.quantile = qf;
+    result.prob = prob;
+    result.cdf  = cdf;
+    result.pdf  = pdf;
+    result.nIterations = count;
+    result.lastCorrection = correction;
+    result.cf = cf;
+    result.options = options;
+    result.tictoc = tictoc;
+end
 
 end
