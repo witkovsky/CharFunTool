@@ -79,36 +79,6 @@ function [result,cdf,pdf,qf] = cf2DistGPA(cf,x,prob,options)
 %  % Comparison of the calculated and the true CDF values
 %  disp([x cdf chi2cdf(x,6)])
 %
-% EXAMPLE3 (PDF/CDF of the compound Binomial-Exponential distribution)
-%  n = 25;
-%  p = 0.3;
-%  lambda = 5;
-%  cfX  = @(t) cfX_Exponential(t,lambda);
-%  cf   = @(t) cfN_Binomial(t,n,p,cfX);
-%  x = linspace(0,5,101);
-%  prob = [0.9 0.95 0.99];
-%  clear options
-%  options.isCompound = true;
-%  result = cf2DistGPA(cf,x,prob,options)
-%
-% EXAMPLE4 (PDF/CDF of the compound Poisson-Exponential distribution)
-%  lambda1 = 10;
-%  lambda2 = 5;
-%  cfX  = @(t) cfX_Exponential(t,lambda2);
-%  cf   = @(t) cfN_Poisson(t,lambda1,cfX);
-%  x    = linspace(0,8,101);
-%  prob = [0.9 0.95 0.99];
-%  clear options
-%  options.isCompound = true;
-%  options.isInterp = true;
-%  options.tolFindRoots = 1e-16;
-%  options.maxiterFindRoots = 25;
-%  result = cf2DistGPA(cf,x,prob,options)
-%  PDF = result.PDF
-%  CDF = result.CDF
-%  QF  = result.QF
-%  RND = result.RND
-%
 % REFERENCES:
 % [1] Gil-Pelaez, J., 1951. Note on the inversion theorem. Biometrika,
 %     38(3-4), pp.481-482.
@@ -323,11 +293,11 @@ else
     x0 = [];
 end
 
-cdf = cf2CDF(cf,x,options);
-pdf = cf2PDF(cf,x,options);
+cdf = cf2CDF_GPA(cf,x,options);
+pdf = cf2PDF_GPA(cf,x,options);
 
 if ~isempty(prob)
-    qf = cf2QF(cf,prob,options);
+    qf = cf2QF_GPA(cf,prob,options);
 else
     qf = [];
 end
@@ -360,6 +330,8 @@ end
 
 %% RESULT
 result.Description         = 'CDF/PDF/QF from the characteristic function CF';
+result.inversionMethod     = 'Gil-Pelaez';
+result.quadratureMethod    = 'adaptive Gauss-Kronod with acceleration'; 
 result.x                   = x;
 result.cdf                 = cdf;
 result.pdf                 = pdf;
