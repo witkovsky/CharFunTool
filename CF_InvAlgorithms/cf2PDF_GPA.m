@@ -1,7 +1,7 @@
 function [pdf,result] = cf2PDF_GPA(cf,x,options)
 %cf2PDF_GPA  Evaluates the PDF from the characteristic function CF by the
 %  Gil-Pelaz inversion formula. The algorithm uses the adaptive
-%  Gauss-Kronod quadrature rule for numerical integration of the
+%  Gauss-Kronrod quadrature rule for numerical integration of the
 %  oscillatory integrand function devided into sub-intervals (found by a
 %  fast root-finding algorithm) and subsequent application of the
 %  convergence acceleration techniques for computing the limit of the
@@ -210,7 +210,7 @@ tictoc = toc;
 if nargout > 1
     result.Description         = 'PDF from the characteristic function CF';
     result.inversionMethod     = 'Gil-Pelaez';
-    result.quadratureMethod    = 'adaptive Gauss-Kronod with acceleration';
+    result.quadratureMethod    = 'adaptive Gauss-Kronrod with acceleration';
     result.PDF = pdf;
     result.x = x;
     if options.verbose

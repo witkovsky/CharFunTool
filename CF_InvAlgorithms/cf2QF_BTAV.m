@@ -19,10 +19,10 @@ function [qf,result] = cf2QF_BTAV(cf,prob,options)
 %                  = 'trapezoidal'     % is quadrature = 'trapezoidal'.
 %                                      % Alternatively use quadrature =
 %                                      % 'matlab' (for the MATLAB built in
-%                                      % adaptive Gauss-Kronod quadrature) 
-%                                      % Gauss-Kronod integral. 
+%                                      % adaptive Gauss-Kronrod quadrature) 
+%                                      % Gauss-Kronrod integral. 
 %             options.tol = 1e-12      % absolute tolerance for the MATLAB
-%                                      % Gauss-Kronod integral. 
+%                                      % Gauss-Kronrod integral. 
 %             options.crit = 1e-12     % value of the criterion limit for
 %                                      % stopping rule.
 %             options.nTerms = 50      % number of terms used in the

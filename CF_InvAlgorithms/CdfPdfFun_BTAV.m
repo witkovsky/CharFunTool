@@ -17,7 +17,7 @@ function [fun,cdfFun,pdfFun] = CdfPdfFun_BTAV(phi,x,cf,funtype,M)
 %  Then the CDF/PDF can be numerically evaluated at specified values x by
 %  integrating the integrand functions over the interval (-pi,pi) - by
 %  using any quadrature rule (e.g. the simple trapezoidal or the more
-%  advanced adaptive Gauss-Kronod quadrature rule):
+%  advanced adaptive Gauss-Kronrod quadrature rule):
 %    CDF = real(integral(cdfFun,-pi,pi,'ArrayValued',true))/(2*pi)
 %    PDF = real(integral(pdfFun,-pi,pi,'ArrayValued',true))/(2*pi)
 %  or alternatively
@@ -30,7 +30,7 @@ function [fun,cdfFun,pdfFun] = CdfPdfFun_BTAV(phi,x,cf,funtype,M)
 %
 % EXAMPLE 1
 % % CDF/PDF of chi-square distribution with 1 degree of freedom, df = 1
-% % By using integral - Matlab adaptive Gauss-Kronod quadrature
+% % By using integral - Matlab adaptive Gauss-Kronrod quadrature
 %  x      = [2.705543454095416 6.634896601021214 28.373987362798132];
 %  cf     = @(t)(1-2i*t).^(-1/2);
 %  cdfFun = @(phi) CdfPdfFun_BTAV(phi,x,cf,'cdf');

@@ -1,7 +1,7 @@
 function [cdf,result] = cf2CDF_GPA(cf,x,options)
 %cf2CDF_GPA  Evaluates the CDF from the characteristic function CF by the
 %  Gil-Pelaez inversion formula. The algorithm uses the adaptive
-%  Gauss-Kronod quadrature rule for numerical integration of the
+%  Gauss-Kronrod quadrature rule for numerical integration of the
 %  oscillatory integrand function divided into sub-intervals (found by a
 %  fast root-finding algorithm) and subsequent application of the
 %  convergence acceleration techniques for computing the limit of the
@@ -215,7 +215,7 @@ tictoc = toc;
 if nargout > 1
     result.Description         = 'CDF from the characteristic function CF';
     result.inversionMethod     = 'Gil-Pelaez';
-    result.quadratureMethod    = 'adaptive Gauss-Kronod with acceleration';
+    result.quadratureMethod    = 'adaptive Gauss-Kronrod with acceleration';
     result.CDF = cdf;
     result.x = x;
     if options.verbose

@@ -154,7 +154,7 @@ tictoc   = cputime - StartTime;
 %% RESULTS
 result.Description      = 'Quantiles from the characteristic function CF';
 result.inversionMethod  = 'Gil-Pelaez';
-result.quadratureMethod = 'adaptive Gauss-Kronod with acceleration'; 
+result.quadratureMethod = 'adaptive Gauss-Kronrod with acceleration'; 
 result.quantile = qf;
 result.prob = prob;
 result.CDF = CDFqf;

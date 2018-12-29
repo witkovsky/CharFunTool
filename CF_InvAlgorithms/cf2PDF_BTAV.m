@@ -3,7 +3,7 @@ function [pdf,result] = cf2PDF_BTAV(cf,x,options)
 % its CF at values x by using numerical inversion  based on the
 % Bromwich-Talbot-Abate-Valko method. The possible quadrature methods
 % include the simple trapezoidal rule (the default method) or the MATLAB
-% integral algorithm (adaptive Gauss-Kronod quadrature).
+% integral algorithm (adaptive Gauss-Kronrod quadrature).
 % 
 % SYNTAX:
 % [pdf,result] = cf2PDF_BTAV(cf,x,options)
@@ -16,10 +16,10 @@ function [pdf,result] = cf2PDF_BTAV(cf,x,options)
 %                  = 'trapezoidal'     % is quadrature = 'trapezoidal'.
 %                                      % Alternatively use quadrature =
 %                                      % 'matlab' (for the MATLAB built in
-%                                      % adaptive Gauss-Kronod quadrature) 
-%                                      % Gauss-Kronod integral. 
+%                                      % adaptive Gauss-Kronrod quadrature) 
+%                                      % Gauss-Kronrod integral. 
 %             options.tol = 1e-12      % absolute tolerance for the MATLAB
-%                                      % Gauss-Kronod integral. 
+%                                      % Gauss-Kronrod integral. 
 %             options.nTerms = 50      % number of terms used in the
 %                                      % trapezoidal quadrature
 %                                      % estimated from the specified CF

@@ -5,7 +5,7 @@ function [result,cdf,pdf,qf] = cf2DistGPA(cf,x,prob,options)
 %   pdf(x) = (1/pi) * Integral_0^inf real(exp(-1i*t*x)*cf(t))*dt.
 %
 %  The required FOURIER INTEGRALs are calculated by using the adaptive
-%  Gauss-Kronod quadrature rule for numerical integration of the
+%  Gauss-Kronrod quadrature rule for numerical integration of the
 %  oscillatory integrand function divided into sub-intervals (found by a
 %  fast root-finding algorithm) and subsequent application of the
 %  convergence acceleration techniques for computing the limit of the
@@ -331,7 +331,7 @@ end
 %% RESULT
 result.Description         = 'CDF/PDF/QF from the characteristic function CF';
 result.inversionMethod     = 'Gil-Pelaez';
-result.quadratureMethod    = 'adaptive Gauss-Kronod with acceleration'; 
+result.quadratureMethod    = 'adaptive Gauss-Kronrod with acceleration'; 
 result.x                   = x;
 result.cdf                 = cdf;
 result.pdf                 = pdf;
