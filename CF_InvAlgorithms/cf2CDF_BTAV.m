@@ -109,13 +109,13 @@ switch lower(quadrature)
     case 'matlab'
         tol = options.tol;
         M   = options.Mpar_BTAV;
-        cdf = integral(@(t) real(CdfPdfFun_BTAV(t,x,cf,'cdf',M)), ...
+        cdf = integral(@(t) real(IntegrandFun_BTAV(t,x,cf,'cdf',M)), ...
             0,pi,'ArrayValued',true,'RelTol',0,'AbsTol',tol)/pi;
     case 'trapezoidal'
         n   = options.nTerms;
         M   = options.Mpar_BTAV;
         t   = linspace(0,pi,n+1)';
-        [~,cdfFun] = CdfPdfFun_BTAV(t,x,cf,[],M);
+        [~,cdfFun] = IntegrandFun_BTAV(t,x,cf,[],M);
         cdf = (cdfFun(1,:)/2 + nansum(real(cdfFun(2:n,:))))/n;
 end
 
