@@ -434,6 +434,8 @@ end
 
 %% RESULT
 result.Description         = 'CDF/PDF/QF from the characteristic function CF';
+result.inversionMethod     = 'Gil-Pelaez with Bakhvalov-Vasilieva method';
+result.quadratureMethod    = 'Exact integral of Legendre series expansion';
 result.x                   = x;
 result.cdf                 = cdf;
 result.pdf                 = pdf;
