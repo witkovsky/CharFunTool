@@ -401,6 +401,9 @@ end
 x       = reshape(x,szx);
 
 %% RESULT
+result.Description         = 'CDF/PDF/QF from the characteristic function CF';
+result.inversionMethod     = 'Discrete version of standard inversion formula';
+result.quadratureMethod    = 'Fast Fourier Transform (FFT) algorithm';
 result.x                  = x;
 result.cdf                = cdf;
 result.pdf                = pdf;
