@@ -15,8 +15,16 @@ function [result,cdf,pdf,qf] = cf2Dist(cf,x,prob,options,algorithm)
 %  prob      - vector of values from [0,1] for which the quantiles
 %              function is evaluated,
 %  options   - options structure of the selected inversion algorithm
-%  algorithm - selected algorithm. If empty, default value is algorithm =
-%              'cf2DistGPA'.
+%  algorithm - selected algorithm for numerical inversion of the
+%              characteristic function. Currently available inversion
+%              algorithms include: 
+%              'cf2DistBTAV' (Bromwich-Talbot-Abate-Valko method), 
+%              'cf2DistBV', (Bakhvalov-Vasilieva method)
+%              'cf2DistFFT', (Fast Fourier Transform algorithm method)
+%              'cf2DistGPT', (Gil-Pelaez with Trapezoidal quadrature)
+%              'cf2DistGPA' (Gil-Pelaez with adaptive Gauss-Kronrod
+%               quadrature and convergence acceleration techniques).  
+%              If empty, default value is algorithm = 'cf2DistGPA'.
 % OUTPUT:
 %  result   - structure with CDF/PDF/QF and further details,
 %  cdf      - vector of CDF values evaluated at x,
