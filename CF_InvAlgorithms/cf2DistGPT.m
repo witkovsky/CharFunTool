@@ -490,6 +490,8 @@ end
 
 %% RESULT
 result.Description         = 'CDF/PDF/QF from the characteristic function CF';
+result.inversionMethod     = 'Gil-Pelaez';
+result.quadratureMethod    = 'Trapezoidal quadrature';
 result.x                   = x;
 result.cdf                 = cdf;
 result.pdf                 = pdf;
