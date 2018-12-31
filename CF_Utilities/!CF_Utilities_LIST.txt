@@ -15,6 +15,7 @@ FourierIntegral_P
 ChebFourierIntegral
 ChebPoints
 ChebPoly
+IntegrandFun_BTAV
 IntegralGK
 LegendrePoints
 LegendreSeries
