@@ -109,15 +109,15 @@ switch lower(quadrature)
     case 'matlab'
         tol = options.tol;
         M   = options.Mpar_BTAV;
-        cdf = integral(@(t) real(CdfPdfFun_BTAV(t,x,cf,'cdf',M)), ...
+        cdf = integral(@(t) real(IntegrandFun_BTAV(t,x,cf,'cdf',M)), ...
             0,pi,'ArrayValued',true,'RelTol',0,'AbsTol',tol)/pi;
-        pdf = 2*integral(@(t) real(CdfPdfFun_BTAV(t,x,cf,'pdf',M)), ...
+        pdf = 2*integral(@(t) real(IntegrandFun_BTAV(t,x,cf,'pdf',M)), ...
             0,pi,'ArrayValued',true,'RelTol',0,'AbsTol',tol)/pi;
     case 'trapezoidal'
         n   = options.nTerms;
         M   = options.Mpar_BTAV;
         t   = linspace(0,pi,n+1)';
-        [~,cdfFun,pdfFun] = CdfPdfFun_BTAV(t,x,cf,[],M);
+        [~,cdfFun,pdfFun] = IntegrandFun_BTAV(t,x,cf,[],M);
         cdf = (cdfFun(1,:)/2 + nansum(real(cdfFun(2:n,:))))/n;
         pdf = (pdfFun(1,:)/2 + nansum(real(pdfFun(2:n,:))))/n; 
 end
