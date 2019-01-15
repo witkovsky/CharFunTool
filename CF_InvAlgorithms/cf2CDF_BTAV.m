@@ -20,7 +20,7 @@ function [cdf,result] = cf2CDF_BTAV(cf,x,options)
 %                                      % Gauss-Kronrod integral. 
 %             options.tol = 1e-12      % absolute tolerance for the MATLAB
 %                                      % Gauss-Kronrod integral. 
-%             options.nTerms = 50      % number of terms used in the
+%             options.nTerms = 100     % number of terms used in the
 %                                      % trapezoidal quadrature
 %                                      % estimated from the specified CF
 %             options.Mpar_BTAV = 10   % parameter M for the deformed
@@ -73,7 +73,7 @@ function [cdf,result] = cf2CDF_BTAV(cf,x,options)
 %     Engineering, 60(5), pp.979-993.
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 25-Dec-2018 12:42:35
+% Ver.: 11-Jan-2019 15:55:06
 
 %% CHECK/SET THE INPUT PARAMETERS
 StartTime = cputime;
@@ -89,7 +89,7 @@ if ~isfield(options, 'tol')
 end
 
 if ~isfield(options, 'nTerms')
-    options.nTerms = 50;
+    options.nTerms = 100;
 end
 
 if ~isfield(options, 'Mpar_BTAV')
@@ -109,13 +109,14 @@ switch lower(quadrature)
     case 'matlab'
         tol = options.tol;
         M   = options.Mpar_BTAV;
-        cdf = integral(@(t) real(IntegrandFun_BTAV(t,x,cf,'cdf',M)), ...
-            0,pi,'ArrayValued',true,'RelTol',0,'AbsTol',tol)/pi;
+        cdfFun = @(t) real(IntegrandFun_BTAV(t,x,cf,'cdf',M));
+        cdf = integral(cdfFun,0,pi, ...
+            'ArrayValued',true,'RelTol',0,'AbsTol',tol)/pi;
     case 'trapezoidal'
         n   = options.nTerms;
         M   = options.Mpar_BTAV;
         t   = linspace(0,pi,n+1)';
-        [~,cdfFun] = IntegrandFun_BTAV(t,x,cf,[],M);
+        cdfFun = IntegrandFun_BTAV(t,x,cf,'cdf',M);
         cdf = (cdfFun(1,:)/2 + nansum(real(cdfFun(2:n,:))))/n;
 end
 
@@ -131,8 +132,9 @@ if nargout > 1
     result.cdf = cdf;
     result.x   = x;
     result.cf  = cf;
+    result.cdfFun  = cdfFun;
     result.options = options;
-    result.tictoc = tictoc;
+    result.tictoc  = tictoc; 
 end
 
 %% PLOT the PDF / CDF 
