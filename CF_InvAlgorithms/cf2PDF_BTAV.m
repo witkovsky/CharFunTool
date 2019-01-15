@@ -20,7 +20,7 @@ function [pdf,result] = cf2PDF_BTAV(cf,x,options)
 %                                      % Gauss-Kronrod integral. 
 %             options.tol = 1e-12      % absolute tolerance for the MATLAB
 %                                      % Gauss-Kronrod integral. 
-%             options.nTerms = 50      % number of terms used in the
+%             options.nTerms = 100     % number of terms used in the
 %                                      % trapezoidal quadrature
 %                                      % estimated from the specified CF
 %             options.Mpar_BTAV = 10   % parameter M for the deformed
@@ -73,7 +73,7 @@ function [pdf,result] = cf2PDF_BTAV(cf,x,options)
 %     Engineering, 60(5), pp.979-993.
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 25-Dec-2018 12:42:35
+% Ver.: 11-Jan-2019 15:55:06
 
 %% CHECK/SET THE INPUT PARAMETERS
 StartTime = cputime;
@@ -89,7 +89,7 @@ if ~isfield(options, 'tol')
 end
 
 if ~isfield(options, 'nTerms')
-    options.nTerms = 50;
+    options.nTerms = 100;
 end
 
 if ~isfield(options, 'Mpar_BTAV')
@@ -109,21 +109,17 @@ switch lower(quadrature)
     case 'matlab'
         tol = options.tol;
         M   = options.Mpar_BTAV;
-        cdf = integral(@(t) real(IntegrandFun_BTAV(t,x,cf,'cdf',M)), ...
-            0,pi,'ArrayValued',true,'RelTol',0,'AbsTol',tol)/pi;
-        pdf = 2*integral(@(t) real(IntegrandFun_BTAV(t,x,cf,'pdf',M)), ...
-            0,pi,'ArrayValued',true,'RelTol',0,'AbsTol',tol)/pi;
+        pdfFun = @(t) real(IntegrandFun_BTAV(t,x,cf,'pdf',M));
+        pdf = integral(pdfFun,0,pi, ...
+            'ArrayValued',true,'RelTol',0,'AbsTol',tol)/pi;
     case 'trapezoidal'
         n   = options.nTerms;
         M   = options.Mpar_BTAV;
         t   = linspace(0,pi,n+1)';
-        [~,cdfFun,pdfFun] = IntegrandFun_BTAV(t,x,cf,[],M);
-        cdf = (cdfFun(1,:)/2 + nansum(real(cdfFun(2:n,:))))/n;
+        pdfFun = IntegrandFun_BTAV(t,x,cf,'pdf',M);
         pdf = (pdfFun(1,:)/2 + nansum(real(pdfFun(2:n,:))))/n; 
 end
 
-cdf(isnan(cdf)) = 0;
-cdf    = reshape(cdf,szx);
 pdf    = reshape(max(0,pdf),szx);
 tictoc = cputime - StartTime;
 
@@ -132,10 +128,10 @@ if nargout > 1
     result.Description     = 'PDF from the characteristic function CF';
     result.inversionMethod = 'Bromwich-Talbot-Abate-Valkó';
     result.quadratureMethod = options.quadrature;
-    result.cdf = cdf;
     result.pdf = pdf;
     result.x   = x;
     result.cf  = cf;
+    result.pdfFun  = pdfFun;
     result.options = options;
     result.tictoc = tictoc;
 end
@@ -150,13 +146,6 @@ if options.isPlot
     grid
     title('PDF Specified by the CF')
     xlabel('x')
-    ylabel('pdf')
-    % CDF
-    figure
-    plot(x,cdf,'.-')
-    grid
-    title('CDF Specified by the CF')
-    xlabel('x')
-    ylabel('cdf')        
+    ylabel('pdf')     
 end
 end
