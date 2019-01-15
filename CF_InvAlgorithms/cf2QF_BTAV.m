@@ -25,7 +25,7 @@ function [qf,result] = cf2QF_BTAV(cf,prob,options)
 %                                      % Gauss-Kronrod integral. 
 %             options.crit = 1e-12     % value of the criterion limit for
 %                                      % stopping rule.
-%             options.nTerms = 50      % number of terms used in the
+%             options.nTerms = 100     % number of terms used in the
 %                                      % trapezoidal quadrature
 %             options.maxiter = 100    % indicator of the maximum number of
 %                                      % Newton-Raphson iterations.
@@ -152,7 +152,7 @@ function [qf,result] = cf2QF_BTAV(cf,prob,options)
 %     Engineering, 60(5), pp.979-993.
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 25-Dec-2018 12:42:35
+% Ver.: 11-Jan-2019 15:55:06
 
 %% CHECK/SET THE INPUT PARAMETERS
 StartTime = cputime;
@@ -172,7 +172,7 @@ if ~isfield(options, 'crit')
 end
 
 if ~isfield(options, 'nTerms')
-    options.nTerms = 50;
+    options.nTerms = 100;
 end
 
 if ~isfield(options, 'maxiter')
