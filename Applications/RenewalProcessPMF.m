@@ -101,7 +101,7 @@ function [pmf,n,tMin,tMax,cdfFun,pmfFun] = RenewalProcessPMF(t,cf,nMin,nMax,tol)
 %      plot(n,pmf(t),'o--');
 %  end
 %  legend;
-%  title('Renewal process PMF(t) with Gamma(2,3) holding times t = 0:1:18')
+%  title('Renewal process PMF(t) with Gamma(2,5) holding times t = 0:1:18')
 %  xlabel('n')
 %  ylabel('probability')
 
