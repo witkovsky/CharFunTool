@@ -1,34 +1,37 @@
-function F = Dawson(x,tol)
+function D = Dawson(z)
 %Dawson 
-%  Computes the Dawson function for complex input x (scalar, vector, or
+%  Computes the Dawson function for complex input z (scalar, vector, or
 %  array). Here, the Dawson function is defined by 
-%   F(x) = exp(-x^2) * integral_0^{x} exp(y^2) dy
-%        = integral_0^1 exp(x^2*(z^2-1)^2) dz
-%        = 1/2 * integral_0^Infty exp(-t^2/2)*sin(x*t) dt
+%   D(z) = exp(-z^2) * integral_0^{z} exp(t^2) dt
+%        = integral_0^1 exp(z^2*(z^2-1)^2) dz
+%        = 1/2 * integral_0^Inf exp(-t^2/2)*sin(z*t) dt
 %  The Dawson function is the one-sided Fourier–Laplace sine transform of
 %  the Gaussian function. It is closely related to the error function erf:
-%   F(x) = sqrt(pi)/2 * exp(-x^2)  * erfi(x),
-%  where erfi is the imaginary error function, erfi(x) = 1i*erf(1i*x). 
+%   D(z) = sqrt(pi)/2 * exp(-z^2) * erfi(z),
+%        = 1i * sqrt(pi)/2 * (exp(-z^2) - Fadeeva(z)).
+%  where erfi(z) is the imaginary error function, erfi(z) = 1i*erf(1i*z)
+%  and Fadeeva(z) is the Faddeeva function or the Kramp function, which is
+%  a scaled complex complementary error function, in complex argument z.
+%  For real x, 
+%   D(x) = sqrt(pi)/2 * imag(Fadeeva(x)).
 %
 % SYNTAX
-%  F = Dawson(x,tol)
+%  D = Dawson(z)
 %
 % INPUTS:
-%  x     - vector or array of (complex) values, where the Dowson function F
+%  z     - vector or array of (complex) values, where the Dawson function 
 %          is evaluated. 
-%  tol   - parameter of the relative tolerance RelTol used for integration.
-%          If empty, default value is tol = 1e-6.  
 %
 % OUTPUT:
-%  F     - vector or array of the calculated function values.
+%  D     - vector or array of the calculated Dawson function values.
 %  
 % WIKIPEDIA:
 %  https://en.wikipedia.org/wiki/Dawson_function
 %
 % EXAMPLE 1:
 %   x = linspace(-20,20,501);
-%   F = Dawson(x);
-%   plot(x,F);grid
+%   D = Dawson(x);
+%   plot(x,D);grid
 %   xlabel('x')
 %   title('Dawson function')
 %
@@ -55,23 +58,18 @@ function F = Dawson(x,tol)
 %   result = cf2DistGP(cf,x,prob,options)
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 09-Oct-2018 14:54:14
+% Ver.: 20-Sep-2019 20:26:55
 
-%% CHECK THE INPUT PARAMETERS
-narginchk(1, 2);
+%% ALGORITHM
 
-if nargin < 2
-    tol = []; 
+sz = size(z);
+z  = z(:);
+
+if isreal(z)
+    D = (sqrt(pi)/2) * imag(Fadeeva(z));
+else
+    D = (1i * sqrt(pi)/2) * (exp(-z.^2) - Fadeeva(z));
 end
 
-if isempty(tol)
-    tol = 1e-6;
-end
-
-sz = size(x);
-x  = x(:);
-F  = x .* integral(@(z) exp((z.^2-1).*x.^2),0,1,'ArrayValued',true, ...
-    'RelTol',tol);
-F  = reshape(F,sz);
-
+D = reshape(D,sz);
 end

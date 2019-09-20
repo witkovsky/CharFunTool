@@ -36,6 +36,13 @@ NumDiff
 
 SPECIAL Functions:
 
+Dawson
+erfcxZX
+erfcZX
+erfiZX
+erfZX
+Fadeeva
+FoxWrightPsi
 Hypergeom1F1
 Hypergeom1F1a
 Hypergeom1F1Mat
@@ -46,8 +53,6 @@ Hypergeom2F1MatApprox
 HypergeompFqMat
 HypergeompFqSeries
 HypergeomU
-Dawson
-FoxWrightPsi
 
 TRANSFORMATION Functions:
 
