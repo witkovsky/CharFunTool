@@ -10,9 +10,11 @@ cf_ChiSquare
 cf_Exponential
 cf_FisherSnedecor
 cf_FisherSnedecorNC
+cf_FoldedNormal
 cf_Gamma
 cf_GeneralizedExponential
 cf_Gumbel
+cf_HalfNormal
 cf_InverseGamma
 cf_Laplace
 cf_MaxwellBoltzmann
