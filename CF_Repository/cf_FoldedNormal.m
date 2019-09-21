@@ -14,9 +14,9 @@ function cf = cf_FoldedNormal(t,mu,sigma,coef,niid)
 %  noncentrality parameter delta = mu/sigma.   
 %
 %  cf_FoldedNormal evaluates the characteristic function cf(t) of Y =
-%  sum_{i=1}^N coef_i * X_i, where X_i ~ Folded-Normal(sigma_i) are
-%  inedependent Folded-Normal RVs with the scale parameters sigma_i > 0,
-%  for i  = 1,...,N. 
+%  sum_{i=1}^N coef_i * X_i, where X_i ~ Folded-Normal(mi_i,sigma_i) are
+%  inedependent Folded-Normal RVs with the location parameters mu_i and the
+%  scale parameters sigma_i > 0, for i  = 1,...,N. 
 %
 %  The characteristic function of X ~ FN(mu,sigma) is defined by
 %   cf_FoldedNormal(t) = cf_ChiNC(sigma*t,df=1,delta=mu/sigma), 
@@ -27,8 +27,8 @@ function cf = cf_FoldedNormal(t,mu,sigma,coef,niid)
 %   cf(t) = Prod ( cf_FoldedNormal(coef_i*t,sigma_i) )
 %         = Prod ( cf_FoldedNormal(coef_i*sigma_i*t,1) )
 %
-%  Alternatively, the characteristic function of X ~ FN(mu,sigma) can be
-%  expressed by 
+%  Alternatively, see Tsagris et al. (2014), the characteristic function of
+%  X ~ FN(mu,sigma) can be expressed by 
 %   cf_FoldedNormal(t) = exp(-sigma^2*t^2/2 + 1i*mu*t) 
 %                        * (1/2)*(1-erf((-mu/sigma+1i*sigma*t)/sqrt(2)))
 %                      + exp(-sigma^2*t^2/2 - 1i*mu*t) 
@@ -111,6 +111,10 @@ function cf = cf_FoldedNormal(t,mu,sigma,coef,niid)
 %   result = cf2DistGP(cf,x,prob,options);
 %
 % See also: cf_ChiNC, erfZX
+%
+% REFERENCES:
+%  [1] Tsagris M., Beneki C. and Hassani H. (2014). On the folded normal
+%  distribution. Mathematics, 2(1), pp.12-28. 
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 21-Sep-2019 12:33:09
@@ -146,6 +150,6 @@ end
 % CF of the linear combination of the Folded-Normal RVs (by using ChiNC) 
 df = 1;
 delta = mu./sigma;
-cf = cf_ChiNC(t,df,sigma.*coef,delta,niid);
+cf = cf_ChiNC(t,df,delta,sigma.*coef,niid);
 
 end
