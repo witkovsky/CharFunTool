@@ -68,7 +68,15 @@ function cf = cf_FoldedNormal(t,mu,sigma,coef,niid)
 %  distribution is called "folded" because probability mass to the left of
 %  the x = 0 is folded over by taking the absolute value. In the physics of
 %  heat conduction, the folded normal distribution is a fundamental
-%  solution of the heat equation on the upper plane (i.e. a heat kernel).        
+%  solution of the heat equation on the upper plane (i.e. a heat kernel).
+%
+%  - When mu = 0, the distribution X ~ FN(0,sigma) is a half-normal
+%    distribution, i.e. X ~ HN(sigma).
+%  - The random variable (X/?)^2 has a non-central chi-squared distribution
+%    with 1 degree of freedom and noncentrality equal to (mu/?)^2.  
+%  - The folded normal distribution can also be seen as the limit of the
+%    folded non-standardized t-distribution as the degrees of freedom go to
+%    infinity.   
 %
 % EXAMPLE 1:
 % % CF of the distribution of Folded-Normal RV with mu = 1 and sigma = 3
