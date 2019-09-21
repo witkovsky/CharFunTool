@@ -82,7 +82,7 @@ function cf = cf_FoldedNormal(t,mu,sigma,coef,niid)
 % % CF of the distribution of Folded-Normal RV with mu = 1 and sigma = 3
 %   mu    = 1;
 %   sigma = 3;
-%   t     = linspace(-10,10,501);
+%   t     = linspace(-5,5,501);
 %   cf    = cf_FoldedNormal(t,mu,sigma);
 %   figure; plot(t,real(cf),t,imag(cf));grid on
 %   title('CF of the Folded-Normal RV with mu = 1 and sigma = 3')
@@ -92,7 +92,7 @@ function cf = cf_FoldedNormal(t,mu,sigma,coef,niid)
 %   mu    = [1 1 1 1 1];
 %   sigma = [1 2 3 4 5];
 %   coef  = [1 1 1 1 1];
-%   t     = linspace(-5,5,501);
+%   t     = linspace(-2,2,501);
 %   cf    = cf_FoldedNormal(t,mu,sigma,coef);
 %   figure; plot(t,real(cf),t,imag(cf));grid on
 %   title('CF of a linear combination of independent Folded-Normal RVs')
@@ -106,7 +106,7 @@ function cf = cf_FoldedNormal(t,mu,sigma,coef,niid)
 %   clear options
 %   options.N = 2^10;
 %   options.xMin = 0;
-%   x = linspace(0,10,201);
+%   x = linspace(0,30,201);
 %   prob = [0.9 0.95 0.975 0.99];
 %   result = cf2DistGP(cf,x,prob,options);
 %
