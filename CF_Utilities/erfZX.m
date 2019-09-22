@@ -32,6 +32,6 @@ function f = erfZX(z)
 if isreal(z)
     f = erf(z);
 else
-    f = 1 - exp(-z.^2) .* Fadeeva(1i*z);
+    f = 1 - erfcZX(z);
 end
 end

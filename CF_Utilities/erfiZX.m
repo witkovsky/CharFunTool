@@ -5,7 +5,7 @@ function f = erfiZX(z)
 %
 %  The erfiZX function is defined as
 %   erfiZX(z) = -1i * erfZX(1i*z)
-%             = -1i * (1 - exp(-z^2) * w(1i*z))
+%             = -1i * (1 - exp(z^2) * w(-z))
 %  where w(z) is the Faddeeva function or the Kramp function, which is a
 %  scaled complex complementary error function, in complex argument z.
 %
@@ -31,6 +31,6 @@ function f = erfiZX(z)
 
 %% ALGORITHM
 
-f = -1i * (1 - exp(-z.^2) .* Fadeeva(1i*z));
+f = -1i * erfZX(1i*z);
 
 end
