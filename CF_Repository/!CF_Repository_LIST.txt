@@ -15,6 +15,7 @@ cf_Gamma
 cf_GeneralizedExponential
 cf_Gumbel
 cf_HalfNormal
+cf_HalfNormalNC
 cf_InverseGamma
 cf_Laplace
 cf_MaxwellBoltzmann
@@ -52,6 +53,8 @@ cf_LogRV_FisherSnedecor
 cf_LogRV_FisherSnedecorNC
 cf_LogRV_Gamma
 cf_LogRV_GammaNC
+cf_LogRV_HalfNormal
+cf_LogRV_HalfNormalNC
 cf_LogRV_InverseGamma
 cf_LogRV_MaxwellBoltzmann
 cf_LogRV_MaxwellBoltzmannNC
