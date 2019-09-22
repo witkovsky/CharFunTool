@@ -8,9 +8,13 @@ function cf = cf_HalfNormal(t,sigma,coef,niid)
 %  chi-distribution with one degree of freedom. 
 % 
 %  In particular, if Z ~ N(0,1) then X = sigma*|Z| has Half-Normal
-%  distribution with parameter sigma, X ~ HN(sigma). That is, the random
-%  variable X is multiple of the random variable |Z| which has
+%  distribution with scale parameter sigma, X ~ HN(sigma). That is, the
+%  random variable X is multiple of the random variable |Z| which has
 %  chi-distribution with one degree of freedom.  
+%
+%  Note that MATHEMATICA uses different parametrization of the Half-Normal
+%  distribution: X ~ HalfNormalDistribution[theta], where theta =
+%  sqrt(pi/2)/sigma, and otherwise, sigma = sqrt(pi/2)/theta. 
 %
 %  cf_HalfNormal evaluates the characteristic function cf(t) of Y =
 %  sum_{i=1}^N coef_i * X_i, where X_i ~ Half-Normal(sigma_i) are
@@ -27,8 +31,8 @@ function cf = cf_HalfNormal(t,sigma,coef,niid)
 %
 %  Alternatively, the characteristic function of X ~ HN(sigma) can  be
 %  expressed by 
-%   cf_HalfNormal(t) = exp(-sigma^2*t^2/2) * (1-erf(-1i*sigma*t/sqrt(2))),
-%  where erf(z) denotes the complex error function. See also erfZX.m
+%   cf_HalfNormal(t) = exp(-sigma^2*t^2/2) * (1-1i*erfi(sigma*t/sqrt(2))),
+%  where erf(z) denotes the complex error function. See also erfiZX.m
 %
 % SYNTAX:
 %  cf = cf_HalfNormal(t,sigma,coef,niid)
