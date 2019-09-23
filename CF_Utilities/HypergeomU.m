@@ -42,7 +42,7 @@ function [y,md] = HypergeomU(a,b,z)
 %      uses the Matlab's function gamma.
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 19-Sep-2017 14:55:29
+% Ver.: 23-Sep-2019 21:57:11
 
 %% ALGORITHM CALL
 %[y,md] = HypergeomU(a,b,z)
@@ -71,11 +71,11 @@ if (nargin() ~= 3)
     help chgu
     error( 'For usage see above' )
     
-elseif( ~isscalar( a ) || ~isreal( a ) )
-    error( 'Argument a must be a real scalar' )
+elseif( ~isscalar( a )  )
+    error( 'Argument a must be a scalar' )
     
-elseif( ~isscalar( b ) || ~isreal( b ) )
-    error( 'Argument b must be a real scalar' )
+elseif( ~isscalar( b )  )
+    error( 'Argument b must be a scalar' )
     
 elseif( ~ismatrix( x ) )
     error( 'Argument x must be a scalar, vector or a matrix' )
@@ -166,12 +166,12 @@ function [hu,id]=chgus(a,b,x)
 %  argument x
 
 h0   = 0;
-ga   = gamma(a);
-gb   = gamma(b);
+ga   = GammaZX(a);
+gb   = GammaZX(b);
 xg1  = 1 + a - b;
-gab  = gamma(xg1);
+gab  = GammaZX(xg1);
 xg2  = 2 - b;
-gb2  = gamma(xg2);
+gb2  = GammaZX(xg2);
 hu0  = pi / sin(pi*b);
 r1   = hu0 / (gab*gb);
 r2   = hu0 * x.^(1-b) / (ga*gb2);
