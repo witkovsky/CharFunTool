@@ -9,10 +9,13 @@ function cf = cf_FisherSnedecor(t,df1,df2,coef,niid,tol)
 %  inedependent RVs, with df1_i and df2_i degrees of freedom, for i =
 %  1,...,N.
 %
-%  The characteristic function of X ~ F(df1,df2) is 
-%   cf(t) = U(df1/2, 1-df2/2, -1i*(df2/df1)*t),
-%  where U(a,b,z) denotes the confluent hypergeometric function of the
-%  second kind. 
+%  The characteristic function of X ~ F(df1,df2), the F-distribution with
+%  df1 and df2 degrees of freedom, evaluated at the real t from
+%  (-inf,+inf), is defined by
+%   CF(t) = (gamma(df1/2+df2/2)/gamma(df2/2)) * ...
+%           HypergeometricU(df1/2, 1-df2/2, -1i*(df2/df1)*t),
+%  where HypergeometricU(a,b,z) denotes the confluent hypergeometric
+%  function of the second kind U(a,b,z). 
 %
 %  Hence, the characteristic function of Y  = coef_1*X_1 +...+ coef_N*X_N
 %  is cf_Y(t) =  cf_1(coef_1*t) *...* cf_N(coef_N*t), where cf_i(t) 
@@ -72,7 +75,7 @@ function cf = cf_FisherSnedecor(t,df1,df2,coef,niid,tol)
 %     of Statistical Planning and Inference 94 (2001), 1–13.
 
 % (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 24-Jun-2017 10:07:43
+% Ver.: 23-Sep-2019 21:57:11
 
 %% ALGORITHM
 % cf = cf_FisherSnedecor(t,df1,df2,coef,niid,tol)
