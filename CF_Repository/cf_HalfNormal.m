@@ -32,7 +32,11 @@ function cf = cf_HalfNormal(t,sigma,coef,niid)
 %  Alternatively, the characteristic function of X ~ HN(sigma) can  be
 %  expressed by 
 %   cf_HalfNormal(t) = exp(-sigma^2*t^2/2) * (1-1i*erfi(sigma*t/sqrt(2))),
-%  where erf(z) denotes the complex error function. See also erfiZX.m
+%          = exp(-sigma^2*t^2/2) + (2i/sqrt(pi)) * Dawson(sigma*t/sqrt(2))
+%  where erf(z) denotes the complex error function and Dawson(z) denotes
+%  the Dawson function. Note that the second expression is more suitable
+%  for practical purposesis as it is numerically more stable for large t.
+%  See also erfiZX.m and Dawson.m.  
 %
 % SYNTAX:
 %  cf = cf_HalfNormal(t,sigma,coef,niid)
@@ -96,7 +100,7 @@ function cf = cf_HalfNormal(t,sigma,coef,niid)
 %   prob = [0.9 0.95 0.975 0.99];
 %   result = cf2DistGP(cf,x,prob,options);
 %
-% See also: cf_Chi, erfZX
+% See also: cf_Chi, erfZX, Dawson
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 21-Sep-2019 12:33:09

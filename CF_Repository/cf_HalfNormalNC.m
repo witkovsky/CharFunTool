@@ -18,7 +18,8 @@ function cf = cf_HalfNormalNC(t,sigma,delta,coef,niid,tol)
 %  parameters sigma_i > 0, and the non-centrality parameters delta_i >= 0,
 %  for i = 1,...,N.
 %
-%  The characteristic function of X ~ HalfNormalNC(sigma,delta) is defined by
+%  The characteristic function of X ~ HalfNormalNC(sigma,delta) is defined
+%  by 
 %   cf_HalfNormalNC(t) = cf_ChiNC(sigma*t,df=1,delta/sigma), 
 %  where by cf_ChiNC(t,df,delta) we denote the characteristic function of
 %  the noncentral chi distribution with df degrees of freedom and the
@@ -43,9 +44,9 @@ function cf = cf_HalfNormalNC(t,sigma,delta,coef,niid,tol)
 %          the associated generating input variables X_i = sqrt(Z_{i,1}^2 +
 %          Z_{i,2}^2), where Z_{i,j} ~ N(mu_{i,j},sigma_{i,j}^2), j = 1,2.
 %  coef  - vector of the coefficients of the linear combination of the
-%          Half-Normal distributed random variables. If coef is scalar, it is
-%          assumed that all coefficients are equal. If empty, default value
-%          is coef = 1.
+%          Half-Normal distributed random variables. If coef is scalar, it
+%          is assumed that all coefficients are equal. If empty, default
+%          value is coef = 1.
 %  niid  - scalar convolution coeficient niid, such that Z = Y + ... + Y is
 %          sum of niid iid random variables Y, where each Y = sum_{i=1}^N
 %          coef(i) * log(X_i) is independently and identically distributed
