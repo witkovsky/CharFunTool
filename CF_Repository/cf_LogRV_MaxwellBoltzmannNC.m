@@ -1,7 +1,7 @@
 function cf = cf_LogRV_MaxwellBoltzmannNC(t,sigma,delta,coef,niid,tol)
 %cf_LogRV_MaxwellBoltzmannNC 
 %  Characteristic function of a linear combination (resp. convolution) of
-%  independent LOG-TRANSFORMED NON-CENTAL MAXWELL-BOLTZMANN distributed
+%  independent LOG-TRANSFORMED NON-CENTRAL MAXWELL-BOLTZMANN distributed
 %  random variables, with the scale parameters sigma_i > 0, and the
 %  non-centrality parameters delta_i >= 0, for i  = 1,...,N.
 %  

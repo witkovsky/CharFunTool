@@ -1,7 +1,7 @@
 function cf = cf_LogRV_NakagamiNC(t,m,Omega,delta,coef,niid,tol)
 %cf_LogRV_NakagamiNC 
 %  Characteristic function of a linear combination (resp. convolution) of
-%  independent LOG-TRANSFORMED NON-CENTAL NAKAGAMI random variables, with
+%  independent LOG-TRANSFORMED NON-CENTRAL NAKAGAMI random variables, with
 %  the shape parameters m_i > 1/2, spread parameters Omega_i > 0, and the
 %  non-centrality parameters delta_i >= 0, for i  = 1,...,N.
 %  

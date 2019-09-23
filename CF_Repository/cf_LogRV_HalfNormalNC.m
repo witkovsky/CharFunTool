@@ -1,7 +1,7 @@
 function cf = cf_LogRV_HalfNormalNC(t,sigma,delta,coef,niid,tol)
 %cf_LogRV_HalfNormalNC 
 %  Characteristic function of a linear combination (resp. convolution) of
-%  independent LOG-TRANSFORMED NON-CENTAL HALF-NORMAL distributed random
+%  independent LOG-TRANSFORMED NON-CENTRAL HALF-NORMAL distributed random
 %  variables, with the scale parameters sigma_i > 0, and the non-centrality
 %  parameters delta_i >= 0, for i  = 1,...,N.
 %  
