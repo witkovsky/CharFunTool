@@ -27,11 +27,19 @@ function f = Hypergeom2F1Mat(a,b,c,X,MAX)
 % OUTPUTS:
 %  f     - hypergeometric sum, 2F1(a,b;c;X)
 %
-% EXAMPLE:
+% EXAMPLE 1 
 %  a   = 3;
 %  b   = 2.5;
 %  c   = 1.5;
 %  X   = [1,2,3]/5;
+%  MAX = 50;
+%  f   = Hypergeom2F1Mat(a,b,c,X,MAX)
+%
+% EXAMPLE 2
+%  a   = [3 4 5]';
+%  b   = [1+1i 2+2i 3+3i]';
+%  c   = [5-5i 4+3i 3]';
+%  X   = [1,2,3];
 %  MAX = 50;
 %  f   = Hypergeom2F1Mat(a,b,c,X,MAX)
 %
@@ -46,7 +54,7 @@ function f = Hypergeom2F1Mat(a,b,c,X,MAX)
 %     2002;30(4):1155-77.
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 22-Aug-2018 12:23:08
+% Ver.: 25-Sep-2019 15:55:45
 
 %% FUNCTION CALL
 % f = Hypergeom2F1Mat(a,b,c,X,MAX)
@@ -66,9 +74,13 @@ if errorcode > 0
 end
 
 
-
 %% ALGORITHM
-f = HypergeompFqMat([a,b],c,X,[],2,MAX,[]);
+
+% M-FUNCTION CALL
+% f = HypergeompFqMat([a,b],c,X,[],2,MAX,[]);
+
+% MEX-FUNCTION CALL
+f = HypergeompFqMat_mex([a,b],c,X,[],2,MAX,[]);
 
 if max(sza)>1
     f = reshape(f,sza);

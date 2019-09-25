@@ -1,7 +1,8 @@
 function [s,ss] = HypergeompFqMat(a,b,x,y,alpha,MAX,lam)
 % HypergeompFqMat - The hypergeometric function of a matrix argument.
 %  Computes truncated hypergeometric function pFq^alpha(a;b;x;y) with
-%  parameters a and b and of two matrix arguments, x and y.
+%  the parameters a = [a1,...,ap] and b = [b1,...,bq] and of two matrix
+%  arguments, x and y. 
 %
 %  Here, hypergeometric function pFq^alpha(a;b;x;y) is defined as
 %  pFq^alpha(a;b;x;y) = pFq^alpha(a1,...,ap;b1,...,bp;x;y) = 
@@ -26,10 +27,15 @@ function [s,ss] = HypergeompFqMat(a,b,x,y,alpha,MAX,lam)
 %  [s,ss] = HypergeompFqMat(a,b,x,y,alpha,MAX,lam)
 %
 % INPUTS:
-%  a      - parameter of the hypergeometric function pFq^alpha(a;b;x;y),
-%  b      - parameter of the hypergeometric function pFq^alpha(a;b;x;y),
-%  x      - matrix argument (given as vector of eigenvalues),
-%  y      - optional second matrix argument (vector of eigenvalues),
+%  a      - possibly complex (1xp) vector or (nxp) matrix parameter of the
+%           hypergeometric function pFq^alpha(a;b;x;y), a = [a1,...,ap],
+%           p columns of n-dimensional vector parameters  
+%  b      - possibly complex (1xq) vector or (nxq) matrix parameter of the
+%           hypergeometric function pFq^alpha(a;b;x;y), b = [b1,...,bq], 
+%           q columns of n-dimensional vector parameters   
+%  x      - matrix argument (specified as vector of its eigenvalues),
+%  y      - optional second matrix argument (pecified as vector of its
+%           eigenvalues), 
 %  alpha  - parameter of the hypergeometric function pFq^alpha(a;b;x;y),
 %           default value is alpha = 2,
 %  MAX    - maximum number of partitions, |kappa|<=MAX, default value is
@@ -149,10 +155,16 @@ function [s,ss] = HypergeompFqMat(a,b,x,y,alpha,MAX,lam)
 
 % This is modified version of the original MATLAB code hg.m by Plamen Koev
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 23-Oct-2017 11:47:05
+% Ver.: 25-Sep-2019 15:45:11
 
 %% FUNCTION CALL
 % [s,ss] = HypergeompFqMat(a,b,x,y,alpha,MAX,lam)
+
+%% MEX FUNCTION CALL (all parametrs should be specified)
+% [s,ss] = HypergeompFqMat(a,b,x,y,alpha,MAX,lam)
+%
+% % e.g. with specific parameters y = [], alpha = 2, MAX = 50, lam = []
+% [s,ss] = HypergeompFqMat_mex(a,b,x,[],2,50,[])
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(3, 7);
@@ -168,7 +180,7 @@ if isempty(MAX), MAX  = 20; end
 na     = size(a,1);
 nb     = size(b,1);
 if na ~= nb
-    error(message('InputSizeMismatch'));
+    error('dimension');
 end
 
 %% ALGORITHM
@@ -223,13 +235,17 @@ if XY
         yn(:,i) = yn(:,i-1) .* y;
     end
     prody = cumprod(y);
+else
+    prody = ones(size(prodx));
+    Sy = ones(size(Sx));
+    yn = ones(n,MAX+1);
 end
 
 l     = zeros(1,Lp);
-z     = ones(na,Lp);
+z     = complex(ones(na,Lp));
 kt    = -(1:Lp);
 cc1   = 0;
-ss    = zeros(na,MAX+1);
+ss    = complex(zeros(na,MAX+1));
 ss(:,1) = 1;
 sl    = 1;
 h     = 1;
