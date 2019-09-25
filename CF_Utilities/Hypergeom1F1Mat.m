@@ -64,11 +64,13 @@ if errorcode > 0
     error(message('InputSizeMismatch'));
 end
 
-% M-FUNCTION CALL
-% f = HypergeompFqMat(a,b,X,[],2,MAX,[]);
-
-% MEX-FUNCTION CALL
-f = HypergeompFqMat_mex(a,b,X,[],2,MAX,[]);
+try
+    % MEX-FUNCTION CALL
+    f = HypergeompFqMat_mex(a,b,X,[],2,MAX,[]);
+catch
+    % M-FUNCTION CALL
+    f = HypergeompFqMat(a,b,X,[],2,MAX,[]);
+end
 
 if max(sza)>1
     f = reshape(f,sza);
