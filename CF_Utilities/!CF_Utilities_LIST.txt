@@ -24,10 +24,10 @@ LegendreSeriesFourierIntegral
 INTERPOLANT Functions:
 
 InterpBarycentric
-CDFinterp
-PDFinterp
-QFinterp
-RNDinterp
+InterpCDF
+InterpPDF
+InterpQF
+InterpRND
 
 OPTIMIZATION Functions:
 
