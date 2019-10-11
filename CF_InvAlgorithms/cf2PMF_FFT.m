@@ -1,27 +1,29 @@
-function [pmf,cdf,result] = cf2PMF_FFT(cf,xMin,xMax,options)
+function [result,pmf,cdf] = cf2PMF_FFT(cf,xMin,xMax,options)
 % cf2PMF_FFT Evaluates the distribution functions, PMF and CDF, of a
-% DISCRETE distribution defined on a (subset) of non-negative integers
-% specified by its CF, at values x = xMin : xMax, by using numerical
-% inversion of the characteristic function, based on the inverse FFT
-% algorithm.  
+% DISCRETE lattice distribution, defined on a (subset) of integers
+% specified by its CF, evaluated at values x = xMin : xMax, by using
+% numerical inversion of the characteristic function, based on the inverse
+% FFT algorithm.   
 % 
 % SYNTAX:
-% [pmf,cdf,result] = cf2PMF_FFT(cf,xMin,xMax,options)
+% [result,pmf,cdf] = cf2PMF_FFT(cf,xMin,xMax,options)
 %
 % INPUT:
-%  cf       - function handle of the characteristic function
+%  cf       - function handle of the characteristic function of the
+%             discrete lattice distribution, defined on a subset of
+%             integers 
 %  xMin     - minimum value (integer) of the support of the discrete RV X
 %  xMax     - maximum value (integer) of the support of the discrete RV X
-%  options  - structure with the following parameters:
+%  options  - structure with the following default parameters:
 %             options.xMin = 0       % minimum value of the support of X
 %             options.xMax = 100     % maximum value of the support of X
-%             options.isPlot = false % logical indicator for plotting 
+%             options.isPlot = true % logical indicator for plotting 
 %                                    % PMF and CDF
 %
 % OUTPUT:
+%  result   - structure with all details.
 %  pmf      - vector of the PMF values evaluated at x = xMin:xMax.
-%  cdf      - vector of the PMF values evaluated at x = xMin:xMax.
-%  result   - structure with further details.
+%  cdf      - vector of the CDF values evaluated at x = xMin:xMax.
 %
 % EXAMPLE 1
 % % PMF/CDF of the binomial RV specified by its CF
@@ -31,7 +33,7 @@ function [pmf,cdf,result] = cf2PMF_FFT(cf,xMin,xMax,options)
 %  xMin = 0;
 %  xMax = n;
 %  options.isPlot = true;
-%  [pmf,cdf,result] = cf2PMF_FFT(cf,xMin,xMax,options)
+%  result = cf2PMF_FFT(cf,xMin,xMax,options)
 %
 % EXAMPLE 2
 % % PMF/CDF of the convolved discrete RV specified by its CF
@@ -43,7 +45,7 @@ function [pmf,cdf,result] = cf2PMF_FFT(cf,xMin,xMax,options)
 %  xMin = 0;
 %  xMax = N*n;
 %  options.isPlot = true;
-%  [pmf,cdf,result] = cf2PMF_FFT(cf,xMin,xMax,options)
+%  [result,pmf,cdf] = cf2PMF_FFT(cf,xMin,xMax,options)
 %
 % EXAMPLE 3
 % % PMF/CDF of the convolved RV with Poisson distribution 
@@ -51,10 +53,10 @@ function [pmf,cdf,result] = cf2PMF_FFT(cf,xMin,xMax,options)
 %  cf_Pois = @(t) cfN_Poisson(t,lambda);
 %  N  = 10;
 %  cf = @(t) cf_Pois(t).^N;
-%  xMin = 0;
-%  xMax = 3*lambda*N;
+%  xMin = 20;
+%  xMax = 80;
 %  options.isPlot = true;
-%  [pmf,cdf,result] = cf2PMF_FFT(cf,xMin,xMax,options)
+%  result = cf2PMF_FFT(cf,xMin,xMax,options)
 %
 % EXAMPLE 4
 % % PMF/CDF of the convolved discrete RV specified by its CF
@@ -68,7 +70,7 @@ function [pmf,cdf,result] = cf2PMF_FFT(cf,xMin,xMax,options)
 %  xMin  = 0;
 %  xMax  = N*2;
 %  options.isPlot = true;
-%  [pmf,cdf,result] = cf2PMF_FFT(cf,xMin,xMax,options)
+%  result = cf2PMF_FFT(cf,xMin,xMax,options)
 %
 % REFERENCES:
 % [1] Warr, Richard L. Numerical approximation of probability mass
@@ -76,7 +78,7 @@ function [pmf,cdf,result] = cf2PMF_FFT(cf,xMin,xMax,options)
 %     and Computing in Applied Probability 16, no. 4 (2014): 1025-1038.   
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 22-Feb-2019 09:23:36
+% Ver.: 11-Oct-2019 23:38:25
 %% CHECK/SET THE INPUT PARAMETERS
 StartTime = cputime;
 narginchk(1, 4);
@@ -93,7 +95,7 @@ if ~isfield(options, 'xMax')
 end
 
 if ~isfield(options, 'isPlot')
-    options.isPlot = false;
+    options.isPlot = true;
 end
 
 if isempty(xMax)
@@ -108,28 +110,35 @@ end
 range = xMax-xMin;
 N     = range +1;
 x     = xMin:xMax;
-omega = x/N;
-ftFun = cf(-2*pi*omega);
+
+if xMin == 0
+    omega = x/N;
+    ftFun = cf(-2*pi*omega);
+else
+    xx    = x - xMin;
+    omega = xx/N;
+    ftFun = cf(-2*pi*omega) .* exp(1i*2*pi*omega*xMin);
+end
+
 % PMF
 pmf   = real(ifft(ftFun));
 pmf   = max(0,pmf);
 pmf(pmf < 100*eps) = 0;
+
 % CDF
 cdf   = cumsum(pmf);
 tictoc = cputime - StartTime;
 
 %% RESULTS
-if nargout > 1
-    result.Description     = 'PMF/CDF of a discrete distribution from its CF';
-    result.inversionMethod = 'inverse FFT algorithm';
-    result.pmf = pmf;
-    result.cdf = cdf;
-    result.x   = x;
-    result.cf  = cf;
-    result.ftFun   = ftFun;
-    result.options = options;
-    result.tictoc  = tictoc; 
-end
+result.Description     = 'PMF/CDF of a discrete distribution from its CF';
+result.inversionMethod = 'inverse FFT algorithm';
+result.pmf = pmf;
+result.cdf = cdf;
+result.x   = x;
+result.cf  = cf;
+result.ftFun   = ftFun;
+result.options = options;
+result.tictoc  = tictoc;
 
 %% PLOT the PDF / CDF 
 if length(x)==1
