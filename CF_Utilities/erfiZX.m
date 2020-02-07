@@ -1,7 +1,7 @@
 function f = erfiZX(z)
 % erfiZX
 %  Computes the imaginary error function in complex argument z by using the
-%  Fadeeva function.
+%  Faddeeva function.
 %
 %  The erfiZX function is defined as
 %   erfiZX(z) = -1i * erfZX(1i*z)
