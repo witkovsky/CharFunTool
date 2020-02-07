@@ -8,12 +8,12 @@ function D = Dawson(z)
 %  The Dawson function is the one-sided Fourier–Laplace sine transform of
 %  the Gaussian function. It is closely related to the error function erf:
 %   D(z) = sqrt(pi)/2 * exp(-z^2) * erfi(z),
-%        = 1i * sqrt(pi)/2 * (exp(-z^2) - Fadeeva(z)).
+%        = 1i * sqrt(pi)/2 * (exp(-z^2) - Faddeeva(z)).
 %  where erfi(z) is the imaginary error function, erfi(z) = 1i*erf(1i*z)
-%  and Fadeeva(z) is the Faddeeva function or the Kramp function, which is
+%  and Faddeeva(z) is the Faddeeva function or the Kramp function, which is
 %  a scaled complex complementary error function, in complex argument z.
 %  For real x, 
-%   D(x) = sqrt(pi)/2 * imag(Fadeeva(x)).
+%   D(x) = sqrt(pi)/2 * imag(Faddeeva(x)).
 %
 % SYNTAX
 %  D = Dawson(z)
@@ -66,9 +66,9 @@ sz = size(z);
 z  = z(:);
 
 if isreal(z)
-    D = (sqrt(pi)/2) * imag(Fadeeva(z));
+    D = (sqrt(pi)/2) * imag(Faddeeva(z));
 else
-    D = (1i * sqrt(pi)/2) * (exp(-z.^2) - Fadeeva(z));
+    D = (1i * sqrt(pi)/2) * (exp(-z.^2) - Faddeeva(z));
 end
 
 D = reshape(D,sz);
