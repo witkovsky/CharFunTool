@@ -1,7 +1,7 @@
 function f = erfZX(z)
 % erfZX
 %  Computes the error function in complex argument z by using the
-%  Fadeeva function.
+%  Faddeeva function.
 %
 %  The erfZX function is defined as
 %   erfZX(z) = 1 - exp(-z^2) * w(1i*z)
