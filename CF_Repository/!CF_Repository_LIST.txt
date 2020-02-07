@@ -29,6 +29,7 @@ cf_RayleighNC
 cf_Rectangular
 cf_RectangularSymmetric
 cf_Rice
+cf_SkewNormal
 cf_Stable
 cf_Student
 cf_TrapezoidalSymmetric
