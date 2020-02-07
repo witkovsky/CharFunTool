@@ -32,16 +32,16 @@ function cf = cf_SkewNormal(t,mu,sigma,alpha,coef,niid)
 %   cf(t) = cf_SkewNormal(t|mu,sigma,alpha)
 %    = exp(1i*t*mu - t^2*sigma^2/2) * (1 + 1i*erfi(t*sigma*delta/sqrt(2))),
 %  where delta = alpha/sqrt(1+alpha^2) and erfi(z) is the imaginary
-%  error function (which is related with the Fadeeva function w(z). In
+%  error function (which is related with the Faddeeva function w(z). In
 %  particular, erfi(z) = -1i*(1 - exp(z^2)*w(-z)).   
 %
 %  Based on that, we use the following representation 
 %   cf(t) = 2*exp(1i*t*mu - t^2*sigma^2/2) - ...
 %           exp( 1i*t*mu - t^2*sigma^2*(1-delta.^2)/2 ) * ...
-%           Fadeeva(-t*sigma*delta/sqrt(2));
+%           Faddeeva(-t*sigma*delta/sqrt(2));
 %  Note that this expression is more suitable for practical purposesis as
 %  it is numerically more stable for large t. See also erfiZX.m and
-%  Fadeeva.m.   
+%  Faddeeva.m.   
 % 
 %  Hence, the characteristic function of Y is  
 %   cf(t) = Prod ( cf_SkewNormal(t | mu_i,sigma_i,alpha_i) ).
@@ -153,12 +153,12 @@ delta = alpha ./ sqrt(1+alpha.^2);
 % cf =  prod(exp(1i*t*(coef.*mu) - t.^2*(coef.*sigma).^2/2) .* ...
 %     (1 + 1i*erfiZX(t*(sigma.*delta)/sqrt(2))),2);
 
-% CF based on using Fadeeva function (numerically more stable)
+% CF based on using Faddeeva function (numerically more stable)
 aux1 = 1i*t*(coef.*mu);
 aux2 = (coef.*sigma).^2/2;
 cf =  prod(2 * exp(aux1 - t.^2*aux2) - ...
     exp(aux1 - t.^2*(aux2.*(1-delta.^2))) .* ...
-    Fadeeva(-t*(coef.*sigma.*delta)/sqrt(2)),2);
+    Faddeeva(-t*(coef.*sigma.*delta)/sqrt(2)),2);
 
 cf(t==0) = 1;
 cf   = reshape(cf,szt);
