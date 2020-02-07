@@ -41,7 +41,7 @@ erfcxZX
 erfcZX
 erfiZX
 erfZX
-Fadeeva
+Faddeeva
 FoxWrightPsi
 Hypergeom1F1
 Hypergeom1F1a
