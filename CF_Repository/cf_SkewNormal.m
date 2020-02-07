@@ -102,7 +102,13 @@ function cf = cf_SkewNormal(t,mu,sigma,alpha,coef,niid)
 %   prob = [0.9 0.95 0.975 0.99];
 %   result = cf2DistGP(cf,[],prob,options);
 %
-% See also: cf_Normal, erfiZX
+% REFERENCES:
+% [1] O'Hagan, A. and Leonard, T., 1976. Bayes estimation subject to
+%     uncertainty about parameter constraints. Biometrika, 63(1), 201-203.  
+% [2] Azzalini, A., 1985. A class of distributions which includes the
+%     normal ones. Scandinavian Journal of Statistics, 171-178. 
+%
+% SEE ALSO: cf_Normal, erfiZX
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 07-Feb-2020 13:08:06
@@ -133,7 +139,7 @@ if isempty(coef)
     coef = 1;
 end
 
-%%
+%% CHECK THE INPUT PARAMETERS
 [errorcode,coef,mu,sigma,alpha] = ...
     distchck(3,coef(:)',mu(:)',sigma(:)',alpha(:)');
 if errorcode > 0
@@ -142,7 +148,7 @@ end
 szt = size(t);
 t   = t(:);
 
-% CF of the linear combination of the Skew-Normal RVs
+%% CF of the linear combination of the Skew-Normal RVs
 delta = alpha ./ sqrt(1+alpha.^2);
 % cf =  prod(exp(1i*t*(coef.*mu) - t.^2*(coef.*sigma).^2/2) .* ...
 %     (1 + 1i*erfiZX(t*(sigma.*delta)/sqrt(2))),2);
