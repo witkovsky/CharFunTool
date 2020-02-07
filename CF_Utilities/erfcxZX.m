@@ -1,7 +1,7 @@
 function f = erfcxZX(z)
 % erfcxZX
 %  Computes the scaled complementary error function in complex argument z
-%  by using the Fadeeva function.
+%  by using the Faddeeva function.
 %
 %  The erfcxZX function is defined as
 %   erfcxZX(z) = w(1i*z)
@@ -32,6 +32,6 @@ function f = erfcxZX(z)
 if isreal(z)
     f = erfcx(z);
 else
-    f = Fadeeva(1i*z);
+    f = Faddeeva(1i*z);
 end
 end
