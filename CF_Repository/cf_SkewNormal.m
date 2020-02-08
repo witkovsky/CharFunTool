@@ -1,37 +1,38 @@
-function cf = cf_SkewNormal(t,mu,sigma,alpha,coef,niid)
+function cf = cf_SkewNormal(t,mu,sigma,lambda,coef,niid)
 %cf_SkewNormal
 %  Characteristic function of a linear combination (resp. convolution) of
 %  independent Skew-Normal random variables.     
 %   
 %  The Skew-Normal distribution is a continuous probability distribution
 %  that generalises the normal distribution to allow for non-zero skewness.
-%  This distribution was first introduced by O'Hagan and Leonard (1976),
-%  see also Azzalini (1985). 
+%  This distribution was first introduced by O'Hagan and Leonard in [1].
+%  For more details see [2-4]. 
 % 
-%  In particular, if X ~ SN(mu,sigma,alpha), with real the location
+%  In particular, if X ~ SN(mu,sigma,lambda), with real the location
 %  parameter mu, the positive real scale parameter sigma, and the real
-%  shape parameter alpha. 
+%  shape parameter lambda. 
 % 
 %  The probability density function (PDF) with the parameters mu, sigma and
-%  alpha becomes 
-%    pdf(x)= 2/sigma * phi((x-mu)/sigma) * Phi(alpha*(x-mu)/sigma), 
+%  lambda becomes 
+%    pdf(x)= 2/sigma * phi((x-mu)/sigma) * Phi(lambda*(x-mu)/sigma), 
 %  where phi denote the standard Normal (Gaussian) PDF and Phi is its CDF.
 %
 %  Note that the skewness of the distribution is limited to the interval
-%  (-1,1). When alpha=0, the skewness vanishes, and we obtain the standard
-%  Normal density, as alpha increases (in absolute value), the skewness of
-%  the distribution increases, when alpha -> infty, the density converges
+%  (-1,1). When lambda=0, the skewness vanishes, and we obtain the standard
+%  Normal density, as lambda increases (in absolute value), the skewness of
+%  the distribution increases, when lambda -> infty, the density converges
 %  to half-normal (or folded normal) density function.
 %
 %  cf_SkewNormal evaluates the characteristic function cf(t) of Y =
-%  sum_{i=1}^N coef_i * X_i, where X_i ~ SN(mu_i,sigma_i,alpha_i) are
+%  sum_{i=1}^N coef_i * X_i, where X_i ~ SN(mu_i,sigma_i,lambda_i) are
 %  inedependent Skew-Normal RVs with the parameters mu_i, sigma_i, and
-%  alpha_i, for i  = 1,...,N. 
+%  lambda_i, for i  = 1,...,N. 
 %
-%  The characteristic function of X ~ SN(mu,sigma,alpha) is defined by
-%   cf(t) = cf_SkewNormal(t|mu,sigma,alpha)
+%  The characteristic function of X ~ SN(mu,sigma,lambda) was defined in
+%  [3] by 
+%   cf(t) = cf_SkewNormal(t|mu,sigma,lambda)
 %    = exp(1i*t*mu - t^2*sigma^2/2) * (1 + 1i*erfi(t*sigma*delta/sqrt(2))),
-%  where delta = alpha/sqrt(1+alpha^2) and erfi(z) is the imaginary
+%  where delta = lambda/sqrt(1+lambda^2) and erfi(z) is the imaginary
 %  error function (which is related with the Faddeeva function w(z). In
 %  particular, erfi(z) = -1i*(1 - exp(z^2)*w(-z)).   
 %
@@ -44,10 +45,10 @@ function cf = cf_SkewNormal(t,mu,sigma,alpha,coef,niid)
 %  Faddeeva.m.   
 % 
 %  Hence, the characteristic function of Y is  
-%   cf(t) = Prod ( cf_SkewNormal(t | mu_i,sigma_i,alpha_i) ).
+%   cf(t) = Prod ( cf_SkewNormal(t | mu_i,sigma_i,lambda_i) ).
 %
 % SYNTAX:
-%  cf = cf_SkewNormal(t,mu,sigma,alpha,coef,niid)
+%  cf = cf_SkewNormal(t,mu,sigma,lambda,coef,niid)
 % 
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
@@ -56,8 +57,8 @@ function cf = cf_SkewNormal(t,mu,sigma,alpha,coef,niid)
 %  sigma - vector of the scale parameters of the Half-Normal random
 %          variables. If sigma is scalar, it is assumed that all scale
 %          parameters are equal. If empty, default value is sigma = 1. 
-%  alpha - vector of the 'shape' parameters alpha in R. If empty, default
-%          value is alpha = 0. 
+%  lambda - vector of the 'shape' parameters lambda in R. If empty, default
+%          value is lambda = 0. 
 %  coef  - vector of the coefficients of the linear combination of the
 %          Half-Normal random variables. If coef is scalar, it is assumed
 %          that all coefficients are equal. If empty, default value is
@@ -71,31 +72,31 @@ function cf = cf_SkewNormal(t,mu,sigma,alpha,coef,niid)
 %  https://en.wikipedia.org/wiki/Skew_normal_distribution
 %
 % EXAMPLE 1:
-% % CF of the distribution of Skew-Normal RV with mu=0, sigma=1, alpha=1
-%   mu    = 0;
-%   sigma = 1;
-%   alpha = 1;
-%   t     = linspace(-5,5,501);
-%   cf    = cf_SkewNormal(t,mu,sigma,alpha);
+% % CF of the distribution of Skew-Normal RV with mu=0, sigma=1, lambda=1
+%   mu     = 0;
+%   sigma  = 1;
+%   lambda = 1;
+%   t      = linspace(-5,5,501);
+%   cf     = cf_SkewNormal(t,mu,sigma,lambda);
 %   figure; plot(t,real(cf),t,imag(cf));grid on
-%   title('CF of the Skew-Normal RV with mu=0, sigma=1, alpha=1')
+%   title('CF of the Skew-Normal RV with mu=0, sigma=1, lambda=1')
 %
 % EXAMPLE 2: 
 % % CF of a linear combination of the Skew-Normal RVs
-%   mu    = [0 0 0];
-%   sigma = [1 0.5 0.5];
-%   alpha = [0 0.5 1];
-%   t     = linspace(-5,5,501);
-%   cf    = cf_SkewNormal(t,mu,sigma,alpha);
+%   mu     = [0 0 0];
+%   sigma  = [1 0.5 0.5];
+%   lambda = [0 0.5 1];
+%   t      = linspace(-5,5,501);
+%   cf     = cf_SkewNormal(t,mu,sigma,lambda);
 %   figure; plot(t,real(cf),t,imag(cf));grid on
 %   title('CF of a linear combination of the Skew-Normal RVs')
 %
 % EXAMPLE 3:
-% % PDF/CDF of a linear combination of independent  Skew-Normal RVs
-%   mu    = [0 0 0];
-%   sigma = [1 0.5 0.5];
-%   alpha = [0 0.5 1];
-%   cf    = @(t) cf_SkewNormal(t,mu,sigma,alpha);
+% % PDF/CDF of a linear combination of independent Skew-Normal RVs
+%   mu     = [0 0 0];
+%   sigma  = [1 0.5 0.5];
+%   lambda = [0 0.5 1];
+%   cf     = @(t) cf_SkewNormal(t,mu,sigma,lambda);
 %   clear options
 %   options.N = 2^10;
 %   x = linspace(5,40,201);
@@ -106,25 +107,30 @@ function cf = cf_SkewNormal(t,mu,sigma,alpha,coef,niid)
 % [1] O'Hagan, A. and Leonard, T., 1976. Bayes estimation subject to
 %     uncertainty about parameter constraints. Biometrika, 63(1), 201-203.  
 % [2] Azzalini, A., 1985. A class of distributions which includes the
-%     normal ones. Scandinavian Journal of Statistics, 171-178. 
+%     normal ones. Scandinavian Journal of Statistics, 171-178.
+% [3] Pewsey, A., 2000. The wrapped skew-normal distribution on the circle.
+%     Communications in Statistics-Theory and Methods, 29(11), 2459-2472. 
+% [4] Gupta, A.K., Nguyen, T.T. and Sanqui, J.A.T., 2004. Characterization
+%     of the skew-normal distribution. Annals of the Institute of
+%     Statistical Mathematics, 56(2), 351-360.  
 %
 % SEE ALSO: cf_Normal, erfiZX
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 07-Feb-2020 13:08:06
 %% ALGORITHM
-%  cf = cf_SkewNormal(t,mu,sigma,alpha,coef,niid)
+%  cf = cf_SkewNormal(t,mu,sigma,lambda,coef,niid)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 6);
 if nargin < 6, niid  = []; end
 if nargin < 5, coef  = []; end
-if nargin < 4, alpha = []; end
+if nargin < 4, lambda = []; end
 if nargin < 3, sigma = []; end
 if nargin < 2, mu = []; end
 
-if isempty(alpha)
-    alpha = 0;
+if isempty(lambda)
+    lambda = 0;
 end
 
 if isempty(sigma)
@@ -140,8 +146,8 @@ if isempty(coef)
 end
 
 %% CHECK THE INPUT PARAMETERS
-[errorcode,coef,mu,sigma,alpha] = ...
-    distchck(3,coef(:)',mu(:)',sigma(:)',alpha(:)');
+[errorcode,coef,mu,sigma,lambda] = ...
+    distchck(3,coef(:)',mu(:)',sigma(:)',lambda(:)');
 if errorcode > 0
     error(message('InputSizeMismatch'));
 end
@@ -149,7 +155,7 @@ szt = size(t);
 t   = t(:);
 
 %% CF of the linear combination of the Skew-Normal RVs
-delta = alpha ./ sqrt(1+alpha.^2);
+delta = lambda ./ sqrt(1+lambda.^2);
 % cf =  prod(exp(1i*t*(coef.*mu) - t.^2*(coef.*sigma).^2/2) .* ...
 %     (1 + 1i*erfiZX(t*(sigma.*delta)/sqrt(2))),2);
 
