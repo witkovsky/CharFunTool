@@ -5,8 +5,10 @@ function cf = cf_SkewNormal(t,mu,sigma,lambda,coef,niid)
 %   
 %  The Skew-Normal distribution is a continuous probability distribution
 %  that generalises the normal distribution to allow for non-zero skewness.
-%  This distribution was first introduced by O'Hagan and Leonard in [1].
-%  For more details see [2-4]. 
+%  This distribution was first introduced by O'Hagan and Leonard in [1], 
+%  for more details see works of Azzalini, e.g. [2]. Pewsey in [3]
+%  diderived the the CF and discussed the wrapped skew-normal distribution
+%  on the circle. For more details see also [4].
 % 
 %  In particular, if X ~ SN(mu,sigma,lambda), with real the location
 %  parameter mu, the positive real scale parameter sigma, and the real
@@ -104,7 +106,7 @@ function cf = cf_SkewNormal(t,mu,sigma,lambda,coef,niid)
 %   result = cf2DistGP(cf,[],prob,options);
 %
 % EXAMPLE 4:
-% % PDF/CDF combination of Wraped Skew-Normal Distributions on the Circle
+% % PDF/CDF combination of wrapped Skew-Normal distributions on the circle
 %   mu     = [0 0 0];
 %   sigma  = [1 0.5 0.5];
 %   lambda = [0 0.5 1];
@@ -118,7 +120,7 @@ function cf = cf_SkewNormal(t,mu,sigma,lambda,coef,niid)
 %   radius = result.pdf;
 %   figure; polarplot(angle,radius);
 %   ax = gca; ax.ThetaAxisUnits = 'radians';
-%   title('PDF of a Wraped Skew-Normal Distribution on the Circle')
+%   title('PDF of a Wrapped Skew-Normal Distribution on the Circle')
 %
 % REFERENCES:
 % [1] O'Hagan, A. and Leonard, T., 1976. Bayes estimation subject to
