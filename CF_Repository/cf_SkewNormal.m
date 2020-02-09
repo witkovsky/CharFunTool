@@ -5,10 +5,13 @@ function cf = cf_SkewNormal(t,mu,sigma,lambda,coef,niid)
 %   
 %  The Skew-Normal distribution is a continuous probability distribution
 %  that generalises the normal distribution to allow for non-zero skewness.
-%  This distribution was first introduced by O'Hagan and Leonard in [1], 
-%  for more details see works of Azzalini, e.g. [2]. Pewsey in [3]
-%  diderived the the CF and discussed the wrapped skew-normal distribution
-%  on the circle. For more details see also [4].
+%
+%  The Skew-Normal distribution was first introduced by O'Hagan and Leonard
+%  in [1], for more details see works of Azzalini, e.g. [2]. Pewsey gave
+%  the CF of the Skew-Normal distribution and discussed the wrapped
+%  Skew-Normal distribution on the circle. The CF of the Skew-Normal
+%  distribution was formally proved by Kim and Genton in [4]. For more
+%  details see also [5].
 % 
 %  In particular, if X ~ SN(mu,sigma,lambda), with real the location
 %  parameter mu, the positive real scale parameter sigma, and the real
@@ -128,8 +131,11 @@ function cf = cf_SkewNormal(t,mu,sigma,lambda,coef,niid)
 % [2] Azzalini, A., 1985. A class of distributions which includes the
 %     normal ones. Scandinavian Journal of Statistics, 171-178.
 % [3] Pewsey, A., 2000. The wrapped skew-normal distribution on the circle.
-%     Communications in Statistics-Theory and Methods, 29(11), 2459-2472. 
-% [4] Gupta, A.K., Nguyen, T.T. and Sanqui, J.A.T., 2004. Characterization
+%     Communications in Statistics-Theory and Methods, 29(11), 2459-2472.
+% [4] Kim, H.M. and Genton, M.G., 2011. Characteristic functions of scale
+%     mixtures of multivariate skew-normal distributions. Journal of
+%     Multivariate Analysis, 102(7), 1105-1117.  
+% [5] Gupta, A.K., Nguyen, T.T. and Sanqui, J.A.T., 2004. Characterization
 %     of the skew-normal distribution. Annals of the Institute of
 %     Statistical Mathematics, 56(2), 351-360.  
 %
