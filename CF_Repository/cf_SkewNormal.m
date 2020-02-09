@@ -103,6 +103,23 @@ function cf = cf_SkewNormal(t,mu,sigma,lambda,coef,niid)
 %   prob = [0.9 0.95 0.975 0.99];
 %   result = cf2DistGP(cf,[],prob,options);
 %
+% EXAMPLE 4:
+% % PDF/CDF combination of Wraped Skew-Normal Distributions on the Circle
+%   mu     = [0 0 0];
+%   sigma  = [1 0.5 0.5];
+%   lambda = [0 0.5 1];
+%   cf     = @(t) cf_SkewNormal(t,mu,sigma,lambda);
+%   clear options
+%   options.isCircular = true;
+%   options.correctedCDF = true;
+%   result = cf2DistGP(cf,[],[],options);
+%   disp(result);
+%   angle  = result.x;
+%   radius = result.pdf;
+%   figure; polarplot(angle,radius);
+%   ax = gca; ax.ThetaAxisUnits = 'radians';
+%   title('PDF of a Wraped Skew-Normal Distribution on the Circle')
+%
 % REFERENCES:
 % [1] O'Hagan, A. and Leonard, T., 1976. Bayes estimation subject to
 %     uncertainty about parameter constraints. Biometrika, 63(1), 201-203.  
