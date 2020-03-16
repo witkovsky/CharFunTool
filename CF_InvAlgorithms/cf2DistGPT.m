@@ -144,7 +144,7 @@ function [result,cdf,pdf,qf] = cf2DistGPT(cf,x,prob,options)
 %           cf2DistBV, cf2CDF, cf2PDF, cf2QF
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 17-Oct-2018 16:55:59
+% Ver.: 16-Mar-2020 22:16:38
 
 %% ALGORITHM
 %[result,cdf,pdf,qf] = cf2DistGPT(cf,x,prob,options);
@@ -461,11 +461,11 @@ end
 
 if options.isInterp
     id   = isfinite(pdf);
-    PDF  = @(xnew)PDFinterp(xnew,x(id),pdf(id));
+    PDF  = @(xnew)InterpPDF(xnew,x(id),pdf(id));
     id   = isfinite(cdf);
-    CDF  = @(xnew)CDFinterp(xnew,x(id),cdf(id));
-    QF   = @(prob)QFinterp(prob,x(id),cdf(id));
-    RND  = @(dim)RNDinterp(dim,x(id),cdf(id));
+    CDF  = @(xnew)InterpCDF(xnew,x(id),cdf(id));
+    QF   = @(prob)InterpQF(prob,x(id),cdf(id));
+    RND  = @(dim)InterpRND(dim,x(id),cdf(id));
     try
     if ~xempty
         x   = x0;
