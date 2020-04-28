@@ -80,7 +80,7 @@ function cf = cf_Logistic(t,mu,beta,coef,niid)
 %   result = cf2DistGP(cf,[],prob,options);
 %
 % REFERENCES
-% [1] Popovi?, B.V., Mijanovi?, A. and Genç, A.?., 2020. On linear
+% [1] Popovic, B.V., Mijanovic, A. and Genç, A.I., 2020. On linear
 %     combination of generalized logistic random variables with an
 %     application to financial returns. Applied Mathematics and
 %     Computation, 381, p.125314.   
