@@ -23,6 +23,16 @@ function cf = cfX_FisherSnedecor(t,df1,df2,coef,niid,tol)
 %          value is df1 = 1.  
 %  df2   - vector of the  degrees of freedom df2 > 0. If empty, default
 %          value is df2 = 1.
+%  coef  - vector of the coefficients of the linear combination of the
+%          log-transformed random variables. If coef is scalar, it is
+%          assumed that all coefficients are equal. If empty, default value
+%          is coef = 1.
+%  niid  - scalar convolution coeficient niid, such that Z = Y + ... + Y is
+%          sum of niid iid random variables Y, where each Y = sum_{i=1}^N
+%          coef(i) * X_i is independently and identically distributed
+%          random variable. If empty, default value is niid = 1.
+%  tol   - relative tolerance used for integration.  If empty, default
+%          value is tol = 1e-6.  
 %
 % WIKIPEDIA: 
 %  https://en.wikipedia.org/wiki/F-distribution.
@@ -73,6 +83,7 @@ function cf = cfX_FisherSnedecor(t,df1,df2,coef,niid,tol)
 
 % (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 24-Jun-2017 10:07:43
+% Rev.: 28-Apr-2020 13:47:42
 
 %% ALGORITHM
 narginchk(1, 6);

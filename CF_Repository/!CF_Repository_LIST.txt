@@ -19,6 +19,7 @@ cf_HalfNormalNC
 cf_InverseGamma
 cf_InverseGaussian
 cf_Laplace
+cf_Logistic
 cf_MaxwellBoltzmann
 cf_MaxwellBoltzmannNC
 cf_Nakagami

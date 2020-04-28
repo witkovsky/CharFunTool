@@ -71,6 +71,7 @@ function cf = cf_Student(t,df,mu,sigma,coef,niid)
 
 % (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 02-Jun-2017 12:08:24
+% Rev.: 28-Apr-2020 13:47:42
 
 %% ALGORITHM
 % cf = cf_Student(t,df,mu,sigma,coef,niid);

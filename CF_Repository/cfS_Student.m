@@ -18,9 +18,21 @@ function cf = cfS_Student(t,df,mu,sigma,coef,niid)
 %  cf = cfS_Student(t,df,mu,sigma,coef,niid)
 %
 % INPUTS:
-%  t      - vector or array of real values, where the CF is evaluated.
-%  df     - the degrees of freedom, df > 0. If empty, the default value is
-%           df = 1. 
+%  t     - vector or array of real values, where the CF is evaluated.
+%  df    - the degrees of freedom, df > 0. If empty, the default value is
+%          df = 1. 
+%  mu    - vector of location parameters, mu in Real. If empty, default
+%          value is mu = 0. 
+%  sigma - vector of scale parameters, sigma_i > 0. If empty, default value
+%          is sigma = 1.
+%  coef  - vector of the coefficients of the linear combination of the
+%          log-transformed random variables. If coef is scalar, it is
+%          assumed that all coefficients are equal. If empty, default value
+%          is coef = 1.
+%  niid  - scalar convolution coeficient n, such that Z = Y + ... + Y is
+%          sum of niid random variables Y, where each Y = sum_{i=1}^N
+%          coef_i * X_i is independently and identically distributed random
+%          variable. If empty, default value is niid = 1. 
 % 
 % WIKIPEDIA: 
 %  https://en.wikipedia.org/wiki/Student%27s_t-distribution.
@@ -51,6 +63,7 @@ function cf = cfS_Student(t,df,mu,sigma,coef,niid)
 
 % (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 02-Jun-2017 12:08:24
+% Rev.: 28-Apr-2020 13:47:42
 
 %% ALGORITHM
 narginchk(1, 6);
