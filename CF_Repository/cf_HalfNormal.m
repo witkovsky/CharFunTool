@@ -52,7 +52,7 @@ function cf = cf_HalfNormal(t,sigma,coef,niid)
 %          coef = 1.
 %  niid  - scalar convolution coeficient niid, such that Z = Y + ... + Y is
 %          sum of niid iid random variables Y, where each Y = sum_{i=1}^N
-%          coef(i) * log(X_i) is independently and identically distributed
+%          coef(i) * X_i is independently and identically distributed
 %          random variable. If empty, default value is niid = 1.   
 %
 % WIKIPEDIA:
@@ -104,6 +104,7 @@ function cf = cf_HalfNormal(t,sigma,coef,niid)
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 21-Sep-2019 12:33:09
+% Rev.: 28-Apr-2020 13:47:42
 
 %% ALGORITHM
 %  cf = cf_HalfNormal(t,sigma,coef,niid)

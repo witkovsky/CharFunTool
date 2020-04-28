@@ -17,7 +17,15 @@ function cf = cfS_Wigner(t,coef,niid)
 %  cf = cfS_Wigner(t,coef,niid);
 %
 % INPUTS:
-%  t      - vector or array of real values, where the CF is evaluated.
+%  t     - vector or array of real values, where the CF is evaluated.
+%  coef  - vector of the coefficients of the linear combination of the
+%          Beta distributed random variables. If coef is scalar, it is
+%          assumed that all coefficients are equal. If empty, default value
+%          is coef = 1.
+%  niid  - scalar convolution coeficient niid, such that Z = Y + ... + Y is
+%          sum of niid iid random variables Y, where each Y = sum_{i=1}^N
+%          coef(i) * X_i is independently and identically distributed
+%          random variable. If empty, default value is niid = 1. 
 % 
 % WIKIPEDIA: 
 %  https://en.wikipedia.org/wiki/Wigner_semicircle_distribution
@@ -46,6 +54,7 @@ function cf = cfS_Wigner(t,coef,niid)
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 18-Sep-2018 00:45:54
+% Rev.: 28-Apr-2020 13:47:42
 
 %% ALGORITHM
 narginchk(1, 3);

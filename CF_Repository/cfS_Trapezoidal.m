@@ -21,6 +21,14 @@ function cf = cfS_Trapezoidal(t,lambda,coef,niid)
 %  t      - vector or array of real values, where the CF is evaluated.
 %  lambda - parameter of the offset, 0 <= lambda <=1. If empty, default
 %           value is lambda = 0.
+%  coef  - vector of the coefficients of the linear combination of the
+%          Beta distributed random variables. If coef is scalar, it is
+%          assumed that all coefficients are equal. If empty, default value
+%          is coef = 1.
+%  niid  - scalar convolution coeficient niid, such that Z = Y + ... + Y is
+%          sum of niid iid random variables Y, where each Y = sum_{i=1}^N
+%          coef(i) * X_i is independently and identically distributed
+%          random variable. If empty, default value is niid = 1. 
 %
 % EXAMPLE 1:
 % % CF of the symmetric Trapezoidal distribution with lambda = 0.5
@@ -48,6 +56,7 @@ function cf = cfS_Trapezoidal(t,lambda,coef,niid)
 
 % (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 02-Jun-2017 12:08:24
+% Rev.: 28-Apr-2020 13:47:42
 
 %% ALGORITHM
 narginchk(1, 4);

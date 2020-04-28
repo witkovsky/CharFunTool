@@ -27,7 +27,7 @@ function cf = cf_Gumbel(t,mu,beta,coef,niid)
 %          coef = 1.
 %  niid  - scalar convolution coeficient niid, such that Z = Y + ... + Y is
 %          sum of niid iid random variables Y, where each Y = sum_{i=1}^N
-%          coef(i) * log(X_i) is independently and identically distributed
+%          coef(i) * X_i is independently and identically distributed
 %          random variable. If empty, default value is niid = 1.   
 %
 % SPECIAL CASES:
@@ -88,6 +88,7 @@ function cf = cf_Gumbel(t,mu,beta,coef,niid)
 
 % (c) 2018 Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 13-Aug-2018 16:57:55
+% Rev.: 28-Apr-2020 13:47:42
 
 %% ALGORITHM
 % cf = cf_Gumbel(t,mu,beta,coef,niid)

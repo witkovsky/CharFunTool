@@ -26,7 +26,7 @@ function cf = cf_Normal(t,mu,sigma,coef,niid)
 %          coef = 1.
 %  niid  - scalar convolution coeficient niid, such that Z = Y + ... + Y is
 %          sum of niid iid random variables Y, where each Y = sum_{i=1}^N
-%          coef(i) * log(X_i) is independently and identically distributed
+%          coef(i) * X_i is independently and identically distributed
 %          random variable. If empty, default value is niid = 1.     
 %
 % REMARK:
@@ -63,6 +63,7 @@ function cf = cf_Normal(t,mu,sigma,coef,niid)
 
 % (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 10-May-2017 18:11:50
+% Rev.: 28-Apr-2020 13:47:42
 
 %% ALGORITHM
 % cf = cf_Normal(t,mu,sigma,coef,niid)

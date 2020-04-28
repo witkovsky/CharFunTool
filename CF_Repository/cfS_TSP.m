@@ -18,7 +18,19 @@ function cf = cfS_TSP(t,theta,mu,sigma,coef,niid)
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
 %  theta - the shape parameter, theta > 0. If empty, default value is theta
-%          = 1.   
+%          = 1.  
+%  mu    - vector of location parameters, mu in Real. If empty, default
+%          value is mu = 0. 
+%  sigma - vector of scale parameters, sigma_i > 0. If empty, default value
+%          is sigma = 1.
+%  coef  - vector of the coefficients of the linear combination of the
+%          log-transformed random variables. If coef is scalar, it is
+%          assumed that all coefficients are equal. If empty, default value
+%          is coef = 1.
+%  niid  - scalar convolution coeficient n, such that Z = Y + ... + Y is
+%          sum of niid random variables Y, where each Y = sum_{i=1}^N
+%          coef_i * X_i is independently and identically distributed random
+%          variable. If empty, default value is niid = 1.
 % 
 % SPECIAL CASES:
 %  - theta = 1/2; Arcsine distribution on (-1,1):     cf(t) = besselj(0,t).
@@ -54,6 +66,7 @@ function cf = cfS_TSP(t,theta,mu,sigma,coef,niid)
 
 % (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 24-Jun-2017 18:25:56
+% Rev.: 28-Apr-2020 13:47:42
 
 %% ALGORITHM
 %% ALGORITHM
