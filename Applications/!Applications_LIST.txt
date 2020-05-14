@@ -10,6 +10,10 @@ LRT03_EqualityCovariances
 LRT04_EqualityPopulations
 LRT05_Sphericity
 
+APPLICATIONS in Polynomial Calibration:
+
+PolyCal
+
 APPLICATIONS in Risk Modeling:
 
 CRMTool
