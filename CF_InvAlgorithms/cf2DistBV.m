@@ -174,11 +174,11 @@ if ~isfield(options, 'tolCoefs')
 end
 
 if ~isfield(options, 'nLimits')
-    options.nLimits = 6;
+    options.nLimits = 21;
 end
 
 if ~isfield(options, 'Limits')
-    options.Limits = [1e-15 10.^(-3:0.5:options.nLimits) 1e+300];
+    options.Limits = [0 1e-30 10.^linspace(-20,20,options.nLimits) 1e+300];
 end
 
 if ~isfield(options, 'nMax')
@@ -405,11 +405,11 @@ end
 
 if options.isInterp
     id   = isfinite(pdf);
-    PDF  = @(xnew)PDFinterp(xnew,x(id),pdf(id));
+    PDF  = @(xnew)InterpPDF(xnew,x(id),pdf(id));
     id   = isfinite(cdf);
-    CDF  = @(xnew)CDFinterp(xnew,x(id),cdf(id));
-    QF   = @(prob)QFinterp(prob,x(id),cdf(id));
-    RND  = @(dim)RNDinterp(dim,x(id),cdf(id));
+    CDF  = @(xnew)InterpCDF(xnew,x(id),cdf(id));
+    QF   = @(prob)InterpQF(prob,x(id),cdf(id));
+    RND  = @(dim)InterpRND(dim,x(id),cdf(id));
     try
     if ~xempty
         x   = x0;
@@ -417,7 +417,7 @@ if options.isInterp
         pdf = PDF(x);
     end
     catch
-        warning('VW:CharFunTool:cf2DistGP', ...
+        warning('VW:CharFunTool:cf2DistBV', ...
             'Problem using the interpolant function');
     end
 else

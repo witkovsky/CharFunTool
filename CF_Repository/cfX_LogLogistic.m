@@ -1,12 +1,20 @@
 function cf = cfX_LogLogistic(t,alpha,beta,tol)
-%cfX_LogLogistic(t,alpha,beta) Computes the characteristic function cf(t)
-% of the LogLogistic distribution with parameters alpha (scale, alpha > 0)
-% and beta (shape, beta > 0), for real (vector) argument t, i.e. 
+%cfX_LogLogistic(t,alpha,beta) 
+% Characteristic function cf(t) of the LogLogistic distribution with
+% parameters alpha (scale, alpha > 0) and beta (shape, beta > 0), for real
+% (vector) argument t, i.e.  
 %   cf(t) = cfX_LogLogistic(t,alpha,beta);
+%
+% NOTE: 
+% This is an experimental algorithm which is not fully documented and that
+% may provide unreliable results for a particular combination of parameters
+% and / or may cause an unexpected failure.
+%
 % The closed-form analytic expression of the characteristic function of the
 % LogLogistic distribution is unknown. Thus, the characteristic function is
-% numerically evalueted from its definition as suggested in [1]. For more
-% details see [1], and also WIKIPEDIA:    
+% numerically evalueted from its definition. 
+% 
+% WIKIPEDIA:    
 % https://en.wikipedia.org/wiki/Log-logistic_distribution
 %  
 % SYNTAX:
@@ -17,23 +25,38 @@ function cf = cfX_LogLogistic(t,alpha,beta,tol)
 %  alpha = 1;
 %  beta = 1;
 %  t = linspace(-20,20,2^10+1)';
-%  cf = cfX_LogLogistic(t,alpha,beta);
+%  tol = 1e-3;
+%  cf = cfX_LogLogistic(t,alpha,beta,tol);
 %  plot(t,real(cf),t,imag(cf));grid
 %  title('Characteristic function of the LogLogistic distribution')
 %
-% EXAMPLE2 (CDF/PDF of the  Loglogistic distribution with alpha=1, beta=1)
+% EXAMPLE2 (CDF/PDF of the Loglogistic distribution with alpha=1, beta=1)
 %  alpha = 1;
 %  beta = 1;
-%  x = linspace(0,700,101);
-%  prob = [0.9 0.95 0.99];
+%  tol = 1e-3;
+%  cf = @(t) cfX_LogLogistic(t,alpha,beta,tol);
+%  x = linspace(0,70,101);
+%  prob = [];
 %  clear options
 %  options.xMin = 0;
-%  options.xMax = 1000;
+%  options.SixSigmaRule = 15;
 %  options.N = 2^14;
-%  cf = @(t) cfX_LogLogistic(t,alpha,beta);
 %  result = cf2DistGP(cf,x,prob,options)
 %
-% EXAMPLE3 (PDF/CDF of the compound Poisson-Loglogistic distribution)
+% EXAMPLE3 (CDF/PDF of the Loglogistic distribution with alpha=1, beta=0.75)
+% % NOTE: Here cf2DistBV returns more reliable result for the heavy tailed
+% %       distribution with beta < 1
+%  alpha = 1;
+%  beta = 0.75;
+%  tol = 1e-3;
+%  cf = @(t) cfX_LogLogistic(t,alpha,beta,tol);
+%  x = linspace(0,70,101);
+%  prob = [];
+%  clear options
+%  options.xMin = 0;
+%  result = cf2DistBV(cf,x,prob,options)
+%
+% EXAMPLE4 (PDF/CDF of the compound Poisson-Loglogistic distribution)
 %  alpha = 1;
 %  beta = 1;
 %  lambda = 10;
@@ -53,22 +76,14 @@ function cf = cfX_LogLogistic(t,alpha,beta,tol)
 % [2] WITKOVSKY V. (2016). Numerical inversion of a characteristic
 %     function: An alternative tool to form the probability distribution of
 %     output quantity in linear measurement models. Acta IMEKO, 5(3), 32-44.  
-% [3] WITKOVSKY V., WIMMER G., DUBY T. (2016). Computing the aggregate loss
-%     distribution based on numerical inversion of the compound empirical
-%     characteristic function of frequency and severity. Working Paper.
-%     Insurance: Mathematics and Economics. 
-% [4] DUBY T., WIMMER G., WITKOVSKY V.(2016). MATLAB toolbox CRM for
-%     computing distributions of collective risk models.  Working Paper.
-%     Journal of Statistical Software.
 
-% (c) 2016 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 15-Nov-2016 13:36:26
+% (c) Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 01-Sep-2020 12:25:48
 
 %% ALGORITHM
 %cf = cfX_LogLogistic(t,alpha,beta,tol);
 
 %% CHECK THE INPUT PARAMETERS
-
 if nargin < 1
     error(message('VW:cfX_LogLogistic:TooFewInputs'));
 end
@@ -78,7 +93,7 @@ if nargin < 4, tol = []; end
 
 if isempty(alpha), alpha = 1; end
 if isempty(beta), beta = 1; end
-if isempty(tol), tol = 1e-6; end
+if isempty(tol), tol = 1e-4; end
 
 alpha(alpha <= 0) = NaN;
 beta(beta <= 0) = NaN;
@@ -86,7 +101,18 @@ beta(beta <= 0) = NaN;
 %% EVALUATE THE CHARACTERISTIC FUNCTION: cfX_LogLogistic(t,alpha,beta)
 
 pdfFun = @(x)(beta./alpha) .* (x./alpha).^(beta-1) ./ (1 + (x./alpha).^beta).^2;
-method = 'fit';
+
+sz = size(t);
+t  = t(:);
+
+if beta < 2
+    method = 'fit';
+else
+    method = 'def';
+end
+
 cf = cfX_PDF(t,pdfFun,method,tol);
+cf = reshape(cf,sz);
+cf(t==0) = 1;
 
 end

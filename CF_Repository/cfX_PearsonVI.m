@@ -1,11 +1,19 @@
 function cf = cfX_PearsonVI(t,alpha,beta)
-%cfX_PearsonVI(t,alpha,beta) Computes the characteristic function of the
-% Pearson type VI distribution with parameters alpha > 0 (shape) and beta >
-% 0 (scale), computed for real vector argument t, i.e. 
+%cfX_PearsonVI(t,alpha,beta) 
+% Characteristic function of the Pearson type VI distribution with
+% parameters alpha > 0 (shape) and beta > 0 (scale), computed for real
+% vector argument t, i.e.
 %   cf(t) = cfX_PearsonVI(t,alpha,beta)
 %         = (gamma(alpha+beta)./gamma(beta)) .* U(alpha,1-beta,-1i*t),
 % where U(a,b,z) denotes the confluent hypergeometric function of the
-% second kind. See also WIKIPEDIA:
+% second kind. 
+%
+% NOTE: 
+% This is an experimental algorithm which is not fully documented and that
+% may provide unreliable results for a particular combination of parameters
+% and / or may cause an unexpected failure.
+% 
+% WIKIPEDIA:
 % https://en.wikipedia.org/wiki/Pearson_distribution
 %
 % SYNTAX:
@@ -59,15 +67,11 @@ function cf = cfX_PearsonVI(t,alpha,beta)
 % [2] WITKOVSKY V. (2016). Numerical inversion of a characteristic
 %     function: An alternative tool to form the probability distribution of
 %     output quantity in linear measurement models. Acta IMEKO, 5(3), 32-44.  
-% [3] WITKOVSKY V., WIMMER G., DUBY T. (2016). Computing the aggregate loss
-%     distribution based on numerical inversion of the compound empirical
-%     characteristic function of frequency and severity. Working Paper.
-%     Insurance: Mathematics and Economics. 
-% [4] DUBY T., WIMMER G., WITKOVSKY V.(2016). MATLAB toolbox CRM for
-%     computing distributions of collective risk models.  Working Paper.
-%     Journal of Statistical Software.
 
-% (c) 2016 Viktor Witkovsky (witkovsky@gmail.com)
+% (c) Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 01-Sep-2020 13:25:21
+%
+% Revision history:
 % Ver.: 15-Nov-2016 13:36:26
 
 %% ALGORITHM

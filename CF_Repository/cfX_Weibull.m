@@ -1,9 +1,18 @@
 function cf = cfX_Weibull(t,alpha,beta,tol)
-%cfX_Weibull(t,alpha,beta) Computes the characteristic function cf(t)
-%  of the Weibull distribution with the parameters alpha(scale parameter,
-%  elsewhere denoted also as lambda, alpha > 0) and beta (shape parameter,
-%  elsewhere denoted as k, beta > 0), for real (vector) argument t, i.e.
-%  cf(t) = cfX_Weibull(t,alpha,beta);
+%cfX_Weibull(t,alpha,beta) 
+%  Characteristic function cf(t) of the Weibull distribution with the
+%  parameters alpha(scale parameter, elsewhere denoted also as lambda,
+%  alpha > 0) and beta (shape parameter, elsewhere denoted as k, beta > 0),
+%  for real (vector) argument t, i.e. 
+%   cf(t) = cfX_Weibull(t,alpha,beta);
+%
+%  NOTE: 
+%  This is an experimental algorithm which is not fully documented and that
+%  may provide unreliable results for a particular combination of
+%  parameters and / or may cause an unexpected failure.
+%
+%  WIKIPEDIA:
+%  https://en.wikipedia.org/wiki/Weibull_distribution
 %
 %  If W ~ Weibull(alpha,beta) then W = alpha * X^(1/beta), where X ~
 %  Exponential(1). In particular, if alpha=1 and beta=1 W ~ Exponential(1).
@@ -29,9 +38,6 @@ function cf = cfX_Weibull(t,alpha,beta,tol)
 %  propeties of the H-functions, see Mathai et al. (2009) and Duby (2017),
 %   cf(t) = sum_{n=0}^inf (-1)^n * beta * (1/(alpha*1i*t)^(beta*(1+n)) ...
 %           * gamma(beta*(1+n)) / gamma(1+n)
-%
-%  For more details see also WIKIPEDIA:
-%  https://en.wikipedia.org/wiki/Weibull_distribution
 %
 % SYNTAX:
 %  cf = cfX_Weibull(t,alpha,beta)
@@ -88,24 +94,20 @@ function cf = cfX_Weibull(t,alpha,beta,tol)
 % REFERENCES:
 % [1] DUBY T. (2017). Characteristic function of Weibull distribution.
 %     Work in Progress.
-% [2] DUBY T., WIMMER G., WITKOVSKY V.(2016). MATLAB toolbox CRM for
-%     computing distributions of collective risk models.  Working Paper.
-%     Journal of Statistical Software.
-% [3] MATHAI, A.M., SAXENA, R.K., HAUBOLD, H.J. (2009). The H-function:
+% [2] MATHAI, A.M., SAXENA, R.K., HAUBOLD, H.J. (2009). The H-function:
 %     theory and applications. Springer Science & Business Media.
-% [4] WITKOVSKY, V.: On the exact computation of the density and of
+% [3] WITKOVSKY, V.: On the exact computation of the density and of
 %     the quantiles of linear combinations of t and F random
 %     variables. Journal of Statistical Planning and Inference 94
 %     (2001), 1–13.
-% [5] WITKOVSKY V. (2016). Numerical inversion of a characteristic
+% [4] WITKOVSKY V. (2016). Numerical inversion of a characteristic
 %     function: An alternative tool to form the probability distribution of
 %     output quantity in linear measurement models. Acta IMEKO, 5(3), 32-44.
-% [6] WITKOVSKY V., WIMMER G., DUBY T. (2017). Computing the aggregate loss
-%     distribution based on numerical inversion of the compound empirical
-%     characteristic function of frequency and severity. arXiv preprint
-%     arXiv:1701.08299.
 
-% Viktor Witkovsky (witkovsky@gmail.com)
+% (c) Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 01-Sep-2020 13:25:21
+%
+% Revision history:
 % Ver.: 29-Oct-2017 11:25:57
 
 %% ALGORITHM
