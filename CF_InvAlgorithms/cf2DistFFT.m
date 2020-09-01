@@ -25,6 +25,8 @@ function [result,cdf,pdf,qf] = cf2DistFFT(cf,x,prob,options)
 %                                        % where N is discrete RV and X>=0 
 %                                        % are iid RVs from nonnegative
 %                                        % continuous distribution.
+%             options.isInterp   = false % create and use the interpolant
+%                                          functions for PDF/CDF/QF/RND
 %             options.N = 2^10         % N points used by FFT
 %             options.xMin = -Inf      % set the lower limit of X
 %             options.xMax = Inf       % set the lower limit of X
@@ -153,7 +155,10 @@ function [result,cdf,pdf,qf] = cf2DistFFT(cf,x,prob,options)
 % SEE ALSO: cf2Dist, cf2DistGP, cf2DistGPT, cf2DistGPA, cf2DistFFT,
 %           cf2DistBV, cf2CDF, cf2PDF, cf2QF 
 
-% (c) 2016 Viktor Witkovsky (witkovsky@gmail.com)
+% (c) Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 01-Sep-2020 13:25:21
+%
+% Revision history:
 % Ver.: 15-Nov-2016 13:36:26
 
 %% ALGORITHM
@@ -240,6 +245,14 @@ end
 
 if ~isfield(options, 'xN')
     options.xN = 101;
+end
+
+if ~isfield(options, 'chebyPts')
+    options.chebyPts = 2^9;
+end
+
+if ~isfield(options, 'isInterp')
+    options.isInterp = false;
 end
 %% GET/SET the DEFAULT parameters and the OPTIONS
 % First, set a special treatment if the real value of CF at infinity (large
@@ -382,9 +395,30 @@ qfFun = @(prob) interp1([-eps;cdfU],[-eps;xxU+dx/2],prob,'pchip');
 qf    = reshape(qfFun(prob),szp);
 
 % INTERPOLATE CDF required values: CDF(x)
+% Default values if x = [];
 if isempty(x)
-    x = linspace(xMin,xMax,options.xN);
+    xempty = true;
+    x = linspace(xMax,xMin,options.xN);
+else
+    xempty = false;
 end
+
+if options.isInterp
+    x0 = x;
+    % Chebyshev points
+    x = (xMax-xMin) * (-cos(pi*(0:options.chebyPts) / ...
+        options.chebyPts) + 1) / 2 + xMin;
+else
+    x0 = [];
+end
+
+% WARNING: Out-of-range
+if any(x < xMin) || any(x > xMax)
+    warning('VW:CharFunTool:cf2DistFFT',['x out-of-range: ', ...
+        '[xMin, xMax] = [',num2str(xMin),...
+        ', ',num2str(xMax),'] !']);
+end
+
 szx    = size(x);
 %cdfFun = @(x) interp1([-eps;xxU+dx/2],[-eps;cdfU],x(:));
 cdfFun = @(x) interp1(xxU,cdfU,x(:));
@@ -400,6 +434,30 @@ catch
 end
 x       = reshape(x,szx);
 
+if options.isInterp
+    id   = isfinite(pdf);
+    PDF  = @(xnew)InterpPDF(xnew,x(id),pdf(id));
+    id   = isfinite(cdf);
+    CDF  = @(xnew)InterpCDF(xnew,x(id),cdf(id));
+    QF   = @(prob)InterpQF(prob,x(id),cdf(id));
+    RND  = @(dim)InterpRND(dim,x(id),cdf(id));
+    try
+    if ~xempty
+        x   = x0;
+        cdf = CDF(x);
+        pdf = PDF(x);
+    end
+    catch
+        warning('VW:CharFunTool:cf2DistGPT', ...
+            'Problem using the interpolant function');
+    end
+else
+    PDF  = [];
+    CDF  = [];
+    QF   = [];
+    RND  = [];
+end
+
 %% RESULT
 result.Description         = 'CDF/PDF/QF from the characteristic function CF';
 result.inversionMethod     = 'Discrete version of standard inversion formula';
@@ -409,6 +467,12 @@ result.cdf                = cdf;
 result.pdf                = pdf;
 result.prob               = prob;
 result.qf                 = qf;
+if options.isInterp
+    result.PDF             = PDF;
+    result.CDF             = CDF;
+    result.QF              = QF;
+    result.RND             = RND;
+end
 result.xFTT               = xFFT;
 result.pdfFFT             = pdfFFT;
 result.cdfFFT             = cdfFFT;
