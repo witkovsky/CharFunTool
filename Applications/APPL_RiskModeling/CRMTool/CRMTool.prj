@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.apptool" plugin-version="1.0">
-  <configuration build-checksum="1218375966" file="C:\Users\Viktor\Documents\GitHub\CharFunTool\Applications\APPL_RiskModeling\CRMTool\CRMTool.prj" location="C:\Users\Viktor\Documents\GitHub\CharFunTool\Applications\APPL_RiskModeling\CRMTool" name="CRMTool" target="target.mlapps" target-name="Package App">
+  <configuration build-checksum="1218375966" file="C:\Users\witkovsky\Documents\GitHub\CharFunTool\Applications\APPL_RiskModeling\CRMTool\CRMTool.prj" location="C:\Users\witkovsky\Documents\GitHub\CharFunTool\Applications\APPL_RiskModeling\CRMTool" name="CRMTool" target="target.mlapps" target-name="Package App">
     <param.appname>CRMTool</param.appname>
     <param.authnamewatermark>Viktor Witkovsky</param.authnamewatermark>
     <param.email>witkovsky@gmail.com</param.email>
@@ -19,10 +19,10 @@ CRMTool is a part of the CF TOOLBOX (The Characteristic Functions Toolbox) which
       <item>1</item>
     </param.products.id>
     <param.products.version>
-      <item>9.4</item>
+      <item>9.8</item>
     </param.products.version>
     <param.platforms />
-    <param.output>C:\Users\Viktor\Documents\GitHub\CharFunTool\Applications\APPL_RiskModeling\CRMTool</param.output>
+    <param.output>${PROJECT_ROOT}</param.output>
     <param.guid>7ab6393f-9dd9-4ed0-9f8b-72da12f8b9db</param.guid>
     <unset>
       <param.authnamewatermark />
@@ -69,17 +69,30 @@ CRMTool is a part of the CF TOOLBOX (The Characteristic Functions Toolbox) which
       <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\CF_Utilities\InterpBarycentric.m</file>
     </fileset.depfun>
     <fileset.resources>
-      <file>${PROJECT_ROOT}\CRMTool_ReadMe.txt</file>
       <file>C:\Users\Viktor\Documents\GitHub\CharFunTool\Data</file>
+      <file>${PROJECT_ROOT}\CRMTool_ReadMe.txt</file>
     </fileset.resources>
     <fileset.package />
     <build-deliverables>
-      <file location="C:\Users\Viktor\Documents\GitHub\CharFunTool\Applications\APPL_RiskModeling" name="CRMTool" optional="false">C:\Users\Viktor\Documents\GitHub\CharFunTool\Applications\APPL_RiskModeling\CRMTool</file>
+      <file location="C:\Users\witkovsky\Documents\GitHub\CharFunTool\Applications\APPL_RiskModeling" name="CRMTool" optional="false">C:\Users\witkovsky\Documents\GitHub\CharFunTool\Applications\APPL_RiskModeling\CRMTool</file>
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>C:\Program Files\MATLAB\R2018a</root>
-      <toolboxes />
+      <root>C:\Program Files\MATLAB\R2020a</root>
+      <toolboxes>
+        <toolbox name="matlabcoder" />
+        <toolbox name="neuralnetwork" />
+      </toolboxes>
+      <toolbox>
+        <matlabcoder>
+          <enabled>true</enabled>
+        </matlabcoder>
+      </toolbox>
+      <toolbox>
+        <neuralnetwork>
+          <enabled>true</enabled>
+        </neuralnetwork>
+      </toolbox>
     </matlab>
     <platform>
       <unix>false</unix>
