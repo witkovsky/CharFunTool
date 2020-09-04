@@ -1,5 +1,5 @@
 function [pmf,n,tMax,cdfFun,pmfFun,cfN,cfY] = ...
-    RenewalProcessPMF(t,cfX,cfX1,nMax,options,algorithm)
+    RenewalProcessPMF(t,cfX,cfX1,nMax,options)
 %RenewalProcessPMF
 %  Evaluates the probability mass function (PMF) of the (delayed) renewal
 %  process at time t.
@@ -28,7 +28,7 @@ function [pmf,n,tMax,cdfFun,pmfFun,cfN,cfY] = ...
 %  mass function pmf(t) of N(t) defined on the non-negative integers n =
 %  0,...,nMax. The pmf(t) can be evaluated at arbitrary time 0 < t <= tMax,
 %  tMax is associated with the considered maximum number of arrivals nMax,
-%  and is specified automatically by the algorithm RenewalProcessPMF.
+%  and is specified automatically by the algorithmPMF RenewalProcessPMF.
 %
 %  If time t is specified as empty set, t = [], then the RenewalProcessPMF
 %  returns pmf as anonymous function of time t, i.e. pmf = @(t) pmf(t),
@@ -39,7 +39,7 @@ function [pmf,n,tMax,cdfFun,pmfFun,cfN,cfY] = ...
 %  pmf = RenewalProcessPMF(t,cfX)
 %  pmf = RenewalProcessPMF(t,cfX,cfX1)
 % [pmf,n,tMin,tMax,cdfFun,pmfFun,cfN,cfY] = ...
-%   RenewalProcessPMF(t,cfX,cfX1,nMax,options,algorithm)
+%   RenewalProcessPMF(t,cfX,cfX1,nMax,options)
 %
 % INPUTS:
 %  t       - scalar value of time t >= 0, where the probability mass
@@ -60,7 +60,7 @@ function [pmf,n,tMax,cdfFun,pmfFun,cfN,cfY] = ...
 %            where the probability mass function pmf(t) is calculated. If
 %            empty, nMax = [], the default value is nMax = 25;
 % options  - structure for setting optional parameters for the used
-%            numerical inversion algorithm. For more details see cf2DistGP.
+%            numerical inversion algorithmPMF. For more details see cf2DistGP.
 %            Moreover, options structure is used to set the following
 %            parameters:
 %            - tol : tolerance factor for the numerical errors of the
@@ -71,18 +71,15 @@ function [pmf,n,tMax,cdfFun,pmfFun,cfN,cfY] = ...
 %            the reward distribution. If options.cfW is specified, it is
 %            used to construct the characteristic function cfY of the
 %            renewal-reawrd process Y(t) = sum_{i=1}^N(t) W_i.
-% algorithm - selected algorithm for numerical inversion of the
-%             characteristic function. Currently available inversion
-%             algorithms include:
+%            - algorithmPMF - selected algorithm for numerical inversion of
+%            the characteristic function used computing PMF. Currently
+%            available inversion algorithmPMFs include:
 %             'cf2DistBTAV'  (Bromwich-Talbot-Abate-Valko method),
 %             'cf2DistBV'    (Bakhvalov-Vasilieva method)
-%             'cf2DistFFT'   (Fast Fourier Transform algorithm method)
+%             'cf2DistFFT'   (Fast Fourier Transform algorithmPMF method)
 %             'cf2DistGP'    (Gil-Pelaez with Trapezoidal quadrature)
 %             'cf2DistGPT'   (Gil-Pelaez with Trapezoidal quadrature)
-%             'cf2DistGPA'   (Gil-Pelaez with adaptive Gauss-Kronrod
-%                             quadrature and convergence acceleration
-%                             techniques).
-%             If empty, default value is algorithm = 'cf2DistGP'.
+%             If empty, default value is algorithmPMF = 'cf2DistFFT'.
 %
 % OUTPUTS:
 %  pmf    - vector of calculated probabilities evaluated for each integer n
@@ -137,23 +134,6 @@ function [pmf,n,tMax,cdfFun,pmfFun,cfN,cfY] = ...
 %  ylabel('probability')
 %
 % EXAMPLE 2:
-% % The renewal process with the heavy tailed distributed holding times
-% % Weibull(alpha,beta) with alpha = 1 and shape parameter beta = 0.5.
-%  alpha   = 1;
-%  beta    = 0.5
-%  cfX     = @(u)cf_Weibull(u,alpha,beta);
-%  cfX1    = [];
-%  nMax    = 70;
-%  clear options
-%  options.xMin = 0;
-%  algorithm = 'cf2DistBV'
-%  [pmf,n] = RenewalProcessPMF([],cfX,cfX1,nMax,options,algorithm);
-%  plot(n,pmf(1),'o--',n,pmf(5),'o--',n,pmf(10),'o--',n,pmf(15),'o--')
-%  title('Renewal process with exponential holding times t=[1,5,10,15]')
-%  xlabel('n')
-%  ylabel('probability')
-%
-% EXAMPLE 2:
 % % The delayed renewal process with the exponentially distributed holding
 % % times with the rate parameter lambda1 = 3 and with the exponentially
 % % distributed delay time with the rate parameter lambda2 = 0.5.
@@ -189,41 +169,23 @@ function [pmf,n,tMax,cdfFun,pmfFun,cfN,cfY] = ...
 %  ylabel('probability')
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 01-Sep-2020 13:25:21
+% Ver.: 04-Sep-2020 10:29:44
 %
 % Revision history:
+% Ver.: 01-Sep-2020 13:25:21
 % Ver.: 18-Oct-2018 19:49:41
 
-%% ALGORITHM
+%% algorithmPMF
 %  [pmf,n,tMax,cdfFun,pmfFun] = RenewalProcessPMF(t,cfX,cfX1,nMax,options)
 
 %% CHECK THE INPUT PARAMETERS
-narginchk(0, 6);
+narginchk(0, 5);
 if nargin < 1, t         = []; end
 if nargin < 2, cfX       = []; end
 if nargin < 3, cfX1      = []; end
 if nargin < 4, nMax      = []; end
 if nargin < 5, options   = []; end
-if nargin < 6, algorithm = []; end
 
-if isempty(algorithm)
-    algorithm = 'cf2DistFFT';
-    if ~isfield(options,'N')
-        options.N = 2^8;
-    end
-end
-
-if strcmp(algorithm,'cf2DistBTAV')
-    if ~isfield(options,'trapezoidal')
-        options.trapezoidal = 'trapezoidal';
-    end
-end
-
-if strcmp(algorithm,'cf2DistBV')
-    if ~isfield(options, 'Limits')
-        options.Limits = [1e-300 1e-50 10.^linspace(-10,10,21) 1e+300];
-    end
-end
 
 if ~isfield(options,'SixSigmaRule')
     options.SixSigmaRule = 10;
@@ -258,6 +220,32 @@ if ~isfield(options,'maxiter')
     options.maxiter = 10;
 end
 
+if ~isfield(options,'algorithmPMF')
+    options.algorithmPMF = [];
+end
+
+algorithmPMF = options.algorithmPMF;
+
+if isempty(algorithmPMF)
+    algorithmPMF = 'cf2DistFFT';
+    if ~isfield(options,'N')
+        options.N = 2^8;
+    end
+end
+
+if strcmp(algorithmPMF,'cf2DistBTAV')
+    if ~isfield(options,'trapezoidal')
+        options.trapezoidal = 'trapezoidal';
+    end
+end
+
+if strcmp(algorithmPMF,'cf2DistBV')
+    if ~isfield(options, 'Limits')
+        options.Limits = [1e-300 10.^linspace(-15,15,11) 1e+300];
+    end
+end
+
+
 if isempty(nMax)
     nMax = 25;
 end
@@ -288,13 +276,13 @@ for k = 1:nMax
     id = id + 1;
     if k == nMax
         result = cf2Dist(@(t)cfX1(t).*cfX(t).^(k-1),[],tailprob, ...
-            options,algorithm);
+            options,algorithmPMF);
         cdfFun(id) = {result.CDF};
         tMaxNew = result.qf;
         tMax = max(tMax,tMaxNew);
     else
         result = cf2Dist(@(t)cfX1(t).*cfX(t).^(k-1),[],[], ...
-            options,algorithm);
+            options,algorithmPMF);
         cdfFun(id) = {result.CDF};
     end
 end
