@@ -79,7 +79,7 @@ function [pmf,n,tMax,cdfFun,pmfFun,cfN,cfY] = ...
 %             'cf2DistFFT'   (Fast Fourier Transform algorithmPMF method)
 %             'cf2DistGP'    (Gil-Pelaez with Trapezoidal quadrature)
 %             'cf2DistGPT'   (Gil-Pelaez with Trapezoidal quadrature)
-%             If empty, default value is algorithmPMF = 'cf2DistFFT'.
+%             If empty, default value is algorithmPMF = 'cf2DistGP'.
 %
 % OUTPUTS:
 %  pmf    - vector of calculated probabilities evaluated for each integer n
@@ -157,7 +157,8 @@ function [pmf,n,tMax,cdfFun,pmfFun,cfN,cfY] = ...
 %  cfX1    = @(u)cf_Exponential(u);
 %  nMax    = 70;
 %  ltxt    = cell(1,8);
-%  options.DelayType = 0;
+%  clear options
+%  options.algorithmPMF = 'cf2DistFFT';
 %  [pmf,n,tMax] = RenewalProcessPMF([],cfX,cfX1,nMax,options);
 %  figure;hold on
 %  for t = 0:floor(tMax)
@@ -169,10 +170,10 @@ function [pmf,n,tMax,cdfFun,pmfFun,cfN,cfY] = ...
 %  ylabel('probability')
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 04-Sep-2020 10:29:44
+% Ver.: 09-Sep-2020 14:05:07
 %
 % Revision history:
-% Ver.: 01-Sep-2020 13:25:21
+% Ver.: 04-Sep-2020 10:29:44
 % Ver.: 18-Oct-2018 19:49:41
 
 %% algorithmPMF
@@ -186,9 +187,8 @@ if nargin < 3, cfX1      = []; end
 if nargin < 4, nMax      = []; end
 if nargin < 5, options   = []; end
 
-
 if ~isfield(options,'SixSigmaRule')
-    options.SixSigmaRule = 10;
+    options.SixSigmaRule = 6;
 end
 
 if ~isfield(options,'cfW')
@@ -206,7 +206,6 @@ end
 if ~isfield(options,'xMin')
     options.xMin = 0;
 end
-
 
 if ~isfield(options,'tol')
     options.tol = 1e-6;
@@ -227,7 +226,10 @@ end
 algorithmPMF = options.algorithmPMF;
 
 if isempty(algorithmPMF)
-    algorithmPMF = 'cf2DistFFT';
+    algorithmPMF = 'cf2DistGP';
+end
+
+if strcmp(algorithmPMF,'cf2DistFFT')
     if ~isfield(options,'N')
         options.N = 2^8;
     end
@@ -244,7 +246,6 @@ if strcmp(algorithmPMF,'cf2DistBV')
         options.Limits = [1e-300 10.^linspace(-15,15,11) 1e+300];
     end
 end
-
 
 if isempty(nMax)
     nMax = 25;
