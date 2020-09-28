@@ -13,12 +13,17 @@ LRT05_Sphericity
 APPLICATIONS in Polynomial Calibration:
 
 PolyCal
-
-APPLICATIONS in Risk Modeling:
-
-CRMTool
+PolyCalCF
+PolyCalCF2Std
+PolyCalInterval
+PolyCalQuantile
+PolyCalUpdate
 
 APPLICATIONS in Renewal Rewar Process:
 
 RenewalProcessPMF
 RenewalREewardDistribution
+
+APPLICATIONS in Risk Modeling:
+
+CRMTool
