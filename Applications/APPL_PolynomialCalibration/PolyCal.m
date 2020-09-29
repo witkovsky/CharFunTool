@@ -262,7 +262,7 @@ function result = PolyCal(x,y,xFit,options)
 %          @(t)cf_TriangularSymmetric(0.3*t), ...
 %          @(t)cf_TriangularSymmetric(0.3*t), ...
 %          @(t)cf_RectangularSymmetric(0.3*t)};
-%  options.cfXB0 = @(t)cf_ArcsineSymmetric(0.1*t);
+%  options.cfYB0 = @(t)cf_ArcsineSymmetric(0.1*t);
 %  options.tolDiff = 1e-2;
 %  result = PolyCal(x,y,xFit,options)
 %
@@ -309,7 +309,7 @@ function result = PolyCal(x,y,xFit,options)
 %          @(t)cf_TriangularSymmetric(0.3*t), ...
 %          @(t)cf_TriangularSymmetric(0.3*t), ...
 %          @(t)cf_RectangularSymmetric(0.3*t)};
-%  options.cfXB0 = @(t)cf_ArcsineSymmetric(0.1*t);
+%  options.cfYB0 = @(t)cf_ArcsineSymmetric(0.1*t);
 %  options.tolDiff = 1e-2;
 %  result = PolyCal(x,y,xFit,options);
 %  cfyFit = result.cfyFit{1};
@@ -566,7 +566,7 @@ end
 if isempty(uXA) && ~isempty(cfXA)
     uXA = PolyCalCF2Std(cfXA,tolDiff);
 elseif isempty(uXA)
-    uXA = one1; 
+    uXA = zero0; 
 end
 
 if isempty(uXB) && ~isempty(cfXB)
