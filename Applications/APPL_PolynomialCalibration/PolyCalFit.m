@@ -74,7 +74,7 @@ function result = PolyCalFit(meanXNew,cfXNew,PolyCalResult,options)
 %          @(t)cf_TriangularSymmetric(0.3*t), ...
 %          @(t)cf_TriangularSymmetric(0.3*t), ...
 %          @(t)cf_RectangularSymmetric(0.3*t)};
-%  options.cfXB0 = @(t)cf_ArcsineSymmetric(0.1*t);
+%  options.cfYB0 = @(t)cf_ArcsineSymmetric(0.1*t);
 %  options.tolDiff = 1e-2;
 %  PolyCalResult = PolyCal(x,y,xFit,options);
 %  % Set the inputs for the algorithm PolyCalFit
