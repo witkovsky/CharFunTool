@@ -15,6 +15,7 @@ APPLICATIONS in Polynomial Calibration:
 PolyCal
 PolyCalCF
 PolyCalCF2Std
+PolyCalFit
 PolyCalInterval
 PolyCalQuantile
 PolyCalUpdate
