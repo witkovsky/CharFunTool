@@ -44,6 +44,8 @@ git clone https://github.com/witkovsky/CharFunTool.git
 To use CharFunTool in MATLAB, you will need to add the `CharFunTool` directory to the MATLAB path as above.
 
 
+## Option 3: Get it from MATLAB File Exchange
+
 [![View CharFunTool: The Characteristic Functions Toolbox on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://www.mathworks.com/matlabcentral/fileexchange/64400-charfuntool-the-characteristic-functions-toolbox)
 
 Getting started
