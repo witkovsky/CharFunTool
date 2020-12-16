@@ -142,10 +142,9 @@ if beta > 1
     if any(id)
         cf(id) = cfWintegral(t(id),alpha,beta,tol);
     end
-    % CF by using linear approximation of log(cf) for large t
+    % CF by using asymptotic expansion of CF for large |t|
     id = abs(t*alpha) >= T;
     if any(id)
-        %cf(id) = cfFitFun(t(id),alpha,beta,T);
         cf(id) = cfWasymptotic(t(id),alpha,beta);
     end
 elseif beta == 1
@@ -171,7 +170,7 @@ cf(t==0) = 1;
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Function cfWintegral
-function [cf,f] = cfWintegral(t,alpha,beta,reltol)
+function cf = cfWintegral(t,alpha,beta,reltol)
 %  cfWintegral Computes the Weibull characteristic function by using the
 %  direct integration. If W ~ Weibull(alpha,beta) then W = alpha *
 %  X^(1/beta), where X ~ Exponential(1). From that we get the integral
@@ -197,8 +196,6 @@ sz = size(t);
 % cf = integral(@(x) integrandWfun(x,t,alpha,beta),0,+Inf, ...
 %     'ArrayValued',true,'RelTol',reltol);
 
-f = @(x) bsxfun(@times,integrandW2fun((x./(1-x)).^2,t,alpha,beta), ...
-    2*x./(1-x).^3);
 cf = integral(@(x) bsxfun(@times,integrandWfun((x./(1-x)).^2, ...
     t,alpha,beta), 2*x./(1-x).^3),0,1,'ArrayValued',true,'RelTol',reltol);
 
@@ -291,31 +288,7 @@ cf(z==0) = 1;
 cf = reshape(cf,sz);
 
 end
-%% Function cfFitFun
-% function f = cfFitFun(t,alpha,beta,T)
-% % cfFitFun estimates the asymptotic behaviour of CF for large abs(t) by
-% % using linear regression fitted for log(cf)
-% 
-% % Viktor Witkovsky (witkovsky@gmail.com)
-% % Ver.: 29-Oct-2017 11:14:14
-% 
-% %%
-% tt = linspace(T/100,T,7)';
-% cf = cfWintegral(tt,alpha,beta);
-% W  = diag(tt/norm(tt));
-% X  = [tt.^0 tt];
-% b  = (X'*W*X)\(X'*W*log(cf));
-% 
-% id = t >= 0;
-% if any(id)
-%     f(id) = exp([t(id).^0 t(id)] * b);
-% end
-% 
-% id = t < 0;
-% if any(id)
-%     f(id) = conj(exp([t(id).^0 -t(id)] * b));
-% end
-% end
+
 %% Function cfWasymptotic
 function cf = cfWasymptotic(t,alpha,beta)
 %cfWasymptotic Asymptotic expansion of Weibull CF for large |t|.
