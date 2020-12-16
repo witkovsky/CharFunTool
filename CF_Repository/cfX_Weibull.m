@@ -105,10 +105,11 @@ function cf = cfX_Weibull(t,alpha,beta,tol)
 %     output quantity in linear measurement models. Acta IMEKO, 5(3), 32-44.
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 01-Sep-2020 13:25:21
+% Ver.: 16-Dec-2020 23:56:11
 %
 % Revision history:
 % Ver.: 29-Oct-2017 11:25:57
+% Ver.: 01-Sep-2020 13:25:21
 
 %% ALGORITHM
 %cf = cfX_Weibull(t,alpha,beta,tol);
@@ -144,7 +145,8 @@ if beta > 1
     % CF by using linear approximation of log(cf) for large t
     id = abs(t*alpha) >= T;
     if any(id)
-        cf(id) = cfFitFun(t(id),alpha,beta,T);
+        %cf(id) = cfFitFun(t(id),alpha,beta,T);
+        cf(id) = cfWasymptotic(t(id),alpha,beta);
     end
 elseif beta == 1
     % CF by using the exact CF of the exponential distribution
@@ -290,28 +292,49 @@ cf = reshape(cf,sz);
 
 end
 %% Function cfFitFun
-function f = cfFitFun(t,alpha,beta,T)
-% cfFitFun estimates the asymptotic behaviour of CF for large abs(t) by
-% using linear regression fitted for log(cf)
+% function f = cfFitFun(t,alpha,beta,T)
+% % cfFitFun estimates the asymptotic behaviour of CF for large abs(t) by
+% % using linear regression fitted for log(cf)
+% 
+% % Viktor Witkovsky (witkovsky@gmail.com)
+% % Ver.: 29-Oct-2017 11:14:14
+% 
+% %%
+% tt = linspace(T/100,T,7)';
+% cf = cfWintegral(tt,alpha,beta);
+% W  = diag(tt/norm(tt));
+% X  = [tt.^0 tt];
+% b  = (X'*W*X)\(X'*W*log(cf));
+% 
+% id = t >= 0;
+% if any(id)
+%     f(id) = exp([t(id).^0 t(id)] * b);
+% end
+% 
+% id = t < 0;
+% if any(id)
+%     f(id) = conj(exp([t(id).^0 -t(id)] * b));
+% end
+% end
+%% Function cfWasymptotic
+function cf = cfWasymptotic(t,alpha,beta)
+%cfWasymptotic Asymptotic expansion of Weibull CF for large |t|.
+%
+% For more details see: 
+% Tomas Duby (2020). Weibull 23 - Asymptotic expansion by integration by
+% parts. PPT presentation 2020-12-11. 
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 29-Oct-2017 11:14:14
+% Ver.: 16-Dec-2020 23:56:11
 
-%%
-tt = linspace(T/100,T,7)';
-cf = cfWintegral(tt,alpha,beta);
-W  = diag(tt/norm(tt));
-X  = [tt.^0 tt];
-b  = (X'*W*X)\(X'*W*log(cf));
-
-id = t >= 0;
-if any(id)
-    f(id) = exp([t(id).^0 t(id)] * b);
+%% CHECK THE INPUT PARAMETERS
+P   = 7;
+cf  = 0;
+ids = -1;
+for q = 1:P
+    ids = (-1) * ids;
+    term = log(beta) + gammaln(beta*q) - gammaln(q) - ...
+           (beta*q) * log(-1i*alpha*t);
+    cf = cf + ids * exp(term);
 end
-
-id = t < 0;
-if any(id)
-    f(id) = conj(exp([t(id).^0 -t(id)] * b));
-end
-
 end
