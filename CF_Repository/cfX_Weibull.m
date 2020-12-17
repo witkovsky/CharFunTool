@@ -144,11 +144,7 @@ if beta > 1
     % CF by using asymptotic expansion of CF for large |t|
     id = abs(t*alpha) >= T;
     if any(id)
-<<<<<<< HEAD
-        cf(id) = cfWasymptotic(t(id),alpha,beta);
-=======
         cf(id) = cfFitFun(t(id),alpha,beta,T);
->>>>>>> parent of 1c7c206... Update cfX_Weibull.m
     end
 elseif beta == 1
     % CF by using the exact CF of the exponential distribution
@@ -291,21 +287,10 @@ cf(z==0) = 1;
 cf = reshape(cf,sz);
 
 end
-<<<<<<< HEAD
-
-%% Function cfWasymptotic
-function cf = cfWasymptotic(t,alpha,beta)
-%cfWasymptotic Asymptotic expansion of Weibull CF for large |t|.
-%
-% For more details see: 
-% Tomas Duby (2020). Weibull 23 - Asymptotic expansion by integration by
-% parts. PPT presentation 2020-12-11. 
-=======
 %% Function cfFitFun
 function f = cfFitFun(t,alpha,beta,T)
 % cfFitFun estimates the asymptotic behaviour of CF for large abs(t) by
 % using linear regression fitted for log(cf)
->>>>>>> parent of 1c7c206... Update cfX_Weibull.m
 
 % Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 29-Oct-2017 11:14:14
