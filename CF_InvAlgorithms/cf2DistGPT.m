@@ -122,15 +122,15 @@ function [result,cdf,pdf,qf] = cf2DistGPT(cf,x,prob,options)
 % [1] WITKOVSKY, V.: On the exact computation of the density and of
 %     the quantiles of linear combinations of t and F random
 %     variables. Journal of Statistical Planning and Inference, 2001, 94,
-%     1–13. 
+%     1â€“13. 
 % [2] WITKOVSKY, V.: Matlab algorithm TDIST: The distribution of a
-%     linear combination of Student’s t random variables. In COMPSTAT
+%     linear combination of Studentâ€™s t random variables. In COMPSTAT
 %     2004 Symposium (2004), J. Antoch, Ed., Physica-Verlag/Springer
-%     2004, Heidelberg, Germany, pp. 1995–2002.
+%     2004, Heidelberg, Germany, pp. 1995â€“2002.
 % [3] WITKOVSKY, V., WIMMER, G., DUBY, T. Logarithmic Lambert W x F
 %     random variables for the family of chi-squared distributions
 %     and their applications. Statistics & Probability Letters, 2015, 96,
-%     223–231. 
+%     223â€“231. 
 % [4] WITKOVSKY, V.: Numerical inversion of a characteristic
 %     function: An alternative tool to form the probability distribution of
 %     output quantity in linear measurement models. Acta IMEKO, 2016, 5(3),
@@ -144,6 +144,8 @@ function [result,cdf,pdf,qf] = cf2DistGPT(cf,x,prob,options)
 %           cf2DistBV, cf2CDF, cf2PDF, cf2QF
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: '08-Jan-2021 19:44:54
+% REVISIONS
 % Ver.: 16-Mar-2020 22:16:38
 
 %% ALGORITHM
@@ -318,24 +320,40 @@ else
     if (isfinite(xMin) && isfinite(xMax))
         range          = xMax - xMin;
     elseif ~isempty(dt)
-        range          = 2*pi / dt;
+        range = 2*pi / dt;
+        if isfinite(xMin)
+            xMax = xMin + range;
+        elseif isfinite(xMax)
+            xMin = xMax - range;
+        else
+            xMax = xMean + range/2;
+            xMin = xMean - range/2;
+        end
     elseif ~isempty(T)
-        range          = 2*pi / (T / N);
+        range = 2*pi / (T / N);
+        if isfinite(xMin)
+            xMax = xMin + range;
+        elseif isfinite(xMax)
+            xMin = xMax - range;
+        else
+            xMax = xMean + range/2;
+            xMin = xMean - range/2;
+        end
     else
         if options.isCircular
-            xMin       = -pi;
-            xMax       = pi;
+            xMin = -pi;
+            xMax = pi;
         else
             if isfinite(xMin)
-                xMax     = xMean + SixSigmaRule * xStd;
+                xMax = xMean + 2*SixSigmaRule * xStd;
             elseif isfinite(xMax)
-                xMin     = xMean - SixSigmaRule * xStd;
+                xMin = xMean - 2*SixSigmaRule * xStd;
             else
-                xMin     = xMean - SixSigmaRule * xStd;
-                xMax     = xMean + SixSigmaRule * xStd;
+                xMin = xMean - SixSigmaRule * xStd;
+                xMax = xMean + SixSigmaRule * xStd;
             end
         end
-        range            = xMax - xMin;
+        range = xMax - xMin;
     end
     dt                   = 2*pi / range;
     t                    = (1:N)' * dt;
