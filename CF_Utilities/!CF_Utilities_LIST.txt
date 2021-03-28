@@ -61,4 +61,5 @@ LogPDF2PDF
 
 OTHER UTILITY Functions:
 
+cf2Moments
 SqrtZX
