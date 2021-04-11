@@ -132,3 +132,7 @@ cfE_DiracMixture
 cfE_Empirical
 cfE_EmpiricalBootstrapped
 cfE_EmpiricalOgive
+
+CFs of bivariate probability distributions:
+
+cf2D_Logistic
