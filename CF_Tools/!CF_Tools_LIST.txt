@@ -1,6 +1,7 @@
 CHARACTERISTIC FUNCTIONS TOOLS:
 
 cf_Conv
+cf_FoldedDistribution
 cf_Fun
 cf_GramCharlier
 cf_GramCharlierDelta
