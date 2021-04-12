@@ -1,7 +1,7 @@
 function [result,cdf,pdf] = cf2Dist2D(cf,x,prob,options)
 %cf2Dist2D Calculates the CDF/PDF/QF from the BIVARIATE characteristic
 %  function CF by using the Gil-Pelaez inversion formulae using Riemann sum,
-%  as suggested in Shepard (1991). 
+%  as suggested in Shephard (1991). 
 %
 %  The FOURIER INTEGRALs are calculated by using the simple RIEMANN SUM
 %  QUADRATURE method. For more details see [1,2].
@@ -108,6 +108,7 @@ function [result,cdf,pdf] = cf2Dist2D(cf,x,prob,options)
 %  beta = [1 2];
 %  cf = @(t) cf2D_Logistic(t,mu,beta);
 %  x = {linspace(-5,5,11), linspace(-5,10,11)};
+%  clear options;
 %  options.isPlot = 'false';
 %  result = cf2Dist2D(cf,x,[],options)
 %  disp([result.x result.cdf])
@@ -120,6 +121,7 @@ function [result,cdf,pdf] = cf2Dist2D(cf,x,prob,options)
 %  beta2 = [2 1];
 %  cf2 = @(t) cf2D_Logistic(t,mu2,beta2);
 %  cf = @(t) 0.25*cf1(t) + 0.75*cf2(t);
+%  clear options;
 %  options.xN = 51;
 %  result = cf2Dist2D(cf,[],[],options)
 %
@@ -636,7 +638,7 @@ if isPlot
         0.6000 0.7000 0.8000 0.9000 0.95 0.99];
     grid
     hold off
-    title('Countour Plot of the PDF and the CDF Specified by the CF')
+    title('Contour Plot of the PDF and the CDF Specified by the CF')
     xlabel('x1')
     ylabel('x2')
       
