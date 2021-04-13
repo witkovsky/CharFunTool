@@ -1,4 +1,4 @@
-function [result,cdf,pdf] = cf2Dist2D(cf,x,prob,options)
+function [result,cdf,pdf] = cf2Dist2D(cf,x,options)
 %cf2Dist2D Calculates the CDF/PDF/QF from the BIVARIATE characteristic
 %  function CF by using the Gil-Pelaez inversion formulae using Riemann sum,
 %  as suggested in Shephard (1991).
@@ -11,7 +11,7 @@ function [result,cdf,pdf] = cf2Dist2D(cf,x,prob,options)
 %
 % SYNTAX:
 %  result = cf2Dist2D(cf,x)
-%  [result,cdf,pdf] = cf2Dist2D(cf,x,prob,options)
+%  [result,cdf,pdf] = cf2Dist2D(cf,x,options)
 %
 % INPUT:
 %  cf      - function handle of the bivariate characteristic function (CF),
@@ -21,8 +21,6 @@ function [result,cdf,pdf] = cf2Dist2D(cf,x,prob,options)
 %            construct a meshgrid of x values, x = meshgrid(x{1},x{2}).
 %            If x = [], the algorithm sets the automatic values, such that
 %            x = meshgrid(x1,x2) covers the support of the distribution.
-%  prob    - vector of values from [0,1] for which the quantiles of the
-%            marginal distributions function is evaluated,
 %  options - structure with the following default parameters:
 %             options.isCompound = false % treat the compound distributions
 %                                        % of the RV Y = X_1 + ... + X_N,
@@ -62,7 +60,6 @@ function [result,cdf,pdf] = cf2Dist2D(cf,x,prob,options)
 %  result   - structure with CDF/PDF/QF and further details,
 %  cdf      - vector of CDF values evaluated at x,
 %  pdf      - vector of PDF values evaluated at x,
-%  qf       - vector of QF values evaluated at prob.
 %
 % REMARKS:
 % The required integrals are evaluated approximately by using the simple
@@ -141,7 +138,7 @@ function [result,cdf,pdf] = cf2Dist2D(cf,x,prob,options)
 % Ver.: 13-Apr-2021 15:30:56
 
 %% ALGORITHM
-%[result,cdf,pdf] = cf2Dist2D(cf,x,prob,options)
+%[result,cdf,pdf] = cf2Dist2D(cf,x,options)
 
 %% CHECK THE INPUT PARAMETERS
 timeVal = tic;
@@ -222,11 +219,6 @@ end
 if ~isfield(options, 'DIST')
     options.DIST = [];
 end
-
-% Other options parameters
-% if ~isfield(options, 'qf0')
-%     options.qf0 = real((cf(1e-4)-cf(-1e-4))/(2e-4*1i));
-% end
 
 if ~isfield(options, 'maxiter')
     options.maxiter = 1000;
@@ -347,9 +339,9 @@ else
 end
 
 %% ALGORITHM
-% Default values if x = [];
 isPlot = options.isPlot;
 if isempty(x)
+    % Default values if x = [];
     %xempty = true;
     x1 = linspace(xMax(1),xMin(1),options.xN);
     x2 = linspace(xMax(2),xMin(2),options.xN);
@@ -372,22 +364,6 @@ else
         isPlot = false;
     end
 end
-
-% if options.isInterp
-%     x0 = x;
-%     % Chebyshev points
-%     x = (xMax-xMin) * (-cos(pi*(0:options.chebyPts) / ...
-%         options.chebyPts) + 1) / 2 + xMin;
-% else
-%     x0 = [];
-% end
-
-% % WARNING: Out-of-range
-% if any(x < xMin) || any(x > xMax)
-%     warning('VW:CharFunTool:cf2Dist2D',['x out-of-range: ', ...
-%         '[xMin, xMax] = [',num2str(xMin),...
-%         ', ',num2str(xMax),'] !']);
-% end
 
 % Evaluate the required CDF/ PDF
 % MARGINAL CDF1 and PDF1
@@ -434,113 +410,8 @@ else
     Zpdf    = pdf;
 end
 
-% Correct the CDF (if the computed result is out of (0,1))
-% This is useful for circular distributions over intervals of length 2*pi,
-% as e.g. the von Mises distribution
-% cdfAdjust = 0;
-% if options.correctedCDF
-%     if min(cdf) < 0
-%         cdfAdjust = min(cdf);
-%         cdf     = cdf - cdfAdjust;
-%     end
-%     if max(cdf) > 1
-%         cdfAdjust = max(cdf)-1;
-%         cdf     = cdf - cdfAdjust;
-%     end
-% end
-
-
-% PDF estimate computed by using the simple trapezoidal quadrature rule
-%pdf     = 0.5 + real(E * cft);
-%pdf = [];
-% pdf     = real(E * cft);
-% pdf     = (pdf * dt) / pi;
-% pdf     = reshape(max(0,pdf),n1,n2);
-% x       = reshape(x,n,m);
-
-% REMARK:
-% Note that, exp(-1i*x_i*0) = cos(x_i*0) + 1i*sin(x_i*0) = 1. Moreover,
-% cf(0) = 1 and lim_{t -> 0} cf(t)/t = E(X) - x. Hence, the leading term of
-% the trapezoidal rule for computing the CDF integral is cdfIntegrand_1 = (xMean
-% - x)/2, and pdfIntegrand_1 = 1/2 for the PDF integral, respectively.
-
-% % Reset the transformed CF, PDF, and CDF to the original values
-% if options.isCompound
-%     cdf = cfLimit + cdf * (1-cfLimit);
-%     pdf = pdf * (1-cfLimit);
-%     pdf(x==0) = 0;
-%     pdf(x==xMax) = NaN;
-% end
-
-% Calculate the precision criterion PrecisionCrit = abs(cf(t)/t) <= tol,
-% PrecisionCrit should be small for t > T, smaller than tolerance
-% options.crit
 PrecisionCrit = abs(cft(end)/t(end));
 isPrecisionOK = (PrecisionCrit<=options.crit);
-
-%% QF evaluated by the Newton-Raphson iterative scheme
-% if ~isempty(prob)
-%     isPlot = options.isPlot;
-%     options.isPlot = false;
-%     isInterp = options.isInterp;
-%     options.isInterp = false;
-%     [n,m]     = size(prob);
-%     prob      = prob(:);
-%     maxiter   = options.maxiter;
-%     crit      = options.crit;
-%     qf        = options.qf0;
-%     criterion = true;
-%     nNewtonRaphsonLoops     = 0;
-%     [res,cdfQ,pdfQ] = cf2Dist2D(cf,qf,[],options);
-%     options = res.options;
-%     while criterion
-%         nNewtonRaphsonLoops  = nNewtonRaphsonLoops + 1;
-%         qfCorrection  = ((cdfQ-cdfAdjust) - prob) ./ pdfQ;
-%         qf = max(xMin,min(xMax,qf - qfCorrection));
-%         [~,cdfQ,pdfQ] = cf2Dist2D(cf,qf,[],options);
-%         criterion = any(abs(qfCorrection) ...
-%             > crit * abs(qf)) ...
-%             && max(abs(qfCorrection)) ...
-%             > crit && nNewtonRaphsonLoops < maxiter;
-%     end
-%     qf   = reshape(qf,n,m);
-%     prob = reshape(prob,n,m);
-%     options.isPlot = isPlot;
-%     options.isInterp = isInterp;
-% else
-%     qf = [];
-%     nNewtonRaphsonLoops = [];
-%     %qfCorrection =[];
-% end
-
-% if options.isInterp
-%     id   = isfinite(pdf);
-%     PDF  = @(xnew)InterpPDF(xnew,x(id),pdf(id));
-%     id   = isfinite(cdf);
-%     CDF  = @(xnew)InterpCDF(xnew,x(id),cdf(id));
-%     QF   = @(prob)InterpQF(prob,x(id),cdf(id));
-%     RND  = @(dim)InterpRND(dim,x(id),cdf(id));
-%     try
-%     if ~xempty
-%         x   = x0;
-%         cdf = CDF(x);
-%         pdf = PDF(x);
-%     end
-%     catch
-%         warning('VW:CharFunTool:cf2Dist2D', ...
-%             'Problem using the interpolant function');
-%     end
-% else
-%     PDF  = [];
-%     CDF  = [];
-%     QF   = [];
-%     RND  = [];
-% end
-
-% Reset the correct value for compound PDF at 0
-% if options.isCompound
-%     pdf(x==0) = Inf;
-% end
 
 %% RESULT
 result.Description         = 'CDF/PDF/QF from the characteristic function CF';
@@ -560,13 +431,6 @@ result.X2                  = X2;
 result.Zcdf                = Zcdf;
 result.Zpdf                = Zpdf;
 result.prob                = prob;
-% result.qf                  = qf;
-% if options.isInterp
-%     result.PDF             = PDF;
-%     result.CDF             = CDF;
-%     result.QF              = QF;
-%     result.RND             = RND;
-% end
 result.cf                  = cfOld;
 result.isCompound          = options.isCompound;
 result.isCircular          = options.isCircular;
@@ -582,10 +446,6 @@ result.xMean               = xMean;
 result.xStd                = xStd;
 result.xMin                = xMin;
 result.xMax                = xMax;
-%result.cfLimit             = cfLimit;
-%result.cdfAdjust           = cdfAdjust;
-%result.nNewtonRaphsonLoops = nNewtonRaphsonLoops;
-%result.qfCorrection        = qfCorrection;
 result.options             = options;
 result.tictoc              = toc(timeVal);
 
