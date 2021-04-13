@@ -491,7 +491,7 @@ if isPlot
     
     % PDF
     figure
-    stem3(x1,x2,pdf)
+    mesh(X1,X2,Zpdf)
     title('PDF Specified by the CF')
     xlabel('x1')
     ylabel('x2')
@@ -499,7 +499,7 @@ if isPlot
     
     % CDF
     figure
-    stem3(x1,x2,cdf)
+    mesh(X1,X2,Zcdf)
     title('CDF Specified by the CF')
     xlabel('x1')
     ylabel('x2')
