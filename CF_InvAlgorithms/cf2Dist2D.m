@@ -1,11 +1,11 @@
 function [result,cdf,pdf] = cf2Dist2D(cf,x,prob,options)
 %cf2Dist2D Calculates the CDF/PDF/QF from the BIVARIATE characteristic
 %  function CF by using the Gil-Pelaez inversion formulae using Riemann sum,
-%  as suggested in Shephard (1991). 
+%  as suggested in Shephard (1991).
 %
 %  The FOURIER INTEGRALs are calculated by using the simple RIEMANN SUM
 %  QUADRATURE method. For more details see [1,2].
-% 
+%
 %  The algorithm cf2Dist2D is part of the MATLAB toolboc CharFunTool:
 %  https://github.com/witkovsky/CharFunTool
 %
@@ -14,8 +14,8 @@ function [result,cdf,pdf] = cf2Dist2D(cf,x,prob,options)
 %  [result,cdf,pdf] = cf2Dist2D(cf,x,prob,options)
 %
 % INPUT:
-%  cf      - function handle of the bivariate characteristic function (CF), 
-%  x       - (N x 2)-matrix of x values where the CDF/PDF is computed, 
+%  cf      - function handle of the bivariate characteristic function (CF),
+%  x       - (N x 2)-matrix of x values where the CDF/PDF is computed,
 %            or (1 x 2) cell array with x{1} being the vector of x1 values
 %            and x{2} being the vector of x2 values. Then we shall
 %            construct a meshgrid of x values, x = meshgrid(x{1},x{2}).
@@ -26,7 +26,7 @@ function [result,cdf,pdf] = cf2Dist2D(cf,x,prob,options)
 %  options - structure with the following default parameters:
 %             options.isCompound = false % treat the compound distributions
 %                                        % of the RV Y = X_1 + ... + X_N,
-%                                        % where N is discrete RV and X>=0 
+%                                        % where N is discrete RV and X>=0
 %                                        % are iid RVs from nonnegative
 %                                        % continuous distribution.
 %             options.isCircular = false % treat the circular
@@ -68,7 +68,7 @@ function [result,cdf,pdf] = cf2Dist2D(cf,x,prob,options)
 % The required integrals are evaluated approximately by using the simple
 % quadrature using Riemann sum rules on the intervals (0,T) x (-T,T), where
 % T = N * dt is a sufficienly large integration upper limit in the
-% frequency domain. 
+% frequency domain.
 %
 % If the optimum values of N and T are unknown, we suggest, as a simple
 % rule of thumb, to start with the application of the six-sigma-rule for
@@ -129,16 +129,16 @@ function [result,cdf,pdf] = cf2Dist2D(cf,x,prob,options)
 %
 % [1] SHEPHARD, N.G., 1991. Numerical integration rules for multivariate
 %     inversions. Journal of Statistical Computation and Simulation,
-%     39(1-2), pp.37-46. 
+%     39(1-2), pp.37-46.
 % [2] SHEPHARD, N.G., 1991. From characteristic function to distribution
 %     function: a simple framework for the theory. Econometric theory,
-%     pp.519-529.   
+%     pp.519-529.
 %
 % SEE ALSO: cf2Dist, cf2DistGP, cf2Dist2D, cf2DistGPA, cf2DistFFT,
 %           cf2DistBV, cf2CDF, cf2PDF, cf2QF
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 11-Apr-2021 15:29:45
+% Ver.: 13-Apr-2021 15:30:56
 
 %% ALGORITHM
 %[result,cdf,pdf] = cf2Dist2D(cf,x,prob,options)
@@ -213,6 +213,10 @@ end
 
 if ~isfield(options, 'isPlot')
     options.isPlot = true;
+end
+
+if ~isfield(options, 'isForcedPlot')
+    options.isForcedPlot = false;
 end
 
 if ~isfield(options, 'DIST')
@@ -309,14 +313,14 @@ else
             xMin = xMean - range/2;
         end
     else
-            if all(isfinite(xMin))
-                xMax = xMean + 2*SixSigmaRule * xStd;
-            elseif all(isfinite(xMax))
-                xMin = xMean - 2*SixSigmaRule * xStd;
-            else
-                xMin = xMean - SixSigmaRule * xStd;
-                xMax = xMean + SixSigmaRule * xStd;
-           end
+        if all(isfinite(xMin))
+            xMax = xMean + 2*SixSigmaRule * xStd;
+        elseif all(isfinite(xMax))
+            xMin = xMean - 2*SixSigmaRule * xStd;
+        else
+            xMin = xMean - SixSigmaRule * xStd;
+            xMax = xMean + SixSigmaRule * xStd;
+        end
         range = xMax - xMin;
     end
     dt                 = 2*pi ./ range;
@@ -326,7 +330,7 @@ else
     cft1               = cf([t1 0*t1]);
     cft2               = cf([0*t2 t2]);
     [tt1,tt2]          = meshgrid(t1,t3);
-    t                  = [tt1(:) tt2(:)]; 
+    t                  = [tt1(:) tt2(:)];
     cft                = cf(t);
     options.DIST.xMin  = xMin;
     options.DIST.xMax  = xMax;
@@ -350,15 +354,17 @@ if isempty(x)
     x1 = linspace(xMax(1),xMin(1),options.xN);
     x2 = linspace(xMax(2),xMin(2),options.xN);
     [X1,X2] = meshgrid(x1,x2);
-    x = [X1(:) X2(:)]; 
+    x = [X1(:) X2(:)];
 else
     %xempty = false;
     if iscell(x)
+        isMeshed = false;
         x1 = x{1};
         x2 = x{2};
         [X1,X2] = meshgrid(x1,x2);
         x = [X1(:) X2(:)];
     else
+        isMeshed = true;
         x1 = x(:,1);
         x2 = x(:,2);
         X1 = [];
@@ -405,18 +411,28 @@ pdf2    = (pdf2 * dt(2)) / pi;
 pdf2    = max(0,pdf2);
 
 % BIVARIATE CDF and PDF
-[f1,f2] = meshgrid(cdf1,cdf2);
-cdf     = (f1 + f2)/2 - 0.25;
+if ~isMeshed
+    [f1,f2] = meshgrid(cdf1,cdf2);
+    cdf     = (f1 + f2)/2 - 0.25;
+else
+    cdf     = (cdf1 + cdf2)/2 - 0.25;
+end
 cdf     = cdf(:);
 c       = -2 * dt(1) * dt(2) / (2*pi)^2;
 cftt    = cft ./ t(:,1) ./ t(:,2);
 f       = c * real(exp(-1i*x*t')*cftt);
 cdf     = cdf + f;
 cdf     = max(0,min(1,cdf));
-Zcdf    = reshape(cdf,n2,n1);
 pdf     = 2 * dt(1) * dt(2) * real(exp(-1i*x*t')*cft) / (2*pi)^2;
 pdf     = max(0,pdf);
-Zpdf    = reshape(pdf,n2,n1);
+
+if ~isMeshed
+    Zcdf    = reshape(cdf,n2,n1);
+    Zpdf    = reshape(pdf,n2,n1);
+else
+    Zcdf    = cdf;
+    Zpdf    = pdf;
+end
 
 % Correct the CDF (if the computed result is out of (0,1))
 % This is useful for circular distributions over intervals of length 2*pi,
@@ -573,18 +589,21 @@ result.xMax                = xMax;
 result.options             = options;
 result.tictoc              = toc(timeVal);
 
-%% PLOT the PDF / CDF 
+%% PLOT the PDF / CDF
+if options.isForcedPlot
+    isPlot = true;
+end
 if length(x)==1
     isPlot = false;
 end
 if isPlot
-        % Marginal PDF1
+    % Marginal PDF1
     figure
     plot(x1,pdf1,'LineWidth',2)
     grid
     title('Marginal PDF1 Specified by the CF')
     xlabel('x1')
-    ylabel('pdf1') 
+    ylabel('pdf1')
     
     % Marginal CDF1
     figure
@@ -592,7 +611,7 @@ if isPlot
     grid
     title('Marginal CDF1 Specified by the CF')
     xlabel('x1')
-    ylabel('cdf1') 
+    ylabel('cdf1')
     
     % Marginal PDF2
     figure
@@ -600,7 +619,7 @@ if isPlot
     grid
     title('Marginal PDF2 Specified by the CF')
     xlabel('x2')
-    ylabel('pdf2') 
+    ylabel('pdf2')
     
     % Marginal CDF2
     figure
@@ -608,23 +627,23 @@ if isPlot
     grid
     title('Marginal CDF2 Specified by the CF')
     xlabel('x2')
-    ylabel('cdf2') 
+    ylabel('cdf2')
     
     % PDF
     figure
-    surf(X1,X2,Zpdf,'FaceAlpha',0.5)
+    stem3(x1,x2,pdf)
     title('PDF Specified by the CF')
     xlabel('x1')
     ylabel('x2')
-    zlabel('pdf')  
+    zlabel('pdf')
     
     % CDF
     figure
-    surf(X1,X2,Zcdf,'FaceAlpha',0.5)
+    stem3(x1,x2,cdf)
     title('CDF Specified by the CF')
     xlabel('x1')
     ylabel('x2')
-    zlabel('cdf') 
+    zlabel('cdf')
     
     % Contour plot of PDF + CDF
     figure
@@ -641,6 +660,5 @@ if isPlot
     title('Contour Plot of the PDF and the CDF Specified by the CF')
     xlabel('x1')
     ylabel('x2')
-      
 end
 end
