@@ -46,9 +46,14 @@ function [funNew,xNew] = InterpBarycentric(x,fun,xNew,options)
 %   QF   = @(p) InterpBarycentric(result.cdf,result.x,p);
 %   prob = linspace(1e-4,1-1e-4,201);
 %   figure;plot(result.cdf,result.x,prob,QF(prob),'.');
+%
+% REFERENCES
+% [1] Hormann, K., 2014. Barycentric interpolation. In Approximation Theory
+%     XIV: San Antonio 2013 (pp. 197-218). Springer, Cham. 
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 24-Jul-2017 10:06:48
+% Revision: 13-Apr-2021 13:05:00
+% Ver1.: 24-Jul-2017 10:06:48
 
 %% FUNCTION
 %  [funNew,xNew] = InterpBarycentric(x,fun,xNew,options);
@@ -76,9 +81,21 @@ nx     = length(x);
 nxNew  = length(xNew);
 funNew = zeros(nxNew,1);
 
-w     = (-1).^(0:nx-1).';
-w(1)  = w(1)/2;
-w(nx) = w(nx)/2;
+if nx < 2
+        error('small number of nodes');
+end
+
+w       = (-1).^(0:nx-1).';
+if nx  >= 4 % (Floater–Hormann) weights for interpolants d = 2, see [1]
+    w(1)    = w(1)/4;
+    w(2)    = 3*w(2)/4;
+    w(nx-1) = 3*w(nx-1)/4;
+    w(nx)   = w(nx)/4;
+else
+    w(1)    = w(1)/2;
+    w(nx)   = w(nx)/2;
+end
+
 for i = 1:nxNew
     A = 0;
     B = 0;
