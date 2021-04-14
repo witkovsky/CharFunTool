@@ -364,6 +364,16 @@ else
         X2 = [];
         isPlot = false;
     end
+    if any(x1 < xMin(1)) || any(x1 > xMax(1))
+        warning('VW:CharFunTool:cf2Dist2D',['x1 out-of-range: ', ...
+            '[x1Min, x1Max] = [',num2str(xMin(1)),...
+            ', ',num2str(xMax(1)),'] !']);
+    end
+    if any(x2 < xMin(2)) || any(x2 > xMax(2))
+        warning('VW:CharFunTool:cf2Dist2D',['x2 out-of-range: ', ...
+            '[x2Min, x2Max] = [',num2str(xMin(2)),...
+            ', ',num2str(xMax(2)),'] !']);
+    end
 end
 
 % Evaluate the required CDF/ PDF
