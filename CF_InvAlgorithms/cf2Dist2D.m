@@ -343,6 +343,7 @@ isPlot = options.isPlot;
 if isempty(x)
     % Default values if x = [];
     %xempty = true;
+    isMeshed = false;
     x1 = linspace(xMax(1),xMin(1),options.xN);
     x2 = linspace(xMax(2),xMin(2),options.xN);
     [X1,X2] = meshgrid(x1,x2);
