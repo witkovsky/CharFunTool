@@ -107,7 +107,7 @@ function [result,cdf,pdf] = cf2Dist2D(cf,x,options)
 %  x = {linspace(-5,5,11), linspace(-5,10,11)};
 %  clear options;
 %  options.isPlot = 'false';
-%  result = cf2Dist2D(cf,x,[],options)
+%  result = cf2Dist2D(cf,x,options)
 %  disp([result.x result.cdf])
 %
 % EXAMPLE5 (CDF/PDF of bivariate mixture of logistic distributions)
@@ -120,7 +120,7 @@ function [result,cdf,pdf] = cf2Dist2D(cf,x,options)
 %  cf = @(t) 0.25*cf1(t) + 0.75*cf2(t);
 %  clear options;
 %  options.xN = 51;
-%  result = cf2Dist2D(cf,[],[],options)
+%  result = cf2Dist2D(cf,[],options)
 %
 % REFERENCES:
 %
@@ -142,10 +142,10 @@ function [result,cdf,pdf] = cf2Dist2D(cf,x,options)
 
 %% CHECK THE INPUT PARAMETERS
 timeVal = tic;
-narginchk(1, 4);
+narginchk(1, 3);
 
-if nargin < 4, options = []; end
-if nargin < 3, prob = []; end
+if nargin < 3, options = []; end
+%if nargin < 3, prob = []; end
 if nargin < 2, x = []; end
 
 if ~isfield(options, 'isCompound')
@@ -441,7 +441,7 @@ result.X1                  = X1;
 result.X2                  = X2;
 result.Zcdf                = Zcdf;
 result.Zpdf                = Zpdf;
-result.prob                = prob;
+%result.prob                = prob;
 result.cf                  = cfOld;
 result.isCompound          = options.isCompound;
 result.isCircular          = options.isCircular;
