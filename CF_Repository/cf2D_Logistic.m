@@ -66,7 +66,7 @@ function cf = cf2D_Logistic(t,mu,beta,coef,niid)
 %     Computation, 381, p.125314.   
 
 % (c) 2021 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 11-Apr-2021 15:03:57
+% Ver.: 27-Apr-2021 22:51:14
 
 %% ALGORITHM
 % cf = cf2D_Logistic(t,mu,beta,coef,niid)
@@ -109,9 +109,11 @@ switch sztMin
                t = t(:);
                t = [t t];
            elseif sztMax == 1
+               sz = [1,1];
                t = [t t];
            else
-               t = t(:)';
+                sz = [1,1];
+                t = t(:)';
            end
     case 2 % t is 2xN or Nx2 matrix
         if sztMax > 2
