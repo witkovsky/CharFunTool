@@ -1,4 +1,4 @@
-function [funNew,xNew] = InterpBarycentric(x,fun,xNew,options)
+function [funNew,xNew] = InterpBarycentric(x,fun,xNew,w,options)
 %   InterpBarycentric Evaluates (interpolates) function values f_new at
 %   given points x_new by barycentric interpolation from function values f
 %   given at chebpoints x. 
@@ -7,7 +7,7 @@ function [funNew,xNew] = InterpBarycentric(x,fun,xNew,options)
 %  
 % SYNTAX:
 %   funNew = InterpBarycentric(x,fun,xNew)
-%   [funNew,xNew] = InterpBarycentric(x,fun,xNew,options)
+%   [funNew,xNew] = InterpBarycentric(x,fun,xNew,w,options)
 %
 % EXAMPLE1 (Barycentric interpolant of the Sine function on (-pi,pi))
 %   x    = ChebPoints(32,[-pi,pi])';
@@ -52,24 +52,25 @@ function [funNew,xNew] = InterpBarycentric(x,fun,xNew,options)
 %     XIV: San Antonio 2013 (pp. 197-218). Springer, Cham. 
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Revision: 13-Apr-2021 13:05:00
+% Revision: 02-May-2021 20:02:41
 % Ver1.: 24-Jul-2017 10:06:48
 
 %% FUNCTION
-%  [funNew,xNew] = InterpBarycentric(x,fun,xNew,options);
+%  [funNew,xNew] = InterpBarycentric(x,fun,xNew,w,options)
 
 %% CHECK THE INPUT PARAMETERS
 
-narginchk(2, 4);
+narginchk(2, 5);
+if nargin < 5, options = []; end
+if nargin < 4, w = []; end
 if nargin < 3, xNew = []; end
-if nargin < 4, options = []; end
 
 if isempty(xNew)
     xNew = linspace(min(x),max(x))';
 end
 
-if ~isfield(options, 'isChebPts')
-    options.isChebPts = true;
+if ~isfield(options, 'isChebyshev')
+    options.isChebyshev = true;
 end
 
 %% ALGORITHM
@@ -85,15 +86,23 @@ if nx < 2
         error('small number of nodes');
 end
 
-w       = (-1).^(0:nx-1).';
-if nx  >= 4 % (Floater–Hormann) weights for interpolants d = 2, see [1]
-    w(1)    = w(1)/4;
-    w(2)    = 3*w(2)/4;
-    w(nx-1) = 3*w(nx-1)/4;
-    w(nx)   = w(nx)/4;
-else
-    w(1)    = w(1)/2;
-    w(nx)   = w(nx)/2;
+if isempty(w)
+    isChebyshev = options.isChebyshev;
+    if isChebyshev
+        w       = (-1).^(0:nx-1).';
+        w(1)    = w(1)/2;
+        w(nx)   = w(nx)/2;
+    elseif ~isChebyshev && nx  >= 4 % (Floater–Hormann) weights for interpolants d = 2, see [1]
+        w       = (-1).^(0:nx-1).';
+        w(1)    = w(1)/4;
+        w(2)    = 3*w(2)/4;
+        w(nx-1) = 3*w(nx-1)/4;
+        w(nx)   = wx(n)/4;
+    else
+        w       = (-1).^(0:nx-1).';
+        w(1)    = w(1)/2;
+        w(nx)   = w(nx)/2;
+    end
 end
 
 for i = 1:nxNew
