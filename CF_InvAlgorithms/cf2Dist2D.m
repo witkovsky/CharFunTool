@@ -1,5 +1,5 @@
 function [result,Zcdf,Zpdf] = cf2Dist2D(cf,x,options)
-%cf2Dist2D Calculates the CDF/PDF/QF from the BIVARIATE characteristic
+%cf2Dist2D Calculates the CDF/PDF/QF/RND from the BIVARIATE characteristic
 %  function CF by using the Gil-Pelaez inversion formulae using Riemann sum,
 %  as suggested in Shephard (1991).
 %
@@ -499,7 +499,7 @@ if options.isInterp
     % INTERPOLANTS of the BIVARIATE PDF / CDF / RND
     PDF   =  @(xyNew) InterpBarycentric2D(x1,x2,Zpdf,xyNew);
     CDF   =  @(xyNew) InterpBarycentric2D(x1,x2,Zcdf,xyNew);
-    RND   =  @(dim) InterpRND2D(dim,RND1,RND2,PDF1,PDF2,PDF);
+    RND   =  @(dim) InterpRND2D(dim,RND1,RND2,PDF1,PDF2,PDF,xMin,xMax);
 else
     PDF1  = [];
     CDF1  = [];
@@ -887,7 +887,7 @@ cdf = InterpCDF(x2New,x2,max(0,min(1,f)));
 end
 %% Function InterpRND2D
 function [xRND,UnderRatio] = ...
-    InterpRND2D(N,RND1,RND2,PDF1,PDF2,PDF,HappyRatio,PdfRatio)
+    InterpRND2D(N,RND1,RND2,PDF1,PDF2,PDF,xMin,xMax)
 % InterpRND2D Auxiliary function generates the (Nx2)-dimensional matrix of
 % random pairs x = [x1,x2] generated from the bivariate distribution
 % specified by the characteristic function.  
@@ -895,25 +895,17 @@ function [xRND,UnderRatio] = ...
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 12-May-2021 16:00:38
 %% ALGORITHM
-if nargin < 8
-    PdfRatio = [];
-end
 
-if nargin < 7
-    HappyRatio = [];
-end
+% Set myN as some multiple of given N 
+myN = ceil(N*1.3);
 
-if isempty(HappyRatio)
-    HappyRatio = 3.5;
-end
-
-if isempty(PdfRatio)
-    PdfRatio = 2.5;
-end
-
-% Generate candidate sample from the joint bivariate distribution created
-% from the independent marginals 
-xCandidate     = [RND1(HappyRatio*N) RND2(HappyRatio*N)];
+% Generate M = 2*myN candidate samples from the joint bivariate
+% distribution created from the equally proportional mixture of joint
+% distribution generated from independent marginals and the joint uniform
+% distribution  
+xCandidate     = [RND1(myN) RND2(myN); ...
+                  rand(myN,1)*(xMax(1)-xMin(1))+xMin(1), ...
+                  rand(myN,1)*(xMax(2)-xMin(2))+xMin(2)];
 
 % Evaluate the true PDF values for the candidate samples
 pdf            = PDF(xCandidate);
@@ -921,23 +913,24 @@ maxPDF         = max(max(pdf));
 
 % Evaluate the PDF values for the candidate samples using the candidate PDF
 % created from the independent marginals
-pdf12Marginals = PDF1(xCandidate(:,1)) .* PDF2(xCandidate(:,2));
+pdf12Marginals = (PDF1(xCandidate(:,1)).*PDF2(xCandidate(:,2)) + ...
+    1/((2*xMax(1))*(2*xMax(2))))/2;
 maxPdf12       = max(max(pdf12Marginals));
 
 % Premultiply the candidate PDF by suitable constant such that the
 % candidate PDF are greater than the required PDF values.
-pdf12Marginals = PdfRatio * maxPDF * pdf12Marginals / maxPdf12;
+pdf12Marginals = maxPDF * pdf12Marginals / maxPdf12;
 
 % Acceptance-rejection method. Select such values that fulfill the
 % required relation of the candidate PDF and the required PDF 
-idHappy        = rand(HappyRatio*N,1) .* pdf12Marginals <= pdf;
+idHappy        = rand(2*myN,1) .* pdf12Marginals <= pdf;
 xRND           = xCandidate(idHappy,:);
 
 % If the number of correct values is greater than required, save only N.
 % Otherwise print the warning message
 NHappy         = sum(idHappy);
 if NHappy >= N
-    xRND = xRND(1:N,:);
+    xRND = xRND(randperm(NHappy,N),:);
 else
     warning(['The number of generated samples ',num2str(NHappy), ...
         ' is less than required ',num2str(N)])
@@ -946,5 +939,5 @@ end
 % This is the ration of situation where the candidate PDF sample has lower
 % probability than the required PDF sample. This should be 0 if we have
 % good candidate. 
-UnderRatio = sum(pdf12Marginals - pdf < 0)/(HappyRatio*N);
+% UnderRatio = sum(pdf12Marginals - pdf < 0)/(2*N);
 end
