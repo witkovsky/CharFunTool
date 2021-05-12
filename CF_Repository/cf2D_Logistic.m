@@ -54,10 +54,10 @@ function cf = cf2D_Logistic(t,mu,beta,coef,niid)
 %
 % EXAMPLE 2:
 % % PDF/CDF of Bivariate Logistic Distribution by numerical inversion of CF
-%   mu   = [0 0];
-%   beta = [1 1];
-%   cf   = @(t) cf2D_Logistic(t,mu,beta);
-%   result = cf2Dist2D(cf)
+%   cf = @(t) cf2D_Logistic(t);
+%   clear options;
+%   options.isInterp = true;
+%   result = cf2Dist2D(cf,[],options)
 %
 % REFERENCES
 % [1] Popovic, B.V., Mijanovic, A. and Genç, A.I., 2020. On linear
@@ -66,7 +66,7 @@ function cf = cf2D_Logistic(t,mu,beta,coef,niid)
 %     Computation, 381, p.125314.   
 
 % (c) 2021 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 27-Apr-2021 22:51:14
+% Ver.: 12-May-2021 19:05:46
 
 %% ALGORITHM
 % cf = cf2D_Logistic(t,mu,beta,coef,niid)
