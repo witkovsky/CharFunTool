@@ -80,12 +80,12 @@ function [result,Zcdf,Zpdf] = cf2Dist2D(cf,x,options)
 % However, the numerical error (truncation error and/or the integration
 % error) could be and should be properly controled! See [1,2].
 %
-% EXAMPLE1 (CDF/PDF of bivariate standard normal distribution)
+% EXAMPLE1 (CDF/PDF of bivariate normal distribution)
 %  cf = @(t) exp(-(0.9*t(:,1).^2 + 0.3*t(:,2).^2 +2*0.4*t(:,1).*t(:,2))/2);
 %  result = cf2Dist2D(cf)
 %  disp([result.x result.cdf])
 %
-% EXAMPLE2 (CDF/PDF of bivariate standard normal distribution at specific x)
+% EXAMPLE2 (CDF/PDF of bivariate normal distribution at specific x)
 %  cf = @(t) exp(-(0.9*t(:,1).^2 + 0.3*t(:,2).^2 +2*0.4*t(:,1).*t(:,2))/2);
 %  x1 = linspace(-3,3,11);
 %  x2 = linspace(-3,3,21);
