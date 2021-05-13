@@ -85,21 +85,47 @@ function [result,Zcdf,Zpdf] = cf2Dist2D(cf,x,options)
 %  result = cf2Dist2D(cf)
 %  disp([result.x result.cdf])
 %
-% EXAMPLE2 (CDF/PDF of bivariate standard normal distribution)
+% EXAMPLE2 (CDF/PDF of bivariate standard normal distribution at specific x)
 %  cf = @(t) exp(-(0.9*t(:,1).^2 + 0.3*t(:,2).^2 +2*0.4*t(:,1).*t(:,2))/2);
-%  x1 = linspace(-3,3,31);
-%  x2 = linspace(-4,4,51);
+%  x1 = linspace(-3,3,11);
+%  x2 = linspace(-3,3,21);
 %  x = {x1 x2};
 %  result = cf2Dist2D(cf,x)
 %  disp([result.x result.cdf])
 %
-% EXAMPLE3 (CDF/PDF of the standard bivariate logistic distribution)
+% EXAMPLE3 (Iterpolated CDF/PDF of the standard bivariate logistic distribution)
 %  cf = @(t) cf2D_Logistic(t);
 %  clear options;
 %  options.isInterp = true;
 %  result = cf2Dist2D(cf,[],options)
 %
-% EXAMPLE4 (CDF/PDF of bivariate logistic distribution)
+% EXAMPLE4 (Iterpolated COPULA of the standard bivariate logistic distribution)
+%  cf = @(t) cf2D_Logistic(t);
+%  clear options;
+%  options.isInterp = true;
+%  options.isPlot = false;
+%  result = cf2Dist2D(cf,[],options);
+%  COPULAcdf = result.COPULAcdf;
+%  COPULApdf = result.COPULApdf;
+%  u1 = linspace(0,1,21);
+%  u2 = linspace(0,1,21);
+%  CopulaCDF = COPULAcdf({u1,u2});
+%  CopulaPDF = COPULApdf({u1,u2});
+%  [U1,U2]= meshgrid(u1,u2);
+%  figure
+%  mesh(U1,U2,CopulaCDF)
+%  xlabel('u1')
+%  ylabel('u2')
+%  zlabel('CDF')
+%  title('CDF COPULA of the Bivariate Distribution Specified by CF')
+%  figure
+%  mesh(U1,U2,CopulaPDF)
+%  xlabel('u1')
+%  ylabel('u2')
+%  zlabel('PDF')
+%  title('PDF COPULA of the Bivariate Distribution Specified by CF')
+%
+% EXAMPLE5 (Iterpolated CDF/PDF of bivariate logistic distribution)
 %  mu   = [0 2];
 %  beta = [1 2];
 %  cf   = @(t) cf2D_Logistic(t,mu,beta);
@@ -111,7 +137,7 @@ function [result,Zcdf,Zpdf] = cf2Dist2D(cf,x,options)
 %  r = RND(5000);
 %  hold on;plot(r(:,1),r(:,2),'.');hold off
 %
-% EXAMPLE5 (CDF/PDF of bivariate mixture of logistic distributions)
+% EXAMPLE6 (Iterpolated CDF/PDF of bivariate mixture of logistic distributions)
 %  mu1   = [0 2];
 %  beta1 = [1 2];
 %  cf1   = @(t) cf2D_Logistic(t,mu1,beta1);
@@ -144,7 +170,7 @@ function [result,Zcdf,Zpdf] = cf2Dist2D(cf,x,options)
 %           cf2DistBV, cf2CDF, cf2PDF, cf2QF
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 12-May-2021 18:28:01
+% Ver.: 13-May-2021 17:00:00
 
 %% ALGORITHM
 %[result,cdf,pdf] = cf2Dist2D(cf,x,options)
@@ -479,43 +505,47 @@ end
 % Create the INTERPOLANTS - Interpolation Functions
 if options.isInterp
     % INTERPOLANTS of the MARGINAL PDF / CDF / QF / RND
-    PDF1 = @(x1new)InterpPDF(x1new,x1,pdf1);
-    CDF1 = @(x1new)InterpCDF(x1new,x1,cdf1);
-    QF1  = @(prob)InterpQF(prob,x1,cdf1);
-    RND1 = @(dim)InterpRND(dim,x1,cdf1);
-    PDF2 = @(x2new)InterpPDF(x2new,x2,pdf2);
-    CDF2 = @(x2new)InterpCDF(x2new,x2,cdf2);
-    QF2  = @(prob)InterpQF(prob,x2,cdf2);
-    RND2 = @(dim)InterpRND(dim,x2,cdf2);
+    PDF1  = @(x1new) InterpPDF(x1new,x1,pdf1);
+    CDF1  = @(x1new) InterpCDF(x1new,x1,cdf1);
+    QF1   = @(prob) InterpQF(prob,x1,cdf1);
+    RND1  = @(dim) InterpRND(dim,x1,cdf1);
+    PDF2  = @(x2new) InterpPDF(x2new,x2,pdf2);
+    CDF2  = @(x2new) InterpCDF(x2new,x2,cdf2);
+    QF2   = @(prob) InterpQF(prob,x2,cdf2);
+    RND2  = @(dim) InterpRND(dim,x2,cdf2);
     % INTERPOLANTS of the CONDITIONAL PDF / CDF / QF / RND
-    PDF12 = @(x1new,x2fix) InterpPDF12(x1new,x2fix,x1,x2,t,cft,dt,PDF2);
-    CDF12 = @(x1new,x2fix) InterpCDF12(x1new,x2fix,x1,x2,t,cft,dt,cdf1,PDF2,CDF2);
-    QF12  = @(prob,x2fix)InterpQF(prob,x1,CDF12(x1,x2fix));
-    RND12 = @(dim)InterpRND(dim,x1,CDF12(x1,x2fix));
-    PDF21 = @(x2new,x1fix) InterpPDF21(x1fix,x2new,x1,x2,t,cft,dt,PDF1);
-    CDF21 = @(x2new,x1fix) InterpCDF21(x1fix,x2new,x1,x2,t,cft,dt,cdf2,CDF1);
-    QF21  = @(prob,x1fix)InterpQF(prob,x2,CDF21(x2,x1fix));
-    RND21 = @(dim)InterpRND(dim,x2,CDF21(x2,x1fix));
+    PDF12  = @(x1new,x2fix) InterpPDF12(x1new,x2fix,x1,x2,t,cft,dt,PDF2);
+    CDF12  = @(x1new,x2fix) InterpCDF12(x1new,x2fix,x1,x2,t,cft,dt,cdf1,PDF2,CDF2);
+    QF12   = @(prob,x2fix) InterpQF(prob,x1,CDF12(x1,x2fix));
+    RND12  = @(dim)InterpRND (dim,x1,CDF12(x1,x2fix));
+    PDF21  = @(x2new,x1fix) InterpPDF21(x1fix,x2new,x1,x2,t,cft,dt,PDF1);
+    CDF21  = @(x2new,x1fix) InterpCDF21(x1fix,x2new,x1,x2,t,cft,dt,cdf2,CDF1);
+    QF21   = @(prob,x1fix)InterpQF(prob,x2,CDF21(x2,x1fix));
+    RND21  = @(dim)InterpRND(dim,x2,CDF21(x2,x1fix));
     % INTERPOLANTS of the BIVARIATE PDF / CDF / RND
-    PDF   =  @(xyNew) InterpBarycentric2D(x1,x2,Zpdf,xyNew);
-    CDF   =  @(xyNew) InterpBarycentric2D(x1,x2,Zcdf,xyNew);
-    RND   =  @(dim) InterpRND2D(dim,RND1,RND2,PDF1,PDF2,PDF,xMin,xMax);
+    PDF    = @(xyNew) InterpBarycentric2D(x1,x2,Zpdf,xyNew);
+    CDF    = @(xyNew) InterpBarycentric2D(x1,x2,Zcdf,xyNew);
+    RND    = @(dim) InterpRND2D(dim,RND1,RND2,PDF1,PDF2,PDF,xMin,xMax);
+    COPULAcdf = @(u12) CopFunCDF(u12,x1,x2,Zcdf,QF1,QF2);
+    COPULApdf = @(u12) CopFunPDF(u12,x1,x2,Zpdf,QF1,QF2);
 else
-    PDF1  = [];
-    CDF1  = [];
-    QF1   = [];
-    PDF2  = [];
-    CDF2  = [];
-    QF2   = [];
-    PDF12 = [];
-    CDF12 = [];
-    QF12  = [];
-    PDF21 = [];
-    CDF21 = [];
-    QF21  = [];
-    PDF   = [];
-    CDF   = [];
-    RND   = [];
+    PDF1   = [];
+    CDF1   = [];
+    QF1    = [];
+    PDF2   = [];
+    CDF2   = [];
+    QF2    = [];
+    PDF12  = [];
+    CDF12  = [];
+    QF12   = [];
+    PDF21  = [];
+    CDF21  = [];
+    QF21   = [];
+    PDF    = [];
+    CDF    = [];
+    RND    = [];
+    COPULAcdf = [];
+    COPULApdf = [];
 end
 
 PrecisionCrit = abs(cft(end)/t(end));
@@ -543,6 +573,8 @@ if options.isInterp
     result.PDF             = PDF;
     result.CDF             = CDF;
     result.RND             = RND;
+    result.COPULAcdf       = COPULAcdf;
+    result.COPULApdf       = COPULApdf;
     result.PDF1            = PDF1;
     result.CDF1            = CDF1;
     result.QF1             = QF1;
@@ -584,6 +616,7 @@ end
 if length(x)==1
     isPlot = false;
 end
+
 if isPlot
     if options.isInterp
         x1 = linspace(xMin(1),xMax(1),101);
@@ -621,7 +654,7 @@ if isPlot
         ylabel('cdf2')
         
         % PDF
-        [X1,X2] = meshgrid(x1,x2);    
+        [X1,X2] = meshgrid(x1,x2);
         figure
         mesh(X1,X2,PDF({x1,x2}))
         title('PDF Specified by the CF')
@@ -636,6 +669,25 @@ if isPlot
         xlabel('x1')
         ylabel('x2')
         zlabel('cdf')
+               
+        % CDF COPULA
+        figure
+        u1 = linspace(0,1,51);
+        u2 = linspace(0,1,51);
+        [U1,U2]= meshgrid(u1,u2);
+        mesh(U1,U2,COPULAcdf({u1,u2}))
+        xlabel('u1')
+        ylabel('u2')
+        zlabel('CDF')
+        title('COPULA of the Bivariate Distribution Specified by the CF')
+        
+        % PDF COPULA
+        figure
+        mesh(U1,U2,COPULApdf({u1,u2}))
+        xlabel('u1')
+        ylabel('u2')
+        zlabel('PDF')
+        title('PDF COPULA of the Bivariate Distribution Specified by the CF')
         
         % Contour plot of PDF + CDF
         figure
@@ -654,71 +706,71 @@ if isPlot
         title('Contour Plot of the PDF and the CDF Specified by the CF')
         xlabel('x1')
         ylabel('x2')
+    else
+        % Marginal PDF1
+        figure
+        plot(x1,pdf1,'LineWidth',2)
+        grid
+        title('Marginal PDF1 Specified by the CF')
+        xlabel('x1')
+        ylabel('pdf1')
+        
+        % Marginal CDF1
+        figure
+        plot(x1,cdf1,'LineWidth',2)
+        grid
+        title('Marginal CDF1 Specified by the CF')
+        xlabel('x1')
+        ylabel('cdf1')
+        
+        % Marginal PDF2
+        figure
+        plot(x2,pdf2,'LineWidth',2)
+        grid
+        title('Marginal PDF2 Specified by the CF')
+        xlabel('x2')
+        ylabel('pdf2')
+        
+        % Marginal CDF2
+        figure
+        plot(x2,cdf2,'LineWidth',2)
+        grid
+        title('Marginal CDF2 Specified by the CF')
+        xlabel('x2')
+        ylabel('cdf2')
+        
+        % PDF
+        figure
+        mesh(X1,X2,Zpdf)
+        title('PDF Specified by the CF')
+        xlabel('x1')
+        ylabel('x2')
+        zlabel('pdf')
+        
+        % CDF
+        figure
+        mesh(X1,X2,Zcdf)
+        title('CDF Specified by the CF')
+        xlabel('x1')
+        ylabel('x2')
+        zlabel('cdf')
+        
+        % Contour plot of PDF + CDF
+        figure
+        [~,c1] = contour(X1,X2,Zpdf,'ShowText','on');
+        c1.LineWidth = 2;
+        hold on
+        [~,c] = contour(X1,X2,Zcdf,'ShowText','on');
+        c.LineStyle = '--';
+        c.LineWidth = 2;
+        c.LevelList = [0.01 0.05 0.1000 0.2000 0.3000 0.4000 0.5000 ...
+            0.6000 0.7000 0.8000 0.9000 0.95 0.99];
+        grid
+        hold off
+        title('Contour Plot of the PDF and the CDF Specified by the CF')
+        xlabel('x1')
+        ylabel('x2')
     end
-else
-    % Marginal PDF1
-    figure
-    plot(x1,pdf1,'LineWidth',2)
-    grid
-    title('Marginal PDF1 Specified by the CF')
-    xlabel('x1')
-    ylabel('pdf1')
-    
-    % Marginal CDF1
-    figure
-    plot(x1,cdf1,'LineWidth',2)
-    grid
-    title('Marginal CDF1 Specified by the CF')
-    xlabel('x1')
-    ylabel('cdf1')
-    
-    % Marginal PDF2
-    figure
-    plot(x2,pdf2,'LineWidth',2)
-    grid
-    title('Marginal PDF2 Specified by the CF')
-    xlabel('x2')
-    ylabel('pdf2')
-    
-    % Marginal CDF2
-    figure
-    plot(x2,cdf2,'LineWidth',2)
-    grid
-    title('Marginal CDF2 Specified by the CF')
-    xlabel('x2')
-    ylabel('cdf2')
-    
-    % PDF
-    figure
-    mesh(X1,X2,Zpdf)
-    title('PDF Specified by the CF')
-    xlabel('x1')
-    ylabel('x2')
-    zlabel('pdf')
-    
-    % CDF
-    figure
-    mesh(X1,X2,Zcdf)
-    title('CDF Specified by the CF')
-    xlabel('x1')
-    ylabel('x2')
-    zlabel('cdf')
-    
-    % Contour plot of PDF + CDF
-    figure
-    [~,c1] = contour(X1,X2,Zpdf,'ShowText','on');
-    c1.LineWidth = 2;
-    hold on
-    [~,c] = contour(X1,X2,Zcdf,'ShowText','on');
-    c.LineStyle = '--';
-    c.LineWidth = 2;
-    c.LevelList = [0.01 0.05 0.1000 0.2000 0.3000 0.4000 0.5000 ...
-        0.6000 0.7000 0.8000 0.9000 0.95 0.99];
-    grid
-    hold off
-    title('Contour Plot of the PDF and the CDF Specified by the CF')
-    xlabel('x1')
-    ylabel('x2')
 end
 end
 %% Function InterpPDF12
@@ -886,8 +938,7 @@ cdf = InterpCDF(x2New,x2,max(0,min(1,f)));
 
 end
 %% Function InterpRND2D
-function [xRND,UnderRatio] = ...
-    InterpRND2D(N,RND1,RND2,PDF1,PDF2,PDF,xMin,xMax)
+function xRND = InterpRND2D(N,RND1,RND2,PDF1,PDF2,PDF,xMin,xMax)
 % InterpRND2D Auxiliary function generates the (Nx2)-dimensional matrix of
 % random pairs x = [x1,x2] generated from the bivariate distribution
 % specified by the characteristic function.  
@@ -896,16 +947,19 @@ function [xRND,UnderRatio] = ...
 % Ver.: 12-May-2021 16:00:38
 %% ALGORITHM
 
+range1 = xMax(1) - xMin(1);
+range2 = xMax(2) - xMin(2);
+
 % Set myN as some multiple of given N 
-myN = ceil(N*1.3);
+myN = ceil(N*2);
 
 % Generate M = 2*myN candidate samples from the joint bivariate
 % distribution created from the equally proportional mixture of joint
 % distribution generated from independent marginals and the joint uniform
 % distribution  
 xCandidate     = [RND1(myN) RND2(myN); ...
-                  rand(myN,1)*(xMax(1)-xMin(1))+xMin(1), ...
-                  rand(myN,1)*(xMax(2)-xMin(2))+xMin(2)];
+                  rand(myN,1)*range1 + xMin(1), ...
+                  rand(myN,1)*range2 + xMin(2)];
 
 % Evaluate the true PDF values for the candidate samples
 pdf            = PDF(xCandidate);
@@ -913,17 +967,18 @@ maxPDF         = max(max(pdf));
 
 % Evaluate the PDF values for the candidate samples using the candidate PDF
 % created from the independent marginals
-pdf12Marginals = (PDF1(xCandidate(:,1)).*PDF2(xCandidate(:,2)) + ...
-    1/((2*xMax(1))*(2*xMax(2))))/2;
-maxPdf12       = max(max(pdf12Marginals));
+pdf12Mix      = (PDF1(xCandidate(:,1)).*PDF2(xCandidate(:,2)) + ...
+    1/(range1*range2))/2;
+maxPdf12Mix   = max(max(pdf12Mix));
+ 
 
 % Premultiply the candidate PDF by suitable constant such that the
 % candidate PDF are greater than the required PDF values.
-pdf12Marginals = maxPDF * pdf12Marginals / maxPdf12;
+pdf12Mix = maxPDF * pdf12Mix / maxPdf12Mix;
 
 % Acceptance-rejection method. Select such values that fulfill the
 % required relation of the candidate PDF and the required PDF 
-idHappy        = rand(2*myN,1) .* pdf12Marginals <= pdf;
+idHappy        = rand(2*myN,1) .* pdf12Mix <= pdf;
 xRND           = xCandidate(idHappy,:);
 
 % If the number of correct values is greater than required, save only N.
@@ -939,5 +994,52 @@ end
 % This is the ration of situation where the candidate PDF sample has lower
 % probability than the required PDF sample. This should be 0 if we have
 % good candidate. 
-% UnderRatio = sum(pdf12Marginals - pdf < 0)/(2*N);
+%UnderRatio = sum(pdf12Mix - pdf < 0)/(2*N)
+%disp([xCandidate pdf12Mix pdf (pdf12Mix-pdf)< 0])
+end
+
+%% Function CopFunCDF
+function cdf = CopFunCDF(u12,x1,x2,Zcdf,QF1,QF2)
+% CopFunCDF for given u1 in (0,1) and u2 in (0,1) Evaluates the copula
+% values of the distribution generated by the bivariate CF  
+
+% (c) Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 12-May-2021 16:00:38
+%% ALGORITHM
+
+if iscell(u12)
+    u1     = u12{1};
+    u2     = u12{2};
+    x1New  = QF1(u1);
+    x2New  = QF2(u2);
+    x12New = {x1New x2New};
+else
+    x12New = [QF1(u12(:,1)) QF2(u12(:,2))];
+end
+
+cdf = InterpBarycentric2D(x1,x2,Zcdf,x12New);
+
+end
+%% Function CopFunPDF
+function pdf = CopFunPDF(u12,x1,x2,Zpdf,QF1,QF2)
+% CopFunPDF for given u1 in (0,1) and u2 in (0,1) Evaluates the "copula"
+% values of PDF of the distribution generated by the bivariate CF  
+
+% (c) Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 12-May-2021 16:00:38
+%% ALGORITHM
+
+
+if iscell(u12)
+    u1     = u12{1};
+    u2     = u12{2};
+    x1New  = QF1(u1);
+    x2New  = QF2(u2);
+    x12New = {x1New x2New};
+else
+    x12New = [QF1(u12(:,1)) QF2(u12(:,2))];
+end
+
+pdf = InterpBarycentric2D(x1,x2,Zpdf,x12New);
+
 end
