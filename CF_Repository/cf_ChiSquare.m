@@ -76,8 +76,9 @@ function cf = cf_ChiSquare(t,df,ncp,coef,niid)
 %  IMHOF J. (1961): Computing the distribution of quadratic forms in normal
 %  variables. Biometrika 48, 419–426.
 
-% (c) 2017 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 10-May-2017 18:11:50
+% Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 22-May-2021 09:08:30
+% Rev.: 10-May-2017 18:11:50
 % Rev.: 28-Apr-2020 13:47:42
 
 %% ALGORITHM
@@ -116,7 +117,7 @@ end
 %     end
 
 % Check/set equal dimensions for the vectors coef, df, and ncp
-if ncp~=0
+if any(ncp~=0)
     [errorcode,coef,df,ncp] = distchck(3,coef(:)',df(:)',ncp(:)');
 else
     [errorcode,coef,df] = distchck(2,coef(:)',df(:)');
@@ -130,7 +131,7 @@ szt   = size(t);
 t     = t(:);
 cf    = 1;
 aux   = bsxfun(@times,t,coef);
-if ncp~=0
+if any(ncp~=0)
     aux = bsxfun(@power,(1 -2i * aux),-df/2) .* ...
         exp(bsxfun(@times,aux,1i*ncp)./(1-2i*aux));
 else
