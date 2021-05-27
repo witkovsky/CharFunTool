@@ -1,7 +1,8 @@
 function [pval,x,domain] = ChebPolyValues(coeffs,x,domain)
 % ChebPolyValues Evaluates the values of the Chebyshev polynomial specified
-% by its coefficients ate the specified grid of points x, where x = xMin +
-% xx*(xMax-xMin), and xx is grid of points from the interval [-1,1].  
+% by its coefficients at the specified grid of points x, where x = xMin +
+% xx*(xMax-xMin), with domain = [xMin, xMax] and xx being the grid of
+% points from the interval [-1,1].   
 %
 % SYNTAX:
 %   [pval,x,domain] = ChebPolyValues(coeffs,x,domain)
