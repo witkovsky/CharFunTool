@@ -12,7 +12,7 @@ function [fun,x,domain] = InterpChebValues(values,x,domain)
 %   values = sin(nodes);
 %   x      = linspace(-pi,pi)';
 %   domain = [-pi,pi];
-%   fun    = InterpChebValues(values,x,domain)
+%   fun    = InterpChebValues(values,x,domain);
 %   figure; plot(x,fun,'.-'); grid
 %   xlabel('x')
 %   ylabel('Chebyshev Interpolant')
@@ -24,7 +24,7 @@ function [fun,x,domain] = InterpChebValues(values,x,domain)
 %   values = [sin(nodes) cos(nodes) sin(nodes).*cos(nodes)];
 %   x      = linspace(-pi,pi)';
 %   domain = [-pi,pi];
-%   fun    = InterpChebValues(values,x,domain)
+%   fun    = InterpChebValues(values,x,domain);
 %   figure; plot(x,fun,'.-'); grid
 %   xlabel('x')
 %   ylabel('Chebyshev Interpolant')
@@ -83,7 +83,7 @@ n = 0:length(coeffs(:,1))-1;
 %% ALGORITHM
 
 fun  = cos(n.*acos(x))*coeffs;
-x     = domain(2)*(x + 1)/2 + domain(1)*(1 - x)/2;
+x    = domain(2)*(x + 1)/2 + domain(1)*(1 - x)/2;
 
 if size(fun,2) == 1
     fun = reshape(fun,szx);
