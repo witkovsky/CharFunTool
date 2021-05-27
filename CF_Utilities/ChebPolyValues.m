@@ -1,0 +1,92 @@
+function [pval,x,domain] = ChebPolyValues(coeffs,x,domain)
+% ChebPolyValues Evaluates the values of the Chebyshev polynomial specified
+% by its coefficients ate the specified grid of points x, where x = xMin +
+% xx*(xMax-xMin), and xx is grid of points from the interval [-1,1].  
+%
+% SYNTAX:
+%   [pval,x,domain] = ChebPolyValues(coeffs,x,domain)
+%
+% EXAMPLE1 (Chebyshev polynomial values specified by coefficients of Sine)
+%   n      = 2^5+1;
+%   nodes  = ChebPoints(n,[-pi,pi]);
+%   f      = sin(nodes);
+%   coeffs = ChebCoefficients(f);
+%   x      = linspace(-pi,pi)';
+%   pval   = ChebPolyValues(coeffs,x);
+%   figure; plot(x,pval,'.-'); grid
+%   xlabel('x')
+%   ylabel('Chebyshev polynomial')
+%   title('Chebyshev Polynomial Specified by its Coefficients')
+%
+% EXAMPLE2 (Chebyshev polynomial values of the Sine and Cosine functions)
+%   n      = 2^5+1;
+%   nodes  = ChebPoints(n,[-pi,pi]);
+%   f      = [sin(nodes) cos(nodes) sin(nodes).*cos(nodes)];
+%   coeffs = ChebCoefficients(f);
+%   domain = [-pi,pi];
+%   [pval,x] = ChebPolyValues(coeffs,[],domain);
+%   figure; plot(x,pval,'.-'); grid
+%   xlabel('x')
+%   ylabel('Chebyshev polynomial')
+%   title('Chebyshev Polynomial Specified by its Coefficients')
+%
+% EXAMPLE3 (Chebyshev polynomial values of the Normal PDF and CDF)
+%   n      = 2^7+1;
+%   nodes  = ChebPoints(n,[-8,8]);
+%   f      = [normpdf(nodes) normcdf(nodes)];
+%   coeffs = ChebCoefficients(f);
+%   x      = linspace(-4,4,101);
+%   domain = [-8, 8];
+%   [pval,x] = ChebPolyValues(coeffs,x,domain);
+%   figure; plot(x,pval,'.-'); grid
+%   xlabel('x')
+%   ylabel('Chebyshev polynomial')
+%   title('Chebyshev Polynomial Specified by its Coefficients')
+
+% Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 27-May-2021 17:56:16
+
+%% FUNCTION
+%  [pval,x,domain] = ChebPolyValues(coeffs,x,domain)
+
+%% CHECK THE INPUT PARAMETERS
+narginchk(1, 3);
+if nargin < 3, domain = []; end
+if nargin < 2, x = []; end
+
+szx = size(x);
+x   = x(:);
+
+% Set x and the domain such that x in [-1,1] and domain = [xMin, xMax]
+if isempty(domain)
+    if isempty(x)
+        domain = [-1,1];
+        x = linspace(-1,1,101)';
+    else
+        domain = [min(x),max(x)];
+        x = 2*(x(:) - domain(1))/ (domain(2)-domain(1)) - 1;
+    end
+else
+    if isempty(x)
+        x = linspace(-1,1,101)';
+    else
+        if (min(x) < domain(1) || max(x) > domain(2))
+            error('Dimension mismatch')
+        else
+            x = 2*(x(:) - domain(1))/ (domain(2)-domain(1)) - 1;
+        end
+    end
+end
+
+n = 0:length(coeffs(:,1))-1;
+
+%% ALGORITHM
+
+pval  = cos(n.*acos(x))*coeffs;
+x     = domain(2)*(x + 1)/2 + domain(1)*(1 - x)/2;
+
+if size(pval,2) == 1
+    pval = reshape(pval,szx);
+end
+
+end
