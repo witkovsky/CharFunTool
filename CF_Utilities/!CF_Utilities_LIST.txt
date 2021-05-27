@@ -28,7 +28,7 @@ INTERPOLANT Functions:
 
 InterpBarycentric
 InterpBarycentric2D
-InterpChebPolyValues
+InterpChebValues
 InterpCDF
 InterpPDF
 InterpQF
