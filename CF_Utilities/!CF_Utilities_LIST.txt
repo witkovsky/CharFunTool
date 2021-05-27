@@ -13,8 +13,11 @@ CFGLSeriesFourierIntegral
 FourierIntegral_BV
 FourierIntegral_P
 ChebFourierIntegral
+ChebCoefficients
 ChebPoints
 ChebPoly
+ChebPolyValues
+ChebValues
 IntegrandFun_BTAV
 IntegralGK
 LegendrePoints
