@@ -20,20 +20,34 @@ function coeffs = ChebCoefficients(values)
 %
 % EXAMPLE1 (Chebyshev coefficients of the Sine function on (-pi,pi))
 %   n      = 2^5+1;
-%   x      = ChebPoints(n,[-pi,pi]);
+%   domain = [-pi,pi];
+%   x      = ChebPoints(n,domain);
 %   f      = sin(x);
-%   coeffs = ChebCoefficients(f)
+%   coeffs = ChebCoefficients(f);
 %   disp([x coeffs])
+%   x      = linspace(-pi,pi)';
+%   pval   = ChebPolyValues(coeffs,x,domain);
+%   figure; plot(x,pval,'.-'); grid
+%   xlabel('x')
+%   ylabel('Chebyshev polynomial')
+%   title('Chebyshev Polynomial Values Specified by its Coefficients')
 %
 % EXAMPLE2 (Chebyshev coefficients of the Sine and the Cosine on (-pi,pi))
 %   n      = 2^5+1;
+%   domain = [-pi,pi];
 %   x      = ChebPoints(n,[-pi,pi]);
 %   f      = [sin(x) cos(x)];
-%   coeffs = ChebCoefficients(f)
+%   coeffs = ChebCoefficients(f);
 %   disp([x coeffs])
+%   x      = linspace(-pi,pi)';
+%   pval   = ChebPolyValues(coeffs,x,domain);
+%   figure; plot(x,pval,'.-'); grid
+%   xlabel('x')
+%   ylabel('Chebyshev polynomial')
+%   title('Chebyshev Polynomial Values Specified by its Coefficients')
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 26-May-2021 13:01:16
+% Ver.: 28-May-2021 14:28:24
 % Revisions: 24-Jul-2017 10:06:48
 %
 % Based on the algorithm VALS2COEFFS of ChebFun.
