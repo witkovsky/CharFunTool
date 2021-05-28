@@ -10,21 +10,26 @@ function [x, w] = ChebPoints(n,domain)
 %   [x, w] = ChebPoints(n,domain)
 %
 % EXAMPLE1 (Barycentric interpolant of the Sine function on (-pi,pi))
-%   x    = ChebPoints(32,[-pi,pi]);
-%   f    = sin(x);
-%   xNew = linspace(-pi,pi,201)';
-%   fNew = InterpBarycentric(x,f,xNew);
-%   plot(x,f,xNew,fNew,'.')
-%   disp([xNew fNew sin(xNew)])
+%   domain = [-pi,pi];
+%   x      = ChebPoints(32,domain);
+%   f      = sin(x);
+%   xNew   = linspace(domain(1),domain(2),201)';
+%   fBary  = InterpBarycentric(x,f,xNew);
+%   fCheb  = InterpChebValues(f,xNew,domain)
+%   fTrue  = sin(xNew);
+%   plot(x,f,xNew,fBary,xNew,fCheb,'.')
+%   disp([fTrue fBary fCheb])
 %
 % EXAMPLE2 (Integral of the Sine function on the interval (0,pi))
-%   [x,w] = ChebPoints(32,[0,pi]);
+%   domain = [0,pi];
+%   [x,w] = ChebPoints(32,domain);
 %   f     = sin(x);
-%   I     = w * f;
-%   disp(I)
+%   Itrue = 2;
+%   Icalc = w * f;
+%   disp([Itrue Icalc])
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 26-May-2021 13:01:16
+% Ver.: 28-May-2021 14:28:24
 % Revisions: 24-Jul-2017 10:06:48
 %
 % Based on the algorithm CHEBPTS of ChebFun.
