@@ -73,10 +73,9 @@ else
         x = linspace(-1,1,101)';
     else
         if (min(x) < domain(1) || max(x) > domain(2))
-            error('Dimension mismatch')
-        else
-            x = 2*(x(:) - domain(1))/ (domain(2)-domain(1)) - 1;
+            warning('Some values are outside the stated domain')
         end
+        x = 2*(x(:) - domain(1))/ (domain(2)-domain(1)) - 1;
     end
 end
 
