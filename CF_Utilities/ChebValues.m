@@ -21,7 +21,8 @@ function values = ChebValues(coeffs)
 %
 % EXAMPLE1 (Values of Sine function evaluated Chebyshev points on (-pi,pi))
 %   n      = 2^5+1
-%   x      = ChebPoints(n,[-pi,pi]);
+%   domain = [-pi,pi];
+%   x      = ChebPoints(n,domain);
 %   f      = sin(x);
 %   coeffs = ChebCoefficients(f);
 %   V      = ChebValues(coeffs);
@@ -29,14 +30,15 @@ function values = ChebValues(coeffs)
 %
 % EXAMPLE2 (Chebyshev values of the Sine and the Cosine on (-pi,pi))
 %   n      = 2^5+1
-%   x      = ChebPoints(n,[-pi,pi]);
+%   domain = [-pi,pi];
+%   x      = ChebPoints(n,domain);
 %   f      = [sin(x) cos(x)];
 %   coeffs = ChebCoefficients(f)
 %   V      = ChebValues(coeffs);
 %   disp([x coeffs f V])
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 26-May-2021 13:01:16
+% Ver.: 28-May-2021 14:28:24
 % Revisions: 24-Jul-2017 10:06:48
 %
 % Based on the algorithm VALS2COEFFS of ChebFun.
