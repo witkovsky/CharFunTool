@@ -9,7 +9,8 @@ function [pval,x,domain] = ChebPolyValues(coeffs,x,domain)
 %
 % EXAMPLE1 (Chebyshev polynomial values specified by coefficients of Sine)
 %   n      = 2^5+1;
-%   nodes  = ChebPoints(n,[-pi,pi]);
+%   domain = [-pi,pi];
+%   nodes  = ChebPoints(n,domain);
 %   f      = sin(nodes);
 %   coeffs = ChebCoefficients(f);
 %   x      = linspace(-pi,pi)';
@@ -21,10 +22,10 @@ function [pval,x,domain] = ChebPolyValues(coeffs,x,domain)
 %
 % EXAMPLE2 (Chebyshev polynomial values of the Sine and Cosine functions)
 %   n      = 2^5+1;
-%   nodes  = ChebPoints(n,[-pi,pi]);
+%   domain = [-pi,pi];
+%   nodes  = ChebPoints(n,domain);
 %   f      = [sin(nodes) cos(nodes) sin(nodes).*cos(nodes)];
 %   coeffs = ChebCoefficients(f);
-%   domain = [-pi,pi];
 %   [pval,x] = ChebPolyValues(coeffs,[],domain);
 %   figure; plot(x,pval,'.-'); grid
 %   xlabel('x')
@@ -45,7 +46,7 @@ function [pval,x,domain] = ChebPolyValues(coeffs,x,domain)
 %   title('Chebyshev Polynomial Specified by its Coefficients')
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 27-May-2021 17:56:16
+% Ver.: 28-May-2021 14:28:24
 
 %% FUNCTION
 %  [pval,x,domain] = ChebPolyValues(coeffs,x,domain)
@@ -86,7 +87,7 @@ n = 0:length(coeffs(:,1))-1;
 pval  = cos(n.*acos(x))*coeffs;
 x     = domain(2)*(x + 1)/2 + domain(1)*(1 - x)/2;
 
-if size(pval,2) == 1
+if all(szx) && size(pval,2) == 1
     pval = reshape(pval,szx);
 end
 
