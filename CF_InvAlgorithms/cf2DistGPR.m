@@ -267,7 +267,11 @@ if ~isempty(options.DIST)
     range              = xMax - xMin;
     dt                 = 2*pi / range;
     N                  = length(cft);
+<<<<<<< HEAD
 %   t                  = (1:N))' * dt;   % cf2DistGPT
+=======
+%   t                    = (1:N))' * dt;   % cf2DistGPT
+>>>>>>> CharFunTool
     t                  = (0.5+(0:N-1))' * dt;
     xStd               = [];
 else
