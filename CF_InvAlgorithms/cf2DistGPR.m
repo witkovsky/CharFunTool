@@ -150,7 +150,7 @@ function [result,cdf,pdf,qf] = cf2DistGPR(cf,x,prob,options)
 %           cf2DistBV, cf2CDF, cf2PDF, cf2QF
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 11-Apr-2021 15:29:45
+% Ver.: 13-Jun-2021 19:07:25
 
 %% ALGORITHM
 %[result,cdf,pdf,qf] = cf2DistGPR(cf,x,prob,options);
@@ -267,7 +267,8 @@ if ~isempty(options.DIST)
     range              = xMax - xMin;
     dt                 = 2*pi / range;
     N                  = length(cft);
-    t                  = (1:N)' * dt;
+%   t                  = (1:N))' * dt;   % cf2DistGPT
+    t                  = (0.5+(0:N-1))' * dt;
     xStd               = [];
 else
     N                  = options.N;
