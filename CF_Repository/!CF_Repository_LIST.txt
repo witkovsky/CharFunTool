@@ -13,6 +13,7 @@ cf_FisherSnedecorNC
 cf_FoldedNormal
 cf_Gamma
 cf_GeneralizedExponential
+cf_GeneralizedLindlay
 cf_Gumbel
 cf_HalfNormal
 cf_HalfNormalNC
