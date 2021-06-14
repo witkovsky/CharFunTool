@@ -4,11 +4,13 @@ function [result,cdf,pdf,qf] = cf2DistGP(cf,x,prob,options)
 %   cdf(x) = 1/2 + (1/pi) * Integral_0^inf imag(exp(-1i*t*x)*cf(t)/t)*dt.
 %   pdf(x) = (1/pi) * Integral_0^inf real(exp(-1i*t*x)*cf(t))*dt.
 %
-%  The FOURIER INTEGRALs are calculated by using the simple TRAPEZOIDAL
-%  QUADRATURE method, see below.
+% By default, in cf2DistGP the FOURIER INTEGRALs are calculated by using
+% the simple RIEMANN SUM QUADRATURE method, see [6] and also [7].
 % 
 % ALIAS NAME:
-%  cf2DistGP is an alias name for the algorithm cf2DistGPT.
+%  As of 14-Jun-2021, cf2DistGP is an alias name for the algorithm
+%  cf2DistGPR (before 14-Jun-2021 cf2DistGP was an alias name for
+%  cf2DistGPT).  
 %
 % SYNTAX:
 %  result = cf2DistGP(cf,x)
@@ -142,11 +144,19 @@ function [result,cdf,pdf,qf] = cf2DistGP(cf,x,prob,options)
 %     distribution based on numerical inversion of the compound empirical
 %     characteristic function of frequency and severity. ArXiv preprint,
 %     2017, arXiv:1701.08299.
+% [6] SHEPHARD, N.G., 1991. Numerical integration rules for multivariate
+%     inversions. Journal of Statistical Computation and Simulation,
+%     39(1-2), pp.37-46.
+% [7] HÜRLIMANN, W., 2013. Improved FFT approximations of probability
+%     functions based on modified quadrature rules. In International
+%     Mathematical Forum (Vol. 8, No. 17, pp. 829-840).   
 %
 % SEE ALSO: cf2Dist, cf2DistGP, cf2DistGPT, cf2DistGPA, cf2DistFFT,
 %           cf2DistBV, cf2CDF, cf2PDF, cf2QF
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 14-Jun-2021 15:31:47
+% Revisions:
 % Ver.: 02-Dec-2018 20:23:52
 
 %% ALGORITHM
@@ -156,6 +166,7 @@ if nargin < 4, options = []; end
 if nargin < 3, prob = []; end
 if nargin < 2, x = []; end
 
-[result,cdf,pdf,qf] = cf2DistGPT(cf,x,prob,options);
+%[result,cdf,pdf,qf] = cf2DistGPT(cf,x,prob,options); % Before 14-Jun-2021
+[result,cdf,pdf,qf] = cf2DistGPR(cf,x,prob,options); % After 14-Jun-2021
 
 end
