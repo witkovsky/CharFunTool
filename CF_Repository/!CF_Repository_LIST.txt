@@ -4,6 +4,7 @@ cf_ArcsineSymmetric
 cf_Beta
 cf_BetaNC
 cf_BetaSymmetric
+cf_BirnbaumSaunders
 cf_Chi
 cf_ChiNC
 cf_ChiSquare
