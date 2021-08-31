@@ -1,4 +1,4 @@
-CFs of general probability distributions:
+CFs of continuous probability distributions:
 
 cf_ArcsineSymmetric
 cf_Beta
@@ -41,10 +41,6 @@ cf_TSPSymmetric
 cf_Weibull
 cf_WignerSemicircle
 
-CFs of circular probability distributions:
-
-cf_vonMises
-
 CFs of log-transformed random variables:
 
 cf_LogRV_Beta
@@ -75,7 +71,45 @@ cf_LogRV_Weibull
 cf_LogRV_WilksLambda
 cf_LogRV_WilksLambdaNC
 
-CFs of symmetric probability distributions:
+CFs of circular probability distributions:
+
+cf_vonMises
+
+CFs of mixture and empirical probability distributions:
+
+cfE_DiracMixture
+cfE_Empirical
+cfE_EmpiricalBootstrapped
+cfE_EmpiricalOgive
+
+CFs of discrete probability distributions:
+
+cfN_Binomial
+cfN_Delaporte
+cfN_GeneralizedPoisson
+cfN_Geometric
+cfN_Logarithmic
+cfN_NegativeBinomial
+cfN_Poisson
+cfN_PolyaEggenberger
+cfN_Quinkert
+cfN_Waring
+
+CFs of bivariate probability distributions:
+
+cf2D_Logistic
+
+CFs of test statistics probability distributions:
+
+cfTest_Bartlett
+cfTest_CompoundSymmetry
+cfTest_EqualityCovariances
+cfTest_EqualityMeans
+cfTest_EqualityPopulations
+cfTest_Independence
+cfTest_Sphericity
+
+CFs of other/aliased symmetric probability distributions:
 
 cfS_Arcsine
 cfS_Beta
@@ -88,17 +122,8 @@ cfS_Triangular
 cfS_TSP
 cfS_Wigner
 
-CFs of test statistics probability distributions:
 
-cfTest_Bartlett
-cfTest_CompoundSymmetry
-cfTest_EqualityCovariances
-cfTest_EqualityMeans
-cfTest_EqualityPopulations
-cfTest_Independence
-cfTest_Sphericity
-
-CFs of non-negative probability distributions:
+CFs of other/aliased non-negative probability distributions:
 
 cfX_Bartlett
 cfX_Chi
@@ -114,27 +139,3 @@ cfX_Pareto
 cfX_PearsonV
 cfX_PearsonVI
 cfX_Weibull
-
-CFs of discrete probability distributions:
-
-cfN_Binomial
-cfN_Delaporte
-cfN_GeneralizedPoisson
-cfN_Geometric
-cfN_Logarithmic
-cfN_NegativeBinomial
-cfN_Poisson
-cfN_PolyaEggenberger
-cfN_Quinkert
-cfN_Waring
-
-CFs of mixture and empirical probability distributions:
-
-cfE_DiracMixture
-cfE_Empirical
-cfE_EmpiricalBootstrapped
-cfE_EmpiricalOgive
-
-CFs of bivariate probability distributions:
-
-cf2D_Logistic
