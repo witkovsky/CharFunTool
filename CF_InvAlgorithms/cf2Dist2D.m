@@ -41,6 +41,9 @@ function [result,Zcdf,Zpdf] = cf2Dist2D(cf,x,options)
 %             options.SixSigmaRule = 6 % set the rule for computing domain
 %             options.tolDiff = 1e-4   % tol for numerical differentiation
 %             options.isPlot = true    % plot the graphs of PDF/CDF
+%             options.ContourLevelList = [0.01 0.05 0.1:0.1:0.9 0.85 0.99] 
+%                                      % defines the plotted countours at
+%                                      % specified (relative) levels 
 %  options.DIST - structure with information for future evaluations.
 %             options.DIST is created automatically after first call:
 %             options.DIST.xMin  = xMin   % the lower limit of X
@@ -131,6 +134,7 @@ function [result,Zcdf,Zpdf] = cf2Dist2D(cf,x,options)
 %  cf   = @(t) cf2D_Logistic(t,mu,beta);
 %  clear options;
 %  options.isInterp = true;
+%  options.ContourLevelList = 0.05:0.1:0.95;
 %  result = cf2Dist2D(cf,[],options)
 %  % Random Sample Generator of the bivariate distribution specified by CF
 %  RND = result.RND;
@@ -170,6 +174,7 @@ function [result,Zcdf,Zpdf] = cf2Dist2D(cf,x,options)
 %           cf2DistBV, cf2CDF, cf2PDF, cf2QF
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 09-Dec-2021 18:07:29
 % Ver.: 13-May-2021 17:00:00
 
 %% ALGORITHM
@@ -276,8 +281,14 @@ if ~isfield(options, 'isInterp')
 end
 
 if ~isfield(options, 'cftTol')
-    options.cftTol = 1e-14;
+    options.cftTol = 1e-14;       
 end
+
+if ~isfield(options, 'ContourLevelList')
+    options.ContourLevelList = [0.01 0.05 0.1000 0.2000 0.3000 ...
+        0.4000 0.5000 0.6000 0.7000 0.8000 0.9000 0.95 0.99];       
+end
+
 %% GET/SET the DEFAULT parameters and the OPTIONS
 cfOld  = [];
 
@@ -693,14 +704,12 @@ if isPlot
         figure
         [~,c1] = contour(X1,X2,PDF({x1,x2}),'ShowText','on');
         c1.LineWidth = 2;
-        c1.LevelList = [0.01 0.05 0.1000 0.2000 0.3000 0.4000 0.5000 ...
-            0.6000 0.7000 0.8000 0.9000 0.95 0.99]*max(max(Zpdf));
+        c1.LevelList = options.ContourLevelList*max(max(Zpdf));
         hold on
         [~,c] = contour(X1,X2,CDF({x1,x2}),'ShowText','on');
         c.LineStyle = '--';
         c.LineWidth = 2;
-        c.LevelList = [0.01 0.05 0.1000 0.2000 0.3000 0.4000 0.5000 ...
-            0.6000 0.7000 0.8000 0.9000 0.95 0.99 ];
+        c.LevelList = options.ContourLevelList;
         grid
         hold off
         title('Contour Plot of the PDF and the CDF Specified by the CF')
