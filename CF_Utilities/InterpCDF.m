@@ -42,6 +42,7 @@ function cdf = InterpCDF(x,xGiven,cdfGiven)
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 04-Oct-2019 12:31:36
+% Revised: 04-Jan-2022 13:02:13
 
 %% ALGORITHM
 %  cdf = InterpCDF(x,xGiven,cdfGiven)
@@ -52,8 +53,8 @@ narginchk(2, 3);
 if nargin < 3
     if isstruct(xGiven)
         result = xGiven;
-        xGiven   = result.x;
-        cdfGiven = result.cdf;
+        xGiven   = sort(result.x);
+        cdfGiven = sort(result.cdf);
     else
         error('Missing Inputs')
     end
