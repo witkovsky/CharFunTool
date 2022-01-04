@@ -175,6 +175,7 @@ function [result,Zcdf,Zpdf] = cf2Dist2D(cf,x,options)
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 09-Dec-2021 18:07:29
+% Revised: 04-Jan-2022 14:24:19
 % Ver.: 13-May-2021 17:00:00
 
 %% ALGORITHM
@@ -527,6 +528,7 @@ if options.isInterp
     % INTERPOLANTS of the CONDITIONAL PDF / CDF / QF / RND
     PDF12  = @(x1new,x2fix) InterpPDF12(x1new,x2fix,x1,x2,t,cft,dt,PDF2);
     CDF12  = @(x1new,x2fix) InterpCDF12(x1new,x2fix,x1,x2,t,cft,dt,cdf1,PDF2,CDF2);
+    CDF12  = @(x1new,x2fix) InterpCDF12(x1new,x2fix,x1,x2,t,cft,dt,cdf1,CDF2);
     QF12   = @(prob,x2fix) InterpQF(prob,x1,CDF12(x1,x2fix));
     RND12  = @(dim)InterpRND (dim,x1,CDF12(x1,x2fix));
     PDF21  = @(x2new,x1fix) InterpPDF21(x1fix,x2new,x1,x2,t,cft,dt,PDF1);
