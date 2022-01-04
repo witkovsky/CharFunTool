@@ -17,7 +17,7 @@ function cf = cf_Nakagami(t,m,Omega,coef,niid)
 %  spread parameters Omega_i > 0, for i  = 1,...,N. 
 %
 %  The characteristic function of X ~ Nakagami(m,Omega) is defined by
-%   cf_Nakagami(t,m,Omega) = cf_Chi((Omega/2*m)*t,df=2*m), 
+%   cf_Nakagami(t,m,Omega) = cf_Chi(sqrt(Omega/2*m)*t,df=2*m), 
 %  where cf_Chi(t,df) denotes the characteristic function of the Chi
 %  distribution with df degrees of freedom. Hence, the characteristic
 %  function of Y is 
@@ -50,7 +50,7 @@ function cf = cf_Nakagami(t,m,Omega,coef,niid)
 %  https://en.wikipedia.org/wiki/Chi_distribution
 %
 % NOTES (from Wikipedia)
-%  The Nakagami distribution was first proposed by Nakagami in1960. It has
+%  The Nakagami distribution was first proposed by Nakagami in 1960. It has
 %  been used to model attenuation of wireless signals traversing multiple
 %  paths and to study the impact of fading channels on wireless
 %  communications. The PDF of the Nakagami distributioon is
