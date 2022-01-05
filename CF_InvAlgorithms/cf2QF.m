@@ -85,7 +85,7 @@ function [qf,pr,cdf,x,xMin,xMax,xMean,xStd,cdfMin,cdfMax] =  ...
 %  plot(x,cdf), hold off
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 05-Jan-2022 11:54:35
+% Ver.: 05-Jan-2022 17:34:23
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 7);
 if nargin < 7, interpMethod = []; end
@@ -118,7 +118,7 @@ dt       = 2*pi / range;
 t        = (0.5+(0:N-1))' * dt;
 cft      = cf(t);
 cft(N)   = cft(N)/2;
-x        = range * (-cos(pi*(0:chebyPts) / chebyPts) + 1) / 2 + xMin;
+x        = range * (-cos(pi*(0:(chebyPts-1)) / (chebyPts-1)) + 1)/2 + xMin;
 x        = x(:);
 E        = exp(-1i*x*t');
 cdf      = imag(E * (cft ./ t));
