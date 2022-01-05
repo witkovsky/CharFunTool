@@ -150,6 +150,7 @@ function [result,cdf,pdf,qf] = cf2DistGPR(cf,x,prob,options)
 %           cf2DistBV, cf2CDF, cf2PDF, cf2QF
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 05-Jan-2022 17:41:12
 % Ver.: 13-Jun-2021 19:07:25
 
 %% ALGORITHM
@@ -384,8 +385,8 @@ end
 if options.isInterp
     x0 = x;
     % Chebyshev points
-    x = (xMax-xMin) * (-cos(pi*(0:options.chebyPts) / ...
-        options.chebyPts) + 1) / 2 + xMin;
+    x = (xMax-xMin) * (-cos(pi*(0:(options.chebyPts-1)) / ...
+        (options.chebyPts-1)) + 1) / 2 + xMin;
 else
     x0 = [];
 end
