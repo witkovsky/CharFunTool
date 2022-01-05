@@ -7,7 +7,9 @@ function [result,pdf,cdf,qf,x,prob] = cf2DistGPR_Fast(cf,x,prob,options)
 %  the fitted CDF/PDF.
 %  
 % SYNTAX:
+%   result = cf2DistGPR_Fast(cf,x,prob,options)
 %   [result,pdf,cdf,qf,x,prob] = cf2DistGPR_Fast(cf,x,prob,options)
+%   [~,pdf,cdf,qf,x,prob] = cf2DistGPR_Fast(cf,x,prob,options)
 %
 % INPUT:
 %  cf      - function handle of the characteristic function (CF), 
@@ -51,7 +53,7 @@ function [result,pdf,cdf,qf,x,prob] = cf2DistGPR_Fast(cf,x,prob,options)
 %  result = cf2DistGPR_Fast(cf)
 %
 % EXAMPLE (Calculate specified quantiles from the CF)
-%  cf = @(t) exp(-t.^2/2);
+%  cf = @(t) cf_Normal(t);
 %  prob = (0:0.01:1)'; 
 %  [~,~,~,qf,~,prob] = cf2DistGPR_Fast(cf,[],prob)
 %
@@ -59,6 +61,7 @@ function [result,pdf,cdf,qf,x,prob] = cf2DistGPR_Fast(cf,x,prob,options)
 %  cf = @(t) cf_Chi(t,5);
 %  x = linspace(0,5,51)';
 %  prob = (0:0.05:1)'; 
+%  clear options
 %  options.xMin = 0;
 %  options.SixSigmaRule = 6;
 %  options.chebyPts = 201;
@@ -103,63 +106,60 @@ if ~isfield(options, 'chebyPts')
     options.chebyPts = 2^7;
 end
 
-if ~isfield(options, 'interpMethod')
-    options.interpMethod = 'barycentric';
+if isempty(prob)
+    prob = linspace(0,1,options.xN)'; 
 end
-
-if isempty(prob), prob = linspace(0,1,options.xN)'; end
 
 %% ALGORITHM
 cft      = cf(options.tolDiff*(1:4));
 cftRe    = real(cft);
 cftIm    = imag(cft);
-xMean    = (8*cftIm(1)/5 - 2*cftIm(2)/5 + 8*cftIm(3)/105 ...
-    - 2*cftIm(4)/280) / options.tolDiff;
+
+xMean    = (8*cftIm(1)/5 - 2*cftIm(2)/5 + 8*cftIm(3)/105 - ...
+            2*cftIm(4)/280) / options.tolDiff;
 xM2      = (205/72 - 16*cftRe(1)/5 + 2*cftRe(2)/5 - ...
-    16*cftRe(3)/315 + 2*cftRe(4)/560) / options.tolDiff^2;
+            16*cftRe(3)/315 + 2*cftRe(4)/560) / options.tolDiff^2;
 xStd     = sqrt(xM2 - xMean^2);
+
 xMin     = max(options.xMin,xMean - options.SixSigmaRule * xStd);
 xMax     = min(options.xMax,xMean + options.SixSigmaRule * xStd);
+
 if isempty(x) 
     x = linspace(xMin,xMax,options.xN)'; 
 end
+
 range    = xMax - xMin;
 dt       = 2*pi / range;
 t        = (0.5+(0:options.N-1))' * dt;
 cft      = cf(t);
 cft(options.N) = cft(options.N)/2;
-xCheby   = range * (-cos(pi*(0:(options.chebyPts-1)) ... 
-    / (options.chebyPts-1)) + 1) / 2 + xMin;
+
+xCheby   = range * (-cos(pi*(0:(options.chebyPts-1)) / ...
+    (options.chebyPts-1)) + 1) / 2 + xMin;
 xCheby   = xCheby(:);
+
 ExpCheby = exp(-1i*xCheby*t');
 pdfCheby = max(0,(real(ExpCheby * cft) * dt) / pi);
 cdfCheby = max(0,min(1,0.5 - (imag(ExpCheby * (cft ./ t)) * dt) / pi));
 cdfMin   = min(cdfCheby);
 cdfMax   = max(cdfCheby);
+
 prob(prob<cdfMin) = NaN;
 prob(prob>cdfMax) = NaN;
-szp      = size(prob);
-prob     = prob(:);
+szp  = size(prob);
+prob = prob(:);
 [probSort,probID] = sort(prob);
+
 x(x<xMin) = NaN;
 x(x>xMax) = NaN;
-szx       = size(x);
-x         = x(:);
+szx = size(x);
+x   = x(:);
 [xSort,xID] = sort(x);
-switch lower(options.interpMethod)
-    case {'linear',0}
-        pdf(xID) = max(0,interp1(xCheby,pdfCheby,xSort));
-        cdf(xID) = max(0,min(1,interp1(xCheby,cdfCheby,xSort)));
-        qf(probID) = interp1(cdfCheby,xCheby,probSort);
-    case {'barycentric',1}
-        pdf(xID) = max(0,InterpBarycentric(xCheby,pdfCheby,xSort));
-        cdf(xID) = max(0,min(1,InterpBarycentric(xCheby,cdfCheby,xSort)));
-        qf(probID) = InterpBarycentric(cdfCheby,xCheby,probSort);
-    otherwise
-        pdf(xID) = max(0,InterpBarycentric(xCheby,pdfCheby,xSort));
-        cdf(xID) = max(0,min(1,InterpBarycentric(xCheby,cdfCheby,xSort)));
-        qf(probID) = InterpBarycentric(cdfCheby,xCheby,probSort);
-end
+
+pdf(xID)   = max(0,InterpBarycentric(xCheby,pdfCheby,xSort));
+cdf(xID)   = max(0,min(1,InterpBarycentric(xCheby,cdfCheby,xSort)));
+qf(probID) = InterpBarycentric(cdfCheby,xCheby,probSort);
+
 pdf  = reshape(pdf,szx);
 cdf  = reshape(cdf,szx);
 qf   = reshape(qf,szp);
