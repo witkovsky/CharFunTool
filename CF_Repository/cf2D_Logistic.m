@@ -1,34 +1,34 @@
-function cf = cf2D_Logistic(t,mu,beta,coef,niid)
+function cf = cf2D_Logistic(t,mu,sigma,coef,niid)
 %% cf2D_Logistic  
 %  Characteristic function of a linear combination (resp. convolution) of
 %  independent BIVARIATE LOGISTIC random variables, X = (X1,X2), with
-%  location parameters mu = (mu1,mu2) (real), and scale parameters beta =
-%  (beta1,beta2) > 0.  
+%  location parameters mu = (mu1,mu2) (real), and scale parameters sigma =
+%  (sigma1,sigma2) > 0.  
 %
 %  That is, cf2D_Logistic evaluates the characteristic function cf(t1,t2)
 %  of Y = (Y1,Y2) =  sum_{i=1}^N (coef1_i * X1_i,coef2_i *X2_i), where X_i
-%  = (X1_i,X2_i) ~ BivariateLogistic ((mu1_i,nu2_i),(beta1_i,beta2_i)) are 
-%  inedependent bivariate random vectors, with location parameters mu_i =
-%  (mu1_i,nu2_i) and the scale parameters beta_i = (beta1_i,beta2_i) > 0,
-%  for i = 1,...,N.  
+%  = (X1_i,X2_i) ~ BivariateLogistic ((mu1_i,nu2_i),(sigma1_i,sigma2_i))
+%  are inedependent bivariate random vectors, with location parameters mu_i
+%  = (mu1_i,nu2_i) and the scale parameters sigma_i = (sigma1_i,sigma2_i) >
+%  0, for i = 1,...,N.
 % 
 %  In fact, the characteristic function of Y, cf_Y(t1,t2), is specified as
 %  cf_Y(t1,t2) = cf_X1(coef11*t1,coef21*t2)*...*cf_XN(coef1N*t1,coef2N*t2).
 %  
 %
 % SYNTAX:
-%  cf = cf2D_Logistic(t,mu,beta,coef,niid)
+%  cf = cf2D_Logistic(t,mu,sigma,coef,niid)
 %
 % INPUTS:
-%  t     - matrix t = [t1 t2] of real values, where the CF is evaluated.
-%  mu    - matrix mu = [mu1 mu2] of real location parameters. If empty,
-%          default value is mu = [0 0].   
-%  beta  - matrix beta = [beta1 beta2] of the scale parameters beta > 0. If
-%          empty, default value is beta = [1 1].  
+%  t      - matrix t = [t1 t2] of real values, where the CF is evaluated.
+%  mu     - matrix mu = [mu1 mu2] of real location parameters. If empty,
+%           default value is mu = [0 0].   
+%  sigma  - matrix sigma = [sigma1 sigma2] of the scale parameters sigma >
+%           0. If empty, default value is sigma = [1 1].  
 %  coef  - matrix of the coefficients, coef = [coef1 coef2], of the linear
-%         combination of the BIVARIATE LOGISTIC random vectors. If coef is
-%         (1x2)-vector, it is assumed that all coefficients are equal. If
-%         empty, default value is coef = [1 1].
+%          combination of the BIVARIATE LOGISTIC random vectors. If coef is
+%          (1x2)-vector, it is assumed that all coefficients are equal. If
+%          empty, default value is coef = [1 1].
 %  niid  - scalar convolution coeficient niid, such that Z = Y + ... + Y is
 %          sum of niid iid random variables Y, where each Y = sum_{i=1}^N
 %          coef(i) * X_i is independently and identically distributed
@@ -40,8 +40,8 @@ function cf = cf2D_Logistic(t,mu,beta,coef,niid)
 % EXAMPLE 1:
 % % CF of the Bivariate Logistic RV
 %   mu   = [0 0];
-%   beta = [1 1];
-%   cf   = @(t) cf2D_Logistic(t,mu,beta);
+%   sigma = [1 1];
+%   cf   = @(t) cf2D_Logistic(t,mu,sigma);
 %   tt   = linspace(-10,10,51);
 %   [t1 t2] = meshgrid(tt,tt);
 %   t = [t1(:) t2(:)];
@@ -65,34 +65,35 @@ function cf = cf2D_Logistic(t,mu,beta,coef,niid)
 %     application to financial returns. Applied Mathematics and
 %     Computation, 381, p.125314.   
 
-% (c) 2021 Viktor Witkovsky (witkovsky@gmail.com)
+% (c) Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 06-Jan-2022 20:18:39
 % Ver.: 12-May-2021 19:05:46
 
 %% ALGORITHM
-% cf = cf2D_Logistic(t,mu,beta,coef,niid)
+% cf = cf2D_Logistic(t,mu,sigma,coef,niid)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 5);
 if nargin < 5, niid = []; end
 if nargin < 4, coef = []; end
-if nargin < 3, beta = []; end
+if nargin < 3, sigma = []; end
 if nargin < 2, mu = []; end
 
 %%
 if isempty(mu), mu = [0,0]; end
-if isempty(beta), beta = [1,1]; end
+if isempty(sigma), sigma = [1,1]; end
 if isempty(coef), coef = [1,1]; end
 
 
 %% Equal size of the parameters   
 
-[err1,m1,b1,c1] = distchck(3,mu(:,1)',beta(:,1)',coef(:,1)');
-[err2,m2,b2,c2] = distchck(3,mu(:,2)',beta(:,2)',coef(:,2)');
+[err1,m1,b1,c1] = distchck(3,mu(:,1)',sigma(:,1)',coef(:,1)');
+[err2,m2,b2,c2] = distchck(3,mu(:,2)',sigma(:,2)',coef(:,2)');
 if err1 + err2 > 0
     error(message('InputSizeMismatch'));
 end
 mu   = [m1; m2];
-beta = [b1; b2];
+sigma = [b1; b2];
 coef = [c1; c2];
 N = length(c1);
 
@@ -131,7 +132,7 @@ end
 cf = 0;
 for i = 1:N
     cf = cf + cfLog(t(:,1),t(:,2),mu(1,i),mu(2,i),...
-        beta(1,i),beta(2,i),coef(1,i),coef(2,i));
+        sigma(1,i),sigma(2,i),coef(1,i),coef(2,i));
 end
 cf = exp(cf);
 cf = reshape(cf,sz);
@@ -148,12 +149,12 @@ end
 
 end
 %% Function cfLog
-function cf = cfLog(t1,t2,mu1,mu2,beta1,beta2,coef1,coef2)
+function cf = cfLog(t1,t2,mu1,mu2,sigma1,sigma2,coef1,coef2)
 
 cf = 1i*mu1*coef1*t1 + 1i*mu2*coef2*t2 + ...
-    GammaLogVW(1-1i*beta1*coef1*t1) + ...
-    GammaLogVW(1-1i*beta2*coef2*t2) + ...
-    GammaLogVW(1+1i*beta1*coef1*t1+1i*beta2*coef2*t2);
+    GammaLogVW(1-1i*sigma1*coef1*t1) + ...
+    GammaLogVW(1-1i*sigma2*coef2*t2) + ...
+    GammaLogVW(1+1i*sigma1*coef1*t1+1i*sigma2*coef2*t2);
 end
 %% Function GammaLogVW
 function f = GammaLogVW(z)
