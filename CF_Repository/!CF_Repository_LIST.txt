@@ -98,6 +98,7 @@ cfN_Waring
 CFs of bivariate probability distributions:
 
 cf2D_Logistic
+cf2D_LogisticESD
 
 CFs of test statistics probability distributions:
 
