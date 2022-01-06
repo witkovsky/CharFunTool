@@ -1,12 +1,19 @@
 function [result,Zcdf,Zpdf] = cf2Dist2D(cf,x,options)
 %cf2Dist2D Calculates the CDF/PDF/QF/RND from the BIVARIATE characteristic
-%  function CF by using the Gil-Pelaez inversion formulae using Riemann sum,
-%  as suggested in Shephard (1991).
+%  function CF by using the Gil-Pelaez inversion formulae. The reuired
+%  FOURIER INTEGRALs are calculated by using the simple RIEMANN SUM
+%  QUADRATURE method, as suggested by Shephard, for more details see [1,2].
+% 
+%  The numerical inversion of the bivariate characteristic function is a
+%  complex and computationally demanding task. In order to achieve adequate
+%  calculation efficiency, it was necessary to reduce the demands on the
+%  accuracy of the results. The algorithm with default settings provides
+%  good results of calculated PDF and CDF for typical values of the
+%  distribution, with possibly low accuracy for extreme values of the input
+%  variable x = {x1, x2}. If necessary, it is advisable to change the
+%  control parameters using the options.
 %
-%  The FOURIER INTEGRALs are calculated by using the simple RIEMANN SUM
-%  QUADRATURE method. For more details see [1,2].
-%
-%  The algorithm cf2Dist2D is part of the MATLAB toolboc CharFunTool:
+%  The algorithm cf2Dist2D is part of the MATLAB toolbox CharFunTool:
 %  https://github.com/witkovsky/CharFunTool
 %
 % SYNTAX:
@@ -22,16 +29,13 @@ function [result,Zcdf,Zpdf] = cf2Dist2D(cf,x,options)
 %            If x = [], the algorithm sets the automatic values, such that
 %            x = meshgrid(x1,x2) covers the support of the distribution.
 %  options - structure with the following default parameters:
-%             options.isCompound = false % treat the compound distributions
-%                                        % of the RV Y = X_1 + ... + X_N,
-%                                        % where N is discrete RV and X>=0
-%                                        % are iid RVs from nonnegative
-%                                        % continuous distribution.
-%             options.isCircular = false % treat the circular
-%                                        % distributions on (-pi,pi)
-%             options.isInterp   = false % create and use the interpolant
-%                                          functions for PDF/CDF/QF/RND
+%             options.isInterp = false % create and use the interpolant
+%                                        functions for PDF/CDF/QF/RND
+%                                        Selected interpolants - works
+%                                        for marginal distributions
 %             options.N = 2^8          % N points used quadrature rule
+%             options.chebyPts = 2^6+1 % number of Chebyshev points used
+%                                      % for interpolants
 %             options.xMin = -Inf      % set the lower limit of X
 %             options.xMax = Inf       % set the lower limit of X
 %             options.xMean = []       % set the MEAN value of X
@@ -41,7 +45,7 @@ function [result,Zcdf,Zpdf] = cf2Dist2D(cf,x,options)
 %             options.SixSigmaRule = 6 % set the rule for computing domain
 %             options.tolDiff = 1e-4   % tol for numerical differentiation
 %             options.isPlot = true    % plot the graphs of PDF/CDF
-%             options.ContourLevelList = [0.01 0.05 0.1:0.1:0.9 0.85 0.99] 
+%             options.ContourLevelList = [0.01 0.05 0.1:0.1:0.9 0.95 0.99] 
 %                                      % defines the plotted countours at
 %                                      % specified (relative) levels 
 %  options.DIST - structure with information for future evaluations.
@@ -50,19 +54,29 @@ function [result,Zcdf,Zpdf] = cf2Dist2D(cf,x,options)
 %             options.DIST.xMax  = xMax   % the upper limit of X
 %             options.DIST.xMean = xMean  % the MEAN value of X,
 %             options.DIST.cft   = cft    % CF evaluated at t_j : cf(t_j).
+%             options.DIST.cft1  = cft1;  % marginal CF evaluated at t1.
+%             options.DIST.cft2  = cft2;  % marginal CF evaluated at t2.
+%             options.DIST.N     = N;     % N points used quadrature rule
+%             options.DIST.t     = t;     % t pairs of values where cf was
+%                                         % evaluated
+%             options.DIST.t1    = t1;    % t1 values where cf1 was
+%                                         % evaluated
+%             options.DIST.t2    = t2;    % t2 values where cf2 was
+%                                         % evaluated
+%             options.DIST.dt    = dt;    % pair of delta difference in t.
 %
-% REMARKS:
+% REMARKS: 
 % If options.DIST is provided, then cf2Dist2D evaluates CDF/PDF based on
-% this information only (it is useful, e.g., for subsequent evaluation of
-% the quantiles). options.DIST is created automatically after first call.
-% This is supposed to be much faster, bacause there is no need for further
-% evaluations of the characteristic function. In fact, in such case the
-% function handle of the CF is not required, i.e. in such case set cf = [];
+% this information only. options.DIST is created automatically after first
+% call. This is supposed to be much faster, bacause there is no need for
+% further evaluations of the characteristic function. In fact, in such case
+% the function handle of the CF is not required, i.e. in such case set cf =
+% [];
 %
 % OUTPUT:
 %  result   - structure with CDF/PDF/QF and further details,
-%  cdf      - vector of CDF values evaluated at x,
-%  pdf      - vector of PDF values evaluated at x,
+%  Zcdf     - vector or matrix of CDF values evaluated at specified x,
+%  Zpdf     - vector or matrix of PDF values evaluated at specified x,
 %
 % REMARKS:
 % The required integrals are evaluated approximately by using the simple
@@ -90,8 +104,8 @@ function [result,Zcdf,Zpdf] = cf2Dist2D(cf,x,options)
 %
 % EXAMPLE2 (CDF/PDF of bivariate normal distribution at specific x)
 %  cf = @(t) exp(-(0.9*t(:,1).^2 + 0.3*t(:,2).^2 +2*0.4*t(:,1).*t(:,2))/2);
-%  x1 = linspace(-3,3,11);
-%  x2 = linspace(-3,3,21);
+%  x1 = linspace(-3,3,31);
+%  x2 = linspace(-3,3,31);
 %  x = {x1 x2};
 %  result = cf2Dist2D(cf,x)
 %  disp([result.x result.cdf])
@@ -128,38 +142,20 @@ function [result,Zcdf,Zpdf] = cf2Dist2D(cf,x,options)
 %  zlabel('PDF')
 %  title('PDF COPULA of the Bivariate Distribution Specified by CF')
 %
-% EXAMPLE5 (Iterpolated CDF/PDF of bivariate logistic distribution)
-%  mu   = [0 2];
-%  beta = [1 2];
-%  cf   = @(t) cf2D_Logistic(t,mu,beta);
+% EXAMPLE5 (CDF/PDF of bivariate mixture of logistic distributions)
+%  mu1    = [1 2];
+%  sigma1 = [1 2];
+%  cf1    = @(t) cf2D_Logistic(t,mu1,sigma1);
+%  mu2    = [-1 0];
+%  sigma2 = [2 1];
+%  cf2    = @(t) cf2D_Logistic(t,mu2,sigma2);
+%  cf     = @(t) 0.25*cf1(t) + 0.75*cf2(t);
 %  clear options;
 %  options.isInterp = true;
-%  options.ContourLevelList = 0.05:0.1:0.95;
+%  options.N = 2^9;          
+%  options.chebyPts = 2^7;
+%  options.ContourLevelList = [0.01 0.05 0.1 0.2:0.2:0.8 0.9 0.95 0.99];
 %  result = cf2Dist2D(cf,[],options)
-%  % Random Sample Generator of the bivariate distribution specified by CF
-%  RND = result.RND;
-%  r = RND(5000);
-%  hold on;plot(r(:,1),r(:,2),'.');hold off
-%
-% EXAMPLE6 (Iterpolated CDF/PDF of bivariate mixture of logistic distributions)
-%  mu1   = [0 2];
-%  beta1 = [1 2];
-%  cf1   = @(t) cf2D_Logistic(t,mu1,beta1);
-%  mu2   = [2 1];
-%  beta2 = [2 1];
-%  cf2   = @(t) cf2D_Logistic(t,mu2,beta2);
-%  cf    = @(t) 0.25*cf1(t) + 0.75*cf2(t);
-%  clear options;
-%  options.xN = 51;
-%  options.isInterp = true;
-%  result = cf2Dist2D(cf,[],options)
-%  % Get the Interpolant functions
-%  PDF = result.PDF;
-%  CDF = result.CDF;
-%  RND = result.RND;
-%  % Generate random sample from the bivariate distribution specified by CF
-%  r = RND(5000);
-%  hold on;plot(r(:,1),r(:,2),'.');hold off
 %
 % REFERENCES:
 %
@@ -174,6 +170,7 @@ function [result,Zcdf,Zpdf] = cf2Dist2D(cf,x,options)
 %           cf2DistBV, cf2CDF, cf2PDF, cf2QF
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 06-Jan-2022 16:55:48
 % Ver.: 04-Jan-2022 19:57:42
 % Ver.: 09-Dec-2021 18:07:29
 % Ver.: 13-May-2021 17:00:00
@@ -186,31 +183,14 @@ timeVal = tic;
 narginchk(1, 3);
 
 if nargin < 3, options = []; end
-%if nargin < 3, prob = []; end
 if nargin < 2, x = []; end
 
-if ~isfield(options, 'isCompound')
-    options.isCompound = false;
-end
-
-if ~isfield(options, 'isCircular')
-    options.isCircular = false;
-end
-
 if ~isfield(options, 'N')
-    if options.isCompound
-        options.N = 2^8;
-    else
-        options.N = 2^8; % Set large N to improve the precision N = 2^10?
-    end
+    options.N = 2^8; % Set large N to improve the precision, e.g. N = 2^10
 end
 
 if ~isfield(options, 'xMin')
-    if options.isCompound
-        options.xMin = [0 0];
-    else
-        options.xMin = [-Inf -Inf];
-    end
+    options.xMin = [-Inf -Inf];
 end
 
 if ~isfield(options, 'xMax')
@@ -234,11 +214,7 @@ if ~isfield(options, 'T')
 end
 
 if ~isfield(options, 'SixSigmaRule')
-    if options.isCompound
-        options.SixSigmaRule = 10;
-    else
-        options.SixSigmaRule = 6;
-    end
+    options.SixSigmaRule = 6;
 end
 
 if ~isfield(options, 'tolDiff')
@@ -270,7 +246,7 @@ if ~isfield(options, 'xN')
 end
 
 if ~isfield(options, 'chebyPts')
-    options.chebyPts = 2^6;
+    options.chebyPts = 2^6+1;
 end
 
 if ~isfield(options, 'correctedCDF')
@@ -399,10 +375,10 @@ if isempty(x)
     if options.isInterp
         % Chebyshev points if x = [];
         isMeshed = false;
-        x1 = (xMax(1)-xMin(1)) * (-cos(pi*(0:options.chebyPts) / ...
-            options.chebyPts) + 1) / 2 + xMin(1);
-        x2 = (xMax(2)-xMin(2)) * (-cos(pi*(0:options.chebyPts) / ...
-            options.chebyPts) + 1) / 2 + xMin(2);
+        x1 = (xMax(1)-xMin(1)) * (-cos(pi*(0:(options.chebyPts-1)) / ...
+            (options.chebyPts-1)) + 1) / 2 + xMin(1);
+        x2 = (xMax(2)-xMin(2)) * (-cos(pi*(0:(options.chebyPts-1)) / ...
+            (options.chebyPts-1)) + 1) / 2 + xMin(2);
         [X1,X2] = meshgrid(x1,x2);
         x = [X1(:) X2(:)];
     else
@@ -526,18 +502,18 @@ if options.isInterp
     QF2   = @(prob) InterpQF(prob,x2,cdf2);
     RND2  = @(dim) InterpRND(dim,x2,cdf2);
     % INTERPOLANTS of the CONDITIONAL PDF / CDF / QF / RND
-    PDF12  = @(x1new,x2fix) InterpPDF12(x1new,x2fix,x1,x2,t,cft,dt,PDF2);
-    CDF12  = @(x1new,x2fix) InterpCDF12(x1new,x2fix,x1,x2,t,cft,dt,cdf1,CDF2);
-    QF12   = @(prob,x2fix) InterpQF(prob,x1,CDF12(x1,x2fix));
-    RND12  = @(dim)InterpRND (dim,x1,CDF12(x1,x2fix));
-    PDF21  = @(x2new,x1fix) InterpPDF21(x1fix,x2new,x1,x2,t,cft,dt,PDF1);
-    CDF21  = @(x2new,x1fix) InterpCDF21(x1fix,x2new,x1,x2,t,cft,dt,cdf2,CDF1);
-    QF21   = @(prob,x1fix)InterpQF(prob,x2,CDF21(x2,x1fix));
-    RND21  = @(dim)InterpRND(dim,x2,CDF21(x2,x1fix));
+%     PDF12  = @(x1new,x2fix) InterpPDF12(x1new,x2fix,x1,x2,t,cft,dt,PDF2);
+%     CDF12  = @(x1new,x2fix) InterpCDF12(x1new,x2fix,x1,x2,t,cft,dt,cdf1,CDF2);
+%     QF12   = @(prob,x2fix) InterpQF(prob,x1,CDF12(x1,x2fix));
+%     RND12  = @(dim)InterpRND (dim,x1,CDF12(x1,x2fix));
+%     PDF21  = @(x2new,x1fix) InterpPDF21(x1fix,x2new,x1,x2,t,cft,dt,PDF1);
+%     CDF21  = @(x2new,x1fix) InterpCDF21(x1fix,x2new,x1,x2,t,cft,dt,cdf2,CDF1);
+%     QF21   = @(prob,x1fix)InterpQF(prob,x2,CDF21(x2,x1fix));
+%     RND21  = @(dim)InterpRND(dim,x2,CDF21(x2,x1fix));
     % INTERPOLANTS of the BIVARIATE PDF / CDF / RND
     PDF    = @(xyNew) InterpBarycentric2D(x1,x2,Zpdf,xyNew);
     CDF    = @(xyNew) InterpBarycentric2D(x1,x2,Zcdf,xyNew);
-    RND    = @(dim) InterpRND2D(dim,RND1,RND2,PDF1,PDF2,PDF,xMin,xMax);
+%     RND    = @(dim) InterpRND2D(dim,RND1,RND2,PDF1,PDF2,PDF,xMin,xMax);
     COPULAcdf = @(u12) CopFunCDF(u12,x1,x2,Zcdf,QF1,QF2);
     COPULApdf = @(u12) CopFunPDF(u12,x1,x2,Zpdf,QF1,QF2);
 else
@@ -547,15 +523,15 @@ else
     PDF2   = [];
     CDF2   = [];
     QF2    = [];
-    PDF12  = [];
-    CDF12  = [];
-    QF12   = [];
-    PDF21  = [];
-    CDF21  = [];
-    QF21   = [];
+%     PDF12  = [];
+%     CDF12  = [];
+%     QF12   = [];
+%     PDF21  = [];
+%     CDF21  = [];
+%     QF21   = [];
     PDF    = [];
     CDF    = [];
-    RND    = [];
+%     RND    = [];
     COPULAcdf = [];
     COPULApdf = [];
 end
@@ -584,7 +560,7 @@ result.cf                  = cfOld;
 if options.isInterp
     result.PDF             = PDF;
     result.CDF             = CDF;
-    result.RND             = RND;
+%    result.RND             = RND;
     result.COPULAcdf       = COPULAcdf;
     result.COPULApdf       = COPULApdf;
     result.PDF1            = PDF1;
@@ -595,17 +571,15 @@ if options.isInterp
     result.CDF2            = CDF2;
     result.QF2             = QF2;
     result.RND2            = RND2;
-    result.PDF12           = PDF12;
-    result.CDF12           = CDF12;
-    result.QF12            = QF12;
-    result.RND12           = RND12;
-    result.PDF21           = PDF21;
-    result.CDF21           = CDF21;
-    result.QF21            = QF21;
-    result.RND21           = RND21;
+%     result.PDF12           = PDF12;
+%     result.CDF12           = CDF12;
+%     result.QF12            = QF12;
+%     result.RND12           = RND12;
+%     result.PDF21           = PDF21;
+%     result.CDF21           = CDF21;
+%     result.QF21            = QF21;
+%     result.RND21           = RND21;
 end
-result.isCompound          = options.isCompound;
-result.isCircular          = options.isCircular;
 result.isInterp            = options.isInterp;
 result.SixSigmaRule        = options.SixSigmaRule;
 result.N                   = N;
@@ -783,231 +757,230 @@ if isPlot
     end
 end
 end
-%% Function InterpPDF12
-function pdf = InterpPDF12(x1New,x2Given,x1,x2,t,cft,dt,PDF2)
-% InterpPDF12 Auxiliary function evaluates the conditional PDF for x1New
-% and given x2Given.
-
-% (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 01-May-2021 14:20:34
-
-%% ALGORITHM
-if isempty(x1New)
-    x1New = x1;
-end
-
-if isempty(x2Given)
-    x2Given = mean(x2);
-end
-
-% PDF12a = @(x2fix) (2 * dt(1) * dt(2) / (2*pi)^2 / PDF2(x2fix)) ...
-%     * max(0,real(exp(-1i*[x1 x2fix*ones(size(x1))]*t')*cft));
-% PDF12 =@(x1new,x2fix) InterpPDF(x1new,x1,PDF12a(x2fix));
-
-% WARNING: Out-of-range
-xMin = min(x1);
-xMax = max(x1);
-if any(x1New < xMin) || any(x1New > xMax)
-    warning('VW:CharFunTool:cf2Dist2D',['x out-of-range: ', ...
-        '[x1Min, x1Max] = [',num2str(xMin),...
-        ', ',num2str(xMax),'] !']);
-end
-xMin = min(x2);
-xMax = max(x2);
-if x2Given < xMin || x2Given > xMax
-    warning('VW:CharFunTool:cf2Dist2D',['x out-of-range: ', ...
-        '[x2Min, x2Max] = [',num2str(xMin),...
-        ', ',num2str(xMax),'] !']);
-end
-
-
-pdf = InterpPDF(x1New,x1,2*dt(1)*dt(2)/(2*pi)^2/PDF2(x2Given)* ...
-    max(0,real(exp(-1i*[x1 x2Given*ones(size(x1))]*t')*cft)));
-end
-%% Function InterpPDF21
-function pdf = InterpPDF21(x1Given,x2New,x1,x2,t,cft,dt,PDF1)
-% InterpPDF21 Auxiliary function evaluates the conditional PDF for x2New
-% and given x1Given.
-
-% (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 01-May-2021 14:20:34
-
-%% ALGORITHM
-if isempty(x2New)
-    x2New = x2;
-end
-
-if isempty(x1Given)
-    x1Given = mean(x1);
-end
-% PDF21a = @(x1fix) (2 * dt(1) * dt(2) / (2*pi)^2 / PDF1(x1fix)) ...
-%     * max(0,real(exp(-1i*[x1fix*ones(size(x2)) x2]*t')*cft));
-% PDF21 =@(x2new,x1fix) InterpPDF(x2new,x2,PDF21a(x1fix));
-
-% WARNING: Out-of-range
-xMin = min(x2);
-xMax = max(x2);
-if any(x2New < xMin) || any(x2New > xMax)
-    warning('VW:CharFunTool:cf2Dist2D',['x out-of-range: ', ...
-        '[x2Min, x2Max] = [',num2str(xMin),...
-        ', ',num2str(xMax),'] !']);
-end
-xMin = min(x1);
-xMax = max(x1);
-if x1Given < xMin || x1Given > xMax
-    warning('VW:CharFunTool:cf2Dist2D',['x out-of-range: ', ...
-        '[x1Min, x1Max] = [',num2str(xMin),...
-        ', ',num2str(xMax),'] !']);
-end
-
-pdf = InterpPDF(x2New,x2,2*dt(1)*dt(2)/(2*pi)^2/PDF1(x1Given)* ...
-    max(0,real(exp(-1i*[x1Given*ones(size(x2)) x2]*t')*cft)));
-end
-%% Function InterpCDF12
-function cdf = InterpCDF12(x1New,x2Given,x1,x2,t,cft,dt,cdf1,CDF2)
-% InterpCDF12 Auxiliary function evaluates the conditional CDF for x1New
-% and given x2Given.
-
-% (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 01-May-2021 14:20:34
-
-%% ALGORITHM
-if isempty(x1New)
-    x1New = x1;
-end
-
-if isempty(x2Given)
-    x2Given = mean(x2);
-end
-
-% WARNING: Out-of-range
-xMin = min(x1);
-xMax = max(x1);
-if any(x1New < xMin) || any(x1New > xMax)
-    warning('VW:CharFunTool:cf2Dist2D',['x out-of-range: ', ...
-        '[x1Min, x1Max] = [',num2str(xMin),...
-        ', ',num2str(xMax),'] !']);
-end
-xMin = min(x2);
-xMax = max(x2);
-if x2Given < xMin || x2Given > xMax
-    warning('VW:CharFunTool:cf2Dist2D',['x out-of-range: ', ...
-        '[x2Min, x2Max] = [',num2str(xMin),...
-        ', ',num2str(xMax),'] !']);
-end
-
-cft = cft ./ t(:,1) ./ t(:,2);
-c   = -2 * dt(1) * dt(2) / (2*pi)^2;
-f   = (cdf1 + CDF2(x2Given))/2 - 0.25;
-f   = f + c * real(exp(-1i*[x1 x2Given*ones(size(x1))]*t')*cft);
-f   = f / CDF2(x2Given);
-%f   = f / PDF2(x2Given);
-cdf = InterpCDF(x1New,x1,max(0,min(1,f)));
-
-end
-%% Function InterpCDF21
-function cdf = InterpCDF21(x1Given,x2New,x1,x2,t,cft,dt,cdf2,CDF1)
-% InterpCDF21 Auxiliary function evaluates the conditional CDF for x2New
-% and given x1Given.
-
-% (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 01-May-2021 14:20:34
-
-%% ALGORITHM
-if isempty(x2New)
-    x2New = x2;
-end
-
-if isempty(x1Given)
-    x1Given = mean(x1);
-end
-
-% WARNING: Out-of-range
-xMin = min(x2);
-xMax = max(x2);
-if any(x2New < xMin) || any(x2New > xMax)
-    warning('VW:CharFunTool:cf2Dist2D',['x out-of-range: ', ...
-        '[x2Min, x2Max] = [',num2str(xMin),...
-        ', ',num2str(xMax),'] !']);
-end
-xMin = min(x1);
-xMax = max(x1);
-if x1Given < xMin || x1Given > xMax
-    warning('VW:CharFunTool:cf2Dist2D',['x out-of-range: ', ...
-        '[x1Min, x1Max] = [',num2str(xMin),...
-        ', ',num2str(xMax),'] !']);
-end
-
-cft = cft ./ t(:,1) ./ t(:,2);
-c   = -2 * dt(1) * dt(2) / (2*pi)^2;
-f   = (cdf2 + CDF1(x1Given))/2 - 0.25;
-%f   = (cdf1 + cdf2)/2 - 0.25;
-f   = f + c * real(exp(-1i*[x1Given*ones(size(x2)) x2]*t')*cft);
-f   = f / CDF1(x1Given);
-cdf = InterpCDF(x2New,x2,max(0,min(1,f)));
-
-end
-%% Function InterpRND2D
-function xRND = InterpRND2D(N,RND1,RND2,PDF1,PDF2,PDF,xMin,xMax)
-% InterpRND2D Auxiliary function generates the (Nx2)-dimensional matrix of
-% random pairs x = [x1,x2] generated from the bivariate distribution
-% specified by the characteristic function.  
-
-% (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 12-May-2021 16:00:38
-%% ALGORITHM
-
-range1 = xMax(1) - xMin(1);
-range2 = xMax(2) - xMin(2);
-
-% Set myN as some multiple of given N 
-myN = ceil(N*2);
-
-% Generate M = 2*myN candidate samples from the joint bivariate
-% distribution created from the equally proportional mixture of joint
-% distribution generated from independent marginals and the joint uniform
-% distribution  
-xCandidate     = [RND1(myN) RND2(myN); ...
-                  rand(myN,1)*range1 + xMin(1), ...
-                  rand(myN,1)*range2 + xMin(2)];
-
-% Evaluate the true PDF values for the candidate samples
-pdf            = PDF(xCandidate);
-maxPDF         = max(max(pdf));
-
-% Evaluate the PDF values for the candidate samples using the candidate PDF
-% created from the independent marginals
-pdf12Mix      = (PDF1(xCandidate(:,1)).*PDF2(xCandidate(:,2)) + ...
-    1/(range1*range2))/2;
-maxPdf12Mix   = max(max(pdf12Mix));
- 
-
-% Premultiply the candidate PDF by suitable constant such that the
-% candidate PDF are greater than the required PDF values.
-pdf12Mix = maxPDF * pdf12Mix / maxPdf12Mix;
-
-% Acceptance-rejection method. Select such values that fulfill the
-% required relation of the candidate PDF and the required PDF 
-idHappy        = rand(2*myN,1) .* pdf12Mix <= pdf;
-xRND           = xCandidate(idHappy,:);
-
-% If the number of correct values is greater than required, save only N.
-% Otherwise print the warning message
-NHappy         = sum(idHappy);
-if NHappy >= N
-    xRND = xRND(randperm(NHappy,N),:);
-else
-    warning(['The number of generated samples ',num2str(NHappy), ...
-        ' is less than required ',num2str(N)])
-end
-
-% This is the ration of situation where the candidate PDF sample has lower
-% probability than the required PDF sample. This should be 0 if we have
-% good candidate. 
-%UnderRatio = sum(pdf12Mix - pdf < 0)/(2*N)
-%disp([xCandidate pdf12Mix pdf (pdf12Mix-pdf)< 0])
-end
-
+% %% Function InterpPDF12
+% function pdf = InterpPDF12(x1New,x2Given,x1,x2,t,cft,dt,PDF2)
+% % InterpPDF12 Auxiliary function evaluates the conditional PDF for x1New
+% % and given x2Given.
+% 
+% % (c) Viktor Witkovsky (witkovsky@gmail.com)
+% % Ver.: 01-May-2021 14:20:34
+% 
+% %% ALGORITHM
+% if isempty(x1New)
+%     x1New = x1;
+% end
+% 
+% if isempty(x2Given)
+%     x2Given = mean(x2);
+% end
+% 
+% % PDF12a = @(x2fix) (2 * dt(1) * dt(2) / (2*pi)^2 / PDF2(x2fix)) ...
+% %     * max(0,real(exp(-1i*[x1 x2fix*ones(size(x1))]*t')*cft));
+% % PDF12 =@(x1new,x2fix) InterpPDF(x1new,x1,PDF12a(x2fix));
+% 
+% % WARNING: Out-of-range
+% xMin = min(x1);
+% xMax = max(x1);
+% if any(x1New < xMin) || any(x1New > xMax)
+%     warning('VW:CharFunTool:cf2Dist2D',['x out-of-range: ', ...
+%         '[x1Min, x1Max] = [',num2str(xMin),...
+%         ', ',num2str(xMax),'] !']);
+% end
+% xMin = min(x2);
+% xMax = max(x2);
+% if x2Given < xMin || x2Given > xMax
+%     warning('VW:CharFunTool:cf2Dist2D',['x out-of-range: ', ...
+%         '[x2Min, x2Max] = [',num2str(xMin),...
+%         ', ',num2str(xMax),'] !']);
+% end
+% 
+% 
+% pdf = InterpPDF(x1New,x1,2*dt(1)*dt(2)/(2*pi)^2/PDF2(x2Given)* ...
+%     max(0,real(exp(-1i*[x1 x2Given*ones(size(x1))]*t')*cft)));
+% end
+% %% Function InterpPDF21
+% function pdf = InterpPDF21(x1Given,x2New,x1,x2,t,cft,dt,PDF1)
+% % InterpPDF21 Auxiliary function evaluates the conditional PDF for x2New
+% % and given x1Given.
+% 
+% % (c) Viktor Witkovsky (witkovsky@gmail.com)
+% % Ver.: 01-May-2021 14:20:34
+% 
+% %% ALGORITHM
+% if isempty(x2New)
+%     x2New = x2;
+% end
+% 
+% if isempty(x1Given)
+%     x1Given = mean(x1);
+% end
+% % PDF21a = @(x1fix) (2 * dt(1) * dt(2) / (2*pi)^2 / PDF1(x1fix)) ...
+% %     * max(0,real(exp(-1i*[x1fix*ones(size(x2)) x2]*t')*cft));
+% % PDF21 =@(x2new,x1fix) InterpPDF(x2new,x2,PDF21a(x1fix));
+% 
+% % WARNING: Out-of-range
+% xMin = min(x2);
+% xMax = max(x2);
+% if any(x2New < xMin) || any(x2New > xMax)
+%     warning('VW:CharFunTool:cf2Dist2D',['x out-of-range: ', ...
+%         '[x2Min, x2Max] = [',num2str(xMin),...
+%         ', ',num2str(xMax),'] !']);
+% end
+% xMin = min(x1);
+% xMax = max(x1);
+% if x1Given < xMin || x1Given > xMax
+%     warning('VW:CharFunTool:cf2Dist2D',['x out-of-range: ', ...
+%         '[x1Min, x1Max] = [',num2str(xMin),...
+%         ', ',num2str(xMax),'] !']);
+% end
+% 
+% pdf = InterpPDF(x2New,x2,2*dt(1)*dt(2)/(2*pi)^2/PDF1(x1Given)* ...
+%     max(0,real(exp(-1i*[x1Given*ones(size(x2)) x2]*t')*cft)));
+% end
+% %% Function InterpCDF12
+% function cdf = InterpCDF12(x1New,x2Given,x1,x2,t,cft,dt,cdf1,CDF2)
+% % InterpCDF12 Auxiliary function evaluates the conditional CDF for x1New
+% % and given x2Given.
+% 
+% % (c) Viktor Witkovsky (witkovsky@gmail.com)
+% % Ver.: 01-May-2021 14:20:34
+% 
+% %% ALGORITHM
+% if isempty(x1New)
+%     x1New = x1;
+% end
+% 
+% if isempty(x2Given)
+%     x2Given = mean(x2);
+% end
+% 
+% % WARNING: Out-of-range
+% xMin = min(x1);
+% xMax = max(x1);
+% if any(x1New < xMin) || any(x1New > xMax)
+%     warning('VW:CharFunTool:cf2Dist2D',['x out-of-range: ', ...
+%         '[x1Min, x1Max] = [',num2str(xMin),...
+%         ', ',num2str(xMax),'] !']);
+% end
+% xMin = min(x2);
+% xMax = max(x2);
+% if x2Given < xMin || x2Given > xMax
+%     warning('VW:CharFunTool:cf2Dist2D',['x out-of-range: ', ...
+%         '[x2Min, x2Max] = [',num2str(xMin),...
+%         ', ',num2str(xMax),'] !']);
+% end
+% 
+% cft = cft ./ t(:,1) ./ t(:,2);
+% c   = -2 * dt(1) * dt(2) / (2*pi)^2;
+% f   = (cdf1 + CDF2(x2Given))/2 - 0.25;
+% f   = f + c * real(exp(-1i*[x1 x2Given*ones(size(x1))]*t')*cft);
+% f   = f / CDF2(x2Given);
+% cdf = InterpCDF(x1New,x1,max(0,min(1,f)));
+% 
+% end
+% %% Function InterpCDF21
+% function cdf = InterpCDF21(x1Given,x2New,x1,x2,t,cft,dt,cdf2,CDF1)
+% % InterpCDF21 Auxiliary function evaluates the conditional CDF for x2New
+% % and given x1Given.
+% 
+% % (c) Viktor Witkovsky (witkovsky@gmail.com)
+% % Ver.: 01-May-2021 14:20:34
+% 
+% %% ALGORITHM
+% if isempty(x2New)
+%     x2New = x2;
+% end
+% 
+% if isempty(x1Given)
+%     x1Given = mean(x1);
+% end
+% 
+% % WARNING: Out-of-range
+% xMin = min(x2);
+% xMax = max(x2);
+% if any(x2New < xMin) || any(x2New > xMax)
+%     warning('VW:CharFunTool:cf2Dist2D',['x out-of-range: ', ...
+%         '[x2Min, x2Max] = [',num2str(xMin),...
+%         ', ',num2str(xMax),'] !']);
+% end
+% xMin = min(x1);
+% xMax = max(x1);
+% if x1Given < xMin || x1Given > xMax
+%     warning('VW:CharFunTool:cf2Dist2D',['x out-of-range: ', ...
+%         '[x1Min, x1Max] = [',num2str(xMin),...
+%         ', ',num2str(xMax),'] !']);
+% end
+% 
+% cft = cft ./ t(:,1) ./ t(:,2);
+% c   = -2 * dt(1) * dt(2) / (2*pi)^2;
+% f   = (cdf2 + CDF1(x1Given))/2 - 0.25;
+% %f   = (cdf1 + cdf2)/2 - 0.25;
+% f   = f + c * real(exp(-1i*[x1Given*ones(size(x2)) x2]*t')*cft);
+% f   = f / CDF1(x1Given);
+% cdf = InterpCDF(x2New,x2,max(0,min(1,f)));
+% 
+% end
+% %% Function InterpRND2D
+% function xRND = InterpRND2D(N,RND1,RND2,PDF1,PDF2,PDF,xMin,xMax)
+% % InterpRND2D Auxiliary function generates the (Nx2)-dimensional matrix of
+% % random pairs x = [x1,x2] generated from the bivariate distribution
+% % specified by the characteristic function.  
+% 
+% % (c) Viktor Witkovsky (witkovsky@gmail.com)
+% % Ver.: 12-May-2021 16:00:38
+% %% ALGORITHM
+% 
+% range1 = xMax(1) - xMin(1);
+% range2 = xMax(2) - xMin(2);
+% 
+% % Set myN as some multiple of given N 
+% myN = ceil(N*2);
+% 
+% % Generate M = 2*myN candidate samples from the joint bivariate
+% % distribution created from the equally proportional mixture of joint
+% % distribution generated from independent marginals and the joint uniform
+% % distribution  
+% xCandidate     = [RND1(myN) RND2(myN); ...
+%                   rand(myN,1)*range1 + xMin(1), ...
+%                   rand(myN,1)*range2 + xMin(2)];
+% 
+% % Evaluate the true PDF values for the candidate samples
+% pdf            = PDF(xCandidate);
+% maxPDF         = max(max(pdf));
+% 
+% % Evaluate the PDF values for the candidate samples using the candidate PDF
+% % created from the independent marginals
+% pdf12Mix      = (PDF1(xCandidate(:,1)).*PDF2(xCandidate(:,2)) + ...
+%     1/(range1*range2))/2;
+% maxPdf12Mix   = max(max(pdf12Mix));
+%  
+% 
+% % Premultiply the candidate PDF by suitable constant such that the
+% % candidate PDF are greater than the required PDF values.
+% pdf12Mix = maxPDF * pdf12Mix / maxPdf12Mix;
+% 
+% % Acceptance-rejection method. Select such values that fulfill the
+% % required relation of the candidate PDF and the required PDF 
+% idHappy        = rand(2*myN,1) .* pdf12Mix <= pdf;
+% xRND           = xCandidate(idHappy,:);
+% 
+% % If the number of correct values is greater than required, save only N.
+% % Otherwise print the warning message
+% NHappy         = sum(idHappy);
+% if NHappy >= N
+%     xRND = xRND(randperm(NHappy,N),:);
+% else
+%     warning(['The number of generated samples ',num2str(NHappy), ...
+%         ' is less than required ',num2str(N)])
+% end
+% 
+% % This is the ration of situation where the candidate PDF sample has lower
+% % probability than the required PDF sample. This should be 0 if we have
+% % good candidate. 
+% %UnderRatio = sum(pdf12Mix - pdf < 0)/(2*N)
+% %disp([xCandidate pdf12Mix pdf (pdf12Mix-pdf)< 0])
+% end
+% 
 %% Function CopFunCDF
 function cdf = CopFunCDF(u12,x1,x2,Zcdf,QF1,QF2)
 % CopFunCDF for given u1 in (0,1) and u2 in (0,1) Evaluates the copula
