@@ -66,8 +66,7 @@ function cf = cf2D_Logistic(t,mu,sigma,coef,niid)
 %     Computation, 381, p.125314.   
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 06-Jan-2022 20:18:39
-% Ver.: 12-May-2021 19:05:46
+% Ver.: 12-Jan-2022 16:29:29
 
 %% ALGORITHM
 % cf = cf2D_Logistic(t,mu,sigma,coef,niid)
@@ -98,35 +97,41 @@ coef = [c1; c2];
 N = length(c1);
 
 %% Characteristic function
-szt = size(t);
-sztMin = min(szt(1),szt(2));
-sztMax = max(szt(1),szt(2));
 
-switch sztMin
-    case 1 % if t is N-vector then it is assumed that t1 = t and t2 = t
-           % and we create new t = [t1 t2]
-           if sztMax > 2
-               sz = size(t);
-               t = t(:);
-               t = [t t];
-           elseif sztMax == 1
-               sz = [1,1];
-               t = [t t];
-           else
+if iscell(t)
+    sz = [length(t{1}),length(t{2})];    
+    [t2,t1] = meshgrid(t{2},t{1});
+    t  = [t1(:),t2(:)];
+else
+    szt = size(t);
+    sztMin = min(szt(1),szt(2));
+    sztMax = max(szt(1),szt(2));    
+    switch sztMin
+        case 1 % if t is N-vector then it is assumed that t1 = t and t2 = t
+               % and we create new t = [t1 t2]
+            if sztMax > 2
+                sz = size(t);
+                t = t(:);
+                t = [t t];
+            elseif sztMax == 1
+                sz = [1,1];
+                t = [t t];
+            else
                 sz = [1,1];
                 t = t(:)';
-           end
-    case 2 % t is 2xN or Nx2 matrix
-        if sztMax > 2
-            if szt(1) == 2 % if t is 2xN matrix transpose it to the Nx2 matrix
-                t = t';
-                sz = [1,szt(2)];
-            else
-                sz = [szt(1),1];
             end
-        end
-    otherwise
-        error(message('InputSizeMismatch'));
+        case 2 % t is 2xN or Nx2 matrix
+            if sztMax > 2
+                if szt(1) == 2 % if t is 2xN matrix transpose it to the Nx2 matrix
+                    t = t';
+                    sz = [1,szt(2)];
+                else
+                    sz = [szt(1),1];
+                end
+            end
+        otherwise
+            error(message('InputSizeMismatch'));
+    end
 end
 
 cf = 0;
