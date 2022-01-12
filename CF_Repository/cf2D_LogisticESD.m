@@ -26,7 +26,10 @@ function cf = cf2D_LogisticESD(t,mu,sigma,rho,coef,niid)
 %  cf = cf2D_LogisticESD(t,mu,sigma,rho,coef,niid)
 %
 % INPUTS:
-%  t      - matrix t = [t1 t2] of real values, where the CF is evaluated.
+%  t      - (n x 2)-matrix t = [t1 t2] or a cell t = {t1 t2} of real
+%           values, where the CF is evaluated. If t is cell of two vectors,
+%           then cf is a (n1 x n2)-matrix where n1 = length(t1), n2 =
+%           length(t2). 
 %  mu     - matrix mu = [mu1 mu2] of real location parameters. If empty,
 %           default value is mu = [0 0].   
 %  sigma  - sigma = [sigma1 sigma2], standard deviations of the marginal
