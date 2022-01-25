@@ -99,6 +99,7 @@ CFs of bivariate probability distributions:
 
 cf2D_Logistic
 cf2D_LogisticESD
+cf2D_Normal
 
 CFs of test statistics probability distributions:
 
