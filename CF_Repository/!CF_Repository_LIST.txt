@@ -81,6 +81,8 @@ cfE_DiracMixture
 cfE_Empirical
 cfE_EmpiricalBootstrapped
 cfE_EmpiricalOgive
+cfE_SampleMean
+cfE_SampleMedian
 
 CFs of discrete probability distributions:
 
