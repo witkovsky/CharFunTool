@@ -1,4 +1,4 @@
-function [cf,result] = cfE_SampleMean(t,Xdata,Xcounts)
+function [cf,result] = cfE_SampleMean(t,data,counts,options)
 %% cfE_SampleMean
 %   Empirical characteristic function of the sample mean based on the
 %   observed random sample X = (X1,...,Xn) of size n.
@@ -18,27 +18,31 @@ function [cf,result] = cfE_SampleMean(t,Xdata,Xcounts)
 %   from the ECDF.
 % 
 %   In fact, we define the characteristic function of the sample mean as 
-%   cf = cfE_DiracMixture(t/n,Xunique,EPMF).^n. 
+%   cf = cfE_DiracMixture(t/n,X,EPMF).^n, where X is a vector of the
+%   observed unique x-values and EPMF is the vector of the weights.
 % 
 %   The characteristic function of the sample mean can be used further,
 %   e.g. to test hypotheses about the equality of the means (see the
 %   Example section).
 %
 %   SYNTAX
-%   cf = cfE_SampleMean(t,Xdata)
-%   cf = @(t) cfE_SampleMean(t,Xdata)
-%   [~,results] = cfE_SampleMean([],Xdata,Xcounts)
+%   cf = cfE_SampleMean(t,data)
+%   cf = @(t) cfE_SampleMean(t,data)
+%   [~,results] = cfE_SampleMean([],data,counts,options)
 %
 %   INPUTS:
 %   t       - vector or array of real values, where the CF is evaluated.
-%   Xdata   - vector of observed data. If empty, we set the default value
-%             Xdata = 0.  
-%   Xcounts - vector of the same size as Xdata that represents the counts
+%   data    - vector of observed data. If empty, we set the default value
+%             data = 0.  
+%   counts  - vector of the same size as data that represents the counts
 %             of the repeated values. This is useful if the data are
 %             discrete with many repeted values or if the data are to be
-%             specified from a histogram. If Xcounts is a scalar integer
-%             value, each value specified by Xdata is repeated equally
-%             Xcounts times. If empty, default value is Xcounts = 1. 
+%             specified from a histogram. If counts is a scalar integer
+%             value, each value specified by data is repeated equally
+%             counts times. If empty, default value is counts = 1. 
+%   options - structure with further optional specificaions:
+%             - options.isOgive = false.
+%
 %   OUTPUTS:
 %   cf      - characteristic function of the empirical distribution of the
 %             sample mean evalueted at the specified vector argument t.
@@ -85,60 +89,88 @@ function [cf,result] = cfE_SampleMean(t,Xdata,Xcounts)
 %    maxDiff = max(dataA) - min(dataB);
 %    delta   = 1/15;
 %    result = cf2PMF_FFT(cfDiff,minDiff,maxDiff,delta)
+% 
+%   EXAMPLE: 
+%   % Empirical distribution of the difference of the sample means
+%   % Test of the hypothesis that the population means are equal      
+%    dataA   = [1 1 2 2 2 3 3 9 105 105 106 106 106 107 107];
+%    dataB   = [5 5 6 6 6 7 7 99 101 101 102 102 102 103 103];
+%    clear options;
+%    options.isOgive = true;
+%    cfA     = @(t) cfE_SampleMean(t,dataA,[],options);
+%    cfB     = @(t) cfE_SampleMean(t,dataB,[],options);
+%    cfDiff  = @(t) cfA(t) .* cfB(-t);
+%    result = cf2DistGP(cfDiff,[],[0.25,0.975])
 
 % (c) 2022 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 07-May-2022 21:42:52
+% Ver.: 08-May-2022 17:20:15
 
 %% ALGORITHM
-%[cf,result] = cfE_SampleMean(t,Xdata,Xcounts)
+%[cf,result] = cfE_SampleMean(t,data,counts,options)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 4);
-if nargin < 2, Xdata = []; end
-if nargin < 3, Xcounts = []; end
+if nargin < 2, data = []; end
+if nargin < 3, counts = []; end
+if nargin < 4, options = []; end
 
-if isempty(Xdata)
-    Xdata = 0;
+if isempty(data)
+    data = 0;
 end
 
-if isempty(Xcounts)
-    Xcounts = 1;
+if isempty(counts)
+    counts = 1;
 end
 
-[errorcode,Xdata,Xcounts] = distchck(2,Xdata(:),Xcounts(:));
+if ~isfield(options, 'isOgive')
+    options.isOgive = false;
+end
+
+[errorcode,data,counts] = distchck(2,data(:),counts(:));
 if errorcode > 0
     error(message('InputSizeMismatch'));
 end
 
 %% EMPIRICAL PMF and CDF BASED ON THE OBSERVED DATA
-n  = sum(Xcounts);
-nc = length(Xcounts);
-[Xdata,id] = sort(Xdata);
-Xcounts = Xcounts(id);
+n  = sum(counts);
+nc = length(counts);
+[data,id] = sort(data);
+counts = counts(id);
 
-[Xunique,id] = unique(Xdata);
-nX = length(Xunique);
+[X,id] = unique(data);
+nX = length(X);
 id = [id;nc+1];
 
-Xmin = min(Xunique);
-Xmax = max(Xunique);
-Xdiff = min(diff(Xunique));
+Xmin = min(X);
+Xmax = max(X);
+Xdiff = min(diff(X));
 
-EPMF = zeros(size(Xunique));
-ECDF = zeros(size(Xunique));
+Xcounts = zeros(size(X));
+EPMF = zeros(size(X));
+ECDF = zeros(size(X));
 cdfsum = 0;
 for i = 1:nX
-    EPMF(i) = sum(Xcounts(id(i):(id(i+1)-1)))/n;
+    Xcounts(i) = sum(counts(id(i):(id(i+1)-1)));
+    EPMF(i) = Xcounts(i)/n;
     cdfsum = cdfsum + EPMF(i);
     ECDF(i) = cdfsum;
 end
 ECDF = max(0,min(1,ECDF));
 
 %% CHARACTERISTI FUNCTION OF THE SAMPLE MEAN
-if isempty(t)
-    cf = @(t)cfE_DiracMixture(t/n,Xunique,EPMF).^n;
+
+if options.isOgive
+    if isempty(t)
+        cf = @(t)cfE_EmpiricalOgive(t/n,X,EPMF).^n;
+    else
+        cf = cfE_EmpiricalOgive(t/n,X,EPMF).^n;
+    end
 else
-    cf = cfE_DiracMixture(t/n,Xunique,EPMF).^n;
+    if isempty(t)
+        cf = @(t)cfE_DiracMixture(t/n,X,EPMF).^n;
+    else
+        cf = cfE_DiracMixture(t/n,X,EPMF).^n;
+    end
 end
 
 %% RESULTS
@@ -147,13 +179,14 @@ if nargout > 1
     result.cf          = cf;
     result.EPMF        = EPMF;
     result.ECDF        = ECDF;
-    result.Xunique     = Xunique;
+    result.X           = X;
     result.Xmin        = Xmin;
     result.Xmax        = Xmax;
     result.Xdiff       = Xdiff;
-    result.Xdata       = Xdata;
-    result.Xcounts     = Xcounts;
+    result.data        = data;
+    result.counts      = counts;
     result.n           = n;
+    result.options     = options;
 end
 
 end
