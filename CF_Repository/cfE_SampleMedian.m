@@ -1,7 +1,8 @@
-function [cf,result] = cfE_SampleMedian(t,Xdata,Xcounts)
+function [cf,result] = cfE_SampleMedian(t,data,counts,options)
 %% cfE_SampleMedian
 %   Empirical characteristic function of the sample median based on the
-%   observed random sample X = (X1,...,Xn) of size n.
+%   observed data - the realization of the random sample X = (X1,...,Xn) of
+%   size n. 
 %
 %   The distribution of the sample median is estimated by its empirical
 %   distribution, which is defined as the distribution of the kth-order
@@ -42,20 +43,23 @@ function [cf,result] = cfE_SampleMedian(t,Xdata,Xcounts)
 %   Example section).
 %
 %   SYNTAX
-%   cf = cfE_SampleMedian(t,Xdata)
-%   cf = @(t) cfE_SampleMedian(t,Xdata)
-%   [~,results] = cfE_SampleMedian([],Xdata,Xcounts)
+%   cf = cfE_SampleMedian(t,data)
+%   cf = @(t) cfE_SampleMedian(t,data)
+%   [~,results] = cfE_SampleMedian([],data,counts,options)
 %
 %   INPUTS:
 %   t       - vector or array of real values, where the CF is evaluated.
-%   Xdata   - vector of observed data. If empty, we set the default value
-%             Xdata = 0.  
-%   Xcounts - vector of the same size as Xdata that represents the counts
+%   data   - vector of observed data. If empty, we set the default value
+%             data = 0.  
+%   counts - vector of the same size as data that represents the counts
 %             of the repeated values. This is useful if the data are
 %             discrete with many repeted values or if the data are to be
-%             specified from a histogram. If Xcounts is a scalar integer
-%             value, each value specified by Xdata is repeated equally
-%             Xcounts times. If empty, default value is Xcounts = 1. 
+%             specified from a histogram. If counts is a scalar integer
+%             value, each value specified by data is repeated equally
+%             counts times. If empty, default value is counts = 1. 
+%   options - structure with further optional specificaions:
+%             - options.isOgive = false.
+%
 %   OUTPUTS:
 %   cf      - characteristic function of the empirical distribution of the
 %             sample median evalueted at the specified vector argument t.
@@ -99,48 +103,53 @@ function [cf,result] = cfE_SampleMedian(t,Xdata,Xcounts)
 %      medians. The American Statistician, 72(3), 278-286.   
 
 % (c) 2022 Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 07-May-2022 21:42:52
+% Ver.: 08-May-2022 17:20:15
 
 %% ALGORITHM
-%[cf,result] = cfE_SampleMedian(t,Xdata,Xcounts)
+%[cf,result] = cfE_SampleMedian(t,data,counts,options)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 4);
-if nargin < 2, Xdata = []; end
-if nargin < 3, Xcounts = []; end
+if nargin < 2, data = []; end
+if nargin < 3, counts = []; end
+if nargin < 4, options = []; end
 
-if isempty(Xdata)
-    Xdata = 0;
+if isempty(data)
+    data = 0;
 end
 
-if isempty(Xcounts)
-    Xcounts = 1;
+if isempty(counts)
+    counts = 1;
 end
 
-[errorcode,Xdata,Xcounts] = distchck(2,Xdata(:),Xcounts(:));
+if ~isfield(options, 'isOgive')
+    options.isOgive = false;
+end
+
+[errorcode,data,counts] = distchck(2,data(:),counts(:));
 if errorcode > 0
     error(message('InputSizeMismatch'));
 end
 
 %% EMPIRICAL PMF and CDF BASED ON THE OBSERVED DATA
-n  = sum(Xcounts);
-nc = length(Xcounts);
-[Xdata,id] = sort(Xdata);
-Xcounts = Xcounts(id);
+n  = sum(counts);
+nc = length(counts);
+[data,id] = sort(data);
+counts = counts(id);
 
-[Xunique,id] = unique(Xdata);
-nX = length(Xunique);
+[X,id] = unique(data);
+nX = length(X);
 id = [id;nc+1];
 
-Xmin = min(Xunique);
-Xmax = max(Xunique);
-Xdiff = min(diff(Xunique));
+Xmin = min(X);
+Xmax = max(X);
+Xdiff = min(diff(X));
 
-EPMF = zeros(size(Xunique));
-ECDF = zeros(size(Xunique));
+EPMF = zeros(size(X));
+ECDF = zeros(size(X));
 cdfsum = 0;
 for i = 1:nX
-    EPMF(i) = sum(Xcounts(id(i):(id(i+1)-1)))/n;
+    EPMF(i) = sum(counts(id(i):(id(i+1)-1)))/n;
     cdfsum = cdfsum + EPMF(i);
     ECDF(i) = cdfsum;
 end
@@ -152,10 +161,18 @@ CDFmedian   = betainc(ECDF,medianOrder,medianOrder);
 PMFmedian   = diff([0;CDFmedian]);
 
 %% CHARACTERISTI FUNCTION OF THE SAMPLE MEDIAN
-if isempty(t)
-    cf = @(t)cfE_DiracMixture(t,Xunique,PMFmedian);
+if options.isOgive
+    if isempty(t)
+        cf = @(t)cfE_EmpiricalOgive(t,X,PMFmedian);
+    else
+        cf = cfE_EmpiricalOgive(t,X,PMFmedian);
+    end
 else
-    cf = cfE_DiracMixture(t,Xunique,PMFmedian);
+    if isempty(t)
+        cf = @(t)cfE_DiracMixture(t,X,PMFmedian);
+    else
+        cf = cfE_DiracMixture(t,X,PMFmedian);
+    end
 end
 
 %% RESULTS
@@ -166,13 +183,14 @@ if nargout > 1
     result.CDFmedian   = CDFmedian;
     result.EPMF        = EPMF;
     result.ECDF        = ECDF;
-    result.Xunique     = Xunique;
+    result.Xunique     = X;
     result.Xmin        = Xmin;
     result.Xmax        = Xmax;
     result.Xdiff       = Xdiff;
-    result.Xdata       = Xdata;
-    result.Xcounts     = Xcounts;
+    result.data       = data;
+    result.counts     = counts;
     result.n           = n;
+    result.options     = options;
 end
 
 end
