@@ -68,19 +68,19 @@ function cf = cf_LogRV_Rice(t,distance,sigma,coef,niid,tol)
 %  with order zero. 
 %
 % EXAMPLE 1:
-% % CF of the distribution of Rice RV with sigma = 3
+% % CF of the distribution of Rice RV with sigma = 1 and distance = 5
 %   sigma = 1;
 %   distance = 5;
-%   t     = linspace(-20,20,501);
-%   cf    = cf_LogRV_Rice(t,distance,sigma);
+%   t  = linspace(-20,20,501);
+%   cf = cf_LogRV_Rice(t,distance,sigma);
 %   figure; plot(t,real(cf),t,imag(cf));grid on
 %   title('CF of the non-central Rice RV')
 %
 % EXAMPLE 2:
-% % PDF/CDF of the distribution of Rice RV with sigma = 3
+% % PDF/CDF of the distribution of Rice RV with sigma = 1 and distance = 5
 %   sigma = 1;
 %   distance = 5;
-%   cf    = @(t) cf_LogRV_Rice(t,distance,sigma);
+%   cf = @(t) cf_LogRV_Rice(t,distance,sigma);
 %   clear options
 %   options.N = 2^10;
 %   options.xMin = 0;
