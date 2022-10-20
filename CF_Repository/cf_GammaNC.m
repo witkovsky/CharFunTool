@@ -11,13 +11,15 @@ function cf = cf_GammaNC(t,alpha,beta,delta,coef,niid,tol)
 %  Gamma(alpha_i,beta_i,delta_i) are inedependent RVs, with parameters
 %  alpha_i > 0, beta_i > 0, and delta_i >= 0, for i = 1,...,N.   
 %
-%  The characteristic function of Y = X with X ~ Gamma(alpha,beta,delta) is
+%  The characteristic function of X ~ Gamma(alpha,beta,delta) is
 %  Poisson mixture of CFs of the central Gamma RVs of the form
 %   cf(t) = cf_GammaNC(t,alpha,beta,delta) = 
 %         = exp(-delta/2) sum_{j=1}^Inf (delta/2)^j/j! *
 %           * cf_Gamma(alpha+j,beta) 
 %  where cf_Gamma(alpha+j,beta) are the CFs of central Gamma RVs with
-%  parameters alpha+j and beta. 
+%  parameters alpha+j and beta. Equivalenly, we get
+%   cf(t) = cf_GammaNC(t,alpha,beta,delta) = 
+%         = exp( i*t*delta/(2*beta*(1-i*t/beta)) ) * (1-i*t/beta)^(-alpha).
 %
 % SYNTAX
 %  cf = cf_GammaNC(t,alpha,beta,delta,coef,niid,tol)
@@ -76,7 +78,7 @@ function cf = cf_GammaNC(t,alpha,beta,delta,coef,niid,tol)
 %   result = cf2DistGP(cf,[],[],options)
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 20-Oct-2022 14:31:48
+% Ver.: 20-Oct-2022 23:50:16
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 7);
@@ -96,20 +98,24 @@ if isempty(tol), tol = 1e-12; end
 
 %% SET THE COMMON SIZE of the parameters
 [errorcode,coef,alpha,beta,delta] = ...
-    distchck(4,coef(:),alpha(:),beta(:),delta(:));
+    distchck(4,coef(:)',alpha(:)',beta(:)',delta(:)');
 if errorcode > 0
     error(message('InputSizeMismatch'));
 end
 
 %% Characteristic function of a linear combination of independent nc RVs
-szt = size(t);
-t   = t(:);
-cf  = ones(length(t),1);
-for i = 1:length(coef)
-    cf = cf .* cf_ncGamma(coef(i)*t,alpha(i),beta(i),delta(i),tol);
+szt   = size(t);
+t     = t(:);
+cf    = 1;
+aux   = 1 - bsxfun(@times,1i*t,coef./beta);
+if any(delta~=0)
+    aux = bsxfun(@power,aux,-alpha) .* ...
+        exp(bsxfun(@times,1i*t,0.5*coef.*delta./beta)./aux);
+else
+    aux = bsxfun(@power,aux,-alpha);
 end
-cf = reshape(cf,szt);
-cf(t==0) = 1;
+cf   = cf .* prod(aux,2);
+cf   = reshape(cf,szt);
 
 if ~isempty(niid)
     if isscalar(niid)
@@ -118,48 +124,5 @@ if ~isempty(niid)
         error('niid should be a scalar (positive integer) value');
     end
 end
-end
 
-%% Function funCF
-function f = cf_ncGamma(t,alpha,beta,delta,tol)
-% cf_ncGamma Characteristic function of the distribution of the
-% non-central Gamma RV with parameters alpha > 0, beta > 0, 
-% and the non-centrality parameter delta >= 0. 
-
-% Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 20-Oct-2022 14:31:48
-
-%%
-f = 0;
-delta  = delta/2;
-if delta == 0   % Deal with the central distribution
-    f = cf_Gamma(t,alpha,beta);
-elseif delta > 0
-    % Sum the Poisson series of CFs of central iid Gamma RVs,
-    % poisspdf(j,delta) .* cf_Gamma(t,alpha+j,beta)
-    j0 = floor(delta/2);
-    p0 = exp(-delta + j0 .* log(delta) - gammaln(j0 + 1));
-    f  = f + p0 * cf_Gamma(t,alpha+j0,beta);
-    p  = p0;
-    j  = j0-1;
-    while j >= 0 && p > tol
-        p = p * (j+1) / delta;
-        f = f + p * cf_Gamma(t,alpha+j,beta);
-        j = j - 1;
-    end
-    p  = p0;
-    j  = j0+1;
-    i  = 0;
-    while p > tol && i <= 5000
-        p = p * delta / j;
-        f = f + p * cf_Gamma(t,alpha+j,beta);
-        j = j + 1;
-        i = i + 1;
-    end
-    if (i == 5000)
-        warning(message('NoConvergence'));
-    end
-else
-    error('delta should be nonnegative');
-end
 end
