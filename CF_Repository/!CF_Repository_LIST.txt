@@ -100,6 +100,8 @@ cfN_Waring
 
 CFs of bivariate probability distributions:
 
+cf2D_DiracMixture
+cf2D_Empirical
 cf2D_Logistic
 cf2D_LogisticESD
 cf2D_Normal
