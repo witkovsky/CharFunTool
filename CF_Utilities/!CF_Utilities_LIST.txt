@@ -46,6 +46,7 @@ erfcxZX
 erfcZX
 erfiZX
 erfZX
+expQ
 Faddeeva
 FoxWrightPsi
 Hypergeom1F1
@@ -58,6 +59,7 @@ Hypergeom2F1MatApprox
 HypergeompFqMat
 HypergeompFqSeries
 HypergeomU
+logQ
 
 TRANSFORMATION Functions:
 
