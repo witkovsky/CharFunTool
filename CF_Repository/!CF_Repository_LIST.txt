@@ -38,6 +38,7 @@ cf_Stable
 cf_Student
 cf_TrapezoidalSymmetric
 cf_TriangularSymmetric
+cf_TsallisQGaussian
 cf_TSPSymmetric
 cf_Weibull
 cf_WignerSemicircle
