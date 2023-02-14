@@ -11,8 +11,8 @@ function cf = cf_TsallisQGaussian(t,mu,beta,q,coef,niid)
 %  Wikipedia, which uses beta as the rate parameter. 
 %  
 %  The parameter beta used here is related to the original parametrization,
-%  say BETA. Namely, BETA = 1/(2*beta^2) or beta = sqrt(1/(2*BETA)). The
-%  new parametriztion ensures that for q = 1, QGauss(mu,beta,q) ~
+%  say BETA. Namely, BETA = 1/(2*beta^2) or beta = sqrt(1/(2*BETA)). This
+%  parametriztion ensures that for q = 1, cf_TsallisQGaussian(mu,beta,q) ~
 %  N(mu,beta), i.e. with the normal distribution with mean mu and variance
 %  sigma^2 = beta^2.
 %
