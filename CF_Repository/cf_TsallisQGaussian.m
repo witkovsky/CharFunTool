@@ -40,7 +40,7 @@ function cf = cf_TsallisQGaussian(t,mu,beta,q,coef,niid)
 %  standard Tsallis Q-Gaussian distribution, i.e. X ~
 %  TsallisQGaussian(0,1,q), where 1 < q < 3, is defined by 
 %   cf(t) = 2^( (7-5*q)/(4-4*q) ) * (q-1)^(-df/4) * |t|^(df/2) * ...
-%           besselk[df/2, sqrt(2/(q-1))*|t|) / gamma(nu/2)
+%           besselk(df/2, sqrt(2/(q-1))*|t|) / gamma(nu/2)
 %  where df = (3-q)/(q-1). 
 %  
 %  This CF is related to the CF of the Student t-distribution. In
@@ -103,7 +103,6 @@ function cf = cf_TsallisQGaussian(t,mu,beta,q,coef,niid)
 %   figure; plot(t,real(cf),t,imag(cf));grid on
 %   title('CF of a linear combination of Q-Gaussian RVs')
 %
-%
 % EXAMPLE 2:
 % % PDF/CDF from the CF of a linear combination of Q-Gaussian RVs
 %   mu   = [0 1 2];
@@ -120,10 +119,25 @@ function cf = cf_TsallisQGaussian(t,mu,beta,q,coef,niid)
 % EXAMPLE 3:
 % % PDF/CDF from the CF of a linear combination of Q-Gaussian RVs
 %   mu   = [0 0 0 0 0];
-%   beta = [1 1 1 1 1];
+%   beta = [5 4 3 2 1];
 %   q    = [-5 -1 0 1 2];
 %   coef = [1 1 1 1 1]/5;
-%   supp = sum(beta .* real(sqrt(2./(1-q))));
+%   cf   = @(t) cf_TsallisQGaussian(t,mu,beta,q,coef);
+%   clear options
+%   options.N = 2^14;
+%   x = linspace(-10,10,301);
+%   prob = [0.01 0.05 0.1 0.5 0.9 0.950 .99];
+%   result = cf2DistGP(cf,x,prob,options);
+%   disp(result)
+%
+% EXAMPLE 4:
+% % PDF/CDF from the CF of a linear combination of Q-Gaussian RVs using the
+% % Tsallis parametrization
+%   mu   = [0 0 0 0 0];
+%   BETA = [5 4 3 2 1];
+%   beta = sqrt(1./(2*BETA));
+%   q    = [-5 -1 0 1 2];
+%   coef = [1 1 1 1 1]/5;
 %   cf   = @(t) cf_TsallisQGaussian(t,mu,beta,q,coef);
 %   clear options
 %   options.N = 2^14;
