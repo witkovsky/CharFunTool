@@ -59,6 +59,7 @@ Hypergeom2F1MatApprox
 HypergeompFqMat
 HypergeompFqSeries
 HypergeomU
+KummerU
 logQ
 
 TRANSFORMATION Functions:
