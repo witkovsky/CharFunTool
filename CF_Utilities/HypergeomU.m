@@ -1,12 +1,22 @@
-function [y,md] = HypergeomU(a,b,z)
+function [y,md,id] = HypergeomU(a,b,z)
 %HypergeomU Computes the confluent hypergeometric function of the second
 %  kind, Kummer U(a,b,z), for complex arguments a, b, z, where Re(a)>0,
-%  Re(z)>=0.  
+%  Re(z)>=0.  Here, a, b, must be scalars and z could be scalar, vesctor or
+%  array. 
+% 
+%  The output variables, y (the values of the hypergeometric U function),
+%  md (indicator of the algorithm used for evaluation), and id (indicator
+%  of precision - the number of valid figures in the result) are arrays of
+%  the size equal to the input variable z.
+%  
+%  KummerU (part of CharFunTool) is the alternative implementation of
+%  HypergeomU (part of CharFunTool) based on using the MATLAB built-in
+%  arrayfun algorithm. 
 % 
 % SEE e.g., http://dlmf.nist.gov/13.
 %
 % SYNTAX
-%   [y,md] = HypergeomU(a,b,z)
+%   [y,md,id] = HypergeomU(a,b,z)
 %
 % EXAMPLE 1
 %  a = 3;
@@ -18,10 +28,10 @@ function [y,md] = HypergeomU(a,b,z)
 %  % See e.g. https://en.wikipedia.org/wiki/F-distribution
 %  d1 = 5;
 %  d2 = 3;
-%  t  = linspace(-50,50,2^11)';
+%  t  = linspace(-30,30,301)';
 %  cf = gamma((d1+d2)/2) * ...
 %       HypergeomU(d1/2,1-d2/2,-(d2/d1)*1i*t) / gamma(d2/2);
-%  figure; plot(t,real(cf),t,imag(cf))
+%  figure; plot(t,real(cf),t,imag(cf));grid on
 %  title('CF of the Fisher-Snedecor F(5,3) distribution')
 %  xlabel('t')
 %  ylabel('CF')
@@ -31,39 +41,35 @@ function [y,md] = HypergeomU(a,b,z)
 %  CHGU.m is a direct conversion of the corresponding Fortran program
 %  developed by S. Zhang and J. Jin, "Computation of Special Functions"
 %  (Wiley 1996). 
-% 
-%  This version was modified by Tomy Duby, OAA Computing Ltd, YouTrack
-%  CRM-30, 18-Sep-17: 
-%  (1) Modified chgu_1 function: made cross-over from serial expansion for
-%      low values of argument x, function chgus, to integration, function
-%      chguit, when the accuracy of the first method dropped below 12
-%      digits. 
-%  (2) Commented out the internal function gamma so that from now on chgu
-%      uses the Matlab's function gamma.
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 23-Sep-2019 21:57:11
+% Ver.: 19-Feb-2023 11:25:10
 
 %% ALGORITHM CALL
-%[y,md] = HypergeomU(a,b,z)
+%[y,md,id] = HypergeomU(a,b,z)
 
 %% ALGORITHM
 sz = size(z);
+
 if max(sz) > 1
     z = z(:);
     n = length(z);
     y = zeros(n,1);
+    md = zeros(n,1);
+    id = zeros(n,1);
     for i = 1:n
-        y(i) = chgu(a,b,z(i));
+        [y(i),md(i),id(i)] = chgu(a,b,z(i));
     end
-    y = reshape(y,sz);
+    y  = reshape(y,sz);
+    md = reshape(md,sz);
+    id = reshape(id,sz);
 else
-    [y,md] = chgu(a,b,z);
+    [y,md,id] = chgu(a,b,z);
 end
                 
 end
 %% FUNCTION CHGU
-function [hu,md] = chgu(a,b,x)
+function [hu,md,id] = chgu(a,b,x)
 %CHGU Confluent hypergeometric function of second kind (Kummer U).
 
 %% Check the arguments
@@ -86,21 +92,23 @@ x  = x(:);
 
 hu = zeros( size( x ) );
 md = zeros( size( x ) );
+id = zeros( size( x ) );
 
 for i = 1 : length( x )
-    [hu(i), md(i)] = chgu_1( a, b, x(i) );
+    [hu(i), md(i), id(i)] = chgu_1( a, b, x(i) );
 end
 
 hu = reshape( hu, sz );
 md = reshape( md, sz );
+id = reshape( id, sz );
 end
 %% FUNCTION CHGU_L
-function [hu, md] =  chgu_1( a, b, x )
+function [hu, md, id] =  chgu_1( a, b, x )
 %  CHGU_L Calculate the confluent hypergeometric function of the second
 %  kind,  U(a, b, x) for a single argument x.
 
 %% ALGORITHM
-id  = [];
+id  = NaN;
 aa  = a - b + 1;
 il1 = a==fix(a) & a<=0;
 il2 = aa==fix(aa) & aa<=0;
@@ -115,6 +123,7 @@ if b~=fix(b)
     [hu,id1] = chgus(a,b,x);
     md  = 1;
     if id1>=12 
+        id  = id1;
         return
     end    
     hu1 = hu;
@@ -155,9 +164,9 @@ else
     end
 end
 
-if(id < 6)
-    fprintf(1,'%s \n','chgu: no accurate result obtained');
-end
+% if(id < 6)
+%     warning('CharFunTool:HypergeomU','chgu: no accurate result obtained');
+% end
 return
 end
 %% FUNCTION CHGUS
@@ -305,6 +314,7 @@ for k   = 1:150
 end
 da1 = log10(hmax);
 
+da2 = 0;
 if hmin~=0
     da2 = log10(hmin);
 end
@@ -332,13 +342,13 @@ for k  = 1:150
             s1 = s1 - (m+2*a-2) / (m*(m+a-1));
         end
         m  = 1:n;
-        s2 = sum(1/(k+m));        
+        s2 = sum(1./(k+m));        
     else
         for m  = 1:k+n
             s1 = s1 + (1-a) / (m*(m+a-1));
         end
         m  = 1:k;
-        s2 = sum(1/m);
+        s2 = sum(1./m);
     end
     hw  = 2*el + ps + s1 - s2;
     r   = r .* (a0+k-1) .* x/((n+k)*k);
@@ -357,6 +367,7 @@ for k  = 1:150
 end
 
 db1 = log10(hmax);
+db2 = 0;
 if hmin~=0
     db2 = log10(hmin);
 end
@@ -429,7 +440,7 @@ w(:) = [.519078776312206d-01,.517679431749102d-01,.514884515009810d-01,...
 t = [t, -t];
 w = [w, w];
 
-id  = 7;
+id  = 8;
 a1  = a - 1;
 b1  = b - a - 1;
 c   = 12/x;
@@ -466,7 +477,7 @@ for m   = 2:2:10
         hu2 = hu2 + s.*g;
         d   = d + 2*g;
     end
-    if abs(1 - hu0./hu2) < 1e-7
+    if abs(1 - hu0./hu2) < 1e-8
         break
     end    
     hu0 = hu2;
