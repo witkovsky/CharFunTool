@@ -1,64 +1,71 @@
-function cf = cf_TsallisQGaussian(t,mu,beta,q,coef,niid)
+function cf = cf_TsallisQGaussian(t,mu,sigma,q,coef,niid)
 %% cf_TsallisQGaussian 
 %  Characteristic function of a linear combination (resp. convolution) of
 %  independent random variables with the Tsallis q-Gaussian distribution
-%  with real mean mu, scale parameter beta > 0, and deformation (shape)
-%  parameter q < 3. 
-% 
-%  This parametrization is consistent with Wolfram MATHEMATICA, where beta
-%  > 0 represents the scale parameter. Note that this is different from the
-%  original parametrization defined by Tsallis and explained, e.g., in
-%  Wikipedia, which uses beta as the rate parameter. 
-%  
-%  The parameter beta used here is related to the original parametrization,
-%  say BETA. Namely, BETA = 1/(2*beta^2) or beta = sqrt(1/(2*BETA)). This
-%  parametriztion ensures that for q = 1, cf_TsallisQGaussian(mu,beta,q) ~
-%  N(mu,beta), i.e. with the normal distribution with mean mu and variance
-%  sigma^2 = beta^2.
+%  with the location parameter mu (real value), the scale parameter sigma
+%  (sigma > 0), and the shape parameter q (q < 3). The random variable with
+%  q-Gaussian distribution is denoted by X ~ TsallisQGaussian(mu,sigma,q).
 %
-%  cf_TsallisQGaussian evaluates the characteristic function cf(t) of  Y =
-%  sum_{i=1}^N coef_i * X_i, where X_i ~ TsallisQGaussian(mu_i,beta_i,q_i)
-%  are inedependent RVs, with parameters mu_i, beta_i and q_i, for i =
-%  1,...,N.
+%  The parametrization used here is consistent with the parametrizatin used
+%  in Wolfram MATHEMATICA, where sigma > 0 represents the scale parameter.
+%  Note that this is different from the parametrization defined by Tsallis
+%  (see, e.g., Wikipedia), which uses beta as the rate parameter.
+%  
+%  The parameter sigma used here is related to the parameter beta used in
+%  the original Tsallis parametrization. Namely, beta = 1/(2*sigma^2) or
+%  sigma = sqrt(1/(2*beta)). 
+% 
+%  The present parametriztion ensures that for q = 1, X ~
+%  TsallisQGaussian(mu,sigma,q) <=> X ~ N(mu,sigma^2), i.e. it represents
+%  RV with the normal distribution, with mean mu and variance sigma^2.
+%
+%  The algorithm cf_TsallisQGaussian evaluates the characteristic function
+%  cf(t) of  Y = sum_{i=1}^N coef_i * X_i, where X_i ~
+%  TsallisQGaussian(mu_i,sigma_i,q_i) are inedependent RVs, with parameters
+%  mu_i, sigma_i and q_i, for i = 1,...,N, see Witkovsky (2023).
 %
 %  For q = 1, the characteristic function of the random variable with the
 %  standard Tsallis Q-Gaussian distribution, i.e. X ~
-%  TsallisQGaussian(0,1,q), where q = 1, is equal to the characteristic
+%  TsallisQGaussian0,1,q), where q = 1, is equal to the characteristic
 %  function of the standard normal distribution defined by
 %   cf(t) = exp(-t^2/2).
 %
 %  For q < 1, the characteristic function of the random variable with
-%  standard Tsallis Q-Gaussian distribution, i.e. X ~
-%  TsallisQGaussian(0,1,q), where q < 1, is defined by 
-%  cf(t) = Hypergeometric0F1(3/2 + 1/(1-q), -t^2/(2 * (1-q)))
-%        = 2^(nu/4) * (t/sqrt(1-q))^(-nu/2) * ...
-%          besselj(nu/2, sqrt(2/(1-q))*t) * gamma(3/2 + 1/(1-q)),
-%  where nu = (3-q)/(1-q). Note that the support of the distribution is
-%  [- beta*sqrt(2/(1-q)), beta*sqrt(2/(1-q))].
+%  standard Tsallis q-Gaussian distribution, i.e. X ~
+%  TsallisQGaussian0,1,q), where q < 1, is defined by
+%   cf(t) = Hypergeometric0F1(theta + 1/2, -(c1*t)^2/4)
+%         = gamma(theta+1/2) * 2^(theta-1/2) * (c1*t)^(-(theta+1/2)) 
+%           * besselj(theta-1/2,c1*t)
+%         = cf_BetaSymmetric(c1*t,theta)
+%  where c1 = sqrt(2/(1-q)) and theta = (2-q)/(1-q). 
+%  Note that the support of the standard Tsallis q-Gaussian distribution
+%  with q < 1 is limitted to the interval [-c1,c1] = [- sqrt(2/(1-q)),
+%  sqrt(2/(1-q))].  
 %
 %  For 1 < q < 3, the characteristic function of the random variable with
-%  standard Tsallis Q-Gaussian distribution, i.e. X ~
-%  TsallisQGaussian(0,1,q), where 1 < q < 3, is defined by 
-%   cf(t) = 2^( (7-5*q)/(4-4*q) ) * (q-1)^(-df/4) * |t|^(df/2) * ...
-%           besselk(df/2, sqrt(2/(q-1))*|t|) / gamma(nu/2)
-%  where df = (3-q)/(q-1). 
-%  
-%  This CF is related to the CF of the Student t-distribution. In
-%  particular, the characteristic function of the random variable with
-%  Tsallis Q-Gaussian distribution, i.e. X ~ TsallisQGaussian(mu,beta,q),
-%  where 1 < q < 3, can be evaluated as
-%   cf(t) = cf_Student(t,df,mu,sigma),
-%  where df = (3-q)/(q-1); sigma = beta*sqrt(2/(3-q)).
+%  standard Tsallis q-Gaussian distribution, i.e. X ~
+%  TsallisQGaussian0,1,q), where 1 < q < 3, is defined by
+%   cf(t) = besselk( nu/2, sqrt(nu)*c2*abs(t) ) 
+%           * ( sqrt(nu)*c2*abs(t) )^(nu/2)
+%           / ( 2^(nu/2 - 1) * gamma(nu/2) )
+%         = cf_Student(c2*t,nu)
+%  where c2 = sqrt(2/(3-q)) and nu = (3-q)/(q-1).
+%
+%  In general, the characteristic function of the random variable with the
+%  Tsallis q-Gaussian distribution, X ~ TsallisQGaussian(mu,sigma,q), where
+%  q < 3, is defined by
+%   cf_TsallisQGaussian(t) = exp(1i * t * mu) * cf(sigma * t),
+%  where cf(t) is defined as above.
 %
 % SYNTAX:
-%  cf = cf_TsallisQGaussian(t,mu,beta,q,coef,niid)
+%  cf = cf_TsallisQGaussian(t,mu,sigma,q,coef,niid)
 %
 % INPUTS:
 %  t     - vector or array of real values, where the CF is evaluated.
 %  mu    - vector of the 'location' parameters mu in R. If empty, default
 %          value is mu = 0.  
-%  beta  - vector of the 'scale' parameters beta > 0. If empty, default
-%          value is beta = 1.  
+%  sigma - vector of the 'scale' parameters sigma > 0. If empty, default
+%          value is sigma = 1.  
 %  q     - vector of the 'shape' parameters q < 3. If empty, default
 %          value is q = 1.
 %  coef  - vector of the coefficients of the linear combination of the
@@ -71,20 +78,29 @@ function cf = cf_TsallisQGaussian(t,mu,beta,q,coef,niid)
 %          random variable. If empty, default value is niid = 1.     
 %
 % REMARKS:
+%  As seen, the CF of the standard Tsallis q-Gaussian, X ~
+%  TsallisQGaussian0,1,q), is related the CFs of other distributions:
+%  * If q = 1, cf_TsallisQGaussian(t) = cf_Normal(t).
+%  * If q < 1, the Tsallis q-Gaussian distribution equals to the shifted
+%    and scaled symmetric Beta distribution on [-1,1],
+%    cf_TsallisQGaussian(t) = cf_BetaSymmetric(c1*t,theta) with c1 =
+%    sqrt(2/(1-q)) and theta = (2-q)/(1-q). 
+%  * If 1 < q < 3, the Tsallis q-Gaussian distribution equals to the
+%    shifted and scaled Student t-distribution, cf_TsallisQGaussian(t) =
+%    cf_Student(c2*t,nu) with c2 = sqrt(2/(3-q)) and nu = (3-q)/(q-1). 
+%
 %  The current version shows numerical problems for q ~ 1 (i.e. when the
-%  distribution should be close to normal distribution ) and for q -> 3 and
+%  distribution should be close to normal distribution) and for q -> 3 and
 %  q -> -inf. This is due to overflow/underflow problems, respectively, of
-%  the besseli and besselk functions used. In particular, when q -> 1 the
+%  the besselj and besselk functions used. In particular, when q -> 1 the
 %  algorithm requires the computation of besselj(nu,x) and/or besselk(nu,x)
 %  for nu -> inf.
 % 
-%  Note that X ~ TsallisQGaussian(mu,beta,q) with 1 < q < 2 is a heavy tail
-%  distribution. In particular, if q = 2, we get the Cauchy distribution.
-%  If 2 < q < 3, X ~ TsallisQGaussian(mu,beta,q) is in a region of
-%  extremely heavy tails, corresponding to a Student t- distribution with
-%  degrees of freedom df such that df -> 0 when q -> 3 and df -> 1 when q
-%  -> 2. The algorithm may have some numerical problems for 2 < q < 3 that
-%  require special treatment (option parameters). 
+%  The algorithm for numerical inversion may have some numerical problems
+%  for CFs with 2 < q < 3. Such cases require special treatment, e.g.
+%  setting special option parameters in the algorithm cf2DistGP or using a
+%  the GP accelerated algorithms, e.g., cf2Dist_GPA, cf2CDF_GPA,
+%  cf2CDF_GPA. 
 %
 % WOLFRAM MATEMATICA
 %   https://reference.wolfram.com/language/ref/TsallisQGaussianDistribution.html
@@ -93,87 +109,109 @@ function cf = cf_TsallisQGaussian(t,mu,beta,q,coef,niid)
 %   https://en.wikipedia.org/wiki/Q-Gaussian_distribution
 %
 % EXAMPLE 1:
-% % CF of a linear combination of Q-Gaussian random variables
-%   mu   = [0 1 2];
-%   beta = [1 1 0.5];
-%   q    = [-1 0.5 1.25];
-%   coef = [1 1 1]/3;
-%   t = linspace(-10,10,201);
-%   cf = cf_TsallisQGaussian(t,mu,beta,q,coef);
+% % CF of a linear combination of q-Gaussian random variables
+%   mu     = [0 1 2];
+%   sigma  = [1 1 1];
+%   q      = [-1 0.5 1.5];
+%   coef   = [1 1 1]/3;
+%   t      = linspace(-10,10,201);
+%   cf     = cf_TsallisQGaussian(t,mu,sigma,q,coef);
 %   figure; plot(t,real(cf),t,imag(cf));grid on
-%   title('CF of a linear combination of Q-Gaussian RVs')
+%   title('CF of a linear combination of q-Gaussian RVs')
 %
 % EXAMPLE 2:
-% % PDF/CDF from the CF of a linear combination of Q-Gaussian RVs
-%   mu   = [0 1 2];
-%   beta = [1 1 0.5];
-%   q    = [-1 0.5 1.5];
-%   coef = [1 1 1]/3;
-%   cf   = @(t) cf_TsallisQGaussian(t,mu,beta,q,coef);
+% % PDF/CDF from the CF of a linear combination of q-Gaussian RVs
+%   mu     = [0 1 2];
+%   sigma  = [1 1 1];
+%   q      = [-1 0.5 1.5];
+%   coef   = [1 1 1]/3;
+%   cf     = @(t) cf_TsallisQGaussian(t,mu,sigma,q,coef);
 %   clear options
 %   options.N = 2^10;
-%   prob = [0.01 0.05 0.1 0.5 0.9 0.950 .99];
+%   prob   = [0.01 0.05 0.1 0.5 0.9 0.950 .99];
 %   result = cf2DistGP(cf,[],prob,options);
 %   disp(result)
 %
 % EXAMPLE 3:
-% % PDF/CDF from the CF of a linear combination of Q-Gaussian RVs
-%   mu   = [0 0 0 0 0];
-%   beta = [5 4 3 2 1];
-%   q    = [-5 -1 0 1 2];
-%   coef = [1 1 1 1 1]/5;
-%   cf   = @(t) cf_TsallisQGaussian(t,mu,beta,q,coef);
+% % PDF/CDF from the CF of a linear combination of q-Gaussian RVs
+%   mu     = [0 0 0 0 0];
+%   sigma  = [5 4 3 2 1];
+%   q      = [-5 -1 0 1 2];
+%   coef   = [1 1 1 1 1]/5;
+%   cf     = @(t) cf_TsallisQGaussian(t,mu,sigma,q,coef);
 %   clear options
 %   options.N = 2^14;
-%   x = linspace(-10,10,301);
-%   prob = [0.01 0.05 0.1 0.5 0.9 0.950 .99];
+%   x      = linspace(-10,10,301);
+%   prob   = [0.01 0.05 0.1 0.5 0.9 0.950 .99];
 %   result = cf2DistGP(cf,x,prob,options);
 %   disp(result)
 %
 % EXAMPLE 4:
-% % PDF/CDF from the CF of a linear combination of Q-Gaussian RVs using the
+% % PDF/CDF from the CF of a linear combination of q-Gaussian RVs using the
 % % Tsallis parametrization
-%   mu   = [0 0 0 0 0];
-%   BETA = [5 4 3 2 1];
-%   beta = sqrt(1./(2*BETA));
-%   q    = [-5 -1 0 1 2];
-%   coef = [1 1 1 1 1]/5;
-%   cf   = @(t) cf_TsallisQGaussian(t,mu,beta,q,coef);
+%   mu     = [0 0 0 0 0];
+%   beta   = [5 4 3 2 1];
+%   sigma  = sqrt(1./(2*beta));
+%   q      = [-5 -1 0 1 2];
+%   coef   = [1 1 1 1 1]/5;
+%   cf     = @(t) cf_TsallisQGaussian(t,mu,sigma,q,coef);
 %   clear options
 %   options.N = 2^14;
-%   x = linspace(-10,10,301);
-%   prob = [0.01 0.05 0.1 0.5 0.9 0.950 .99];
+%   x      = linspace(-10,10,301);
+%   prob   = [0.01 0.05 0.1 0.5 0.9 0.950 .99];
 %   result = cf2DistGP(cf,x,prob,options);
 %   disp(result)
+%
+% EXAMPLE 5:
+% % CDF from the CF of a linear combination of q-Gaussian RVs with
+% % extreme values of q (here max q = 2.9) computed with using cf2CDF_GPA 
+%   mu     = [0 0 0];
+%   sigma  = [1 0.5 0.1];
+%   q      = [ 0 1 2.9];
+%   coef   = [1 1 1]/3;
+%   cf     = @(t) cf_TsallisQGaussian(t,mu,sigma,q,coef);
+%   clear options
+%   options.isAccelerated = true; 
+%   % Plot the integrand functions used for accelerated computation of CDF
+%   % options.isPlot = true;
+%   x = [1e+10 1e+20 1e+30 1e+40 1e+50 1e+60 1e+70 1e+80 1e+90]';
+%   cdf = cf2CDF_GPA(cf,x,options);
+%   Table = table(x,cdf);
+%   disp(Table)
+%
+% REFERENCES:
+% [1] WITKOVSKY. V. (2023). Characteristic Function of the Tsallis
+%     q-Gaussian and Its Applications in Measurement Science and Metrology.
+%     In:  MEASUREMENT 2023, Proceedings of the 14th International
+%     Conference on Measurement. Smolenice, Slovakia, May 28-31.
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 14-Feb-2023 15:12:06
+% Ver.: 10-Mar-2023 10:11:54
 
 %% ALGORITHM
-% cf = cf_TsallisQGaussian(t,mu,beta,q,coef,niid)
+% cf = cf_TsallisQGaussian(t,mu,sigma,q,coef,niid)
 
 %% CHECK THE INPUT PARAMETERS
 narginchk(1, 6);
 if nargin < 6, niid = []; end
 if nargin < 5, coef = []; end
 if nargin < 4, q = []; end
-if nargin < 3, beta = []; end
+if nargin < 3, sigma = []; end
 if nargin < 2, mu = []; end
 
 if isempty(mu), mu = 0; end
-if isempty(beta), beta = 1; end
+if isempty(sigma), sigma = 1; end
 if isempty(q), q = 1; end
 if isempty(coef), coef = 1; end
 if isempty(niid), niid = 1; end
 
 %% Equal size of the parameters   
-[errorcode,coef,mu,beta,q] = distchck(4,coef(:)',mu(:)',beta(:)',q(:)');
+[errorcode,coef,mu,sigma,q] = distchck(4,coef(:)',mu(:)',sigma(:)',q(:)');
 if errorcode > 0
     error(message('InputSizeMismatch'));
 end
 szt      = size(t);
 t        = t(:);
-o        = ones(size(t));
 
 idE1 = q==1;
 idL1 = q<1;
@@ -183,32 +221,31 @@ idG3 = q >= 3;
 cf = 1;
 
 if any(idE1)
-    MU   = mu(idE1);
-    SIG  = beta(idE1);
-    COEF = coef(idE1);
-    cf   = cf .* cf_Normal(t,MU,SIG,COEF);
+    MU    = mu(idE1);
+    SIGMA = sigma(idE1);
+    COEF  = coef(idE1);
+    cf    = cf .* cf_Normal(t,MU,SIGMA,COEF);
 end
 
 if any(idG1)
-    DF   = (3-q(idG1))./(q(idG1)-1); 
-    MU   = mu(idG1);
-    SIG  = beta(idG1).*sqrt(2./(3-q(idG1)));
-    COEF = coef(idG1);
-    cf   = cf .* cf_Student(t,DF,MU,SIG,COEF);
+    Q     = q(idG1);
+    C1    = sqrt(2./(3-Q));
+    NU    = (3-Q)./(Q-1); 
+    MU    = mu(idG1);
+    SIGMA = C1.*sigma(idG1);
+    COEF  = coef(idG1);
+    cf    = cf .* cf_Student(t,NU,MU,SIGMA,COEF);
 end
 
 if any(idL1)
-    Q    = q(idL1);
-    NU   = (3-Q)./(1-Q);
-    MU   = mu(idL1);
-    BETA = beta(idL1);
-    COEF = coef(idL1);
-    aux  = log(2)*(o*NU/4);
-    aux  = aux - (o*NU/2) .* log(t*(BETA .* COEF ./sqrt(1-Q)));
-    aux = aux + log(besselj((o*NU)/2, t*(BETA .* COEF .* sqrt(2./(1-Q)))));
-    aux = aux + gammaln(3/2 + o *(1./(1-Q)));
-    aux = sum(real(aux) + (1i*t * (BETA .* COEF .* MU)),2);
-    cf  = cf .* exp(aux);
+    Q     = q(idL1);
+    C2    = sqrt(2./(1-Q));
+    THETA = (2-Q)./(1-Q);
+    MU    = mu(idL1);
+    SIGMA = sigma(idL1);
+    COEF  = coef(idL1);
+    cf    = cf .* cf_BetaSymmetric(t,THETA,SIGMA.*C2.*COEF) ...
+               .* exp(1i*t*sum(MU.*COEF));
 end
 
 if any(idG3)
