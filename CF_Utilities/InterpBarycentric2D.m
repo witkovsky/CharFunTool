@@ -94,7 +94,7 @@ function [funNew,xyNew] = ...
 %  figure;mesh(X,Y,pdfNew)
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 12-May-2021 15:43:12
+% Ver.: 26-Apr-2023 14:22:19
 
 %% FUNCTION
 %  [funNew,xyNew] = InterpBarycentric2D(xOld,yOld,funOld,xyNew,options)
@@ -143,7 +143,7 @@ if ~isfield(options, 'wy')
 end
 
 %% ALGORITHM
-tol    = options.SVDtol;
+%tol    = options.SVDtol;
 wx     = options.wx;
 wy     = options.wy;
 nx     = length(xOld(:));
@@ -155,12 +155,8 @@ if nx < 2 || ny < 2
 end
 
 % SVD decomposition of funOld
-[U,S,V] = svd(funOld);
-id = diag(S) > tol;
-n  = sum(id);
-U = U(:,id);
-S = S(id,id);
-V = V(:,id);
+[U,S,V] = svd(funOld,'econ');
+n  = size(S,1);
 
 % funNew using SVD decomposition
 if ~isempty(Nxy)
