@@ -130,10 +130,6 @@ if ~isfield(options, 'isChebPts')
     options.isChebPts = true;
 end
 
-if ~isfield(options, 'SVDtol')
-    options.SVDtol = 1e-14;
-end
-
 if ~isfield(options, 'wx')
     options.wx = [];
 end
