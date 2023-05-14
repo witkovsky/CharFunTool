@@ -179,7 +179,7 @@ if nargout > 1
     result.cf          = cf;
     result.EPMF        = EPMF;
     result.ECDF        = ECDF;
-    result.X           = X;
+    result.Xunique     = X;
     result.Xmin        = Xmin;
     result.Xmax        = Xmax;
     result.Xdiff       = Xdiff;
