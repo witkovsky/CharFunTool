@@ -64,6 +64,14 @@ function [result,Zcdf,Zpdf] = cf2Dist2D(cf,x,options)
 %             options.DIST.t2    = t2;    % t2 values where cf2 was
 %                                         % evaluated
 %             options.DIST.dt    = dt;    % pair of delta difference in t.
+%  options.INTERP - structure with information for 2D interpolation:
+%             options.INTERP is created automatically after first call:
+%             options.INTERP.SVDtol = 1e-14  % the tolerance for used
+%                                            % singular values 
+%             options.INTERP.isSVDtol = true % apply the tolerance limit
+%                                            % and use only singular values 
+%                                            % greater than specified
+%                                            % tolerance limit SVDtol 
 %
 % REMARKS: 
 % If options.DIST is provided, then cf2Dist2D evaluates CDF/PDF based on
@@ -102,24 +110,24 @@ function [result,Zcdf,Zpdf] = cf2Dist2D(cf,x,options)
 %  result = cf2Dist2D(cf)
 %  disp([result.x result.cdf])
 %
-% EXAMPLE2 (CDF/PDF of bivariate normal distribution at specific x)
-%  cf = @(t) exp(-(0.9*t(:,1).^2 + 0.3*t(:,2).^2 +2*0.4*t(:,1).*t(:,2))/2);
-%  x1 = linspace(-3,3,31);
-%  x2 = linspace(-3,3,31);
-%  x = {x1 x2};
-%  result = cf2Dist2D(cf,x)
-%  disp([result.x result.cdf])
+% EXAMPLE2 (CDF/PDF of a standard symmetric bivariate normal distribution)
+%  cf = @(t) cf2D_Normal(t);
+%  options.isInterp = true;
+%  options.INTERP.SVDtol = 1e-8;
+%  result = cf2Dist2D(cf,[],options)
 %
 % EXAMPLE3 (Iterpolated CDF/PDF of the standard bivariate logistic distribution)
 %  cf = @(t) cf2D_Logistic(t);
 %  clear options;
 %  options.isInterp = true;
+%  options.INTERP.SVDtol = 1e-8;
 %  result = cf2Dist2D(cf,[],options)
 %
 % EXAMPLE4 (Iterpolated COPULA of the standard bivariate logistic distribution)
 %  cf = @(t) cf2D_Logistic(t);
 %  clear options;
 %  options.isInterp = true;
+%  options.INTERP.SVDtol = 1e-12;
 %  options.isPlot = false;
 %  result = cf2Dist2D(cf,[],options);
 %  COPULAcdf = result.COPULAcdf;
@@ -152,6 +160,7 @@ function [result,Zcdf,Zpdf] = cf2Dist2D(cf,x,options)
 %  cf     = @(t) 0.25*cf1(t) + 0.75*cf2(t);
 %  clear options;
 %  options.isInterp = true;
+%  options.INTERP.SVDtol = 1e-8;
 %  options.N = 2^9;          
 %  options.chebyPts = 2^7;
 %  options.ContourLevelList = [0.01 0.05 0.1 0.2:0.2:0.8 0.9 0.95 0.99];
@@ -264,6 +273,18 @@ end
 if ~isfield(options, 'ContourLevelList')
     options.ContourLevelList = [0.01 0.05 0.1000 0.2000 0.3000 ...
         0.4000 0.5000 0.6000 0.7000 0.8000 0.9000 0.95 0.99];       
+end
+
+if ~isfield(options, 'INTERP')
+    options.INTERP = [];
+end
+
+if ~isfield(options.INTERP, 'isSVDtol')
+    options.INTERP.isSVDtol = true;
+end
+
+if ~isfield(options.INTERP, 'SVDtol')
+    options.INTERP.SVDtol = 1e-14;
 end
 
 %% GET/SET the DEFAULT parameters and the OPTIONS
@@ -514,8 +535,9 @@ if options.isInterp
     PDF    = @(xyNew) InterpBarycentric2D(x1,x2,Zpdf,xyNew);
     CDF    = @(xyNew) InterpBarycentric2D(x1,x2,Zcdf,xyNew);
 %     RND    = @(dim) InterpRND2D(dim,RND1,RND2,PDF1,PDF2,PDF,xMin,xMax);
-    COPULAcdf = @(u12) CopFunCDF(u12,x1,x2,Zcdf,QF1,QF2);
-    COPULApdf = @(u12) CopFunPDF(u12,x1,x2,Zpdf,QF1,QF2);
+    COPULAcdf  = @(u12) CopFunCDF(u12,x1,x2,Zcdf,QF1,QF2,options.INTERP);
+    COPULApdf  = @(u12) CopFunPDF(u12,x1,x2,Zpdf,QF1,QF2,PDF1,PDF2,options.INTERP);
+    COPULApdf2 = @(u12) CopFunPDF2(u12,x1,x2,Zpdf,QF1,QF2,options.INTERP);
 else
     PDF1   = [];
     CDF1   = [];
@@ -563,6 +585,7 @@ if options.isInterp
 %    result.RND             = RND;
     result.COPULAcdf       = COPULAcdf;
     result.COPULApdf       = COPULApdf;
+    result.COPULApdf2      = COPULApdf2;
     result.PDF1            = PDF1;
     result.CDF1            = CDF1;
     result.QF1             = QF1;
@@ -658,22 +681,33 @@ if isPlot
                
         % CDF COPULA
         figure
-        u1 = linspace(0,1,51);
-        u2 = linspace(0,1,51);
+        small = 1e-8;
+        u1 = linspace(small,1-small,51);
+        u2 = linspace(small,1-small,51);
         [U1,U2]= meshgrid(u1,u2);
         mesh(U1,U2,COPULAcdf({u1,u2}))
         xlabel('u1')
         ylabel('u2')
         zlabel('CDF')
         title('COPULA of the Bivariate Distribution Specified by the CF')
-        
+
         % PDF COPULA
         figure
         mesh(U1,U2,COPULApdf({u1,u2}))
+        v = axis; v(5) = 0; axis(v);
         xlabel('u1')
         ylabel('u2')
         zlabel('PDF')
         title('PDF COPULA of the Bivariate Distribution Specified by the CF')
+        
+        % Adjusted PDF COPULA - proportional to the PDFs
+        figure
+        mesh(U1,U2,COPULApdf2({u1,u2}))
+        v = axis; v(5) = 0; axis(v);
+        xlabel('u1')
+        ylabel('u2')
+        zlabel('PDF')
+        title('Adjusted PDF COPULA proportional to PDF specified by the CF')
         
         % Contour plot of PDF + CDF
         figure
@@ -982,7 +1016,7 @@ end
 % end
 % 
 %% Function CopFunCDF
-function cdf = CopFunCDF(u12,x1,x2,Zcdf,QF1,QF2)
+function cdf = CopFunCDF(u12,x1,x2,Zcdf,QF1,QF2,myoptions)
 % CopFunCDF for given u1 in (0,1) and u2 in (0,1) Evaluates the copula
 % values of the distribution generated by the bivariate CF  
 
@@ -1000,18 +1034,18 @@ else
     x12New = [QF1(u12(:,1)) QF2(u12(:,2))];
 end
 
-cdf = InterpBarycentric2D(x1,x2,Zcdf,x12New);
+cdf = InterpBarycentric2D(x1,x2,Zcdf,x12New,myoptions);
 
 end
 %% Function CopFunPDF
-function pdf = CopFunPDF(u12,x1,x2,Zpdf,QF1,QF2)
+function pdf = CopFunPDF(u12,x1,x2,Zpdf,QF1,QF2,PDF1,PDF2,myoptions)
 % CopFunPDF for given u1 in (0,1) and u2 in (0,1) Evaluates the "copula"
-% values of PDF of the distribution generated by the bivariate CF  
+% values of PDF of the distribution generated by the bivariate CF.
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 12-May-2021 16:00:38
+% Ver.: 06-Jul-2023 20:12:22
 %% ALGORITHM
-
 
 if iscell(u12)
     u1     = u12{1};
@@ -1019,10 +1053,50 @@ if iscell(u12)
     x1New  = QF1(u1);
     x2New  = QF2(u2);
     x12New = {x1New x2New};
+    pdf    = InterpBarycentric2D(x1,x2,Zpdf,x12New,myoptions);
+    pdf1   = PDF1(x1New(:));
+    pdf2   = PDF2(x2New(:));
+    pdf    = pdf ./ (pdf2*pdf1');
 else
-    x12New = [QF1(u12(:,1)) QF2(u12(:,2))];
+    x1New = QF1(u12(:,1));
+    x2New = QF2(u12(:,2));
+    pdf  = InterpBarycentric2D(x1,x2,Zpdf,[x1New x2New],myoptions);
+    pdf1 = PDF1(x1New);
+    pdf2 = PDF2(x2New);
+    % Copula PDF: c(u1,u2) =  pdf(QF1(u1),QF2(u2)) / pdf1(QF1(u1))*pdf2(QF2(u2))
+    pdf  = pdf ./ (pdf2.*pdf1);
+end
 end
 
-pdf = InterpBarycentric2D(x1,x2,Zpdf,x12New);
+%% Function CopFunPDF2
+function pdf = CopFunPDF2(u12,x1,x2,Zpdf,QF1,QF2,myoptions)
+% CopFunPDF2 for given u1 in (0,1) and u2 in (0,1) Evaluates the "adjusted
+% copula" values of PDF of the distribution generated by the bivariate CF  
+% The Copula PDF is defined as: c(u1,u2) =  pdf(QF1(u1),QF2(u2)) /
+% pdf1(QF1(u1))*pdf2(QF2(u2)) and is evaluated by the algorithm CopFunPDF.
+% 
+% However, this gives rather 'strange' and noninformative picture. We
+% prefer to plot also normalised PDF Copula, which is proportional to the PDF and is
+% given by c(u1,u2) =  pdf(QF1(u1),QF2(u2)).  The algorithm CopFunPDF2
+% evaluates the PDF copula multiplied by the marginals, i.e. such that the
+% shape is proportional to the PDF, c(u1,u2) = pdf(QF1(u1),QF2(u2)). 
+
+% (c) Viktor Witkovsky (witkovsky@gmail.com)
+% Ver.: 12-May-2021 16:00:38
+% Ver.: 06-Jul-2023 20:12:22
+%% ALGORITHM
+
+if iscell(u12)
+    u1     = u12{1};
+    u2     = u12{2};
+    x1New  = QF1(u1);
+    x2New  = QF2(u2);
+    x12New = {x1New x2New};
+    pdf  = InterpBarycentric2D(x1,x2,Zpdf,x12New,myoptions);
+else
+    x1New = QF1(u12(:,1)); 
+    x2New = QF2(u12(:,2));
+    pdf  = InterpBarycentric2D(x1,x2,Zpdf,[x1New x2New],myoptions);
+end
 
 end
