@@ -3,7 +3,8 @@ function [funNew,xyNew] = ...
 %   InterpBarycentric2D is a 2-dimensional barycentric interpolation.
 %   Evaluates (interpolates) 2D-function, based on the n x m dimensional
 %   matrix of funOld values, evaluated at all combinations (meshgrid) of
-%   xOld and yOld, at given new points xNew and yNew.
+%   m-dimensional xOld and n-dimensional yOld, at given new points, 
+%   (M-dimesnional) xNew and (N-dimensional) yNew. 
 %
 %   The algorithm is using the barycentric interpolation of the columns of
 %   U and V  matrices from the SVD decomposition of funOld, i.e.  [U,S,V] =
@@ -37,7 +38,9 @@ function [funNew,xyNew] = ...
 %  xNew   = linspace(min(xOld),max(xOld),501)';
 %  yNew   = linspace(min(yOld),max(yOld),501)';
 %  xyNew  = {xNew,yNew};
-%  pdfNew = InterpBarycentric2D(xOld,yOld,pdfOld,xyNew);
+%  options.isSVDtol = 'true';
+%  options.SVDtol = 1e-8;
+%  pdfNew = InterpBarycentric2D(xOld,yOld,pdfOld,xyNew,options);
 %  [X,Y]  = meshgrid(xNew,yNew);
 %  mesh(X,Y,pdfNew)
 %
@@ -87,14 +90,16 @@ function [funNew,xyNew] = ...
 %  xNew   = linspace(min(xOld),max(xOld),501)';
 %  yNew   = linspace(min(yOld),max(yOld),501)';
 %  xyNew  = {xNew,yNew};
-%  cdfNew = InterpBarycentric2D(xOld,yOld,cdfOld,xyNew);
-%  pdfNew = InterpBarycentric2D(xOld,yOld,pdfOld,xyNew);
+%  options.isSVDtol = 'true';
+%  options.SVDtol = 1e-8;
+%  cdfNew = InterpBarycentric2D(xOld,yOld,cdfOld,xyNew,options);
+%  pdfNew = InterpBarycentric2D(xOld,yOld,pdfOld,xyNew,options);
 %  [X,Y]  = meshgrid(xNew,yNew);
 %  figure;mesh(X,Y,cdfNew)
 %  figure;mesh(X,Y,pdfNew)
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 26-Apr-2023 14:22:19
+% Ver.: 07-Jul-2023 01:10:27
 
 %% FUNCTION
 %  [funNew,xyNew] = InterpBarycentric2D(xOld,yOld,funOld,xyNew,options)
@@ -138,8 +143,15 @@ if ~isfield(options, 'wy')
     options.wy = [];
 end
 
+if ~isfield(options, 'SVDtol')
+    options.SVDtol = 1e-14;
+end
+
+if ~isfield(options, 'isSVDtol')
+    options.isSVDtol = false;
+end
 %% ALGORITHM
-%tol    = options.SVDtol;
+SVDtol = options.SVDtol;
 wx     = options.wx;
 wy     = options.wy;
 nx     = length(xOld(:));
@@ -151,8 +163,15 @@ if nx < 2 || ny < 2
 end
 
 % SVD decomposition of funOld
-[U,S,V] = svd(funOld,'econ');
-n  = size(S,1);
+[U,S,V] = svd(funOld,'econ','vector');
+n  = length(S);
+
+% Optionally, use only those singular values that are greater than the
+% given tolerance specified by SVDtol 
+
+if options.isSVDtol
+    n = sum((S>SVDtol));
+end
 
 % funNew using SVD decomposition
 if ~isempty(Nxy)
@@ -161,7 +180,7 @@ if ~isempty(Nxy)
     u = zeros(Nxy,n);
     v = zeros(Nxy,n);
     for j = 1:n
-        u(:,j) = InterpBarycentric(yOld,U(:,j),yNew,wy,options) * S(j,j);
+        u(:,j) = InterpBarycentric(yOld,U(:,j),yNew,wy,options) * S(j);
         v(:,j) = InterpBarycentric(xOld,V(:,j),xNew,wx,options);
     end
     funNew = sum(reshape(u(:).*v(:),Nxy,n),2);
@@ -169,7 +188,7 @@ else
     u = zeros(Ny,n);
     v = zeros(Nx,n);
     for j = 1:n
-        u(:,j) = InterpBarycentric(yOld,U(:,j),yNew,wy,options) * S(j,j);
+        u(:,j) = InterpBarycentric(yOld,U(:,j),yNew,wy,options) * S(j);
         v(:,j) = InterpBarycentric(xOld,V(:,j),xNew,wx,options);
     end
     funNew = u * v';
