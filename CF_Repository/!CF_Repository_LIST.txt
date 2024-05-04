@@ -108,6 +108,13 @@ cf2D_Logistic
 cf2D_LogisticESD
 cf2D_Normal
 
+CFs of N-variate probability distributions:
+
+cfND_DiracMixture
+cfND_Empirical
+cfND_LogisticESD
+cfND_Normal
+
 CFs of test statistics probability distributions:
 
 cfTest_Bartlett
