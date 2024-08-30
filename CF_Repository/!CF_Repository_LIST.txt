@@ -108,20 +108,13 @@ cf2D_Logistic
 cf2D_LogisticESD
 cf2D_Normal
 
-<<<<<<< HEAD
 CFs of N-dimensional probability distributions:
-=======
-CFs of N-variate probability distributions:
->>>>>>> 9ca5f20e2a81f343286bf7db3b9995dc547b976b
 
 cfND_DiracMixture
 cfND_Empirical
 cfND_LogisticESD
 cfND_Normal
-<<<<<<< HEAD
 cfND_UniformSphere
-=======
->>>>>>> 9ca5f20e2a81f343286bf7db3b9995dc547b976b
 
 CFs of test statistics probability distributions:
 
