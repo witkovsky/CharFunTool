@@ -5,12 +5,27 @@ function cf = cf2D_LogisticESD(t,mu,sigma,rho,coef,niid)
 %  SYMMETRIC DISTRIBUTION (ESD), say X = (X1,X2), with location parameters
 %  mu = (mu1,mu2) (real), and scale parameters specified by the covariance
 %  matrix Sigma = [sigma1^2,cov; cov,sigma2^2], where (sigma1,sigma2) > 0
-%  are standard deviations of X1 and X2 and the covariance cov is specified
-%  by the correlation coefficient, rho = cov(X1,X2) / sigma1*sigma2.
+%  and cov = rho*sigma1*sigma2.
 % 
-%  Here, we consider the bivariate logistic distribution and its
-%  characteristic function as is defined in Balakrishnan, Ma, and Wang
-%  (2015), see [1].
+%  Here, we consider the 'standardized' bivariate logistic distribution and
+%  its characteristic function as is defined in Balakrishnan, Ma, and Wang
+%  (2015), see [1], such that E(X) = mu, Var(X) = Sigma.
+% 
+%  In particular, an m-variate random vector X is said to be a logistic
+%  random vector, if it has the same distribution as U*Z + μ, where Z is an
+%  m-variate normal random vector with mean 0 and variance–covariance
+%  matrix Sigma, U is a Kolmogorov–Smirnov random variable, Z and U are
+%  independent, and μ is an m-valued (non-random) vector.
+%
+%  For a logistic random vector X, we have its mean vector as E(X) =
+%  E(U)*E(Z) + μ = μ, and its variance–covariance matrix as cov(X, X) =
+%  cov(U*Z + μ, U*Z + μ) = E(U^2) * Sigma = (π^2/3) * Sigma.
+%
+%  Hence, the 'standardized' m-variate logistic random vector X is defined
+%  as X = 1/sqrt(E(U^2))*U*Z + μ, where Z is an m-variate normal random
+%  vector with mean 0 and variance–covariance matrix Sigma, U is a
+%  Kolmogorov–Smirnov random variable, Z and U are independent, and μ is an
+%  m-valued (non-random) vector. Here E(X) = μ and cov(X, X) = Sigma.
 %
 %  That is, cf2D_LogisticESD evaluates the characteristic function
 %  cf(t1,t2) of Y = (Y1,Y2) =  sum_{i=1}^N (coef1_i * X1_i,coef2_i *X2_i),
@@ -90,7 +105,7 @@ function cf = cf2D_LogisticESD(t,mu,sigma,rho,coef,niid)
 %     Statistical Planning and Inference, 161, pp.109-118.   
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 12-Jan-2022 16:29:29
+% Ver.: 01-May-2024 16:29:07'
 
 %% ALGORITHM
 % cf = cf2D_LogisticESD(t,mu,sigma,rho,coef,niid)
@@ -161,12 +176,12 @@ else
     end
 end
 
-cf = 0;
+cf = 1;
 for i = 1:N
-    cf = cf + cfLog(t(:,1),t(:,2),mu(1,i),mu(2,i),...
+    cf = cf .* cfBinLogistic(t(:,1),t(:,2),mu(1,i),mu(2,i),...
         sigma(1,i),sigma(2,i),rho(i),coef(1,i),coef(2,i));
 end
-cf = exp(cf);
+
 cf = reshape(cf,sz);
 
 %cf(t(:,1)==0,t(:,2)==0) = 1;
@@ -180,98 +195,30 @@ if ~isempty(niid)
 end
 
 end
-%% Function cfLog
-function cf = cfLog(t1,t2,mu1,mu2,sigma1,sigma2,rho,coef1,coef2)
 
-z = sqrt(sum([t1*coef1*sigma1^2 + t2*coef2*rho*sigma1*sigma2, ...
-    t1*coef1*rho*sigma1*sigma2 + t2*coef2*sigma2^2] ...
-      .* [t1*coef1, t2*coef2],2));
-cf = 1i*mu1*coef1*t1 + 1i*mu2*coef2*t2 + ...
-    GammaLogVW(1 - 1i*z) + ...
-    GammaLogVW(1 + 1i*z);
-end
-%% Function GammaLogVW
-function f = GammaLogVW(z)
-% GammaLogVW  Natural Log of the Gamma function valid in the entire complex
-%           plane. This routine uses an excellent Lanczos series
-%           approximation for the complex ln(Gamma) function.
-%
-% SYNTAX:
-%  f = GammaLogVW(z)
-%             z may be complex and of any size.
-%             Also  n! = prod(1:n) = exp(gammalog(n+1))
-%
-% REFERENCES: 
-%  C. Lanczos, SIAM JNA  1, 1964. pp. 86-96
-%  Y. Luke, "The Special ... approximations", 1969 pp. 29-31
-%  Y. Luke, "Algorithms ... functions", 1977
-%  J. Spouge,  SIAM JNA 31, 1994. pp. 931
-%  W. Press,  "Numerical Recipes"
-%  S. Chang, "Computation of special functions", 1996
-%
-% AUTHOR:
-%  Paul Godfrey, pgodfrey@conexant.com, 07-13-01
+%% Function cfBinLogistic
+function cf = cfBinLogistic(t1,t2,mu1,mu2,sigma1,sigma2,rho,coef1,coef2)
+
+% Notice the identity
+% (pi*z)* Csch(pi*z) = gamma(1-i*z)*gamma(1+i*z)
+% also
+% csch(x) = 1/sinh(x) = 2 / (exp(x) - exp(-x))
 
 % Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 24-Jul-2017 10:06:48
+% Ver.: 19-Apr-2024 13:15:38
 
-%% FUNCTION
-%  f = GammaLogVW(z)
+mu = [mu1 mu2]';
+sigma = [sigma1 sigma2]';
+t  = [t1 t2];
+cf = exp(1i*t*mu);
 
-%% CHECK THE INPUT PARAMETERS
-siz = size(z);
-z   = z(:);
-zz  = z;
+t1 = coef1 .* t1;
+t2 = coef2 .* t2;
+t  = [t1 t2];
+sigma12   = rho*sigma(1)*sigma(2);
+Sigma = [sigma(1)^2, sigma12; sigma12, sigma(2)^2 ];
+normT2 = sum(t*Sigma.*t,2);
+normT  = sqrt(normT2);
 
-%f = 0.*z; % reserve space in advance
-
-p = find(real(z)<0);
-if ~isempty(p)
-    z(p) = -z(p);
-end
-
-%% ALGORITHM
-%Lanczos approximation for the complex plane
-
-g=607/128; % best results when 4<=g<=5
-
-c = [0.99999999999999709182;
-    57.156235665862923517;
-    -59.597960355475491248;
-    14.136097974741747174;
-    -0.49191381609762019978;
-    0.33994649984811888699e-4;
-    0.46523628927048575665e-4;
-    -0.98374475304879564677e-4;
-    0.15808870322491248884e-3;
-    -0.21026444172410488319e-3;
-    0.21743961811521264320e-3;
-    -0.16431810653676389022e-3;
-    0.84418223983852743293e-4;
-    -0.26190838401581408670e-4;
-    0.36899182659531622704e-5];
-
-s = 0;
-for k = size(c,1):-1:2
-    s = s + c(k)./(z+(k-2));
-end
-
-zg   = z+g-0.5;
-s2pi = 0.9189385332046727417803297;
-
-f = (s2pi + log(c(1)+s)) - zg + (z-0.5).*log(zg);
-
-f(z==1 | z==2) = 0.0;
-
-if ~isempty(p)
-    lpi  = 1.14472988584940017414342735 + 1i*pi;
-    f(p) = lpi-log(zz(p))-f(p)-log(sin(pi*zz(p)));
-end
-
-p = find(round(zz)==zz & imag(zz)==0 & real(zz)<=0);
-if ~isempty(p)
-    f(p) = Inf;
-end
-
-f = reshape(f,siz);
+cf = cf .* (sqrt(3)*normT ./ sinh(sqrt(3)*normT));
 end
