@@ -28,3 +28,8 @@ RenewalREewardDistribution
 APPLICATIONS in Risk Modeling:
 
 CRMTool
+
+PAPER Support Files
+
+PAPER_GofTestCFMedians (A robust goodness-of-fit test for small samples using the characteristic function of the median)
+PAPER_CFMultivariateFoldedNormal (Characteristic function and moment generating function of multivariate folded normal distribution)
