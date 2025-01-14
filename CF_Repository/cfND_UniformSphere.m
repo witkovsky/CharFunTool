@@ -1,25 +1,32 @@
-function cf = cfND_UniformSphere(t,mu,Sigma)
-%% cfND_UniformSphere  
-%  Characteristic function of N-VARIATE random variable with 
-%  UNIFORM SPHERE DISTRIBUTION, say X = (X1,...,XN), with
-%  location parameter specified by (N x 1) mean vector mu = (mu1,...,muN)'
-%  (real), and scale parameters specified by the (N x N) covariance matrix
-%  Sigma.
-% 
-% 
+function cf = cfND_UniformSphere(t, mu, Sigma)
+%% cfND_UniformSphere
+%  Computes the characteristic function (CF) of an N-dimensional random
+%  variable with a uniform sphere distribution. The random variable X, X =
+%  (X1, ..., XN), is defined by its location parameter vector `mu` and
+%  covariance matrix `Sigma`.
+%
+%  For a given mean vector `mu` and covariance matrix `Sigma`, the CF of the 
+%  uniform sphere distribution is given by:
+%    CF(t) = exp(1i * t * mu') * (sin(T) / T),
+%  where:
+%    - T = sqrt(pi * sum((t * Sigma) .* t, 2)).
+%
 % SYNTAX:
-%  cf = cfND_UniformSphere(t,mu,Sigma)
+%  cf = cfND_UniformSphere(t, mu, Sigma)
 %
 % INPUTS:
-%  t      - (M x N)-matrix t = [t1,...,tN] of real values, where the CF is
-%           evaluated.  
-%  mu     - N-dimensional vector mu = [mu1,...,muN]'; of real location
-%           parameters. If empty, default value is mu = [0,...,0]'.   
-%  Sigma  - (N x N) covariance matrix Sigma. If empty, default value
-%           is Sigma = eye(N).   
+%  t      - (M x N)-matrix where the CF is evaluated. Each row represents 
+%           an evaluation point in N dimensions.
+%  mu     - (N x 1)-vector of location parameters. Default: `mu = zeros(N, 1)`.
+%  Sigma  - (N x N)-covariance matrix. Default: `Sigma = eye(N)`.
 %
-% WIKIPEDIA: 
-%  https://en.wikibooks.org/wiki/Mathematica/Uniform_Spherical_Distribution
+% OUTPUT:
+%  cf     - (M x 1)-vector of CF values evaluated at the specified points in `t`.
+%
+% REFERENCES:
+% [1] Balakrishnan, N., Ma, C., and Wang, R. (2015). Logistic vector random 
+%     fields with logistic direct and cross covariances. Journal of 
+%     Statistical Planning and Inference, 161, pp.109-118.
 %
 % EXAMPLE 1:
 % % CF of the Bivariate UNIFORM SPHERE DISTRIBUTION
@@ -92,36 +99,46 @@ function cf = cfND_UniformSphere(t,mu,Sigma)
 %   options.isInterp = true;
 %   options.chebyPts = 101;
 %   result = cf2Dist2D(cf,[],options) 
-%
-% REFERENCES
-% [1] Balakrishnan, N., Ma, C. and Wang, R., 2015. Logistic vector random
-%     fields with logistic direct and cross covariances. Journal of
-%     Statistical Planning and Inference, 161, pp.109-118.   
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 10-May-2024 07:09:34
+% Updated: '13-Jan-2025 23:27:34'
 
 %% ALGORITHM
 % cf = cfND_UniformSphere(t,mu,Sigma)
 
-%% CHECK THE INPUT PARAMETERS
+%% Input Validation and Default Parameters
 narginchk(1, 3);
-if nargin < 3, Sigma = []; end
-if nargin < 2, mu = []; end
 
-%% Characteristic function
+% Get dimensions of `t`
+if ~ismatrix(t)
+    error('InputSizeMismatch: `t` must be a 2D matrix.');
+end
+N = size(t,2);
 
-if ismatrix(t)
-    [~,N] = size(t);
-else
-    error('InputSizeMismatch');
+% Set default values for `mu` and `Sigma`
+if nargin < 3 || isempty(Sigma), Sigma = eye(N); end
+if nargin < 2 || isempty(mu), mu = zeros(N, 1); end
+
+% Validate dimensions of `mu` and `Sigma`
+if numel(mu) ~= N
+    error('DimensionMismatch: Length of `mu` must match the number of columns in `t`.');
+end
+if ~isequal(size(Sigma), [N, N])
+    error('DimensionMismatch: `Sigma` must be an (N x N) matrix.');
+end
+if ~issymmetric(Sigma) || any(eig(Sigma) < 0)
+    error('InvalidInput: `Sigma` must be symmetric and positive semi-definite.');
 end
 
-if isempty(mu), mu = zeros(N,1); end
-if isempty(Sigma), Sigma = eye(N); end
+%% Compute the Characteristic Function
+% Compute T = sqrt(pi * sum((t * Sigma) .* t, 2))
+T = sqrt(pi * sum((t * Sigma) .* t, 2));
 
-TT = sqrt(pi*sum(t*Sigma.*t,2));
-cf = exp(1i*t*mu(:)) .* (sin(TT) ./ TT);
-cf(TT==0) = 1;
+% Compute the CF
+cf = exp(1i * t * mu(:)) .* (sin(T) ./ T);
+
+% Handle the case where T == 0 to avoid division by zero
+cf(T == 0) = 1;
 
 end
