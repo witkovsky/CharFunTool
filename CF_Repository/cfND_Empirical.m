@@ -1,27 +1,29 @@
-function cf = cfND_Empirical(t,data)
-%% cfND_Empirical  
-%  Characteristic function of the N-VARIATE EMPIRICAL DISTRIBUTION
-%  specified by the (n x N) data matrix, data = [d_11,...,d_1N; ... ;
-%  d_n1,...,d_nN].
-%  
-%  For given data and t = [t1,...,tN] the characteristic function is given
-%  as a weighted N-variate Mixture Distribution with equal weights, given
-%  as cf(t) = (1/n)*exp(1i*(d_11*t1 +...+ d_1N*tN)) +...+
-%  (1/n)*exp(1i*(d_n1*t1 +...+ d_nN*tN)), where exp(1i*(d_1*t1 +...+
-%  d_N*tN)) represents the characteristic function of the N-dimensional
-%  DIRAC RV concentrated at the vector d = [d_1,...,d_N].
+function cf = cfND_Empirical(t, data)
+%% cfND_Empirical
+%  Computes the characteristic function (CF) of the N-dimensional empirical 
+%  distribution specified by the data matrix `data`. The CF is equivalent 
+%  to a weighted N-dimensional mixture distribution with equal weights.
 %
-%  
+%  For a given data matrix `data` and evaluation points `t = [t1, ..., tN]`, 
+%  the CF is defined as:
+%    CF(t) = (1/n) * sum_{j=1}^n exp(1i * (d_j1 * t1 + ... + d_jN * tN)),
+%  where `data = [d1; ...; dn]` is the matrix of empirical observations.
+%
 % SYNTAX:
-%  cf = cfND_Empirical(t,data)
+%  cf = cfND_Empirical(t, data)
 %
 % INPUTS:
-%  t      - (M x N)-matrix t = [t1,...,tN] of real values, where the CF is
-%           evaluated.   
-%  data   - (n x N)-matrix data = [d1,...,dN] of real values.
+%  t      - (M x N)-matrix where the CF is evaluated. Each row represents 
+%           an evaluation point in N dimensions. If `t` is an M-vector, it 
+%           is assumed that `t1 = t, ..., tN = t`.
+%  data   - (n x N)-matrix of empirical observations `data = [d1; ...; dn]`. 
+%           Each row corresponds to an N-dimensional observation.
 %
-% WIKIPEDIA: 
-%  https://en.wikipedia.org/wiki/Empirical_distribution_function.
+% OUTPUT:
+%  cf     - (M x 1)-vector of CF values evaluated at the specified points in `t`.
+%
+% REFERENCES:
+% [1] https://en.wikipedia.org/wiki/Empirical_distribution_function
 %
 % EXAMPLE 1:
 % % CF of the Bivariate Empirical Distributions specified by the data
@@ -62,15 +64,32 @@ function cf = cfND_Empirical(t,data)
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
 % Ver.: 01-May-2024 16:29:07'
+% Updated: '13-Jan-2025 23:27:34'
 
 %% ALGORITHM
 % cf = cfND_Empirical(t,data)
 
-%% CHECK THE INPUT PARAMETERS
-narginchk(1, 2);
-if nargin < 2, data = []; end
+%% Input Validation
+narginchk(2, 2);
 
-weight = [];
-cf = cfND_DiracMixture(t,data,weight);
+% Check if data is provided and valid
+if isempty(data)
+    error('InputError: `data` must be a non-empty matrix of empirical observations.');
+end
+
+% Dimensions of `data`
+[n, N] = size(data);
+
+% Validate `t`
+if size(t, 2) ~= N && size(t, 1) ~= N
+    error('DimensionMismatch: `t` must have the same number of columns as the dimension of `data`.');
+end
+
+%% Compute the Characteristic Function
+% Set uniform weights (1/n for each data point)
+weight = ones(n, 1) / n;
+
+% Use the `cfND_DiracMixture` function to compute the CF
+cf = cfND_DiracMixture(t, data, weight);
 
 end
