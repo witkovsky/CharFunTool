@@ -1,28 +1,28 @@
-function cf = cfND_Normal(t,mu,Sigma)
-%% cfND_Normal  
-%  Characteristic function of N-VARIATE NORMAL (GAUSSIAN) random variable,
-%  say X = (X1,...,Xn), with location parameters specified by (N x 1) mean
-%  vector mu = (mu1,...,muN)' (real), and scale parameters specified by the
-%  (N x N) covariance matrix Sigma.
+function cf = cfND_Normal(t, mu, Sigma)
+%% cfND_Normal
+%  Computes the characteristic function (CF) of an N-variate normal 
+%  (Gaussian) random variable, X = (X1, ..., XN), with mean vector `mu` 
+%  and covariance matrix `Sigma`.
 %
-%  Here, we consider the multivariate normal distribution and its
-%  characteristic function as specified at WIKIPEDIA
+%  The CF of a multivariate normal distribution is given by:
+%    CF(t) = exp(1i * t * mu') * exp(-0.5 * t * Sigma * t')
+%
+%  Reference:
 %  https://en.wikipedia.org/wiki/Multivariate_normal_distribution
 %
-%  
 % SYNTAX:
-%  cf = cfND_Normal(t,mu,Sigma)
+%  cf = cfND_Normal(t, mu, Sigma)
 %
 % INPUTS:
-%  t      - (M x N)-matrix t = [t1,...,tN] of real values, where the CF is
-%           evaluated.  
-%  mu     - N-dimensional vector mu = [mu1,...,muN]'; of real location
-%           parameters. If empty, default value is mu = [0,...,0]'.   
-%  Sigma  - (N x N) covariance matrix Sigma. If empty, default value
-%           is Sigma = eye(N).   
+%  t     - (M x N) matrix of real values where the CF is evaluated. 
+%          Each row corresponds to an evaluation point in N dimensions.
+%  mu    - (N x 1) vector of means for the normal distribution. 
+%          Default: [0; ...; 0] (N-dimensional zero vector).
+%  Sigma - (N x N) covariance matrix. Must be symmetric positive semi-definite.
+%          Default: eye(N) (identity matrix).
 %
-% WIKIPEDIA: 
-% https://en.wikipedia.org/wiki/Multivariate_normal_distribution.
+% OUTPUT:
+%  cf    - (M x 1) vector of CF values at the specified points in `t`.
 %
 % EXAMPLE 1:
 % % CF of the Bivariate Normal RV
@@ -87,27 +87,38 @@ function cf = cfND_Normal(t,mu,Sigma)
 %   result = cf2Dist2D(cf,[],options) 
 
 % (c) Viktor Witkovsky (witkovsky@gmail.com)
-% Ver.: 01-May-2024 16:29:07'
+% Ver.: '01-May-2024 16:29:07'
+% Updated: '13-Jan-2025 23:27:34'
 
-%% ALGORITHM
-% cf = cfND_Normal(t,mu,Sigma)
-
-%% CHECK THE INPUT PARAMETERS
+%% Input Validation and Default Values
 narginchk(1, 3);
-if nargin < 3, Sigma = []; end
-if nargin < 2, mu = []; end
 
-%% Characteristic function
+% Get dimensions of `t`
+N = size(t,2);
 
-if ismatrix(t)
-    [~,N] = size(t);
-else
-    error('InputSizeMismatch');
+% Set default values for `mu` and `Sigma`
+if nargin < 3 || isempty(Sigma), Sigma = eye(N); end
+if nargin < 2 || isempty(mu), mu = zeros(N, 1); end
+
+% Validate input dimensions
+if numel(mu) ~= N
+    error('Dimension mismatch: `mu` must have length equal to the number of columns in `t`.');
+end
+if ~isequal(size(Sigma), [N, N])
+    error('Dimension mismatch: `Sigma` must be an (N x N) matrix.');
+end
+if ~issymmetric(Sigma) || any(eig(Sigma) < 0)
+    error('Invalid covariance matrix: `Sigma` must be symmetric positive semi-definite.');
 end
 
-if isempty(mu), mu = zeros(N,1); end
-if isempty(Sigma), Sigma = eye(N); end
+%% Compute the Characteristic Function
+% 1. Linear phase term: exp(1i * t * mu')
+linearTerm = 1i * (t * mu(:));
 
-cf = exp(1i*t*mu(:)) .* exp(-sum((t*Sigma).*t,2)/2);
+% 2. Quadratic term: exp(-0.5 * t * Sigma * t')
+quadraticTerm = -0.5 * sum((t * Sigma) .* t, 2);
+
+% 3. Combine terms
+cf = exp(linearTerm + quadraticTerm);
 
 end
