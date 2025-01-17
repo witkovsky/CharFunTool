@@ -112,6 +112,7 @@ CFs of N-dimensional probability distributions:
 
 cfND_DiracMixture
 cfND_Empirical
+cfND_FoldedNormal
 cfND_LogisticESD
 cfND_Normal
 cfND_UniformSphere
